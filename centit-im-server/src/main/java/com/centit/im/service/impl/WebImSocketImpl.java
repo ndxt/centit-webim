@@ -1,5 +1,6 @@
 package com.centit.im.service.impl;
 
+import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.IUserUnit;
@@ -16,8 +17,11 @@ import com.centit.im.socketio.ImMessageBuild;
 import com.centit.im.socketio.ImMessageUtils;
 import com.centit.support.algorithm.DatetimeOpt;
 import com.centit.support.algorithm.NumberBaseOpt;
+import com.centit.support.algorithm.StringBaseOpt;
 import com.centit.support.algorithm.UuidOpt;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,6 +92,12 @@ public class WebImSocketImpl implements WebImSocket {
 
     @Resource
     protected IntelligentRobotFactory intelligentRobotFactory;
+
+    @Value("${notify.type}")
+    protected String noticeType;
+
+    @Autowired
+    protected NotificationCenter notificationCenter;
     /**
      * 登录
      *
@@ -568,7 +578,19 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setMsgId(UuidOpt.getUuidAsString32());
         webMessage.setMsgType("C");
         webMessage.setMsgState("U");
-        pushMessage(userCode, message);
+        Session session = getSessionByUserCode(userCode);
+        if(session!=null) {
+            pushMessage(session, message);
+        }else{
+            if(StringUtils.equals("sms",noticeType)){
+                Map<String, Object> content = message.getContent();
+                notificationCenter.sendMessage(
+                        message.getSender(),message.getReceiver(),
+                        "离线消息",
+                        StringBaseOpt.objectToString(content.get("msg")),
+                        "sms");
+            }
+        }
         webMessage.setSendTime(DatetimeOpt.currentUtilDate());
         messageDao.saveNewObject(webMessage);
     }

@@ -17,18 +17,15 @@ public class InstantiationServiceBeanPostProcessor implements ApplicationListene
     @Autowired
     protected NotificationCenter notificationCenter;
 
-    @Autowired
-    private OperationLogWriter optLogManager;
 
     @Autowired
-    private MessageSender innerMessageManager;
+    private MessageSender smsMessageManager;
 
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event)
     {
-        notificationCenter.registerMessageSender("innerMsg", innerMessageManager);
-        OperationLogCenter.registerOperationLogWriter(optLogManager);
+        notificationCenter.registerMessageSender("sms", smsMessageManager);
     }
 
 }
