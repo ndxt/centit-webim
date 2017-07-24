@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="test">
+<head>
+  <meta charset="UTF-8">
+  <title>测试桩</title>
+
+  <link rel="stylesheet" href="plugins/bootstrap/dist/css/bootstrap.min.css ">
+</head>
+<body ng-controller="TestController as vm">
+<!--[if lt IE 10]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+
+  <div class="container">
+
+    <div class="jumbotron">
+      <h1>客服系统测试桩</h1>
+      <p>模拟用户，模拟客服</p>
+      <p>
+        <button class="btn btn-success" ng-click="vm.beginSmartTalk()">与图灵机器人交谈</button>
+      </p>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        模拟用户
+      </div>
+      <div class="panel-body">
+        <form>
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-1 text-center">
+                <button type="button" class="btn btn-default">
+                  <i class="glyphicon glyphicon-repeat" title="生成随机用户" ng-click="vm.generateUser()"></i>
+                </button>
+              </div>
+              <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="用户名" ng-model="vm.user.name">
+              </div>
+              <div class="col-md-2">
+                <img style="height: 32px;" ng-src="{{vm.user.avatar}}" class="img-responsive img-circle" alt="头像">
+              </div>
+              <div class="col-md-5">
+                <p style="margin: 0; line-height: 32px;">{{vm.user.id}}</p>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary"
+                  ng-click="vm.beginTalk(vm.user)">与客服交谈</button>
+
+        </form>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        模拟客服
+      </div>
+      <div class="panel-body">
+        <button type="button" class="btn btn-sm btn-primary" ng-click="vm.addCustomService()">
+          <i class="glyphicon glyphicon-plus"></i>
+          添加客服
+        </button>
+      </div>
+      <table class="table table-hover table-striped">
+        <colgroup></colgroup>
+        <colgroup></colgroup>
+        <colgroup></colgroup>
+        <colgroup width="360"></colgroup>
+        <tbody>
+          <tr ng-repeat="ser in vm.service">
+            <td>{{ser.name}}</td>
+            <td>
+              <i class="glyphicon glyphicon-eye-open" style="font-size: 20px;" title="在线" ng-show="ser.online"></i>
+              <i class="glyphicon glyphicon-eye-close" style="font-size: 20px; color: #ddd;" title="不在线" ng-show="!ser.online"></i>
+            </td>
+            <td>
+              <button type="button" class="btn btn-xs btn-info" ng-click="vm.beginService(ser)">进入客服页面</button>
+            </td>
+            <td>
+              {{ser.id}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="plugins/angular/angular.min.js"></script>
+  <script src="plugins/mockjs/dist/mock-min.js"></script>
+  <script src="plugins/url.js"></script>
+  <script src="plugins/base64.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>

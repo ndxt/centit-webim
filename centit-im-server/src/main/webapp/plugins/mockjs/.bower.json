@@ -1,0 +1,30 @@
+{
+  "name": "mockjs",
+  "title": "Mock.js",
+  "main": "dist/mock.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src",
+    "test",
+    "site",
+    "plugins",
+    "package.json",
+    "gulpfile.js",
+    "AUTHORS.txt",
+    "CONTRIBUTING.md",
+    "HISTORY.md",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "devDependencies": {},
+  "_source": "nexus+http://develop.centit.com:8081/nexus/repository/bower-centit/mockjs",
+  "_target": "^1.0.0",
+  "_release": "1.0.0",
+  "version": "1.0.0",
+  "_originalSource": "mockjs",
+  "_direct": true
+}

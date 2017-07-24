@@ -1,0 +1,12 @@
+{
+  "name": "angular",
+  "version": "v1.5.11",
+  "license": "MIT",
+  "main": "./angular.js",
+  "ignore": [],
+  "dependencies": {},
+  "_source": "nexus+http://develop.centit.com:8081/nexus/repository/bower-centit/angular",
+  "_target": "~1.5.3",
+  "_release": "v1.5.11",
+  "_originalSource": "angular"
+}

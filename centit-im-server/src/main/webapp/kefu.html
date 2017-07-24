@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KF</title>
+  <link rel="stylesheet" href="src/css/layui.css">
+</head>
+<body>
+
+<script src="src/layui.js"></script>
+<script src="plugins/url.js"></script>
+<script src="plugins/mustache.min.js"></script>
+<script src="plugins/jquery-1.9.1.min.js"></script>
+<script src="plugins/base64.js"></script>
+<script src="plugins/shim/promise.min.js"></script>
+<script src="plugins/shim/fetch.js"></script>
+<script src="im-ie.js"></script>
+<script>
+  var result = parseURL(),
+      token = result.params.token,
+      params = JSON.parse(decodeURIComponent(base64.decode(token)));
+  mine = {
+      userCode: params.userCode,
+      userName: params.userName,
+
+  },
+
+  document.title = 'KF - ' + params.userName
+
+  layui.use('layim', function (im) {
+    new ServiceIM(im, $.extend({
+      userType: 'S'
+    }, mine))
+  })
+</script>
+</body>
+</html>
