@@ -255,7 +255,7 @@ public class WebImSocketImpl implements WebImSocket {
                 }
                 Random random = new Random();
                 //有符合要求的在线客服 随机分配一个
-                if (ImMessage.USER_STATE_OFFLINE.equalsIgnoreCase(service.getUserState())
+                if (service != null && ImMessage.USER_STATE_OFFLINE.equalsIgnoreCase(service.getUserState())
                         && onlineServices.size() > 0) {
                     service = onlineServices.get(random.nextInt(onlineServices.size()));
                     service.setUserState(ImMessage.USER_STATE_ONLINE);
