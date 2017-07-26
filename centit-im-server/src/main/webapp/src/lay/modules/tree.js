@@ -86,6 +86,8 @@ layui.define('jquery', function(exports){
       }
       
       elem.append(li);
+
+      li.data('node', item)
       
       //触发点击节点回调
       typeof options.click === 'function' && that.click(li, item); 
@@ -103,7 +105,7 @@ layui.define('jquery', function(exports){
     var that = this, options = that.options;
     elem.children('a').on('click', function(e){
       layui.stope(e);
-      options.click(item)
+      options.click(item, elem)
     });
   };
   

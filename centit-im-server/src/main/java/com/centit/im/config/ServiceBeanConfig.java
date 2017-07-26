@@ -3,11 +3,11 @@ package com.centit.im.config;
 import com.centit.framework.components.impl.NotificationCenterImpl;
 import com.centit.framework.components.impl.TextOperationLogWriterImpl;
 import com.centit.framework.hibernate.config.DataSourceConfig;
+import com.centit.framework.ip.app.config.IPAppSystemBeanConfig;
+import com.centit.framework.ip.service.IntegrationEnvironment;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
-import com.centit.framework.staticsystem.config.SpringConfig;
-import com.centit.framework.staticsystem.service.IntegrationEnvironment;
 import com.centit.im.listener.InstantiationServiceBeanPostProcessor;
 import com.centit.im.plugins.SmsMessageSender;
 import com.centit.im.service.IntelligentRobotFactory;
@@ -20,8 +20,8 @@ import org.springframework.core.env.Environment;
 @Configuration
 @PropertySource("classpath:system.properties")
 @ComponentScan(basePackages = {"com.centit.*"})
-@Import({SpringConfig.class, DataSourceConfig.class})
-public class BeanConfig  implements EnvironmentAware {
+@Import({IPAppSystemBeanConfig.class, DataSourceConfig.class})
+public class ServiceBeanConfig implements EnvironmentAware {
 
     private Environment env;
 

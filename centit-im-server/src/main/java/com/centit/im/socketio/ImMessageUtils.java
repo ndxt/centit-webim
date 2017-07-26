@@ -44,6 +44,20 @@ public class ImMessageUtils {
                 .message(message).build();
     }
 
+    //切换客服是系统信息
+    public static ImMessage buildSystemMessageChangService(String sender, String message,WebImCustomer cust,WebImCustomer service,String type){
+        return new ImMessageBuild().type(ImMessage.MSG_TYPE_SYSTEM)
+                .contentType(ImMessage.CONTENT_TYPE_TEXT)
+                .sender(sender)
+                .senderName("系统提示")
+                .addContent("id",cust.getUserCode())
+                .addContent("custName",cust.getUserName())
+                .addContent("serviceCode",service.getUserCode())
+                .addContent("serviceName",service.getUserName())
+                .addContent("type",type)
+                .message(message).build();
+    }
+
     public static ImMessage buildSystemMessage(String message){
         return buildSystemMessage("system",message);
     }

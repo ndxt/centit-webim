@@ -8,6 +8,7 @@
 (function ($) {
     $.fn.extend({
         /**
+         * 初始化函数，给调用元素绑定了点击弹窗事件
          * @param {object}  config - 配置参数
          *        1.ifOpenWindow:是否新标签页打开窗口，默认为true
          *        2.ifRenderToBtn:是否给调用元素添加样式，默认为false
@@ -23,16 +24,33 @@
             config = initConfig(config);
             var url = generateUrl(this, config);
             renderToBtn(this, config.ifRenderToBtn);
+            if(config.testBrowser){
+                confirmDownloadBrowser();
+            }
             if (config.ifOpenWindow === true) {
 
 
                 $('.contactService').bind('click', function () {
+
                     window.open(url);
                 });
             } else {
                 createWindow(url);
                 bindEvents();
             }
+            return this;
+        },
+        /**
+         * 打开窗口函数
+         * @param config
+         */
+        "imOpen":function(config){
+            config = initConfig(config);
+            var url = generateUrl(this, config);
+            if(config.testBrowser){
+                confirmDownloadBrowser();
+            }
+            openWindow(url);
             return this;
         }
     });
@@ -45,17 +63,20 @@
 
         "im": {
             contentPath: 'http://192.168.132.145:8080/qq' //默认参数地址参数
+            //下载浏览器地址
+            ,downloadPath:'http://download.firefox.com.cn/releases-sha2/stub/official/zh-CN/Firefox-latest.exe'
         },
 
         /**
-         *
+         *生成客服页面地址
          * @param {Object} config - json对像token的原始值
          * @returns {string|*}
          */
         "serviceURL":function(config){
             var params = {
                 userCode: config.userCode,
-                userName: config.userName
+                userName: config.userName,
+                switchServiceBtn:config.switchServiceBtn
             };
 
 
@@ -73,6 +94,7 @@
         }
         config.ifOpenWindow = config.ifOpenWindow || true;
         config.ifRenderToBtn = config.ifRenderToBtn || false;
+        config.testBrowser  = config.testBrowser || true;
         return config;
     }
 
@@ -86,7 +108,27 @@
         return typeof str === 'string';
     }
 
+    function isAvailableBrowser(){
+        var browserInfo = window.navigator.userAgent;
+        if(browserInfo.indexOf('Firefox') == '-1' && browserInfo.indexOf('Chrome') == '-1' && browserInfo.indexOf("rv:11.0") == '-1'){
+            return false;
+        }else{
+            return true;
+        }
 
+    }
+
+    function confirmDownloadBrowser() {
+        if(!isAvailableBrowser()){
+            var confirm = window.confirm("您的浏览器可能不支持使用时在线咨询服务，推荐您使用谷歌浏览器，是否需要下载谷歌浏览器？");
+            if(confirm){
+                window.open($.im.downloadPath);
+            }
+            return false;
+        }
+        return true;
+
+    }
 
     //生成url地址
     function generateUrl(that, config) {
@@ -111,7 +153,7 @@
             params.customService = config.customService;
         }
 
-            token = 'token=' + base64.encode(encodeURIComponent(JSON.stringify(params)));
+        token = 'token=' + base64.encode(encodeURIComponent(JSON.stringify(params)));
         url = $.im.contentPath + '/user.html?' + token;
         return url;
     }

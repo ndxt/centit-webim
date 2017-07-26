@@ -9,7 +9,9 @@
  
 layui.define(['layer', 'laytpl', 'upload'], function(exports){
 
-    const Default_Avatar = 'http://tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg';
+    const Default_Avatar = 'http://tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg'
+    const SERVICE_AVATAR = '/src/avatar/service.jpg';
+    const USER_AVATAR = '/src/avatar/user.png';
 
   var v = '3.5.4 Pro';
   var $ = layui.jquery;
@@ -662,7 +664,7 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
    var showMineMessage = function(content){
         var data = {
             username: cache.mine ? cache.mine.username : '访客'
-            ,avatar: cache.mine ? cache.mine.avatar : (layui.cache.dir+'css/pc/layim/skin/logo.jpg')
+            ,avatar: cache.mine ? (ctx + SERVICE_AVATAR) : (layui.cache.dir+'css/pc/layim/skin/logo.jpg')
             ,id: cache.mine ? cache.mine.id : null
             ,mine: true
         };
@@ -727,7 +729,7 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
                           id: data.id,
                           content: JSON.parse(message.content).msg,
                           timestamp: message.sendTime,
-                          avatar: Default_Avatar
+                          avatar: ctx + USER_AVATAR
                       }, true)
                   } else {
                       showMineMessage({content: JSON.parse(message.content).msg,timestamp: message.sendTime});

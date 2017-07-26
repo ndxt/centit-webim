@@ -37,9 +37,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class WebImSocketImpl implements WebImSocket {
     private static AtomicInteger onlineCount = new AtomicInteger(0);
-     //ConcurrentHashMap是线程安全的，而HashMap是线程不安全的。
+    //ConcurrentHashMap是线程安全的，而HashMap是线程不安全的。
     private static ConcurrentHashMap<String, Session> userCodeToSession
-             = new ConcurrentHashMap<>();//根据用户找session
+            = new ConcurrentHashMap<>();//根据用户找session
     private static ConcurrentHashMap<Session, WebImCustomer> sessionToUserCode
             = new ConcurrentHashMap<>();//根据session找用户
     /**
@@ -132,7 +132,7 @@ public class WebImSocketImpl implements WebImSocket {
             //下线通知
             onlineCustService.remove(userCode);
             broadcastMessage(
-                        ImMessageUtils.buildOfflineMessage(userCode));
+                    ImMessageUtils.buildOfflineMessage(userCode));
         }
     }
 
@@ -275,7 +275,7 @@ public class WebImSocketImpl implements WebImSocket {
 
             Random random = new Random();
             if ( (service == null
-                        || ImMessage.USER_STATE_OFFLINE.equalsIgnoreCase(service.getUserState()) )
+                    || ImMessage.USER_STATE_OFFLINE.equalsIgnoreCase(service.getUserState()) )
                     && onlineCustService.size() > 0) {
                 String[] keys = new String[onlineCustService.size()];
                 keys = onlineCustService.keySet().toArray(keys);
@@ -335,12 +335,13 @@ public class WebImSocketImpl implements WebImSocket {
             cust.setCustomerService(service.getUserCode());
             customerDao.updateObject(cust);
         }
+        WebImCustomer beforeChangeService = getUserBySession(session);
 
         pushMessage(session /*message.getSender()*/,ImMessageUtils
-                .buildSystemMessage(receiver,"切换客服成功，请离开本窗口。") );
+                .buildSystemMessageChangService(receiver,"切换客服成功，请离开本窗口。",cust,beforeChangeService,"B") );//切换前客服标识Before
 
         pushMessage(service.getUserCode() ,ImMessageUtils
-                .buildSystemMessage(receiver,"请为这个新的客户服务。") );
+                .buildSystemMessageChangService(receiver,"请为"+cust.getUserName()+"客户服务。",cust,beforeChangeService,"A") );//切换后客服标识After
     }
 
     @Transactional
@@ -587,7 +588,7 @@ public class WebImSocketImpl implements WebImSocket {
                 notificationCenter.sendMessage(
                         message.getSender(),message.getReceiver(),
                         "离线消息",
-                        StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE)),
+                        StringBaseOpt.objectToString(content.get("msg")),
                         "sms");
             }
         }

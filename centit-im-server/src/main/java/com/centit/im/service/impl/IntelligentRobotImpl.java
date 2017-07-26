@@ -5,8 +5,10 @@ import com.centit.framework.appclient.AppSession;
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.service.IntelligentRobot;
 import com.centit.support.network.HttpExecutor;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
+
+import java.net.URLEncoder;
+
 
 /**
  * Created by codefan on 17-6-19.
@@ -72,7 +74,7 @@ public class IntelligentRobotImpl implements IntelligentRobot {
             httpClient = getHttpClient();
             String jsonStr = HttpExecutor.simpleGet(httpClient,
                 appSession.completeQueryUrl("/ask/"+ custUserCode+"?question="+
-                        StringEscapeUtils.escapeHtml4(question)));
+                        URLEncoder.encode(question,"utf-8")));
             JSONObject jsonObj = JSONObject.parseObject(jsonStr);
             RobotAnswer result = JSONObject.toJavaObject(jsonObj.getJSONObject("data"), RobotAnswer.class);
             releaseHttpClient(httpClient);

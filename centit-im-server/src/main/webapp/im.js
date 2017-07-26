@@ -1,9 +1,22 @@
+const Default_Avatar = 'http://tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg'
+const SERVICE_AVATAR = '/src/avatar/service.jpg';
+const USER_AVATAR = '/src/avatar/user.png';
+
+window.ctx = _getContextPath();
+/**
+ * 工具函数：获取当前contentPath
+ * @returns {*}
+ * @private
+ */
+function _getContextPath() {
+    let match = location.href.match(/^(http:\/\/.*?\/.*?)\//)
+
+    if (match && match[1]) {
+        return match[1]
+    }
+}
 ;(function(global) {
   'use strict'
-
-
-
-  const Default_Avatar = 'http://tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg'
 
   const MODE_SERVICE = 'askForService'
   const MODE_QUESTION = 'askRobot'
@@ -67,10 +80,30 @@
         }.bind(this))
     }
 
+    onAfterSendChatMessage(data, mode) {
+      if(mode == 'askForService') {
+        this.messageHandler = setTimeout(this.sendNotice.bind(this),120000);
+      }
+    }
+
     beforeInit() {
       return new Promise(resolve => resolve())
     }
 
+    scoreRate(){
+        layui.use('layer', function(){
+            var layer = layui.layer;
+
+            layer.open({
+                title:'下线通知'
+                ,content:'服务结束请对我的服务做出评价<div id="rate"></div>'
+                ,yes:function(index){
+                    $('#rate').
+                    layer.close(index);
+                }
+            });
+        });
+    }
     /**
      * 初始化后实例做的事
      */
@@ -101,7 +134,7 @@
           id: this.mine,
           osId: this.config.osId || 'centit',
           username: '我',
-          avatar: Default_Avatar
+          avatar: ctx + USER_AVATAR
         }
       }
 
@@ -157,7 +190,7 @@
         id,
         content,
         timestamp: timestamp || _getTimestamp(),
-        avatar: Default_Avatar
+        avatar:  ctx + USER_AVATAR
       })
     }
 
@@ -229,11 +262,26 @@
       if(mode == 'askRobot'){
           this.sendQuestionRequest({question: (data.content.msg || '').replace(/\n/, '')});
       }
+
+      if (this.onAfterSendChatMessage) {
+        this.onAfterSendChatMessage.call(this, data, mode)
+      }
     }
 
       //创造问题消息列表
       createProblemList(problems,data){
           this.showChatMessage($.extend({id: '0'}, data, {content:Mustache.render("[span class=hintMsg]{{msg}}[/span][ul]{{#options}} [li class=question id={{value}} data-type={{type}}][a]{{label}}[/a][/li]{{/options}} [/ul]", problems)}));
+
+      }
+
+    /**
+     *发送提醒
+     */
+    sendNotice(){
+      this.showSystemMessage({
+        id: '0',
+        content: Mustache.render('客服可能暂时不在，请稍作等待')
+      })
 
       }
     /**
@@ -262,6 +310,18 @@
       this.sendCommandMessage({ contentType, content })
     }
 
+      /**
+       * 发送切换客服指令
+       *
+       */
+      sendSwitchServiceCommand(service,receiver){
+          let contentType = CONTENT_TYPE_SERVICE
+          let content = {};
+          content.service = service;
+          // 添加指定客服
+
+          this.sendCommandMessage({ contentType, content,receiver })
+      }
     /**
      * 发送申请机器人
      */
@@ -343,7 +403,14 @@
         })
     }
     sendWSMessage(data) {
-      this.socket.send(JSON.stringify(data))
+        if (this.socket.readyState == '3') {
+            this.showSystemMessage({
+                id: '0',
+                content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229)">刷新</a>重新连接')
+            })
+        } else if (this.socket.readyState == '1') {
+            this.socket.send(JSON.stringify(data))
+        }
     }
 
     /**
@@ -396,7 +463,7 @@
           this.showChatMessage($.extend({id: data.sender}, data, {content: data.content.msg}))
           break
         case MSG_TYPE_SYSTEM:
-          this.showSystemMessage($.extend({id: '0'}, data, {content: data.content.msg}))
+          this.showSystemMessage($.extend({id: '0'}, data, {content: data.content.msg,id:data.content.id,data:data.content}))
           break
         case MSG_TYPE_COMMAND:
           this.onCommandMessage(data, data.content)
@@ -414,7 +481,12 @@
     /**
      * WebSocket关闭打开事件
      */
-    onWSClose() { console.log('WebSocket connection is closed.') }
+    onWSClose() {
+      this.showSystemMessage({
+        id: '0',
+        content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229)">刷新</a>重新连接')
+      })
+    }
 
     changeUserName(name) {
       this.$('.layim-chat-username').text(name)
@@ -435,24 +507,11 @@
     return new Date().getTime()
   }
 
-  /**
-   * 工具函数：获取当前contentPath
-   * @returns {*}
-   * @private
-   */
-  function _getContextPath() {
-    let match = location.href.match(/^(http:\/\/.*?\/.*?)\//)
 
-    if (match && match[1]) {
-      return match[1]
-    }
-  }
 })(window)
 
 ;(function(global, IM) {
   'use strict'
-
-  const Default_Avatar = 'http://tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg'
     const MODE_SERVICE = 'askForService'
     const MODE_QUESTION = 'askRobot'
     const TYPE_USER = 'C'
@@ -485,7 +544,9 @@
 
 
       initIM() {
-        let ctx = this.contextPath
+        let ctx = this.contextPath;
+        this.mine.avatar = ctx + USER_AVATAR;
+
           this.im.config({
               init: {
                   mine: this.mine
@@ -510,11 +571,12 @@
 
     afterInit() {
       this.bindProblemListClickEvent();
+      let ctx = this.contextPath;
       this.window = {
         id: '0',
         type: 'friend',
         name: '智能客服',
-        avatar: Default_Avatar
+        avatar: ctx + SERVICE_AVATAR
       }
        let that = this;
         this.im.on('tool(robot)', function(){
@@ -535,6 +597,7 @@
      * @param timestamp
      */
     showChatMessage({content, timestamp, senderName, system = false}) {
+      let ctx = this.contextPath;
       this.im.getMessage({
         type: 'friend',
         system,
@@ -542,8 +605,10 @@
         id: this.window.id,
         content,
         timestamp: timestamp || _getTimestamp(),
-        avatar: Default_Avatar
+        avatar: ctx + SERVICE_AVATAR
       })
+      if(this.messageHandler)
+        clearTimeout(this.messageHandler);
     }
   }
 
@@ -562,12 +627,13 @@
 ;(function(global, IM) {
   'use strict'
 
-  const Default_Avatar = 'http://tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg'
+
 
   class ServiceIM extends IM {
     constructor(im, mine, config) {
       super(im, mine, config)
-
+        let ctx = this.contextPath;
+        this.layer = config.layer
         this.config.mode = 'askForService';//因为在发送消息时会判断是否为'askForService',最好改为在UserIM中重写方法
 
       this.services = {
@@ -583,6 +649,49 @@
       }
     }
 
+
+    dealSwitchServiceMessage(params){
+        let that = this;
+        var data = {};
+        data.avatar = Default_Avatar;
+        data.id = params.data.id;
+        data.name = params.data.custName;
+        data.system = false;
+        data.temporary = true;
+        data.timestamp = params.longSendTime;
+        data.type = "friend";
+        data.username = params.data.custName;
+        layui.use('layer', function(){
+            var layer = layui.layer;
+
+            layer.open({
+                title:'系统通知'
+                ,content:params.content
+                ,btn:['确认','退回']
+                ,yes:function(index){
+                    that.im.chat(data);
+                    $('div.layui-show .layim-chat-username').data('preServiceCode',params.data.serviceCode);
+                    layer.close(index);
+
+                }
+                ,btn2:function(){
+                    that.sendSwitchServiceCommand(params.data.serviceCode,params.data.id);
+                }
+            });
+        });
+
+    }
+
+      showSystemMessage(params) {
+          params.system = true
+          if(params.data.type == 'A'){
+
+              this.dealSwitchServiceMessage(params);
+              return;
+          }
+          this.showChatMessage(params)
+      }
+
     queryUsers() {
       let ctx = this.contextPath,
         id = this.mine.id
@@ -597,7 +706,7 @@
     queryService() {
       let ctx = this.contextPath
 
-      return fetch(`${ctx }/service/webimcust/listUser`)
+      return fetch(`${ctx }/service/webimcust/services`)
         .then(res => res.json())
         .then(res => res.data)
     }
@@ -646,7 +755,7 @@
                           id: sender,
                           content: JSON.parse(message.content).msg,
                           timestamp: message.sendTime,
-                          avatar: Default_Avatar
+                          avatar: ctx + USER_AVATAR
                       }, true)
                   } else {
                        im.showMineMessage({content: JSON.parse(message.content).msg,timestamp: message.sendTime});
@@ -682,6 +791,38 @@
         });
     }
 
+    renderDistributableServicesList(){
+      let services = this.services.list;
+      let servicesJson = {};
+          servicesJson.services = services;
+          servicesJson.generateClass = function(){
+            var className;
+            if(this.userState == "F"){
+              className =  "offline";
+            }else{
+                className = "online";
+            }
+            return className;
+          }
+
+        var render = Mustache.render('{{#services}} <option class={{generateClass}} value={{userCode}}>{{userName}}</option>{{/services}}', servicesJson);
+
+        var form = $('<div class="layui-form" style="display: inline-block;font-size: 16px;"></div>')
+        var selectContainer = $('<div  class="layui-form-item selectContainer"></div>');
+        var str = '<div class="layui-input-block" style="margin-left: 0;margin-top: 6px;">' +
+            '</div>';
+        var selectOption = '<select class="serviceList" name="service" lay-verify="required" style="display: block;">' +
+            '<option value="">请选择客服</option>' +
+            render +
+            '</select>';
+            selectContainer.html(str);
+         form.append(selectContainer);
+
+        $('div.layui-show .layui-unselect.layim-chat-tool').append(form);
+        $('div.layui-show .selectContainer div.layui-input-block').html(selectOption);
+
+    }
+
     afterInit() {
       let users = this.users.list,
         services = this.services.list;
@@ -695,6 +836,212 @@
       })
       $('#layui-layer1').css('top','0px');//在右上角显示窗体
         this.queryUnread();
+        let that = this;
+        this.im.on('tool(transfer)', function(){
+
+            const layer = this.layer;
+            const mine = this.mine;
+            const list = this.services.list;
+
+            let result = []
+            let service = null;
+
+            layer.open({
+                title: '选择客服',
+                area: ['1024px', '480px'],
+                content: '<div id="service_container">' +
+                '<div style="width: 200px; height: 340px; border-right: 1px solid #ccc; float: left; padding-right: 20px;">' +
+                '<input type="text" name="title" id="service_search"  placeholder="输入类型、客服名称搜索" autocomplete="off" class="layui-input"><h5 id="service_text" style="padding: 15px 5px; color: #aaa;">未选中任何客服</h5>' +
+                '</div>' +
+                '<div style="margin-left: 230px; overflow: auto; height: 340px;">' +
+                '<ul id="service_list"></ul>' +
+                '</div>' +
+                '</div>',
+                yes: function () {
+                    if (!service) {
+                        layer.alert('没有选择客服！')
+                        return;
+                    }
+
+                    this.sendSwitchServiceCommand(service.id, $(".layim-chat-username").attr('usercode'))
+                    layer.alert(`已发送切换客服[${service.name}]命令！`)
+                }.bind(this)
+            })
+
+
+            $.get(`${this.contextPath}/json/service.txt`, function (res) {
+                result = parseData(res)
+                createTree('#service_list', result)
+                let lastValue = null;
+                $('#service_search').change(function() {
+                    let value = $(this).val()
+                    if (value !== lastValue) {
+
+                        // 清空查询条件
+                        if (!value) {
+                            createTree('#service_list', result)
+                        } else {
+                            let tempData = filterData(result, value)
+                            console.log(tempData)
+                            createTree('#service_list', tempData)
+                        }
+
+                        service = null;
+                        $('#service_text').html('未选中任何客服')
+                    }
+                    lastValue = value;
+                })
+            })
+
+            function filterData(data, value) {
+
+                let temp = JSON.parse(JSON.stringify(data))
+
+                filterLeaf(temp, value)
+
+                return temp
+
+                /**
+                 * 这段有点难理解，不过确实行得通。基于树的深度遍历。
+                 * 1·如果非叶子节点符合搜索，则不再过滤它的子节点，全部展示
+                 * 2·否则则一直深度遍历到最顶级叶子节点，判断是否符合搜索，不符合就删掉
+                 * 3·返回时如果非叶子节点的子元素数为0，则删掉这个非叶子节点
+                 * 4·最后过滤得出完整的新数据 #### 120000201101127894,客服-邓明
+                 * @param data
+                 * @param value
+                 */
+                function filterLeaf(data, value) {
+                    for (let i=data.length - 1; i>=0; i--) {
+                        let node = data[i]
+                        if (node.children) {
+                            if (node.name.indexOf(value) === -1) {
+                                filterLeaf(data[i].children, value)
+                                if (0 === node.children.length) {
+                                    data.splice(i, 1)
+                                }
+                            }
+
+                            node.spread = true
+                        }
+                        else {
+                            if (node.name.indexOf(value) === -1) {
+                                data.splice(i, 1)
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            function parseData(res) {
+                // 将文本格式转换为树形结构
+                const nodes = res.split('\n')
+                    .map(line => line.replace(/\s/, ''))
+                    .map(line => {
+                        let level = 1
+                        while ((line = line.replace('#', '')).startsWith('#')) {
+                            level++
+                        }
+                        line = line.split(',')
+                        return {
+                            level,
+                            id: line[0],
+                            name: line[1] || line[0],
+                            // 如果是自己或者客服不在线
+                            offline: mine.userCode === line[0] || list.some(user => (user.userCode === line[0] && user.userState === 'F') || list.every(user => user.userCode !== line[0]))
+                        }
+                    })
+
+                // 重点是levels保存了上一个父级节点，所以数据的顺序一定要正确
+                const result = []
+                const levels = []
+                nodes.forEach(function(node) {
+                    let level = node.level
+
+
+                    if (level === 1) {
+                        // 顶层直接放入
+                        result.push(node)
+                    }
+                    else {
+                        // 取最后一个父级节点，并放入
+                        let last = levels[level - 1][levels[level - 1].length - 1]
+                        if (last) {
+                            last.children = last.children || []
+                            last.children.push(node)
+                        }
+                    }
+
+                    if (!levels[level]) {
+                        levels[level] = []
+                    }
+                    levels[level].push(node)
+                })
+
+                return result;
+            }
+
+            function createTree(selector, data) {
+                const tree = $(selector)
+                tree.html('');
+
+                layui.tree({
+                    elem: '#service_list' //传入元素选择器
+                    ,nodes: data,
+                    click: function (node, li) {
+                        if (!node.children) {
+                            $('li.selected', tree).removeClass('selected')
+                            li.addClass('selected')
+                            $('#service_text').html(`已选中客服：${node.name}${node.offline ? '(不在线)' : ''}`)
+                            service = node
+                        }
+                    }
+                });
+
+                tree.find('li').each(function() {
+                    const li = $(this)
+                    const node = li.data('node')
+                    if (!node.children && node.offline) {
+                        li.addClass('offline')
+                    }
+                })
+            }
+
+
+
+
+            // if(!!$("div.layui-show .selectContainer").html()) {//判断Id = selectContainer的元素是否存在
+          //     $('div.layui-show .serviceList').css('display','block');
+          //     return;
+          // }
+          // that.renderDistributableServicesList();
+        }.bind(this));
+
+        this.im.on('tool(return)',function(){
+          var preServiceCode = $('div.layui-show .layim-chat-username').data('preServiceCode')||"",
+              userCode = $(".layim-chat-username").attr('usercode');
+          if(!!preServiceCode){
+            this.sendSwitchServiceCommand(preServiceCode,userCode);
+          }else{
+              layer.open({
+                  title: '系统提示'
+                  ,content: '此用户不是转接的！'
+              });
+          }
+        }.bind(this))
+
+        this.im.on('tool(over)',function(){
+
+        });
+        $("body").on('change','.serviceList',function(){
+                var service = $(this).val();
+                console.log(service);
+                var receiver = $(".layim-chat-username").attr('usercode');
+                that.sendSwitchServiceCommand(service,receiver);
+                $(this).css('display','none');
+        })
+
+        // this.scoreRate();
     }
 
 
@@ -750,7 +1097,7 @@
                               id: arr[i],
                               content: JSON.parse(message.content).msg,
                               timestamp: message.sendTime,
-                              avatar: Default_Avatar
+                              avatar: ctx + USER_AVATAR
                           }, true)
                       } else {
                           im.showMineMessage({content: JSON.parse(message.content).msg,timestamp: message.sendTime});
@@ -769,25 +1116,44 @@
 
     initIM() {
       let ctx = this.contextPath;
-      this.im.config({
-        init: {
-          mine: this.mine,
-          friend: [
-            this.users,
-            this.services
-          ]
-        },uploadImage: {
-                  url: `${ctx}/service/file/upload` //（返回的数据格式见下文）
-                  //默认post
-              }
-              ,uploadFile: {
-                  url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
-                  //默认post
-              }
+      this.mine.avatar = ctx + SERVICE_AVATAR
+      let config = {
+          init: {
+              mine: this.mine,
+              friend: [
+                  this.users,
+                  this.services
+              ]
+          }
+          ,uploadImage: {
+              url: `${ctx}/service/file/upload` //（返回的数据格式见下文）
+              //默认post
+          }
+          ,uploadFile: {
+              url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
+              //默认post
+          }
+          ,tool:[{
+              alias: 'return' //工具别名
+              ,title: '请求退回' //工具名称
+              ,icon: '&#xe627;' //工具图标，参考图标文档
+          },{
+              alias: 'over'
+              ,title: '结束会话'
+              ,icon: '&#xe60a;'
+          }]
+          ,isgroup: false
+          ,copyright: true
+      };
 
-        ,isgroup: false
-        ,copyright: true
-      })
+      if(!!this.mine.switchServiceBtn){
+          config.tool.push({
+              alias: 'transfer' //工具别名
+              ,title: '切换客服' //工具名称
+              ,icon: '&#xe65c;' //工具图标，参考图标文档
+          });
+      }
+      this.im.config(config)
     }
   }
 
@@ -797,7 +1163,7 @@
     return list.map(d => $.extend(d, {
       id: d.userCode,
       username: d.userName,
-      avatar: Default_Avatar
+      avatar: ctx + USER_AVATAR
     })).sort((me, other) => me.lastActiveDate >= other.lastActiveDate ? -1: 1)
       .sort(me => 'O' === me.userState ? -1 : 1 )
   }

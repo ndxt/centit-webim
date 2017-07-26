@@ -1,7 +1,8 @@
 package com.centit.im.service.impl;
 
-import com.centit.framework.staticsystem.po.OsInfo;
-import com.centit.framework.staticsystem.service.IntegrationEnvironment;
+
+import com.centit.framework.ip.po.OsInfo;
+import com.centit.framework.ip.service.IntegrationEnvironment;
 import com.centit.im.service.IntelligentRobot;
 import com.centit.im.service.IntelligentRobotFactory;
 
