@@ -587,7 +587,7 @@ public class WebImSocketImpl implements WebImSocket {
                 notificationCenter.sendMessage(
                         message.getSender(),message.getReceiver(),
                         "离线消息",
-                        StringBaseOpt.objectToString(content.get("msg")),
+                        StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE)),
                         "sms");
             }
         }
