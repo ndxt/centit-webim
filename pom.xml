@@ -81,9 +81,10 @@
     </scm>
 
     <modules>
-        <module>centit-im-server</module>
+        <module>centit-im-module</module>
         <module>centit-im-client</module>
-        <module>centit-im-demo</module>
+        <module>centit-im-web</module>
+        <module>centit-im-view</module>
     </modules>
 
 
