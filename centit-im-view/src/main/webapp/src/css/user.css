@@ -7,7 +7,7 @@
 
 /*隐藏最小最大化按钮*/
 /*.layui-layer-setwin{*/
-    /*display: none;*/
+/*display: none;*/
 /*}*/
 #layui-layim-chat .layim-chat-send span.layim-send-set {
     display: none;

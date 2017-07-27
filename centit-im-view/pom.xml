@@ -16,12 +16,6 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>com.centit.framework</groupId>
-            <artifactId>framework-base-view-easyui</artifactId>
-            <version>${centit.ui.version}</version>
-        </dependency>
-
     </dependencies>
 
     <build>

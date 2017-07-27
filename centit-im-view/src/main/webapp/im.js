@@ -859,7 +859,7 @@ function _getContextPath() {
                 '</div>',
                 yes: function () {
                     if (!service) {
-                        layer.alert('没有选择客服！')
+                        layer.msg('没有选择客服！')
                         return;
                     }
 
@@ -868,29 +868,38 @@ function _getContextPath() {
                 }.bind(this)
             })
 
+            const loadHandler = layer.load()
+            $.ajax({
+                url: `${this.contextPath}/json/service.txt`,
+                success: function (res) {
+                    result = parseData(res)
+                    createTree('#service_list', result)
+                    let lastValue = null;
+                    $('#service_search').change(function () {
+                        let value = $(this).val()
+                        if (value !== lastValue) {
 
-            $.get(`${this.contextPath}/json/service.txt`, function (res) {
-                result = parseData(res)
-                createTree('#service_list', result)
-                let lastValue = null;
-                $('#service_search').change(function() {
-                    let value = $(this).val()
-                    if (value !== lastValue) {
+                            // 清空查询条件
+                            if (!value) {
+                                createTree('#service_list', result)
+                            } else {
+                                let tempData = filterData(result, value)
+                                console.log(tempData)
+                                createTree('#service_list', tempData)
+                            }
 
-                        // 清空查询条件
-                        if (!value) {
-                            createTree('#service_list', result)
-                        } else {
-                            let tempData = filterData(result, value)
-                            console.log(tempData)
-                            createTree('#service_list', tempData)
+                            service = null;
+                            $('#service_text').html('未选中任何客服')
                         }
-
-                        service = null;
-                        $('#service_text').html('未选中任何客服')
-                    }
-                    lastValue = value;
-                })
+                        lastValue = value;
+                    })
+                },
+                error: function() {
+                  layer.msg('读取客服列表时发生错误')
+                },
+                complete: function() {
+                    layer.close(loadHandler)
+                }
             })
 
             function filterData(data, value) {
@@ -936,7 +945,8 @@ function _getContextPath() {
             function parseData(res) {
                 // 将文本格式转换为树形结构
                 const nodes = res.split('\n')
-                    .map(line => line.replace(/\s/, ''))
+                    .map(line => line.replace(/\s|\t|\n/g, ''))
+                    .filter(line => !!line)
                     .map(line => {
                         let level = 1
                         while ((line = line.replace('#', '')).startsWith('#')) {

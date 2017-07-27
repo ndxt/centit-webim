@@ -958,7 +958,7 @@ function _getContextPath() {
                         content: '<div id="service_container">' + '<div style="width: 200px; height: 340px; border-right: 1px solid #ccc; float: left; padding-right: 20px;">' + '<input type="text" name="title" id="service_search"  placeholder="输入类型、客服名称搜索" autocomplete="off" class="layui-input"><h5 id="service_text" style="padding: 15px 5px; color: #aaa;">未选中任何客服</h5>' + '</div>' + '<div style="margin-left: 230px; overflow: auto; height: 340px;">' + '<ul id="service_list"></ul>' + '</div>' + '</div>',
                         yes: function () {
                             if (!service) {
-                                layer.alert('没有选择客服！');
+                                layer.msg('没有选择客服！');
                                 return;
                             }
 
@@ -967,28 +967,38 @@ function _getContextPath() {
                         }.bind(this)
                     });
 
-                    $.get(this.contextPath + '/json/service.txt', function (res) {
-                        result = parseData(res);
-                        createTree('#service_list', result);
-                        var lastValue = null;
-                        $('#service_search').change(function () {
-                            var value = $(this).val();
-                            if (value !== lastValue) {
+                    var loadHandler = layer.load();
+                    $.ajax({
+                        url: this.contextPath + '/json/service.txt',
+                        success: function success(res) {
+                            result = parseData(res);
+                            createTree('#service_list', result);
+                            var lastValue = null;
+                            $('#service_search').change(function () {
+                                var value = $(this).val();
+                                if (value !== lastValue) {
 
-                                // 清空查询条件
-                                if (!value) {
-                                    createTree('#service_list', result);
-                                } else {
-                                    var tempData = filterData(result, value);
-                                    console.log(tempData);
-                                    createTree('#service_list', tempData);
+                                    // 清空查询条件
+                                    if (!value) {
+                                        createTree('#service_list', result);
+                                    } else {
+                                        var tempData = filterData(result, value);
+                                        console.log(tempData);
+                                        createTree('#service_list', tempData);
+                                    }
+
+                                    service = null;
+                                    $('#service_text').html('未选中任何客服');
                                 }
-
-                                service = null;
-                                $('#service_text').html('未选中任何客服');
-                            }
-                            lastValue = value;
-                        });
+                                lastValue = value;
+                            });
+                        },
+                        error: function error() {
+                            layer.msg('读取客服列表时发生错误');
+                        },
+                        complete: function complete() {
+                            layer.close(loadHandler);
+                        }
                     });
 
                     function filterData(data, value) {
@@ -1032,7 +1042,9 @@ function _getContextPath() {
                     function parseData(res) {
                         // 将文本格式转换为树形结构
                         var nodes = res.split('\n').map(function (line) {
-                            return line.replace(/\s/, '');
+                            return line.replace(/\s|\t|\n/g, '');
+                        }).filter(function (line) {
+                            return !!line;
                         }).map(function (line) {
                             var level = 1;
                             while ((line = line.replace('#', '')).startsWith('#')) {

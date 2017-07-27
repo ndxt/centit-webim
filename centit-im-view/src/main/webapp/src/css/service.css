@@ -1,0 +1,12 @@
+.serviceList .offline{
+    background-color: gray;
+}
+#service_list li.offline,
+#service_list li.offline a {
+    color: #bbb;
+}
+#service_list li.selected a,
+#service_list li.selected i {
+    color: #fff;
+    background: #234982;
+}
