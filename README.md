@@ -12,10 +12,10 @@
 npm install
 ```
 
-> 安装完成后，就不用再次安装了。如果修改了im.js，则需要执行以下命令
+> 监控im.js
 
 ```
-gulp babel
+npm run dev
 ```
 
-完成后，会在im.js相同路径下生成im-ie.js文件
+如果im.js有修改，会自动在目录下生成im-ie.js
