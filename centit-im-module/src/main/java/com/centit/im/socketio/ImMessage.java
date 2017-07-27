@@ -49,7 +49,9 @@ public class ImMessage implements  java.io.Serializable {
     public static final String CONTENT_TYPE_ASKFORSERVICE = "askForService";
     public static final String CONTENT_TYPE_ASKROBOT = "askRobot";
     public static final String CONTENT_TYPE_NOTICE = "notice";
+    public static final String CONTENT_TYPE_PUSH_FORM = "pushForm";
     public static final String CONTENT_TYPE_FORM = "form";
+
     /**
      -- 对应 chat group toall --
      * text
@@ -59,6 +61,7 @@ public class ImMessage implements  java.io.Serializable {
      * state 状态变更 比如离线
      -- 对应 command --
      * form 表单
+     * pushForm 推送表单
      * register 匿名用户注册
      * read 查看信息，读取状态
      * readgroup 查看组信息,设置（查看）读取时间

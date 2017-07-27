@@ -375,6 +375,18 @@ public class WebImSocketImpl implements WebImSocket {
     }
 
     @Transactional
+    private void pushForm(Session session, ImMessage message){
+        Session custSession = getSessionByUserCode(message.getReceiver());
+        if(custSession==null){
+            pushMessage(session /*message.getSender()*/,ImMessageUtils
+                    .buildSystemMessage("对方已经离线，您的表单无法推送。") );
+        }else{
+            pushMessage(custSession,message);
+            pushMessage(session /*message.getSender()*/,ImMessageUtils
+                    .buildSystemMessage("您的表单已经成功推送。") );
+        }
+    }
+
     private void saveFormData(Session session, ImMessage message){
         //customerPraise
         String fromType = message.fetchContentString("formType");
@@ -422,6 +434,9 @@ public class WebImSocketImpl implements WebImSocket {
                 break;
             case ImMessage.CONTENT_TYPE_SERVICE ://  "service";
                 changeCustomerService(session, message);
+                break;
+            case ImMessage.CONTENT_TYPE_PUSH_FORM: //推送表单
+                pushForm(session, message);
                 break;
             case ImMessage.CONTENT_TYPE_FORM ://  "form";
                 saveFormData(session, message);
