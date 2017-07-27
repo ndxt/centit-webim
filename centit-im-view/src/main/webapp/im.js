@@ -859,7 +859,7 @@ function _getContextPath() {
                 '</div>',
                 yes: function () {
                     if (!service) {
-                        layer.msg('没有选择客服！')
+                        layer.alert('没有选择客服！')
                         return;
                     }
 
@@ -868,38 +868,29 @@ function _getContextPath() {
                 }.bind(this)
             })
 
-            const loadHandler = layer.load()
-            $.ajax({
-                url: `${this.contextPath}/json/service.txt`,
-                success: function (res) {
-                    result = parseData(res)
-                    createTree('#service_list', result)
-                    let lastValue = null;
-                    $('#service_search').change(function () {
-                        let value = $(this).val()
-                        if (value !== lastValue) {
 
-                            // 清空查询条件
-                            if (!value) {
-                                createTree('#service_list', result)
-                            } else {
-                                let tempData = filterData(result, value)
-                                console.log(tempData)
-                                createTree('#service_list', tempData)
-                            }
+            $.get(`${this.contextPath}/json/service.txt`, function (res) {
+                result = parseData(res)
+                createTree('#service_list', result)
+                let lastValue = null;
+                $('#service_search').change(function() {
+                    let value = $(this).val()
+                    if (value !== lastValue) {
 
-                            service = null;
-                            $('#service_text').html('未选中任何客服')
+                        // 清空查询条件
+                        if (!value) {
+                            createTree('#service_list', result)
+                        } else {
+                            let tempData = filterData(result, value)
+                            console.log(tempData)
+                            createTree('#service_list', tempData)
                         }
-                        lastValue = value;
-                    })
-                },
-                error: function() {
-                  layer.msg('读取客服列表时发生错误')
-                },
-                complete: function() {
-                    layer.close(loadHandler)
-                }
+
+                        service = null;
+                        $('#service_text').html('未选中任何客服')
+                    }
+                    lastValue = value;
+                })
             })
 
             function filterData(data, value) {
@@ -945,8 +936,7 @@ function _getContextPath() {
             function parseData(res) {
                 // 将文本格式转换为树形结构
                 const nodes = res.split('\n')
-                    .map(line => line.replace(/\s|\t|\n/g, ''))
-                    .filter(line => !!line)
+                    .map(line => line.replace(/\s/, ''))
                     .map(line => {
                         let level = 1
                         while ((line = line.replace('#', '')).startsWith('#')) {
@@ -1040,14 +1030,49 @@ function _getContextPath() {
           }
         }.bind(this))
 
-        this.im.on('tool(over)',function(){
+        // this.im.on('tool(over)',function(){
+        //
+        // });尚未实现
+        this.im.on('tool(quickReply)',function(){
+            $.get(`${this.contextPath}/json/reply.txt`, function (res) {
+                if(!!$("div.layui-show .selectContainer").html()) {         //判断Id = selectContainer的元素是否存在
+                    $('div.layui-show .serviceList').css('display','block');
+                    return;
+                }
+                var replys = res.split('\n');
+                console.log(replys);
+                var jsonReply = {};
+                var replyArr = [];
+                for(var i = replys.length - 1 ;i+1; i--){
+                    let relyObj = {"reply":replys[i]};
+                    replyArr.push(relyObj);
+                }
+                jsonReply.replys = replyArr;
 
-        });
+
+
+                var render = Mustache.render('{{#replys}} <option class={{generateClass}}>{{reply}}</option>{{/replys}}', jsonReply);
+
+                var form = $('<div class="layui-form" style="display: inline-block;font-size: 16px;"></div>')
+                var selectContainer = $('<div  class="layui-form-item selectContainer"></div>');
+                var str = '<div class="layui-input-block" style="margin-left: 0;margin-top: 6px;">' +
+                    '</div>';
+                var selectOption = '<select class="serviceList" name="service" lay-verify="required" style="display: block;width:150px;">' +
+                    '<option value="">请选择回复</option>' +
+                    render +
+                    '</select>';
+                selectContainer.html(str);
+                form.append(selectContainer);
+
+                $('div.layui-show .layui-unselect.layim-chat-tool').append(form);
+                $('div.layui-show .selectContainer div.layui-input-block').html(selectOption);
+
+            })
+        }.bind(this));
         $("body").on('change','.serviceList',function(){
-                var service = $(this).val();
-                console.log(service);
-                var receiver = $(".layim-chat-username").attr('usercode');
-                that.sendSwitchServiceCommand(service,receiver);
+                var reply = $(this).val();
+                console.log(reply);
+                $("div.layui-show .layim-chat-textarea textarea").text(reply);
                 $(this).css('display','none');
         })
 
@@ -1147,10 +1172,15 @@ function _getContextPath() {
               alias: 'return' //工具别名
               ,title: '请求退回' //工具名称
               ,icon: '&#xe627;' //工具图标，参考图标文档
-          },{
-              alias: 'over'
-              ,title: '结束会话'
-              ,icon: '&#xe60a;'
+           }//{
+          //     alias: 'over'
+          //     ,title: '结束会话'
+          //     ,icon: '&#xe60a;'
+          // }
+              ,{
+              alias: 'quickReply'
+              ,title: '快速回复'
+              ,icon: '&#xe611;'
           }]
           ,isgroup: false
           ,copyright: true
