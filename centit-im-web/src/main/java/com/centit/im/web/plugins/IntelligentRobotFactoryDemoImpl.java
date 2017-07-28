@@ -12,13 +12,10 @@ public class IntelligentRobotFactoryDemoImpl implements IntelligentRobotFactory 
     //@Resource
     protected IntelligentRobot intelligentRobot;
 
-    public void setIntelligentRobot(IntelligentRobot intelligentRobot) {
-        this.intelligentRobot = intelligentRobot;
-    }
-
     @Override
     public IntelligentRobot getIntelligentRobot(String osId){
-
+        if(intelligentRobot==null)
+            intelligentRobot = new IntelligentRobotDemoImpl();
         return intelligentRobot;
     }
 }
