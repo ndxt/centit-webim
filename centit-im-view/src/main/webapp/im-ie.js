@@ -8,10 +8,46 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ *
+ * 图片路径
+ */
 var Default_Avatar = 'http://tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg';
 var SERVICE_AVATAR = '/src/avatar/service.jpg';
 var USER_AVATAR = '/src/avatar/user.png';
 
+var MODE_SERVICE = 'askForService';
+var MODE_QUESTION = 'askRobot';
+
+var TYPE_USER = 'C';
+var TYPE_SERVICE = 'S';
+
+var MSG_TYPE_CHAT = "C";
+var MSG_TYPE_GROUP = "G";
+var MSG_TYPE_SYSTEM = "S";
+var MSG_TYPE_COMMAND = "M";
+var MSG_TYPE_BROADCAST = "B";
+var MSG_TYPE_TOALL = "A";
+var MSG_TYPE_QUESTION = "Q";
+
+var CONTENT_TYPE_TEXT = "text";
+var CONTENT_TYPE_FILE = "file";
+var CONTENT_TYPE_IMAGE = "image";
+var CONTENT_TYPE_REGISTER = "register";
+var CONTENT_TYPE_READ = "read";
+var CONTENT_TYPE_READGROUP = "readGroup";
+var CONTENT_TYPE_SERVICE = "service";
+
+var CONTENT_TYPE_OFFLINE = "offline";
+var CONTENT_TYPE_ASKFORSERVICE = "askForService";
+var CONTENT_TYPE_ASKROBOT = "askRobot";
+var CONTENT_TYPE_NOTICE = "notice";
+var CONTENT_TYPE_FORM = "form";
+var CONTENT_TYPE_PUSH_FORM = "pushForm";
+// 默认IM配置
+var Default_IM_Config = {
+    mode: MODE_QUESTION
+};
 window.ctx = _getContextPath();
 /**
  * 工具函数：获取当前contentPath
@@ -27,39 +63,6 @@ function _getContextPath() {
 }
 ;(function (global) {
     'use strict';
-
-    var MODE_SERVICE = 'askForService';
-    var MODE_QUESTION = 'askRobot';
-
-    var TYPE_USER = 'C';
-    var TYPE_SERVICE = 'S';
-
-    var MSG_TYPE_CHAT = "C";
-    var MSG_TYPE_GROUP = "G";
-    var MSG_TYPE_SYSTEM = "S";
-    var MSG_TYPE_COMMAND = "M";
-    var MSG_TYPE_BROADCAST = "B";
-    var MSG_TYPE_TOALL = "A";
-    var MSG_TYPE_QUESTION = "Q";
-
-    var CONTENT_TYPE_TEXT = "text";
-    var CONTENT_TYPE_FILE = "file";
-    var CONTENT_TYPE_IMAGE = "image";
-    var CONTENT_TYPE_REGISTER = "register";
-    var CONTENT_TYPE_READ = "read";
-    var CONTENT_TYPE_READGROUP = "readGroup";
-    var CONTENT_TYPE_SERVICE = "service";
-
-    var CONTENT_TYPE_OFFLINE = "offline";
-    var CONTENT_TYPE_ASKFORSERVICE = "askForService";
-    var CONTENT_TYPE_ASKROBOT = "askRobot";
-    var CONTENT_TYPE_NOTICE = "notice";
-    var CONTENT_TYPE_FORM = "form";
-
-    // 默认IM配置
-    var Default_IM_Config = {
-        mode: MODE_QUESTION
-    };
 
     var IM = function () {
         function IM(im, mine, config) {
@@ -381,6 +384,7 @@ function _getContextPath() {
 
                 this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
             }
+
             /**
              * 发送申请机器人
              */
@@ -794,7 +798,7 @@ function _getContextPath() {
             value: function showSystemMessage(params) {
                 params.system = true;
                 if (params.data.type == 'A') {
-
+                    params.data.type = params.data.type || "";
                     this.dealSwitchServiceMessage(params);
                     return;
                 }
@@ -897,6 +901,21 @@ function _getContextPath() {
                     renderHistoryMessage(userCode, im, receiver, ctx);
                 });
             }
+
+            /**
+             * 发送请求评价指令
+             */
+
+        }, {
+            key: 'sendAsk4Evaluate',
+            value: function sendAsk4Evaluate(service, receiver) {
+                var contentType = CONTENT_TYPE_PUSH_FORM;
+                var content = {};
+                content.service = service;
+                // 添加指定客服
+
+                this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
+            }
         }, {
             key: 'renderDistributableServicesList',
             value: function renderDistributableServicesList() {
@@ -926,6 +945,50 @@ function _getContextPath() {
                 $('div.layui-show .selectContainer div.layui-input-block').html(selectOption);
             }
         }, {
+            key: 'initIM',
+            value: function initIM() {
+                var ctx = this.contextPath;
+                this.mine.avatar = ctx + SERVICE_AVATAR;
+                var config = {
+                    init: {
+                        mine: this.mine,
+                        friend: [this.users, this.services]
+                    },
+                    uploadImage: {
+                        url: ctx + '/service/file/upload' //（返回的数据格式见下文）
+                        //默认post
+                    },
+                    uploadFile: {
+                        url: ctx + '/service/file/upload' //（返回的数据格式见下文）
+                        //默认post
+                    },
+                    tool: [{
+                        alias: 'return' //工具别名
+                        , title: '请求退回' //工具名称
+                        , icon: '&#xe627;' //工具图标，参考图标文档
+                    }, {
+                        alias: 'over',
+                        title: '结束会话',
+                        icon: '&#xe60a;'
+                    }, {
+                        alias: 'quickReply',
+                        title: '快速回复',
+                        icon: '&#xe611;'
+                    }],
+                    isgroup: false,
+                    copyright: true
+                };
+
+                if (!!this.mine.switchServiceBtn) {
+                    config.tool.push({
+                        alias: 'transfer' //工具别名
+                        , title: '切换客服' //工具名称
+                        , icon: '&#xe65c;' //工具图标，参考图标文档
+                    });
+                }
+                this.im.config(config);
+            }
+        }, {
             key: 'afterInit',
             value: function afterInit() {
                 var _this4 = this;
@@ -943,6 +1006,9 @@ function _getContextPath() {
                 $('#layui-layer1').css('top', '0px'); //在右上角显示窗体
                 this.queryUnread();
                 var that = this;
+                this.im.on('tool(over)', function () {
+                    this.sendAsk4Evaluate(this.mine.userCode, $(".layim-chat-username").attr('userCode'));
+                }.bind(this));
                 this.im.on('tool(transfer)', function () {
 
                     var layer = this.layer;
@@ -958,7 +1024,7 @@ function _getContextPath() {
                         content: '<div id="service_container">' + '<div style="width: 200px; height: 340px; border-right: 1px solid #ccc; float: left; padding-right: 20px;">' + '<input type="text" name="title" id="service_search"  placeholder="输入类型、客服名称搜索" autocomplete="off" class="layui-input"><h5 id="service_text" style="padding: 15px 5px; color: #aaa;">未选中任何客服</h5>' + '</div>' + '<div style="margin-left: 230px; overflow: auto; height: 340px;">' + '<ul id="service_list"></ul>' + '</div>' + '</div>',
                         yes: function () {
                             if (!service) {
-                                layer.msg('没有选择客服！');
+                                layer.alert('没有选择客服！');
                                 return;
                             }
 
@@ -967,38 +1033,28 @@ function _getContextPath() {
                         }.bind(this)
                     });
 
-                    var loadHandler = layer.load();
-                    $.ajax({
-                        url: this.contextPath + '/json/service.txt',
-                        success: function success(res) {
-                            result = parseData(res);
-                            createTree('#service_list', result);
-                            var lastValue = null;
-                            $('#service_search').change(function () {
-                                var value = $(this).val();
-                                if (value !== lastValue) {
+                    $.get(this.contextPath + '/json/service.txt', function (res) {
+                        result = parseData(res);
+                        createTree('#service_list', result);
+                        var lastValue = null;
+                        $('#service_search').change(function () {
+                            var value = $(this).val();
+                            if (value !== lastValue) {
 
-                                    // 清空查询条件
-                                    if (!value) {
-                                        createTree('#service_list', result);
-                                    } else {
-                                        var tempData = filterData(result, value);
-                                        console.log(tempData);
-                                        createTree('#service_list', tempData);
-                                    }
-
-                                    service = null;
-                                    $('#service_text').html('未选中任何客服');
+                                // 清空查询条件
+                                if (!value) {
+                                    createTree('#service_list', result);
+                                } else {
+                                    var tempData = filterData(result, value);
+                                    console.log(tempData);
+                                    createTree('#service_list', tempData);
                                 }
-                                lastValue = value;
-                            });
-                        },
-                        error: function error() {
-                            layer.msg('读取客服列表时发生错误');
-                        },
-                        complete: function complete() {
-                            layer.close(loadHandler);
-                        }
+
+                                service = null;
+                                $('#service_text').html('未选中任何客服');
+                            }
+                            lastValue = value;
+                        });
                     });
 
                     function filterData(data, value) {
@@ -1042,9 +1098,7 @@ function _getContextPath() {
                     function parseData(res) {
                         // 将文本格式转换为树形结构
                         var nodes = res.split('\n').map(function (line) {
-                            return line.replace(/\s|\t|\n/g, '');
-                        }).filter(function (line) {
-                            return !!line;
+                            return line.replace(/\s/, '');
                         }).map(function (line) {
                             var level = 1;
                             while ((line = line.replace('#', '')).startsWith('#')) {
@@ -1137,12 +1191,43 @@ function _getContextPath() {
                     }
                 }.bind(this));
 
-                this.im.on('tool(over)', function () {});
+                // this.im.on('tool(over)',function(){
+                //
+                // });尚未实现
+                this.im.on('tool(quickReply)', function () {
+                    $.get(this.contextPath + '/json/reply.txt', function (res) {
+                        if (!!$("div.layui-show .selectContainer").html()) {
+                            //判断Id = selectContainer的元素是否存在
+                            $('div.layui-show .serviceList').css('display', 'block');
+                            return;
+                        }
+                        var replys = res.split('\n');
+                        console.log(replys);
+                        var jsonReply = {};
+                        var replyArr = [];
+                        for (var i = replys.length - 1; i + 1; i--) {
+                            var relyObj = { "reply": replys[i] };
+                            replyArr.push(relyObj);
+                        }
+                        jsonReply.replys = replyArr;
+
+                        var render = Mustache.render('{{#replys}} <option class={{generateClass}}>{{reply}}</option>{{/replys}}', jsonReply);
+
+                        var form = $('<div class="layui-form" style="display: inline-block;font-size: 16px;"></div>');
+                        var selectContainer = $('<div  class="layui-form-item selectContainer"></div>');
+                        var str = '<div class="layui-input-block" style="margin-left: 0;margin-top: 6px;">' + '</div>';
+                        var selectOption = '<select class="serviceList" name="service" lay-verify="required" style="display: block;width:150px;">' + '<option value="">请选择回复</option>' + render + '</select>';
+                        selectContainer.html(str);
+                        form.append(selectContainer);
+
+                        $('div.layui-show .layui-unselect.layim-chat-tool').append(form);
+                        $('div.layui-show .selectContainer div.layui-input-block').html(selectOption);
+                    });
+                }.bind(this));
                 $("body").on('change', '.serviceList', function () {
-                    var service = $(this).val();
-                    console.log(service);
-                    var receiver = $(".layim-chat-username").attr('usercode');
-                    that.sendSwitchServiceCommand(service, receiver);
+                    var reply = $(this).val();
+                    console.log(reply);
+                    $("div.layui-show .layim-chat-textarea textarea").val(reply);
                     $(this).css('display', 'none');
                 });
 
@@ -1215,46 +1300,6 @@ function _getContextPath() {
                 for (var i = 0, length = arr.length; i < length; i++) {
                     _loop(i, length);
                 }
-            }
-        }, {
-            key: 'initIM',
-            value: function initIM() {
-                var ctx = this.contextPath;
-                this.mine.avatar = ctx + SERVICE_AVATAR;
-                var config = {
-                    init: {
-                        mine: this.mine,
-                        friend: [this.users, this.services]
-                    },
-                    uploadImage: {
-                        url: ctx + '/service/file/upload' //（返回的数据格式见下文）
-                        //默认post
-                    },
-                    uploadFile: {
-                        url: ctx + '/service/file/upload' //（返回的数据格式见下文）
-                        //默认post
-                    },
-                    tool: [{
-                        alias: 'return' //工具别名
-                        , title: '请求退回' //工具名称
-                        , icon: '&#xe627;' //工具图标，参考图标文档
-                    }, {
-                        alias: 'over',
-                        title: '结束会话',
-                        icon: '&#xe60a;'
-                    }],
-                    isgroup: false,
-                    copyright: true
-                };
-
-                if (!!this.mine.switchServiceBtn) {
-                    config.tool.push({
-                        alias: 'transfer' //工具别名
-                        , title: '切换客服' //工具名称
-                        , icon: '&#xe65c;' //工具图标，参考图标文档
-                    });
-                }
-                this.im.config(config);
             }
         }]);
 

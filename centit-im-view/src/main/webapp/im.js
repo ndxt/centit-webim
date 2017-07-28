@@ -1,7 +1,44 @@
+/**
+ *
+ * 图片路径
+ */
 const Default_Avatar = 'http://tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg'
 const SERVICE_AVATAR = '/src/avatar/service.jpg';
 const USER_AVATAR = '/src/avatar/user.png';
 
+
+const MODE_SERVICE = 'askForService'
+const MODE_QUESTION = 'askRobot'
+
+const TYPE_USER = 'C'
+const TYPE_SERVICE = 'S'
+
+const MSG_TYPE_CHAT = "C";
+const MSG_TYPE_GROUP = "G";
+const MSG_TYPE_SYSTEM = "S";
+const MSG_TYPE_COMMAND = "M";
+const MSG_TYPE_BROADCAST = "B";
+const MSG_TYPE_TOALL = "A";
+const MSG_TYPE_QUESTION = "Q";
+
+const CONTENT_TYPE_TEXT = "text";
+const CONTENT_TYPE_FILE = "file";
+const CONTENT_TYPE_IMAGE = "image";
+const CONTENT_TYPE_REGISTER = "register";
+const CONTENT_TYPE_READ = "read";
+const CONTENT_TYPE_READGROUP = "readGroup";
+const CONTENT_TYPE_SERVICE = "service";
+
+const CONTENT_TYPE_OFFLINE = "offline";
+const CONTENT_TYPE_ASKFORSERVICE = "askForService";
+const CONTENT_TYPE_ASKROBOT = "askRobot";
+const CONTENT_TYPE_NOTICE = "notice";
+const CONTENT_TYPE_FORM = "form";
+const CONTENT_TYPE_PUSH_FORM = "pushForm";
+// 默认IM配置
+const Default_IM_Config = {
+    mode: MODE_QUESTION
+}
 window.ctx = _getContextPath();
 /**
  * 工具函数：获取当前contentPath
@@ -18,38 +55,7 @@ function _getContextPath() {
 ;(function(global) {
   'use strict'
 
-  const MODE_SERVICE = 'askForService'
-  const MODE_QUESTION = 'askRobot'
 
-  const TYPE_USER = 'C'
-  const TYPE_SERVICE = 'S'
-
-  const MSG_TYPE_CHAT = "C";
-  const MSG_TYPE_GROUP = "G";
-  const MSG_TYPE_SYSTEM = "S";
-  const MSG_TYPE_COMMAND = "M";
-  const MSG_TYPE_BROADCAST = "B";
-  const MSG_TYPE_TOALL = "A";
-  const MSG_TYPE_QUESTION = "Q";
-
-  const CONTENT_TYPE_TEXT = "text";
-  const CONTENT_TYPE_FILE = "file";
-  const CONTENT_TYPE_IMAGE = "image";
-  const CONTENT_TYPE_REGISTER = "register";
-  const CONTENT_TYPE_READ = "read";
-  const CONTENT_TYPE_READGROUP = "readGroup";
-  const CONTENT_TYPE_SERVICE = "service";
-
-  const CONTENT_TYPE_OFFLINE = "offline";
-  const CONTENT_TYPE_ASKFORSERVICE = "askForService";
-  const CONTENT_TYPE_ASKROBOT = "askRobot";
-  const CONTENT_TYPE_NOTICE = "notice";
-  const CONTENT_TYPE_FORM = "form";
-
-  // 默认IM配置
-  const Default_IM_Config = {
-    mode: MODE_QUESTION
-  }
 
   class IM {
     constructor(im, mine, config) {
@@ -322,6 +328,9 @@ function _getContextPath() {
 
           this.sendCommandMessage({ contentType, content,receiver })
       }
+
+
+
     /**
      * 发送申请机器人
      */
@@ -471,6 +480,8 @@ function _getContextPath() {
           case MSG_TYPE_QUESTION:
             this.createProblemList(data.content,data);
             break;
+          case CONTENT_TYPE_PUSH_FORM:
+
         case MSG_TYPE_BROADCAST:
           break
         default:
@@ -512,35 +523,11 @@ function _getContextPath() {
 
 ;(function(global, IM) {
   'use strict'
-    const MODE_SERVICE = 'askForService'
-    const MODE_QUESTION = 'askRobot'
-    const TYPE_USER = 'C'
-    const TYPE_SERVICE = 'S'
 
-    const MSG_TYPE_CHAT = "C";
-    const MSG_TYPE_GROUP = "G";
-    const MSG_TYPE_SYSTEM = "S";
-    const MSG_TYPE_COMMAND = "M";
-    const MSG_TYPE_BROADCAST = "B";
-    const MSG_TYPE_TOALL = "A";
-    const MSG_TYPE_QUESTION = "Q";
-
-    const CONTENT_TYPE_TEXT = "text";
-    const CONTENT_TYPE_FILE = "file";
-    const CONTENT_TYPE_IMAGE = "image";
-    const CONTENT_TYPE_REGISTER = "register";
-    const CONTENT_TYPE_READ = "read";
-    const CONTENT_TYPE_READGROUP = "readGroup";
-    const CONTENT_TYPE_SERVICE = "service";
-
-    const CONTENT_TYPE_OFFLINE = "offline";
-    const CONTENT_TYPE_ASKFORSERVICE = "askForService";
-    const CONTENT_TYPE_ASKROBOT = "askRobot";
-    const CONTENT_TYPE_NOTICE = "notice";
-    const CONTENT_TYPE_FORM = "form";
 
 
   class UserIM extends IM {
+
 
 
       initIM() {
@@ -588,6 +575,8 @@ function _getContextPath() {
         this.im.chat(this.window);
 
     }
+
+
 
     /**
      * 显示收到的聊天信息
@@ -685,7 +674,7 @@ function _getContextPath() {
       showSystemMessage(params) {
           params.system = true
           if(params.data.type == 'A'){
-
+              params.data.type = params.data.type || ""
               this.dealSwitchServiceMessage(params);
               return;
           }
@@ -791,6 +780,19 @@ function _getContextPath() {
         });
     }
 
+      /**
+       * 发送请求评价指令
+       */
+      sendAsk4Evaluate(service,receiver){
+          let contentType = CONTENT_TYPE_PUSH_FORM;
+          let content = {};
+          content.service = service;
+          // 添加指定客服
+
+          this.sendCommandMessage({ contentType, content,receiver })
+
+      }
+
     renderDistributableServicesList(){
       let services = this.services.list;
       let servicesJson = {};
@@ -823,6 +825,54 @@ function _getContextPath() {
 
     }
 
+      initIM() {
+          let ctx = this.contextPath;
+          this.mine.avatar = ctx + SERVICE_AVATAR
+          let config = {
+              init: {
+                  mine: this.mine,
+                  friend: [
+                      this.users,
+                      this.services
+                  ]
+              }
+              ,uploadImage: {
+                  url: `${ctx}/service/file/upload` //（返回的数据格式见下文）
+                  //默认post
+              }
+              ,uploadFile: {
+                  url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
+                  //默认post
+              }
+              ,tool:[{
+                  alias: 'return' //工具别名
+                  ,title: '请求退回' //工具名称
+                  ,icon: '&#xe627;' //工具图标，参考图标文档
+              },
+                  {
+                      alias: 'over'
+                      ,title: '结束会话'
+                      ,icon: '&#xe60a;'
+                  }
+                  ,{
+                      alias: 'quickReply'
+                      ,title: '快速回复'
+                      ,icon: '&#xe611;'
+                  }]
+              ,isgroup: false
+              ,copyright: true
+          };
+
+          if(!!this.mine.switchServiceBtn){
+              config.tool.push({
+                  alias: 'transfer' //工具别名
+                  ,title: '切换客服' //工具名称
+                  ,icon: '&#xe65c;' //工具图标，参考图标文档
+              });
+          }
+          this.im.config(config)
+      }
+
     afterInit() {
       let users = this.users.list,
         services = this.services.list;
@@ -837,6 +887,9 @@ function _getContextPath() {
       $('#layui-layer1').css('top','0px');//在右上角显示窗体
         this.queryUnread();
         let that = this;
+        this.im.on('tool(over)',function(){
+            this.sendAsk4Evaluate(this.mine.userCode,$(".layim-chat-username").attr('userCode'));
+        }.bind(this));
         this.im.on('tool(transfer)', function(){
 
             const layer = this.layer;
@@ -1072,7 +1125,7 @@ function _getContextPath() {
         $("body").on('change','.serviceList',function(){
                 var reply = $(this).val();
                 console.log(reply);
-                $("div.layui-show .layim-chat-textarea textarea").text(reply);
+                $("div.layui-show .layim-chat-textarea textarea").val(reply);
                 $(this).css('display','none');
         })
 
@@ -1149,52 +1202,7 @@ function _getContextPath() {
     }
 
 
-    initIM() {
-      let ctx = this.contextPath;
-      this.mine.avatar = ctx + SERVICE_AVATAR
-      let config = {
-          init: {
-              mine: this.mine,
-              friend: [
-                  this.users,
-                  this.services
-              ]
-          }
-          ,uploadImage: {
-              url: `${ctx}/service/file/upload` //（返回的数据格式见下文）
-              //默认post
-          }
-          ,uploadFile: {
-              url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
-              //默认post
-          }
-          ,tool:[{
-              alias: 'return' //工具别名
-              ,title: '请求退回' //工具名称
-              ,icon: '&#xe627;' //工具图标，参考图标文档
-           }//{
-          //     alias: 'over'
-          //     ,title: '结束会话'
-          //     ,icon: '&#xe60a;'
-          // }
-              ,{
-              alias: 'quickReply'
-              ,title: '快速回复'
-              ,icon: '&#xe611;'
-          }]
-          ,isgroup: false
-          ,copyright: true
-      };
 
-      if(!!this.mine.switchServiceBtn){
-          config.tool.push({
-              alias: 'transfer' //工具别名
-              ,title: '切换客服' //工具名称
-              ,icon: '&#xe65c;' //工具图标，参考图标文档
-          });
-      }
-      this.im.config(config)
-    }
   }
 
   function _parsedata(list) {
