@@ -673,8 +673,8 @@ function _getContextPath() {
 
       showSystemMessage(params) {
           params.system = true
+          params.data.type = params.data.type || ""
           if(params.data.type == 'A'){
-              params.data.type = params.data.type || ""
               this.dealSwitchServiceMessage(params);
               return;
           }
@@ -848,12 +848,12 @@ function _getContextPath() {
                   alias: 'return' //工具别名
                   ,title: '请求退回' //工具名称
                   ,icon: '&#xe627;' //工具图标，参考图标文档
-              },
-                  {
-                      alias: 'over'
-                      ,title: '结束会话'
-                      ,icon: '&#xe60a;'
-                  }
+              }
+                  // ,{
+                  //     alias: 'over'
+                  //     ,title: '结束会话'
+                  //     ,icon: '&#xe60a;'
+                  // }
                   ,{
                       alias: 'quickReply'
                       ,title: '快速回复'
