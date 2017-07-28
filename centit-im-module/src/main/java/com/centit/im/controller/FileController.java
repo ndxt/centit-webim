@@ -261,6 +261,7 @@ public class FileController extends BaseController {
             if(uploadSize==0){
                 fs.saveFile(tempFilePath, token, size);
                 completedStoreFile(fs, token, size, fileInfo.getLeft(), response);
+                FileSystemOpt.deleteFile(tempFilePath);
                 return;
             }else if( uploadSize>0){
 
