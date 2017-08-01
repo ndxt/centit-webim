@@ -560,6 +560,8 @@ function _getContextPath() {
                     case MSG_TYPE_QUESTION:
                         this.createProblemList(data.content, data);
                         break;
+                    case CONTENT_TYPE_PUSH_FORM:
+
                     case MSG_TYPE_BROADCAST:
                         break;
                     default:
@@ -604,33 +606,6 @@ function _getContextPath() {
     }
 })(window);(function (global, IM) {
     'use strict';
-
-    var MODE_SERVICE = 'askForService';
-    var MODE_QUESTION = 'askRobot';
-    var TYPE_USER = 'C';
-    var TYPE_SERVICE = 'S';
-
-    var MSG_TYPE_CHAT = "C";
-    var MSG_TYPE_GROUP = "G";
-    var MSG_TYPE_SYSTEM = "S";
-    var MSG_TYPE_COMMAND = "M";
-    var MSG_TYPE_BROADCAST = "B";
-    var MSG_TYPE_TOALL = "A";
-    var MSG_TYPE_QUESTION = "Q";
-
-    var CONTENT_TYPE_TEXT = "text";
-    var CONTENT_TYPE_FILE = "file";
-    var CONTENT_TYPE_IMAGE = "image";
-    var CONTENT_TYPE_REGISTER = "register";
-    var CONTENT_TYPE_READ = "read";
-    var CONTENT_TYPE_READGROUP = "readGroup";
-    var CONTENT_TYPE_SERVICE = "service";
-
-    var CONTENT_TYPE_OFFLINE = "offline";
-    var CONTENT_TYPE_ASKFORSERVICE = "askForService";
-    var CONTENT_TYPE_ASKROBOT = "askRobot";
-    var CONTENT_TYPE_NOTICE = "notice";
-    var CONTENT_TYPE_FORM = "form";
 
     var UserIM = function (_IM) {
         _inherits(UserIM, _IM);
@@ -797,8 +772,8 @@ function _getContextPath() {
             key: 'showSystemMessage',
             value: function showSystemMessage(params) {
                 params.system = true;
+                params.data.type = params.data.type || "";
                 if (params.data.type == 'A') {
-                    params.data.type = params.data.type || "";
                     this.dealSwitchServiceMessage(params);
                     return;
                 }
@@ -966,10 +941,12 @@ function _getContextPath() {
                         alias: 'return' //工具别名
                         , title: '请求退回' //工具名称
                         , icon: '&#xe627;' //工具图标，参考图标文档
-                    }, {
-                        alias: 'over',
-                        title: '结束会话',
-                        icon: '&#xe60a;'
+
+                        // ,{
+                        //     alias: 'over'
+                        //     ,title: '结束会话'
+                        //     ,icon: '&#xe60a;'
+                        // }
                     }, {
                         alias: 'quickReply',
                         title: '快速回复',
