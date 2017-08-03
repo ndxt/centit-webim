@@ -139,7 +139,11 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
             ,id: cache.mine ? cache.mine.id : null
             ,mine: true
         };
-        var thatChat = thisChat(), ul = thatChat.elem.find('.layim-chat-main ul');
+        var thatChat = thisChat() || '';
+        if(thatChat == ''){
+          return;
+        }
+        ul = thatChat.elem.find('.layim-chat-main ul');
         var maxLength = cache.base.maxLength || 3000;
 
         $.extend(data,content);
