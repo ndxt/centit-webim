@@ -8,6 +8,7 @@ import com.centit.framework.ip.service.IntegrationEnvironment;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
+import com.centit.framework.staticsystem.config.SpringSecurityDaoConfig;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryImpl;
 import com.centit.im.web.listener.InstantiationServiceBeanPostProcessor;
@@ -19,7 +20,9 @@ import org.springframework.core.env.Environment;
 @Configuration
 @ComponentScan(basePackages = "com.centit",
         excludeFilters = @ComponentScan.Filter(value = org.springframework.stereotype.Controller.class))
-@Import({IPAppSystemBeanConfig.class, DataSourceConfig.class})
+@Import({IPAppSystemBeanConfig.class,
+        DataSourceConfig.class,
+        SpringSecurityDaoConfig.class})
 public class ServiceBeanConfig {
 
     @Autowired
