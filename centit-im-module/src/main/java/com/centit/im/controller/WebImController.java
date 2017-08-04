@@ -2,14 +2,14 @@ package com.centit.im.controller;
 
 
 import com.centit.framework.core.common.JsonResultUtils;
-import com.centit.framework.core.common.ResponseData;
+import com.centit.framework.core.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.dao.PageDesc;
-import com.centit.im.socketio.ImMessage;
 import com.centit.im.po.WebImMessage;
 import com.centit.im.service.WebImMessageManager;
-import com.centit.im.socketio.ImMessageUtils;
 import com.centit.im.service.WebImSocket;
+import com.centit.im.socketio.ImMessage;
+import com.centit.im.socketio.ImMessageUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +51,7 @@ public class WebImController extends BaseController {
             HttpServletResponse response) {
         List<WebImMessage> listObjects = webImMessageManager
                 .listChatMessage(sender, receiver, lastReadDate, pageDesc);
-        ResponseData resData = new ResponseData();
+        ResponseMapData resData = new ResponseMapData();
         resData.addResponseData(OBJLIST, listObjects);
         resData.addResponseData(PAGE_DESC, pageDesc);
         JsonResultUtils.writeResponseDataAsJson(resData, response);
@@ -72,7 +71,7 @@ public class WebImController extends BaseController {
             HttpServletResponse response) {
         List<WebImMessage> jsonArry = webImMessageManager
                 .listAllChatMessage(receiver, lastReadDate, pageDesc);
-        ResponseData resData = new ResponseData();
+        ResponseMapData resData = new ResponseMapData();
         resData.addResponseData(OBJLIST, jsonArry);
         resData.addResponseData(PAGE_DESC, pageDesc);
         JsonResultUtils.writeResponseDataAsJson(resData, response);
@@ -94,7 +93,7 @@ public class WebImController extends BaseController {
 
         List<WebImMessage> listObjects = webImMessageManager
                 .listGroupChatMessage(userCode, unitCode, lastReadDate, pageDesc);
-        ResponseData resData = new ResponseData();
+        ResponseMapData resData = new ResponseMapData();
         resData.addResponseData(OBJLIST, listObjects);
         resData.addResponseData(PAGE_DESC, pageDesc);
         JsonResultUtils.writeResponseDataAsJson(resData, response);

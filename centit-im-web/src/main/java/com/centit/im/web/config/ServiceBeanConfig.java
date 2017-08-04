@@ -8,27 +8,22 @@ import com.centit.framework.ip.service.IntegrationEnvironment;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
-import com.centit.im.web.listener.InstantiationServiceBeanPostProcessor;
-import com.centit.im.web.plugins.JsfgwSmsMessageSender;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryImpl;
+import com.centit.im.web.listener.InstantiationServiceBeanPostProcessor;
+import com.centit.im.web.plugins.JsfgwSmsMessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
 @Configuration
-@PropertySource("classpath:system.properties")
-@ComponentScan(basePackages = {"com.centit.*"})
+@ComponentScan(basePackages = "com.centit",
+        excludeFilters = @ComponentScan.Filter(value = org.springframework.stereotype.Controller.class))
 @Import({IPAppSystemBeanConfig.class, DataSourceConfig.class})
-public class ServiceBeanConfig implements EnvironmentAware {
+public class ServiceBeanConfig {
 
+    @Autowired
     private Environment env;
-
-    @Override
-    public void setEnvironment(final Environment environment) {
-        this.env = environment;
-    }
 
     @Bean
     public IntelligentRobotFactory intelligentRobotFactory(
