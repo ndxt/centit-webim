@@ -334,14 +334,15 @@ public class WebImSocketImpl implements WebImSocket {
         if(cust!=null){
             cust.setCustomerService(service.getUserCode());
             customerDao.updateObject(cust);
+
+            WebImCustomer beforeChangeService = getUserBySession(session);
+
+            pushMessage(session /*message.getSender()*/,ImMessageUtils
+                    .buildSystemMessageChangService(receiver,"切换客服成功，请离开本窗口。",cust,beforeChangeService,"B") );//切换前客服标识Before
+
+            pushMessage(service.getUserCode() ,ImMessageUtils
+                    .buildSystemMessageChangService(receiver,"请为"+cust.getUserName()+"客户服务。",cust,beforeChangeService,"A") );//切换后客服标识After
         }
-        WebImCustomer beforeChangeService = getUserBySession(session);
-
-        pushMessage(session /*message.getSender()*/,ImMessageUtils
-                .buildSystemMessageChangService(receiver,"切换客服成功，请离开本窗口。",cust,beforeChangeService,"B") );//切换前客服标识Before
-
-        pushMessage(service.getUserCode() ,ImMessageUtils
-                .buildSystemMessageChangService(receiver,"请为"+cust.getUserName()+"客户服务。",cust,beforeChangeService,"A") );//切换后客服标识After
     }
 
     @Transactional
