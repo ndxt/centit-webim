@@ -124,7 +124,7 @@ public class WebImSocketImpl implements WebImSocket {
      * @param session
      */
     private void signOutUser(String userCode, Session session) {
-        if (userCode != null && userCode != "") {
+        if (!StringUtils.isBlank(userCode)) {
             onlineCount.decrementAndGet();    //在线数减1
             //System.out.println("用户" + userCode + "退出wsll！当前在线人数为" + onlineCount);
             userCodeToSession.remove(userCode);
