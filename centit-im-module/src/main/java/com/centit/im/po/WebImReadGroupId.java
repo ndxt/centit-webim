@@ -72,11 +72,11 @@ public class WebImReadGroupId implements java.io.Serializable {
 			return false;
 		
 		WebImReadGroupId castOther = (WebImReadGroupId) other;
-		boolean ret = true;
+		boolean ret ;
   
-		ret =  ret && ( this.getUserCode() == castOther.getUserCode() ||
+		ret = this.getUserCode() == castOther.getUserCode() ||
 					   (this.getUserCode() != null && castOther.getUserCode() != null
-							   && this.getUserCode().equals(castOther.getUserCode())));
+							   && this.getUserCode().equals(castOther.getUserCode()));
   
 		ret = ret && ( this.getUnitCode() == castOther.getUnitCode() ||
 					   (this.getUnitCode() != null && castOther.getUnitCode() != null

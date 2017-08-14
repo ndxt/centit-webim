@@ -69,11 +69,11 @@ public class FriendMemoId implements java.io.Serializable {
 			return false;
 		
 		FriendMemoId castOther = (FriendMemoId) other;
-		boolean ret = true;
+		boolean ret;
   
-		ret = ret && ( this.getUserCode() == castOther.getUserCode() ||
+		ret = this.getUserCode() == castOther.getUserCode() ||
 					   (this.getUserCode() != null && castOther.getUserCode() != null
-							   && this.getUserCode().equals(castOther.getUserCode())));
+							   && this.getUserCode().equals(castOther.getUserCode()));
   
 		ret = ret && ( this.getFriendCode() == castOther.getFriendCode() ||
 					   (this.getFriendCode() != null && castOther.getFriendCode() != null
