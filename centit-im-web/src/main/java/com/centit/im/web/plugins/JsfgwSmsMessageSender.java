@@ -3,6 +3,8 @@ package com.centit.im.web.plugins;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.support.network.HttpExecutor;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,6 +14,8 @@ import java.util.Map;
  * Created by codefan on 17-7-24.
  */
 public class JsfgwSmsMessageSender implements MessageSender{
+
+    private static Logger log = LoggerFactory.getLogger(JsfgwSmsMessageSender.class);
 
     private String smsSendUrl;
 
@@ -25,6 +29,7 @@ public class JsfgwSmsMessageSender implements MessageSender{
             jsonStr = HttpExecutor.formPost(httpClient,
                     this.smsSendUrl,fromData);
         } catch (IOException e) {
+            log.error(e.getMessage());
             e.printStackTrace();
         }
         return jsonStr;

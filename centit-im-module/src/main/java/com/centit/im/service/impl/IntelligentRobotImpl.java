@@ -6,6 +6,8 @@ import com.centit.im.po.RobotAnswer;
 import com.centit.im.service.IntelligentRobot;
 import com.centit.support.network.HttpExecutor;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URLEncoder;
 
@@ -15,6 +17,8 @@ import java.net.URLEncoder;
  */
 
 public class IntelligentRobotImpl implements IntelligentRobot {
+
+    private static Logger log = LoggerFactory.getLogger(IntelligentRobotImpl.class);
 
     private AppSession appSession;
 
@@ -45,6 +49,7 @@ public class IntelligentRobotImpl implements IntelligentRobot {
             releaseHttpClient(httpClient);
             return result;
         }catch (Exception e){
+            log.error(e.getMessage());
             releaseHttpClient(httpClient);
             return RobotAnswer.createTestAnswer();
         }
@@ -62,6 +67,7 @@ public class IntelligentRobotImpl implements IntelligentRobot {
             releaseHttpClient(httpClient);
             return result;
         }catch (Exception e){
+            log.error(e.getMessage());
             releaseHttpClient(httpClient);
             return RobotAnswer.createTestAnswer();
         }
@@ -80,6 +86,7 @@ public class IntelligentRobotImpl implements IntelligentRobot {
             releaseHttpClient(httpClient);
             return result;
         }catch (Exception e){
+            log.error(e.getMessage());
             releaseHttpClient(httpClient);
             return RobotAnswer.createTestAnswer();
         }

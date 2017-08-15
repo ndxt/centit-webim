@@ -4,11 +4,15 @@ import com.centit.framework.model.adapter.MessageSender;
 import com.centit.im.po.ImMessage;
 import com.centit.support.algorithm.DatetimeOpt;
 import com.centit.support.json.JSONOpt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by codefan on 17-4-11.
  */
 public class MessageSenderIMImpl implements MessageSender {
+
+    private static Logger log = LoggerFactory.getLogger(MessageSenderIMImpl.class);
 
     private IMClient imClient;
 
@@ -57,7 +61,7 @@ public class MessageSenderIMImpl implements MessageSender {
             imClient.sendMessage(message);
             return "OK";
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage());
             return e.getMessage();
         }
     }
