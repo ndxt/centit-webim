@@ -67,6 +67,7 @@ public class WebImSocketListener {
      */
     @OnError
     public void onError(Throwable error) {
+        logger.info("onError" + error);
         error.printStackTrace();
     }
 }
