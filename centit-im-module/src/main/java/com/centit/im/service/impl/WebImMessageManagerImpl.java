@@ -1,16 +1,11 @@
 package com.centit.im.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.dao.PageDesc;
 import com.centit.framework.hibernate.service.BaseEntityManagerImpl;
 import com.centit.im.dao.WebImMessageDao;
 import com.centit.im.dao.WebImReadGroupDao;
 import com.centit.im.po.WebImMessage;
-import com.centit.im.po.WebImReadGroup;
-import com.centit.im.po.WebImReadGroupId;
 import com.centit.im.service.WebImMessageManager;
-import com.centit.im.socketio.ImMessage;
-import com.centit.support.algorithm.DatetimeOpt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -7,13 +7,11 @@ import com.centit.framework.model.basedata.IUserUnit;
 import com.centit.im.dao.FriendMemoDao;
 import com.centit.im.dao.WebImCustomerDao;
 import com.centit.im.po.FriendMemo;
-import com.centit.im.socketio.ImMessage;
 import com.centit.im.po.WebImCustomer;
 import com.centit.im.service.WebImSocket;
 import com.centit.im.service.WebImUserManager;
+import com.centit.im.socketio.ImMessage;
 import com.centit.support.algorithm.DatetimeOpt;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

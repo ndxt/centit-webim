@@ -1,15 +1,13 @@
 package com.centit.im.client;
 
 import com.centit.framework.appclient.AppSession;
-import com.centit.framework.core.common.ObjectException;
-import com.centit.framework.core.common.ResponseJSON;
+import com.centit.framework.common.ObjectException;
+import com.centit.framework.common.ResponseJSON;
 import com.centit.im.po.FriendMemo;
 import com.centit.im.po.ImMessage;
 import com.centit.im.po.WebImCustomer;
 import com.centit.support.network.HttpExecutor;
 import org.apache.http.impl.client.CloseableHttpClient;
-
-import java.io.IOException;
 
 /**
  * Created by codefan on 17-4-11.

@@ -4,8 +4,6 @@ import com.centit.im.po.FriendMemo;
 import com.centit.im.po.ImMessage;
 import com.centit.im.po.WebImCustomer;
 
-import java.io.IOException;
-
 /**
  * Created by codefan on 17-4-11.
  */

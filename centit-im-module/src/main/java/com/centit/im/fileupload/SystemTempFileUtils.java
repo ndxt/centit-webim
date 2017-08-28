@@ -1,7 +1,6 @@
 package com.centit.im.fileupload;
 
 import com.centit.framework.common.SysParametersUtils;
-import com.centit.im.controller.FileController;
 import com.centit.support.algorithm.UuidOpt;
 import com.centit.support.file.FileMD5Maker;
 import org.apache.commons.lang3.StringUtils;

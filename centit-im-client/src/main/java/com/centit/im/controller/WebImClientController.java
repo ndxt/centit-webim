@@ -1,7 +1,7 @@
 package com.centit.im.controller;
 
 
-import com.centit.framework.core.common.JsonResultUtils;
+import com.centit.framework.common.JsonResultUtils;
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.service.AskRobot;
 import org.springframework.stereotype.Controller;

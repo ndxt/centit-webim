@@ -1,14 +1,14 @@
 package com.centit.im.dao;
 
-import java.util.HashMap;
-import java.util.Map;
 import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.hibernate.dao.BaseDaoImpl;
+import com.centit.im.po.CustomerPraise;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.centit.im.po.CustomerPraise;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 
