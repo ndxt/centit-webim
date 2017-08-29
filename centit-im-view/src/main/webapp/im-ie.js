@@ -1209,6 +1209,7 @@ function _getContextPath() {
                 });
 
                 // this.scoreRate();
+                $(".layim-title p").html('在线咨询');
             }
         }, {
             key: 'queryUnread',
