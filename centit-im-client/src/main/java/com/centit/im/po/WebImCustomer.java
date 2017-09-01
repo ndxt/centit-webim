@@ -64,18 +64,20 @@ public class WebImCustomer implements java.io.Serializable {
 	 */
 	private String userState;
 
-	// Constructors
-	/** default constructor */
 	public WebImCustomer() {
 	}
-	/** minimal constructor */
+
+	/**
+	 * minimal constructor
+	 * @param userCode 用户编号
+	 * @param userName 用户名
+	 */
 	public WebImCustomer(String userCode,String  userName) {
 
 		this.userCode = userCode;
 		this.userName= userName; 		
 	}
 
-/** full constructor */
 	public WebImCustomer(String userCode, String osId,String  userType, String  userName,String  headSculpture,
 						 String  customerService,Date  lastActiveDate,String  creator,Date  createTime) {
 		this.userCode = userCode;
@@ -107,9 +109,6 @@ public class WebImCustomer implements java.io.Serializable {
 	}
 	
 	
-
-	// Property accessors
-  
 	public String getUserName() {
 		return this.userName;
 	}
@@ -133,15 +132,17 @@ public class WebImCustomer implements java.io.Serializable {
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
-	/**用户类别
+
+	/**
+	 * 获取用户类别
 	 * C 客户， U 一般用户 ，S 客服 ，P 外部专家
+	 * @return 用户类别
 	 */
+
 	public String getUserType() {
 		return userType;
 	}
-	/**用户类别
-	 * C 客户， U 一般用户 ，S 客服 ，P 外部专家
-	 */
+
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
@@ -179,18 +180,17 @@ public class WebImCustomer implements java.io.Serializable {
 	}
 
 	/**
+	 * 获取用户状态
 	 * O online
 	 * F offline
+	 * @return 返回状态码
 	 */
 	public String getUserState() {
 		if(userState==null)
 			return "F";
 		return userState;
 	}
-	/**
-	 * O online
-	 * F offline
-	 */
+
 	public void setUserState(String userState) {
 		this.userState = userState;
 	}

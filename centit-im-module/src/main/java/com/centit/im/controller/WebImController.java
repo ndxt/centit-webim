@@ -42,7 +42,7 @@ public class WebImController extends BaseController {
      * @param sender    发送人
      * @param pageDesc  分页信息
      * @param lastReadDate 上次阅读消息的时间
-     * @param response
+     * @param response HttpServletResponse
      */
     @RequestMapping(value = "/historyMessage/{receiver}/{sender}", method = RequestMethod.GET)
     public void listUserHistoryMessage(
@@ -62,7 +62,7 @@ public class WebImController extends BaseController {
      * @param receiver 接收人（一般为自己或者自己所在的组
      * @param pageDesc  分页信息
      * @param lastReadDate 上次阅读消息的时间
-     * @param response
+     * @param response HttpServletResponse
      */
     @RequestMapping(value = "/allHistoryMessage/{receiver}", method = RequestMethod.GET)
     public void listAllHistoryMessage(
@@ -83,7 +83,7 @@ public class WebImController extends BaseController {
      * @param unitCode  群 （机构）
      * @param pageDesc  分页信息
      * @param lastReadDate 上次阅读消息的时间
-     * @param response
+     * @param response HttpServletResponse
      */
     @RequestMapping(value = "/groupHistoryMessage/{userCode}/{unitCode}", method = RequestMethod.GET)
     public void listUserGroupHistoryMessage(

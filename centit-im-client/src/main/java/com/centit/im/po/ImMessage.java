@@ -93,7 +93,7 @@ public class ImMessage implements  java.io.Serializable {
     private String senderName;/*from*/
     /**
      * JSON IM前端的JSON格式
-     * @return
+     * @return 发送时间
      */
     public  long getLongSendTime(){
         if(sendTime==null)

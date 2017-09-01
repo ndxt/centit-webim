@@ -44,7 +44,14 @@ public class FriendMemo implements java.io.Serializable {
 	/** default constructor */
 	public FriendMemo() {
 	}
-	/** minimal constructor */
+
+	/**
+	 * minimal constructor
+	 * @param userCode 用户
+	 * @param friendCode 好友
+	 * @param osId ID
+	 * @param lastUpdateTime 最后更新时间
+	 */
 	public FriendMemo(String userCode  , String friendCode,
 			String  osId,Date  lastUpdateTime) {
 		this.userCode = userCode;
@@ -54,7 +61,15 @@ public class FriendMemo implements java.io.Serializable {
 		this.lastUpdateTime= lastUpdateTime; 		
 	}
 
-/** full constructor */
+	/**
+	 * full constructor
+	 * @param userCode 用户
+	 * @param friendCode 好友
+	 * @param osId ID
+	 * @param lastUpdateTime 最后更新时间
+	 * @param friendAlias 好友别名
+	 * @param friendMemo 好友备忘录
+	 */
 	public FriendMemo(String userCode  , String friendCode,
 			String  osId,Date  lastUpdateTime,String  friendAlias,String  friendMemo) {
 		this.userCode = userCode;

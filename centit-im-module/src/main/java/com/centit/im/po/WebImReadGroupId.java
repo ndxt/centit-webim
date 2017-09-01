@@ -1,10 +1,8 @@
 package com.centit.im.po;
 
-import java.util.Date;
-import java.sql.Timestamp;
+import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * WebImReadGroupId  entity.
@@ -12,12 +10,9 @@ import org.hibernate.validator.constraints.NotBlank;
  * @author codefan@sina.com
  * 用户组信息查看时间用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息   
 */
-//用户组信息查看时间 的主键
 @Embeddable
 public class WebImReadGroupId implements java.io.Serializable {
 	private static final long serialVersionUID =  1L;
-
-
 
 	/**
 	 * 用户代码 null 
@@ -33,19 +28,15 @@ public class WebImReadGroupId implements java.io.Serializable {
 	@NotBlank(message = "字段不能为空")
 	private String unitCode;
 
-	// Constructors
 	/** default constructor */
 	public WebImReadGroupId() {
 	}
-	/** full constructor */
+
 	public WebImReadGroupId( String userCode, String unitCode) {
 		this.userCode = userCode;
 		this.unitCode = unitCode;	
 	}
 
-  
-
-  
 	public String getUserCode() {
 		return this.userCode;
 	}
@@ -61,7 +52,6 @@ public class WebImReadGroupId implements java.io.Serializable {
 	public void setUnitCode(String unitCode) {
 		this.unitCode = unitCode;
 	}
-
 
 	public boolean equals(Object other) {
 		if ((this == other))

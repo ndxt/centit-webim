@@ -81,31 +81,30 @@ public class WebImMessage implements java.io.Serializable {
 	@Length(max = 1000, message = "字段长度不能大于{max}")
 	private String  content;
 
-	// Constructors
 	/** default constructor */
 	public WebImMessage() {
 		this.osId= ImMessage.DEFAULT_OSID;
 	}
-	/** minimal constructor */
+
+	/**
+	 * minimal constructor
+	 * @param msgId 消息ID
+	 * @param msgType 消息类型
+	 * @param sender 发送者
+	 * @param receiver 接受者
+	 */
 	public WebImMessage(
 		String msgId,String  msgType,String  sender,String  receiver) {
-	
-	
-		this.msgId = msgId;		
-	
+		this.msgId = msgId;
 		this.osId= ImMessage.DEFAULT_OSID;
 		this.msgType= msgType; 
 		this.sender= sender; 
 		this.receiver= receiver; 		
 	}
 
-/** full constructor */
 	public WebImMessage(
 	 String msgId,String  msgType,String  sender,String  receiver,Date  sendTime,String  msgState,String  content,String senderName) {
-	
-	
-		this.msgId = msgId;		
-	
+		this.msgId = msgId;
 		this.osId= ImMessage.DEFAULT_OSID;
 		this.msgType= msgType;
 		this.sender= sender;
@@ -125,8 +124,6 @@ public class WebImMessage implements java.io.Serializable {
 		this.msgId = msgId;
 	}
 
-	// Property accessors
-  
 	public String getOsId() {
 		return this.osId;
 	}

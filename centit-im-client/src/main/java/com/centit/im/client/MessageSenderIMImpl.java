@@ -44,7 +44,7 @@ public class MessageSenderIMImpl implements MessageSender {
      * @param msgContent 消息内容
      * @param optId      关联的业务编号
      * @param optMethod  管理的操作
-     * @param optTag     业务主键 ，复合主键用URL方式对的格式 a=v1&b=v2
+     * @param optTag     业务主键 复合主键用URL方式对的格式 a等于v1 同时 b等于v2
      * @return "OK" 表示成功，其他的为错误信息
      */
     @Override

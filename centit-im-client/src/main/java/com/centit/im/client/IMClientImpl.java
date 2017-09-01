@@ -57,7 +57,7 @@ public class IMClientImpl implements IMClient {
     /**
      * 注册用户 返回 token
      *
-     * @param user
+     * @param user WebImCustomer对象
      */
     @Override
     public void registerUser(WebImCustomer user) throws Exception {
@@ -76,6 +76,11 @@ public class IMClientImpl implements IMClient {
         }
     }
 
+    /**
+     * 设置用户
+     *
+     * @param cust WebImCustomer对象
+     */
     @Override
     public void setUserConfig(WebImCustomer cust) throws Exception {
         CloseableHttpClient httpClient = getHttpClient();
@@ -93,6 +98,11 @@ public class IMClientImpl implements IMClient {
         }
     }
 
+    /**
+     * 发送消息
+     *
+     * @param message ImMessage对象
+     */
     @Override
     public void sendMessage(ImMessage message) throws Exception {
         CloseableHttpClient httpClient = getHttpClient();
