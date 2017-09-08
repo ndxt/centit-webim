@@ -80,7 +80,7 @@ public class IntelligentRobotImpl implements IntelligentRobot {
             httpClient = getHttpClient();
             String jsonStr = HttpExecutor.simpleGet(httpClient,
                 appSession.completeQueryUrl("/ask/"+ custUserCode+"?question="+
-                        URLEncoder.encode(question,"utf-8")));
+                        URLEncoder.encode(question,"utf-8")+"&userCode"+custUserCode));
             JSONObject jsonObj = JSONObject.parseObject(jsonStr);
             RobotAnswer result = JSONObject.toJavaObject(jsonObj.getJSONObject("data"), RobotAnswer.class);
             releaseHttpClient(httpClient);
