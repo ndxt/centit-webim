@@ -18,4 +18,4 @@ npm install
 npm run dev
 ```
 
-如果im.js有修改，会自动在目录下生成im-ie.js
+如果im.js有修改，会自动在目录下生成im-ie.js 
