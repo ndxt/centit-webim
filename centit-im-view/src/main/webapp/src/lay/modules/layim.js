@@ -427,16 +427,12 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
   
   //转换时间
   layui.data.date = function(timestamp){
-    //给没有‘T’的初始化字符串加个‘T’
-    if(Object.prototype.toString.call(timestamp) == "[object String]" && timestamp.length > 12){
-        var str = timestamp,
-            arr = str.split('');
-        arr[10] = 'T';
-        timestamp = arr.join('');
-    }
-    var d = new Date(timestamp||new Date());
-    return d.getFullYear() + '-' + digit(d.getMonth() + 1) + '-' + digit(d.getDate())
-    + ' ' + digit(d.getHours()) + ':' + digit(d.getMinutes()) + ':' + digit(d.getSeconds());
+      if (typeof timestamp === 'string') {
+          timestamp = timestamp.replace(/-/g,   "/")
+      }
+      var d = new Date(timestamp||new Date());
+      return d.getFullYear() + '-' + digit(d.getMonth() + 1) + '-' + digit(d.getDate())
+          + ' ' + digit(d.getHours()) + ':' + digit(d.getMinutes()) + ':' + digit(d.getSeconds());
   };
   
   //转换内容

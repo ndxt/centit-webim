@@ -1,7 +1,7 @@
 {
   "osInfos": [
     {
-      "osId": "CONTRACT",
+      "osId": "centit",
       "osName": "公司经营数据管理",
       "osUrl": "http://productsvr.centit.com:8080/contract",
       "ddeSyncUrl": "http://productsvr.centit.com:8080/contract/datasync",

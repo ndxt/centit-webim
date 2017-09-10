@@ -69,6 +69,7 @@ function _getContextPath() {
             _classCallCheck(this, IM);
 
             this.im = im;
+            this.messageHandler = '';
             this.mine = mine;
             this.config = $.extend({}, Default_IM_Config, config);
             this.$ = layui.jquery;
@@ -97,7 +98,11 @@ function _getContextPath() {
         _createClass(IM, [{
             key: 'onAfterSendChatMessage',
             value: function onAfterSendChatMessage(data, mode) {
+
                 if (mode == 'askForService') {
+                    if (!!this.messageHandler) {
+                        clearTimeout(this.messageHandler);
+                    }
                     this.messageHandler = setTimeout(this.sendNotice.bind(this), 120000);
                 }
             }
@@ -530,7 +535,9 @@ function _getContextPath() {
             key: 'onWSMessage',
             value: function onWSMessage(res) {
                 var data = res.data;
-
+                if (!this.messageHandler) {
+                    clearTimeout(this.messageHandler);
+                }
                 try {
                     data = JSON.parse(res.data);
                     console.log(data);
@@ -872,7 +879,6 @@ function _getContextPath() {
 
                 $("body").on("click", '*[layim-event="chatLog"]', function () {
                     var userCode = $(".layim-chat-username").attr('userCode');
-
                     renderHistoryMessage(userCode, im, receiver, ctx);
                 });
             }
