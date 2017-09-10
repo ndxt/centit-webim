@@ -47,7 +47,8 @@
     font-weight: 200;
     color: RGB(98, 158, 229);
 }
-.layim-chat-main .layim-chat-text  ul li[data-type=http] a {
+.layim-chat-main .layim-chat-text  ul li[data-type=http] a,
+.layim-chat-main .layim-chat-text  ul li[data-type=command] a {
     color: darkred;
 }
 .layim-chat-main .layim-chat-text  ul li{
