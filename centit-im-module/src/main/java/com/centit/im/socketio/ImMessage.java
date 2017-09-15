@@ -3,6 +3,7 @@ package com.centit.im.socketio;
 import com.alibaba.fastjson.JSON;
 import com.centit.support.algorithm.StringBaseOpt;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class ImMessage implements  java.io.Serializable {
     /**
      * 消息内容，可能式富文本，
      */
-    private Map<String,Object> content;
+    private Map<String,? extends Serializable> content;
     /**
      * 发送方
      */
@@ -151,13 +152,13 @@ public class ImMessage implements  java.io.Serializable {
         this.contentType = contentType;
     }
 
-    public Map<String, Object> getContent() {
+    public Map<String,? extends Serializable> getContent() {
         if(content==null)
             content = new HashMap<>(8);
         return content;
     }
 
-    public void setContent(Map<String, Object> content) {
+    public void setContent(Map<String,? extends Serializable> content) {
         this.content = content;
     }
 
