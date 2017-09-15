@@ -49,7 +49,7 @@ public class IntelligentRobotImpl implements IntelligentRobot {
             releaseHttpClient(httpClient);
             return result;
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
             releaseHttpClient(httpClient);
             return RobotAnswer.createTestAnswer();
         }
@@ -67,7 +67,7 @@ public class IntelligentRobotImpl implements IntelligentRobot {
             releaseHttpClient(httpClient);
             return result;
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
             releaseHttpClient(httpClient);
             return RobotAnswer.createTestAnswer();
         }
@@ -86,7 +86,7 @@ public class IntelligentRobotImpl implements IntelligentRobot {
             releaseHttpClient(httpClient);
             return result;
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
             releaseHttpClient(httpClient);
             return RobotAnswer.createTestAnswer();
         }

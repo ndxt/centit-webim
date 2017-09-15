@@ -40,7 +40,7 @@ public class SystemTempFileUtils {
 			return StringUtils.equals(fileMd5,
 					FileMD5Maker.makeFileMD5(new File(filePath)));
 		} catch (IOException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(),e);
 			return false;
 		}
 	}

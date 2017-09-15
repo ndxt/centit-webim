@@ -61,7 +61,7 @@ public class MessageSenderIMImpl implements MessageSender {
             imClient.sendMessage(message);
             return "OK";
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
             return e.getMessage();
         }
     }

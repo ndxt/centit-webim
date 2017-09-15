@@ -29,8 +29,7 @@ public class JsfgwSmsMessageSender implements MessageSender{
             jsonStr = HttpExecutor.formPost(httpClient,
                     this.smsSendUrl,fromData);
         } catch (IOException e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         }
         return jsonStr;
     }
