@@ -7,12 +7,19 @@ import com.centit.im.po.FriendMemo;
 import com.centit.im.po.ImMessage;
 import com.centit.im.po.WebImCustomer;
 import com.centit.support.network.HttpExecutor;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * Created by codefan on 17-4-11.
  */
 public class IMClientImpl implements IMClient {
+
+    private static Logger log = LoggerFactory.getLogger(MessageSenderIMImpl.class);
 
     private AppSession appSession;
 
@@ -37,9 +44,14 @@ public class IMClientImpl implements IMClient {
     }
 
     @Override
-    public void setFriendMemo(FriendMemo memo) throws Exception {
+    public void setFriendMemo(FriendMemo memo){
 
-        CloseableHttpClient httpClient = getHttpClient();
+        CloseableHttpClient httpClient = null;
+        try {
+            httpClient = getHttpClient();
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
         try {
             appSession.checkAccessToken(httpClient);
             String jsonStr = HttpExecutor.jsonPost(httpClient,
@@ -49,7 +61,11 @@ public class IMClientImpl implements IMClient {
             if (resJson.getCode() != 0) {
                 throw new ObjectException(memo, resJson.getMessage());
             }
-        }finally {
+        } catch (ClientProtocolException e) {
+            log.error(e.getMessage(),e);
+        } catch (IOException e) {
+            log.error(e.getMessage(),e);
+        } finally {
             releaseHttpClient(httpClient);
         }
     }
@@ -60,8 +76,13 @@ public class IMClientImpl implements IMClient {
      * @param user WebImCustomer对象
      */
     @Override
-    public void registerUser(WebImCustomer user) throws Exception {
-        CloseableHttpClient httpClient = getHttpClient();
+    public void registerUser(WebImCustomer user){
+        CloseableHttpClient httpClient = null;
+        try {
+            httpClient = getHttpClient();
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
         try {
             appSession.checkAccessToken(httpClient);
             String jsonStr = HttpExecutor.jsonPost(httpClient,
@@ -71,7 +92,11 @@ public class IMClientImpl implements IMClient {
             if (resJson.getCode() != 0) {
                 throw new ObjectException(user, resJson.getMessage());
             }
-        }finally {
+        } catch (ClientProtocolException e) {
+            log.error(e.getMessage(),e);
+        } catch (IOException e) {
+            log.error(e.getMessage(),e);
+        } finally {
             releaseHttpClient(httpClient);
         }
     }
@@ -82,8 +107,13 @@ public class IMClientImpl implements IMClient {
      * @param cust WebImCustomer对象
      */
     @Override
-    public void setUserConfig(WebImCustomer cust) throws Exception {
-        CloseableHttpClient httpClient = getHttpClient();
+    public void setUserConfig(WebImCustomer cust){
+        CloseableHttpClient httpClient = null;
+        try {
+            httpClient = getHttpClient();
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
         try {
             appSession.checkAccessToken(httpClient);
             String jsonStr = HttpExecutor.jsonPost(httpClient,
@@ -93,7 +123,11 @@ public class IMClientImpl implements IMClient {
             if (resJson.getCode() != 0) {
                 throw new ObjectException(cust, resJson.getMessage());
             }
-        }finally {
+        } catch (ClientProtocolException e) {
+            log.error(e.getMessage(),e);
+        } catch (IOException e) {
+            log.error(e.getMessage(),e);
+        } finally {
             releaseHttpClient(httpClient);
         }
     }
@@ -104,8 +138,13 @@ public class IMClientImpl implements IMClient {
      * @param message ImMessage对象
      */
     @Override
-    public void sendMessage(ImMessage message) throws Exception {
-        CloseableHttpClient httpClient = getHttpClient();
+    public void sendMessage(ImMessage message){
+        CloseableHttpClient httpClient = null;
+        try {
+            httpClient = getHttpClient();
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
         try {
             appSession.checkAccessToken(httpClient);
             String jsonStr = HttpExecutor.jsonPost(httpClient,
@@ -117,7 +156,11 @@ public class IMClientImpl implements IMClient {
             if (resJson.getCode() != 0) {
                 throw new ObjectException(message, resJson.getMessage());
             }
-        }finally {
+        } catch (ClientProtocolException e) {
+            log.error(e.getMessage(),e);
+        } catch (IOException e) {
+            log.error(e.getMessage(),e);
+        } finally {
             releaseHttpClient(httpClient);
         }
     }

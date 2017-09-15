@@ -9,26 +9,26 @@ import com.centit.im.po.WebImCustomer;
  */
 public interface IMClient {
 
-    void setFriendMemo(FriendMemo memo) throws Exception;
+    void setFriendMemo(FriendMemo memo);
 
     /**
      * 注册用户 返回 token
      * @param user WebImCustomer对象
      * @throws Exception 异常
      */
-    void registerUser(WebImCustomer user) throws Exception;
+    void registerUser(WebImCustomer user);
 
     /**
      * 设置用户
      * @param cust WebImCustomer对象
      * @throws Exception 异常
      */
-    void setUserConfig(WebImCustomer cust) throws Exception;
+    void setUserConfig(WebImCustomer cust);
 
     /**
      * 发送消息
      * @param message ImMessage对象
      * @throws Exception 异常
      */
-    void sendMessage(ImMessage message) throws Exception;
+    void sendMessage(ImMessage message);
 }
