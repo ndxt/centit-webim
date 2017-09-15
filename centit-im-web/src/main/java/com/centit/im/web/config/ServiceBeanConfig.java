@@ -2,7 +2,7 @@ package com.centit.im.web.config;
 
 import com.centit.framework.components.impl.NotificationCenterImpl;
 import com.centit.framework.components.impl.TextOperationLogWriterImpl;
-import com.centit.framework.hibernate.config.DataSourceConfig;
+import com.centit.framework.core.config.DataSourceConfig;
 import com.centit.framework.ip.app.config.IPAppSystemBeanConfig;
 import com.centit.framework.ip.service.IntegrationEnvironment;
 import com.centit.framework.model.adapter.MessageSender;
