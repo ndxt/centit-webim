@@ -711,6 +711,7 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
       var url = ctx + '/service/webim/historyMessage/' + receiver + '/' + data.id;
       console.log(url);
       $.ajax({url:url,
+          async:false,
           dataType:'json',
           data: {pageNo: 1, lastReadDate: dateStr},
           success:function (res) {
@@ -750,7 +751,7 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
       var name;
       for(var j = 0,length = panelList.length;j < length; j++){
           name = panelList[j].innerText;
-          if(panelList[j].innerText.indexOf(currentName)!= -1){
+          if(name.indexOf(currentName)!= -1){
               flag = false
           }
       }
@@ -765,13 +766,10 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
 
   var layimChat, layimMin, chatIndex, To = {}, popchat = function(data){
     //通过后台获取聊天记录
-
+      var renderFlag = judgeFlag(data.name);
     data = data || {};
 
-    var renderFlag = judgeFlag(data.name);
-    if(location.href.indexOf('user.html') == -1 && renderFlag) {
-        getHistoryChatLog(data);
-    }
+
 
 
 
@@ -905,6 +903,9 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
     });
 
 
+      if(location.href.indexOf('user.html') == -1 && renderFlag) {
+          getHistoryChatLog(data);
+      }
     return index;
   };
   

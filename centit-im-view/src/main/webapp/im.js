@@ -666,6 +666,8 @@ function _getContextPath() {
                 ,btn:['确认','退回']
                 ,yes:function(index){
                     that.im.chat(data);
+                    setTimeout(that.renderSwitchMessage(params.id,that.im,params.data.serviceCode,that.contextPath),500);
+                    console.log(1);
                     $('div.layui-show .layim-chat-username').data('preServiceCode',params.data.serviceCode);
                     layer.close(index);
 
@@ -722,12 +724,53 @@ function _getContextPath() {
       })
 
     }
+    renderSwitchMessage(sender,im,receiver,ctx){
+        var lastReadDate = new Date();
+        lastReadDate.setDate(lastReadDate.getDate() + 1);
+        var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth()+1)+ '-' + lastReadDate.getDate();
+        var pageNo = 1;
+        $.ajax({url:`${ctx}/service/webim/historyMessage/${receiver}/${sender}`,
+            async:false,
+            dataType:'json',
+            data: {pageNo: pageNo,lastReadDate: dateStr,pageSize:100000},
+            success:function (res) {
+                var messageList = res.data.objList,
+                    message;
+                if(messageList.length === 0){
+                    layer.msg('已无更多聊天消息！');
+                }else{
+                    pageNo++;
+                }
+                for(var i = messageList.length - 1; i >= 0; i--) {
+                    message = messageList[i];
+                    console.log(message);
+                    if (message.sender == sender.trim()) {
+                           var avatar = ctx + USER_AVATAR
+                    }else{
+                        var avatar = ctx + SERVICE_AVATAR
+                    }
+                    im.getMessage({
+                        type: 'friend',
+                        system: false,
+                        reverse: false,
+                        username: message.senderName,
+                        id: sender,
+                        content: JSON.parse(message.content).msg,
+                        timestamp: message.sendTime,
+                        avatar: avatar
+                    }, true)
+                }
+
+            }
+        });
+
+    }
 
     renderHistoryMessage(sender,im,receiver,ctx){
      var lastReadDate = new Date();
         lastReadDate.setDate(lastReadDate.getDate() + 1);
         var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth()+1)+ '-' + lastReadDate.getDate();
-     var pageNo = $(".layim-chat-username").data('pageNo' + sender);
+     var pageNo = $(".layim-chat-username").data('pageNo' + sender) || 1;
       $.ajax({url:`${ctx}/service/webim/historyMessage/${receiver}/${sender}`,
               dataType:'json',
           data: {pageNo: pageNo,lastReadDate: dateStr},
