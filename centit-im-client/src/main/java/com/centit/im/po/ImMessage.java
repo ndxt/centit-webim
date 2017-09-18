@@ -75,7 +75,7 @@ public class ImMessage implements  java.io.Serializable {
     /**
      * 消息内容，可能式富文本，
      */
-    private Map<String,? extends Serializable> content;
+    private Map<String,Object> content;
 
     /**
      * 发送方
@@ -151,13 +151,13 @@ public class ImMessage implements  java.io.Serializable {
         this.contentType = contentType;
     }
 
-    public Map<String,? extends Serializable> getContent() {
+    public Map<String,Object> getContent() {
         if(content==null)
             content = new HashMap<>(8);
         return content;
     }
 
-    public void setContent(Map<String,? extends Serializable> content) {
+    public void setContent(Map<String,Object> content) {
         this.content = content;
     }
 
