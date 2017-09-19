@@ -966,10 +966,19 @@ function _getContextPath() {
                     }
 
                     this.sendSwitchServiceCommand(service.id, $(".layim-chat-username").attr('usercode'))
-                    layer.alert(`已发送切换客服[${service.name}]命令！`)
+
+                    layer.open({
+                        title: '切换客服'
+                        ,content: `已发送切换客服[${service.name}]命令！`
+                        ,btn:['确定']
+                        ,btn1:function(index, layero){
+                            this.im.closeThisChat();
+                            layer.close(index);
+                        }.bind(this)
+                    });
+
                 }.bind(this)
             })
-
 
             $.get(`${this.contextPath}/json/service.txt`, function (res) {
                 result = parseData(res)
