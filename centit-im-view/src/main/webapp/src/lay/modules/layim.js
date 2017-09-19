@@ -75,7 +75,9 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
     if(!window.JSON || !window.JSON.parse) return;
     return popchat(data), this;
   };
-  
+    LAYIM.prototype.closeThisChat = function(){
+        changeChat(null, 1);
+    }
   //设置聊天界面最小化
   LAYIM.prototype.setChatMin = function(){
     return setChatMin(), this;
@@ -1026,7 +1028,8 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
     var str = '.layim-chat', cont = layimChat.find(str).eq(index);
     var hasFull = layimChat.find('.layui-layer-max').hasClass('layui-layer-maxmin');
 
-    var newUserCode = $(elem[0]).attr("class").substr(12).split(' ')[0];
+    var newUserCode = String($(elem[0]).attr("class"));
+    newUserCode =  newUserCode.substr(12).split(' ')[0];
 
 
     $(".layim-chat-username").attr('usercode',newUserCode);

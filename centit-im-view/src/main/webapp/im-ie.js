@@ -1055,7 +1055,16 @@ function _getContextPath() {
                             }
 
                             this.sendSwitchServiceCommand(service.id, $(".layim-chat-username").attr('usercode'));
-                            layer.alert('\u5DF2\u53D1\u9001\u5207\u6362\u5BA2\u670D[' + service.name + ']\u547D\u4EE4\uFF01');
+
+                            layer.open({
+                                title: '切换客服',
+                                content: '\u5DF2\u53D1\u9001\u5207\u6362\u5BA2\u670D[' + service.name + ']\u547D\u4EE4\uFF01',
+                                btn: ['确定'],
+                                btn1: function (index, layero) {
+                                    this.im.closeThisChat();
+                                    layer.close(index);
+                                }.bind(this)
+                            });
                         }.bind(this)
                     });
 
