@@ -372,6 +372,11 @@ public class WebImSocketImpl implements WebImSocket {
                     .buildSystemMessage(message.getReceiver(),"切换客服失败，没有这个客服。") );
         } else {
             successChangeCustomerService(session, message.getReceiver(), service );
+            notificationCenter.sendMessage(
+                    message.getSender(),message.getReceiver(),
+                    "客服转接",
+                    "有客户在线咨询转接给您",
+                    "sms");
         }
     }
 
@@ -600,7 +605,7 @@ public class WebImSocketImpl implements WebImSocket {
             pushMessage(session, message);
         }else{
             if(StringUtils.equals("sms",noticeType)){
-                Map<String, Object> content = message.getContent();
+                Map<String,Object> content = message.getContent();
                 notificationCenter.sendMessage(
                         message.getSender(),message.getReceiver(),
                         "离线消息",
