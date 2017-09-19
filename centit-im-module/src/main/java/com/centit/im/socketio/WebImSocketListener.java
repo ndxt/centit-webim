@@ -52,7 +52,6 @@ public class WebImSocketListener {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-
         try{
             webImSocket.recvMessage(session, message);
         }catch (Exception e){

@@ -184,7 +184,9 @@ public class WebImSocketImpl implements WebImSocket {
         //保存和服信息
         if(cust!=null){
             cust.setLastActiveDate(currDate);
-            cust.setUserName(userName);
+            if(StringUtils.isNotBlank(userName)) {
+                cust.setUserName(userName);
+            }
             cust.setHeadSculpture(message.fetchContentString("headSculpture"));
             cust.setUserType(message.fetchContentString("userType"));
             String serviceOpts = message.fetchContentString("serviceOpts");
@@ -193,10 +195,11 @@ public class WebImSocketImpl implements WebImSocket {
             //cust.setUserState("O");
             customerDao.updateObject(cust);
         }else {
+            String custUserCode = message.fetchContentString("userCode");
             cust = new WebImCustomer();
-            cust.setUserCode(message.fetchContentString("userCode"));
+            cust.setUserCode(custUserCode);
             cust.setOsId(osId);
-            cust.setUserName(userName);
+            cust.setUserName(StringUtils.isNotBlank(userName)?userName:custUserCode);
             cust.setHeadSculpture(message.fetchContentString("headSculpture"));
             cust.setUserType(message.fetchContentString("userType"));
             cust.setCreateTime(currDate);
@@ -619,7 +622,6 @@ public class WebImSocketImpl implements WebImSocket {
 
     /**
      * 发送小组（群）信息
-     *
      * @param unitCode
      * @param message
      */
