@@ -694,7 +694,7 @@ function _getContextPath() {
       let ctx = this.contextPath,
         id = this.mine.id
 
-      return fetch(`${ctx }/service/webimcust/cust/${id }`)
+      return fetch(`${ctx }/service/webimcust/cust/${id }?lastServiceDate=1949-10-1`)
         .then(res => res.json())
         .then(res => res.data)
     }
@@ -785,7 +785,9 @@ function _getContextPath() {
               for(var i = 0,length = messageList.length; i < length; i++) {
                   message = messageList[i];
                   console.log(message);
-                  if (message.sender == sender.trim()) {
+                  if(message.msgType == 'S'){
+                        im.showSystemMessage(message);
+                  }else if(message.sender == sender.trim()) {
                       im.getMessage({
                           type: 'friend',
                           system: false,
@@ -795,7 +797,7 @@ function _getContextPath() {
                           content: JSON.parse(message.content).msg,
                           timestamp: message.sendTime,
                           avatar: ctx + USER_AVATAR
-                      }, true)
+                      }, false)
                   } else {
                        im.showMineMessage({content: JSON.parse(message.content).msg,timestamp: message.sendTime});
                   }

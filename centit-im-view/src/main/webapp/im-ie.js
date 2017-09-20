@@ -794,7 +794,7 @@ function _getContextPath() {
                 var ctx = this.contextPath,
                     id = this.mine.id;
 
-                return fetch(ctx + '/service/webimcust/cust/' + id).then(function (res) {
+                return fetch(ctx + '/service/webimcust/cust/' + id + '?lastServiceDate=1949-10-1').then(function (res) {
                     return res.json();
                 }).then(function (res) {
                     return res.data;
