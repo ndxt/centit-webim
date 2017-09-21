@@ -97,7 +97,7 @@ Lay.fn.use = function(apps, callback, exports){
   if(window.jQuery && jQuery.fn.on){
     that.each(apps, function(index, item){
       if(item === 'jquery'){
-        apps.splice(index, 1);
+        apps.splice(index, 1);//删除用户传入jquery依赖
       }
     });
     layui.jquery = jQuery;
