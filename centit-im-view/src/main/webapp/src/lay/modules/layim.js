@@ -757,10 +757,8 @@ layui.define(['layer', 'laytpl', 'upload'], function (exports) {
                     type: 'friend',
                     system: true,
                     reverse: true,
-                    username: message.senderName,
                     id: data.id,
                     content: '以上为历史消息',
-                    timestamp: message.sendTime,
                     avatar: ctx + USER_AVATAR
                 }, false)
                 $(".layim-chat-username").attr('userCode', data.id);

@@ -417,6 +417,7 @@ function _getContextPath() {
         })
     }
     sendWSMessage(data) {
+        console.log(data);
         if (this.socket.readyState == '3') {
             this.showSystemMessage({
                 id: '0',
@@ -682,7 +683,9 @@ function _getContextPath() {
 
       showSystemMessage(params) {
           params.system = true
-          params.data.type = params.data.type || ""
+          if(typeof params.data.type === 'undefined'){
+              params.data.type = "";
+          }
           if(params.data.type == 'A'){
               this.dealSwitchServiceMessage(params);
               return;

@@ -492,6 +492,7 @@ function _getContextPath() {
         }, {
             key: 'sendWSMessage',
             value: function sendWSMessage(data) {
+                console.log(data);
                 if (this.socket.readyState == '3') {
                     this.showSystemMessage({
                         id: '0',
@@ -781,7 +782,9 @@ function _getContextPath() {
             key: 'showSystemMessage',
             value: function showSystemMessage(params) {
                 params.system = true;
-                params.data.type = params.data.type || "";
+                if (typeof params.data.type === 'undefined') {
+                    params.data.type = "";
+                }
                 if (params.data.type == 'A') {
                     this.dealSwitchServiceMessage(params);
                     return;
@@ -885,7 +888,9 @@ function _getContextPath() {
                         for (var i = 0, length = messageList.length; i < length; i++) {
                             message = messageList[i];
                             console.log(message);
-                            if (message.sender == sender.trim()) {
+                            if (message.msgType == 'S') {
+                                im.showSystemMessage(message);
+                            } else if (message.sender == sender.trim()) {
                                 im.getMessage({
                                     type: 'friend',
                                     system: false,
@@ -895,7 +900,7 @@ function _getContextPath() {
                                     content: JSON.parse(message.content).msg,
                                     timestamp: message.sendTime,
                                     avatar: ctx + USER_AVATAR
-                                }, true);
+                                }, false);
                             } else {
                                 im.showMineMessage({ content: JSON.parse(message.content).msg, timestamp: message.sendTime });
                             }
