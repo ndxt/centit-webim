@@ -738,7 +738,19 @@ layui.define(['layer', 'laytpl', 'upload'], function (exports) {
                 for (var i = 0, length = messageList.length; i < length; i++) {
                     message = messageList[i];
                     console.log(message);
-                    if (message.sender == data.id) {
+                    if(message.msgType === 'S'){
+                        getMessage({
+                            type: 'friend',
+                            system: true,
+                            reverse: true,
+                            username: message.senderName,
+                            id: data.id,
+                            content: JSON.parse(message.content).msg,
+                            timestamp: message.sendTime,
+                            avatar: ctx + USER_AVATAR
+                        }, false)
+                    }
+                   else if (message.sender == data.id) {
                         getMessage({
                             type: 'friend',
                             system: false,
@@ -756,7 +768,7 @@ layui.define(['layer', 'laytpl', 'upload'], function (exports) {
                 getMessage({
                     type: 'friend',
                     system: true,
-                    reverse: true,
+                    reverse: false,
                     id: data.id,
                     content: '以上为历史消息',
                     avatar: ctx + USER_AVATAR
@@ -1360,7 +1372,11 @@ layui.define(['layer', 'laytpl', 'upload'], function (exports) {
         //系统消息
         if (data.system) {
             if (index !== -1) {
-                ul.append('<li class="layim-chat-system"><span>' + data.content + '</span></li>');
+                if(data.reverse === true) {
+                    ul.prepend('<li class="layim-chat-system"><span>' + data.content + '</span></li>');
+                }else{
+                    ul.append('<li class="layim-chat-system"><span>' + data.content + '</span></li>');
+                }
             }
         } else if (data.content.replace(/\s/g, '') !== '') {
             if (data.reverse === true) {
