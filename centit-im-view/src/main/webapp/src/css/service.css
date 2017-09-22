@@ -10,3 +10,6 @@
     color: #fff;
     background: #234982;
 }
+#layui-layim li[title="历史会话"]{
+    display: none;
+}
