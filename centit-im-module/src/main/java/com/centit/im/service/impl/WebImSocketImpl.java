@@ -1,5 +1,7 @@
 package com.centit.im.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUserInfo;
@@ -345,7 +347,30 @@ public class WebImSocketImpl implements WebImSocket {
 
             pushMessage(service.getUserCode() ,ImMessageUtils
                     .buildSystemMessageChangService(receiver,"请为"+cust.getUserName()+"客户服务。",cust,beforeChangeService,"A") );//切换后客服标识After
+            saveChangeCustomerService(receiver,beforeChangeService,service);//保存切换客服提示信息
         }
+    }
+
+    /**
+     * 保存切换客服提示信息
+     * @param receiver
+     * @param beforeChangeService
+     * @param afterChangeService
+     */
+    @Transactional
+    public void saveChangeCustomerService(String receiver,WebImCustomer beforeChangeService,WebImCustomer afterChangeService){
+        WebImMessage webMessage = new WebImMessage();
+        webMessage.setMsgType("S");
+        webMessage.setReceiver(receiver);
+        webMessage.setSender(beforeChangeService.getUserCode());
+        webMessage.setSenderName(beforeChangeService.getUserName());
+        JSONObject json = new JSONObject();
+        json.put("msg",beforeChangeService.getUserName()+"切换至客服"+afterChangeService.getUserName());
+        webMessage.setContent(json.toString());
+        webMessage.setSendTime(DatetimeOpt.currentUtilDate());
+        webMessage.setMsgState("C");
+        messageDao.saveNewObject(webMessage);
+
     }
 
     @Transactional
