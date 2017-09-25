@@ -2,19 +2,10 @@ package com.centit.im.web.config;
 
 import com.centit.framework.config.SystemSpringMvcConfig;
 import com.centit.framework.config.WebConfig;
-import com.centit.framework.filter.RequestThreadLocalFilter;
-import com.centit.framework.filter.ResponseCorsFilter;
-import com.centit.support.algorithm.StringRegularOpt;
-import com.centit.support.file.PropertiesReader;
-import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
+import com.centit.framework.hibernate.config.HibernateConfig;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.filter.DelegatingFilterProxy;
-import org.springframework.web.filter.HiddenHttpMethodFilter;
-import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.ServletContext;
@@ -53,6 +44,8 @@ public class WebInitializer implements WebApplicationInitializer {
         WebConfig.registerRequestThreadLocalFilter(servletContext);
 
         WebConfig.registerSpringSecurityFilter(servletContext);
+
+        HibernateConfig.registerOpenSessionInViewFilter(servletContext);
     }
 
     /**

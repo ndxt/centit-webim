@@ -35,6 +35,12 @@
             <version>${centit.ip.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.centit.support</groupId>
+            <artifactId>centit-es-client</artifactId>
+            <version>${centit.search.version}</version>
+        </dependency>
+
         <!-- server runtime library -->
         <dependency>
             <groupId>javax.servlet</groupId>

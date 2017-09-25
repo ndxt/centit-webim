@@ -392,11 +392,13 @@ public class WebImSocketImpl implements WebImSocket {
     private void changeCustomerService(Session session, ImMessage message) {
         String serviceUserCode = message.fetchContentString("service");
         WebImCustomer service = getOnlineServiceByUserCode(serviceUserCode);
-        if(service==null){
-            service =  customerDao.getObjectById(serviceUserCode);
-            service.setUserState(ImMessage.USER_STATE_OFFLINE);
+        if(service == null){
+            service = customerDao.getObjectById(serviceUserCode);
+            if(service != null) {
+                service.setUserState(ImMessage.USER_STATE_OFFLINE);
+            }
         }
-        if(service ==null){
+        if(service == null){
             pushMessage(session ,ImMessageUtils
                     .buildSystemMessage(message.getReceiver(),"切换客服失败，没有这个客服。") );
         } else {

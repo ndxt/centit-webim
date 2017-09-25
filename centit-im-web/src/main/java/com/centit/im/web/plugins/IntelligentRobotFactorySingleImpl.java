@@ -7,7 +7,9 @@ import com.centit.im.service.IntelligentRobotFactory;
  * Created by codefan on 17-6-19.
  */
 //@Service("intelligentRobotFactory")
-public class IntelligentRobotFactoryDemoImpl implements IntelligentRobotFactory {
+public class IntelligentRobotFactorySingleImpl implements IntelligentRobotFactory {
+
+
 
     //@Resource
     protected IntelligentRobot intelligentRobot;
@@ -18,4 +20,9 @@ public class IntelligentRobotFactoryDemoImpl implements IntelligentRobotFactory 
             intelligentRobot = new IntelligentRobotDemoImpl();
         return intelligentRobot;
     }
+
+    public void setIntelligentRobot(IntelligentRobot intelligentRobot) {
+        this.intelligentRobot = intelligentRobot;
+    }
+
 }
