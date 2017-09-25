@@ -584,9 +584,13 @@ function _getContextPath() {
         }, {
             key: 'onWSClose',
             value: function onWSClose() {
-                this.showSystemMessage({
-                    id: '0',
-                    content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229)">刷新</a>重新连接')
+                layui.use('layer', function () {
+                    var layer = layui.layer;
+
+                    layer.open({
+                        title: '系统通知',
+                        content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229);cursor: pointer">刷新</a>重新连接')
+                    });
                 });
             }
         }, {

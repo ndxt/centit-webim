@@ -97,7 +97,36 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
     }, options);
     init(options);
   };
-  
+    LAYIM.prototype.showMineMessage = function (content) {
+        var data = {
+            username: cache.mine ? cache.mine.username : '访客'
+            , avatar: cache.mine ? cache.mine.avatar : (layui.cache.dir + 'css/pc/layim/skin/logo.jpg')
+            , id: cache.mine ? cache.mine.id : null
+            , mine: true
+        };
+        var thatChat = thisChat() || '';
+        if (thatChat == '') {
+            return;
+        }
+        ul = thatChat.elem.find('.layim-chat-main ul');
+        var maxLength = cache.base.maxLength || 3000;
+
+        $.extend(data, content);
+        // var str = data.timestamp,
+        //     arr = str.split('');
+        // arr[10] = 'T';
+        // data.timestamp = arr.join('');
+        if (data.content.replace(/\s/g, '') !== '') {
+
+            if (data.content.length > maxLength) {
+                return layer.msg('内容最长不能超过' + maxLength + '个字符')
+            }
+
+            ul.prepend(laytpl(elemChatMain).render(data));
+
+        }
+
+    };
   //监听事件
   LAYIM.prototype.on = function(events, callback){
     if(typeof callback === 'function'){
@@ -408,7 +437,89 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
       ,end: options.end
     });
   }
-  
+
+    var showMineMessage = function (content) {
+        var data = {
+            username: cache.mine ? cache.mine.username : '访客'
+            , avatar: cache.mine ? (ctx + SERVICE_AVATAR) : (layui.cache.dir + 'css/pc/layim/skin/logo.jpg')
+            , id: cache.mine ? cache.mine.id : null
+            , mine: true
+        };
+        var thatChat = thisChat(), ul = thatChat.elem.find('.layim-chat-main ul');
+        var maxLength = cache.base.maxLength || 3000;
+
+        $.extend(data, content);
+        if (data.content.replace(/\s/g, '') !== '') {
+
+            if (data.content.length > maxLength) {
+                return layer.msg('内容最长不能超过' + maxLength + '个字符')
+            }
+
+            ul.prepend(laytpl(elemChatMain).render(data));
+
+        }
+
+    };
+
+    var getHistoryChatLog = function (data) {
+        var match = location.href.match(/^(http:\/\/.*?\/.*?)\//);
+        var ctx = match[1];
+        var result = parseURL(),
+            token = result.params.token,
+            params = JSON.parse(decodeURIComponent(base64.decode(token))),
+
+            lastReadDate = new Date(),
+            receiver = params.userCode;
+        lastReadDate.setDate(lastReadDate.getDate() + 1);
+        var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
+
+        var url = ctx + '/service/webim/historyMessage/' + receiver + '/' + data.id;
+        console.log(url);
+        $.ajax({
+            url: url,
+            async: false,
+            dataType: 'json',
+            data: {pageNo: 1, lastReadDate: dateStr},
+            success: function (res) {
+                var messageList = res.data.objList,
+                    message;
+
+                for (var i = 0, length = messageList.length; i < length; i++) {
+                    message = messageList[i];
+                    console.log(message);
+                    if(message.msgType === 'S'){
+                        getMessage({
+                            type: 'friend',
+                            system: true,
+                            reverse: true,
+                            username: message.senderName,
+                            id: data.id,
+                            content: JSON.parse(message.content).msg,
+                            timestamp: message.sendTime,
+                            avatar: ctx + USER_AVATAR
+                        }, false)
+                    }
+                    else if (message.sender == data.id) {
+                        getMessage({
+                            type: 'friend',
+                            system: false,
+                            reverse: true,
+                            username: message.senderName,
+                            id: data.id,
+                            content: JSON.parse(message.content).msg,
+                            timestamp: message.sendTime,
+                            avatar: ctx + USER_AVATAR
+                        }, false)
+                    } else {
+                        showMineMessage({content: JSON.parse(message.content).msg, timestamp: message.sendTime});
+                    }
+                }
+                $(".layim-chat-username").attr('userCode', data.id);
+                $(".layim-chat-username").data('pageNo' + data.id, 2);
+                chatListMore();
+            }
+        });
+    }
   //显示聊天面板
   var layimChat, layimMin, To = {}, popchat = function(data, anim, back){
     data = data || {};
@@ -428,17 +539,16 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
         layimChat = $(elem);
 
         hotkeySend();
-        viewChatlog();
         
         delete cache.message[data.type + data.id]; //剔除缓存消息
         showNew('Msg');
-        
+
         //聊天窗口的切换监听
         var thatChat = thisChat(), chatMain = thatChat.elem.find('.layim-chat-main');
         layui.each(call.chatChange, function(index, item){
           item && item(thatChat);
         });
-        
+        getHistoryChatLog(data);
         fixIosScroll(chatMain);
         
         //输入框获取焦点
@@ -717,13 +827,27 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
     
     //系统消息
     if(data.system){
-      ul.append('<li class="layim-chat-system"><span>'+ data.content +'</span></li>');
+      if(data.reverse === true){
+          ul.prepend('<li class="layim-chat-system"><span>'+ data.content +'</span></li>');
+
+      }else{
+          ul.append('<li class="layim-chat-system"><span>'+ data.content +'</span></li>');
+      }
     } else if(data.content.replace(/\s/g, '') !== ''){
       if(data.timestamp - (sendMessage.time||0) > 60*1000){
-        ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
+        if(data.reverse === true){
+            ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
+
+        }else{
+            ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
+        }
         sendMessage.time = data.timestamp;
       }
-      ul.append(laytpl(elemChatMain).render(data));
+      if(data.reverse === true){
+          ul.prepend(laytpl(elemChatMain).render(data));
+      }else{
+          ul.append(laytpl(elemChatMain).render(data));
+      }
     }
     chatListMore();
   };

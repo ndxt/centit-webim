@@ -161,19 +161,6 @@ layui.define(['layer', 'laytpl', 'upload'], function (exports) {
 
             ul.prepend(laytpl(elemChatMain).render(data));
 
-            // var param = {
-            //     mine: data
-            //     ,to: thatChat.data
-            // }, message = {
-            //     username: param.mine.username
-            //     ,avatar: param.mine.avatar
-            //     ,id: param.to.id
-            //     ,type: param.to.type
-            //     ,content: param.mine.content
-            //     ,timestamp: new Date().getTime()
-            //     ,mine: true
-            // };
-            // pushChatlog(message);
         }
 
     };
