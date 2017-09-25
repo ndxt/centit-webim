@@ -12,6 +12,7 @@ import com.centit.framework.model.adapter.OperationLogWriter;
 import com.centit.framework.staticsystem.config.SpringSecurityDaoConfig;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.web.listener.InstantiationServiceBeanPostProcessor;
+import com.centit.im.web.plugins.IntelligentRobotEsImpl;
 import com.centit.im.web.plugins.IntelligentRobotFactorySingleImpl;
 import com.centit.im.web.plugins.JsfgwSmsMessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +43,10 @@ public class ServiceBeanConfig {
     }*/
 
     @Bean
-    public IntelligentRobotFactory intelligentRobotFactory(
-            @Autowired IntegrationEnvironment integrationEnvironment) {
-        IntelligentRobotFactorySingleImpl intelligentRobotFactory = new IntelligentRobotFactorySingleImpl();
-
-
+    public IntelligentRobotFactory intelligentRobotFactory() {
+        IntelligentRobotFactorySingleImpl intelligentRobotFactory
+                = new IntelligentRobotFactorySingleImpl();
+        intelligentRobotFactory.setIntelligentRobot( new IntelligentRobotEsImpl());
         return intelligentRobotFactory;
     }
 
