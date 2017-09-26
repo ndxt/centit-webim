@@ -52,7 +52,8 @@
         let params =  {
             userCode: mine.id,
             userName: mine.name,
-            mode: 'askForService'
+            mode: 'askForService',
+            optId : 'ww'
         },
          token = 'token=' + base64.encode(encodeURIComponent(JSON.stringify(params)));
 
@@ -65,9 +66,10 @@
      */
     function beginService(mine) {
       let params = angular.extend({}, {
-        userCode: mine.id,
+        userCode: 'fgwzw02',
         userName: mine.name,
-        switchServiceBtn: '123'
+        switchServiceBtn: '123',
+        optId : 'ww'
       }),
         token = 'token=' + base64.encode(encodeURIComponent(JSON.stringify(params)));
       queryCustomService(2000)

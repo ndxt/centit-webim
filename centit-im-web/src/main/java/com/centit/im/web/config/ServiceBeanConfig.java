@@ -50,7 +50,6 @@ public class ServiceBeanConfig {
         return intelligentRobotFactory;
     }
 
-
     @Bean
     public NotificationCenter notificationCenter() {
         NotificationCenterImpl notificationCenter = new NotificationCenterImpl();

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by codefan on 17-6-19.
  */
-@Service("intelligentRobot")
+//@Service("intelligentRobot")
 public class IntelligentRobotDemoImpl implements IntelligentRobot {
 
 

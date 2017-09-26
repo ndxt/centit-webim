@@ -30,5 +30,12 @@
 				 	 c.companyType=:companyType and c.companyName like :companyName]
 				 order by b.name ]]>
     </sql>
+    <sql id="QUERY_QUESTION_FOR_IM_ROBOT" >
+        <![CDATA[ select t.id as questionId,
+        t.descriptors as keyWords,
+        t.question as questionTitle,
+        t.answer as questionAnswer
+        from IQAS_LIB t ]]>
+    </sql>
 
 </sqlMap>

@@ -25,7 +25,7 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 问题标识
      */
-    @ESType(type="text")
+    @ESType(type="text", revert = true)
     @Id
     @Column(name = "QUESTION_ID")
     @GeneratedValue(generator = "assignedGenerator")
@@ -41,7 +41,7 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 所属业务
      */
-    @ESType(type="text")
+    @ESType(type="text", revert = true)
     @Column(name = "OPT_ID")
     private String optId;
 
@@ -54,7 +54,7 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 问题标题
      */
-    @ESType(type="text",index = "analyzed", query = true, revert = false, highlight = true, analyzer = "ik_smart")
+    @ESType(type="text",index = "analyzed", query = true, revert = true, highlight = true, analyzer = "ik_smart")
     @Column(name = "QUESTION_TITLE")
     private String questionTitle;
 
@@ -75,7 +75,7 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 问题回答和内容
      */
-    @ESType(type="text",index = "analyzed", query = true, revert = false, highlight = true, analyzer = "ik_smart")
+    @ESType(type="text",index = "analyzed", query = true, revert = true, highlight = true, analyzer = "ik_smart")
     @Column(name = "QUESTION_ANSWER")
     private String questionAnswer;
 
