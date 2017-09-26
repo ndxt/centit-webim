@@ -2,6 +2,7 @@ package com.centit.im.web.po;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.centit.im.po.WebImCustomer;
 import com.centit.search.annotation.ESType;
 import com.centit.search.document.ESDocument;
 import org.hibernate.annotations.GenericGenerator;
@@ -224,4 +225,32 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     public JSONObject toJSONObject() {
         return (JSONObject)JSON.toJSON(this);
     }
+
+    public QuestAndAnswer copyNotNullProperty(QuestAndAnswer other){
+
+        if( other.getQuestionId() != null)
+            this.questionId= other.getQuestionId();
+        if( other.getOsId() != null)
+            this.osId= other.getOsId();
+        if( other.getOptId() != null)
+            this.optId= other.getOptId();
+        if( other.getDeleteSign() != null)
+            this.deleteSign= other.getDeleteSign();
+        if( other.getCreator() != null)
+            this.creator= other.getCreator();
+        if( other.getCreateTime() != null)
+            this.createTime= other.getCreateTime();
+        if( other.getQuestionTitle() != null)
+            this.questionTitle= other.getQuestionTitle();
+        if( other.getKeyWords() != null)
+            this.keyWords= other.getKeyWords();
+        if( other.getQuestionUrl() != null)
+            this.questionUrl= other.getQuestionUrl();
+        if( other.getQuestionAnswer() != null)
+            this.questionAnswer= other.getQuestionAnswer();
+        if( other.getLastUpdateTime() != null)
+            this.lastUpdateTime= other.getLastUpdateTime();
+        return this;
+    }
+
 }
