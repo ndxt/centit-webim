@@ -1,75 +1,112 @@
-package com.centit.im.web.plugins;
+package com.centit.im.web.po;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.search.annotation.ESType;
 import com.centit.search.document.ESDocument;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by codefan on 17-6-1.
+ * @author codefan
+ * @version 0.1
  */
-@ESType(type="file")
-public class QuestDocument implements ESDocument, Serializable {
-    public static final String ES_DOCUMENT_TYPE = "file";
+@ESType(type="QUESTION_AND_ANSWER")
+@Entity
+@Table(name="QUESTION_AND_ANSWER")
+public class QuestAndAnswer implements ESDocument, Serializable {
+    public static final String ES_DOCUMENT_TYPE = "QUESTION_AND_ANSWER";
     private static final long serialVersionUID =  1L;
+
+    /**
+     * 问题标识
+     */
+    @ESType(type="text")
+    @Id
+    @Column(name = "QUESTION_ID")
+    @GeneratedValue(generator = "assignedGenerator")
+    @GenericGenerator(name = "assignedGenerator", strategy = "assigned")
+    private String questionId;
+
     /**
      * 所属系统
      */
     @ESType(type="text")
+    @Column(name = "OS_ID")
     private String osId;
     /**
      * 所属业务
      */
     @ESType(type="text")
+    @Column(name = "OPT_ID")
     private String optId;
 
     /**
-     * 关联的业务对象主键 键值对形式
+     * CHAR(1) comment '是否删除 T/F'
      */
-    @ESType(type="text")
-    private String optTag;
+    @Column(name = "DELETE_SIGN")
+    private String  deleteSign;
+
     /**
      * 问题标题
      */
     @ESType(type="text",index = "analyzed", query = true, revert = false, highlight = true, analyzer = "ik_smart")
+    @Column(name = "QUESTION_TITLE")
     private String questionTitle;
+
+    /**
+     * 关键字
+     */
+    @ESType(type="text",index = "analyzed", query = true, revert = false, highlight = true, analyzer = "ik_smart")
+    @Column(name = "KEY_WORDS")
+    private String keyWords;
+
     /**
      * 问题标题联url
      */
     @ESType(type="text")
+    @Column(name = "QUESTION_URL")
     private String questionUrl;
 
     /**
      * 问题回答和内容
      */
     @ESType(type="text",index = "analyzed", query = true, revert = false, highlight = true, analyzer = "ik_smart")
+    @Column(name = "QUESTION_ANSWER")
     private String questionAnswer;
 
 
     @ESType(type="date")
+    @Column(name = "CREATE_TIME")
     private Date createTime;
+
+    /**
+     * 创建人
+     */
+    @Column(name = "CREATOR")
+    private String creator;
+    /**
+     * 更新时间
+     */
+    @Column(name = "LAST_UPDATE_TIME")
+    private Date lastUpdateTime;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
-        if (!(o instanceof QuestDocument)) return false;
-
-        QuestDocument that = (QuestDocument) o;
-
-        if (!getOsId().equals(that.getOsId())) return false;
-        if (!getQuestionTitle().equals(that.getQuestionTitle())) return false;
+        if (!(o instanceof QuestAndAnswer)) return false;
+        QuestAndAnswer that = (QuestAndAnswer) o;
+        if (!getQuestionId().equals(that.getQuestionId())) return false;
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = getOsId().hashCode();
-        result = 31 * result + getQuestionTitle().hashCode();
-        return result;
+        return getQuestionId().hashCode();
     }
 
     @Override
@@ -97,13 +134,6 @@ public class QuestDocument implements ESDocument, Serializable {
         this.optId = optId;
     }
 
-    public String getOptTag() {
-        return optTag;
-    }
-
-    public void setOptTag(String optTag) {
-        this.optTag = optTag;
-    }
 
     public String getQuestionTitle() {
         return questionTitle;
@@ -137,10 +167,50 @@ public class QuestDocument implements ESDocument, Serializable {
         this.createTime = createTime;
     }
 
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
+    }
+
+    public String getDeleteSign() {
+        return deleteSign;
+    }
+
+    public void setDeleteSign(String deleteSign) {
+        this.deleteSign = deleteSign;
+    }
+
+    public String getKeyWords() {
+        return keyWords;
+    }
+
+    public void setKeyWords(String keyWords) {
+        this.keyWords = keyWords;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    public Date getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(Date lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
     @Override
     //@JSONField(serialize=false,deserialize=false)
     public String obtainDocumentId() {
-        return questionTitle;
+        return questionId;
     }
 
     @Override

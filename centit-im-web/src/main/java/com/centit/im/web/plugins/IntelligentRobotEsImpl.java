@@ -4,6 +4,7 @@ import com.centit.framework.common.SysParametersUtils;
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.service.IntelligentRobot;
 import com.centit.im.socketio.ImMessage;
+import com.centit.im.web.po.QuestAndAnswer;
 import com.centit.search.service.ESServerConfig;
 import com.centit.search.service.IndexerSearcherFactory;
 import com.centit.search.service.Searcher;
@@ -39,7 +40,7 @@ public class IntelligentRobotEsImpl implements IntelligentRobot {
                     SysParametersUtils.loadProperties());
         }
         if(searcher==null) {
-            searcher = IndexerSearcherFactory.obtainSearcher(esServerConfig, QuestDocument.class);
+            searcher = IndexerSearcherFactory.obtainSearcher(esServerConfig, QuestAndAnswer.class);
         }
 
         List<Map<String, Object>> questiosns = searcher.search(question,1,10);
