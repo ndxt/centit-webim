@@ -1,4 +1,4 @@
-/**
+  /**
  *
  * 图片路径
  */
@@ -109,8 +109,26 @@ function _getContextPath() {
                 title:'下线通知'
                 ,content:'服务结束请对我的服务做出评价<div id="rate"></div>'
                 ,yes:function(index){
-                    $('#rate').
-                    layer.close(index);
+                    $('#rate').raty({
+                        number: 5, //多少个星星设置
+                        targetType: 'hint', //类型选择，number是数字值，hint，是设置的数组值
+                        path: 'demo/img',
+                        hints: ['差', '一般', '好', '非常好', '全五星'],
+                        cancelOff: 'cancel-off-big.png',
+                        cancelOn: 'cancel-on-big.png',
+                        size: 24,
+                        starHalf: 'star-half-big.png',
+                        starOff: 'star-off-big.png',
+                        starOn: 'star-on-big.png',
+                        target: '#function-hint',
+                        cancel: false,
+                        targetKeep: true,
+                        targetText: '请选择评分',
+                        click: function(score, evt) {
+                            alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt.type);
+                        }
+                    });
+
                 }
             });
         });
@@ -489,7 +507,8 @@ function _getContextPath() {
             this.createProblemList(data.content,data);
             break;
           case CONTENT_TYPE_PUSH_FORM:
-
+              this.scoreRate();
+                break;
         case MSG_TYPE_BROADCAST:
           break
         default:
@@ -907,11 +926,11 @@ function _getContextPath() {
                   ,title: '请求退回' //工具名称
                   ,icon: '&#xe627;' //工具图标，参考图标文档
               }
-                  // ,{
-                  //     alias: 'over'
-                  //     ,title: '结束会话'
-                  //     ,icon: '&#xe60a;'
-                  // }
+                  ,{
+                      alias: 'over'
+                      ,title: '结束会话'
+                      ,icon: '&#xe60a;'
+                  }
                   ,{
                       alias: 'quickReply'
                       ,title: '快速回复'
