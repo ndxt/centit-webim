@@ -752,14 +752,7 @@ layui.define(['layer', 'laytpl', 'upload'], function (exports) {
                         showMineMessage({content: JSON.parse(message.content).msg, timestamp: message.sendTime});
                     }
                 }
-                getMessage({
-                    type: 'friend',
-                    system: true,
-                    reverse: false,
-                    id: data.id,
-                    content: '以上为历史消息',
-                    avatar: ctx + USER_AVATAR
-                }, false)
+
                 $(".layim-chat-username").attr('userCode', data.id);
                 $(".layim-chat-username").data('pageNo' + data.id, 2);
                 chatListMore();
