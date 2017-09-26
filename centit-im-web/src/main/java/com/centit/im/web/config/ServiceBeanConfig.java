@@ -5,16 +5,16 @@ import com.centit.framework.components.impl.TextOperationLogWriterImpl;
 import com.centit.framework.core.config.DataSourceConfig;
 import com.centit.framework.hibernate.config.HibernateConfig;
 import com.centit.framework.ip.app.config.IPAppSystemBeanConfig;
-import com.centit.framework.ip.service.IntegrationEnvironment;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
 import com.centit.framework.staticsystem.config.SpringSecurityDaoConfig;
+import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.im.service.IntelligentRobotFactory;
+import com.centit.im.service.impl.IntelligentRobotFactorySingleImpl;
 import com.centit.im.web.listener.InstantiationServiceBeanPostProcessor;
-import com.centit.im.web.plugins.IntelligentRobotEsImpl;
-import com.centit.im.web.plugins.IntelligentRobotFactorySingleImpl;
 import com.centit.im.web.plugins.JsfgwSmsMessageSender;
+import com.centit.support.algorithm.NumberBaseOpt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -34,7 +34,7 @@ public class ServiceBeanConfig {
     /*@Bean
     public IntelligentRobotFactory intelligentRobotFactory(
             @Autowired IntegrationEnvironment integrationEnvironment) {
-        IntelligentRobotFactoryImpl intelligentRobotFactory = new IntelligentRobotFactoryImpl();
+        IntelligentRobotFactoryRpcImpl intelligentRobotFactory = new IntelligentRobotFactoryRpcImpl();
 
         intelligentRobotFactory.setIntegrationEnvironment(
                 integrationEnvironment
@@ -46,7 +46,10 @@ public class ServiceBeanConfig {
     public IntelligentRobotFactory intelligentRobotFactory() {
         IntelligentRobotFactorySingleImpl intelligentRobotFactory
                 = new IntelligentRobotFactorySingleImpl();
-        intelligentRobotFactory.setIntelligentRobot( new IntelligentRobotEsImpl());
+        IntelligentRobotEsImpl intelligentRobot = new IntelligentRobotEsImpl();
+        intelligentRobot.setMaxAnswer( NumberBaseOpt.parseInteger(
+                        env.getProperty("question.robot.answer.maxsize"), 4));
+        intelligentRobotFactory.setIntelligentRobot(intelligentRobot );
         return intelligentRobotFactory;
     }
 

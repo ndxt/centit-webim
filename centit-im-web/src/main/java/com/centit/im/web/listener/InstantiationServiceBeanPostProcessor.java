@@ -25,7 +25,7 @@ public class InstantiationServiceBeanPostProcessor implements ApplicationListene
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event)
     {
-        notificationCenter.registerMessageSender("sms", smsMessageManager);
+        //notificationCenter.registerMessageSender("sms", smsMessageManager);
     }
 
 }

@@ -1,11 +1,11 @@
-package com.centit.im.web.controller;
+package com.centit.im.robot.es.controller;
 
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.dao.PageDesc;
-import com.centit.im.web.po.QuestAndAnswer;
-import com.centit.im.web.service.QuestAndAnswerManager;
+import com.centit.im.robot.es.po.QuestAndAnswer;
+import com.centit.im.robot.es.service.QuestAndAnswerManager;
 import com.centit.support.algorithm.DatetimeOpt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

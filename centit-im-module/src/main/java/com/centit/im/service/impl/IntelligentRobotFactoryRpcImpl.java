@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by codefan on 17-6-19.
  */
 //@Service("intelligentRobotFactory")
-public class IntelligentRobotFactoryImpl implements IntelligentRobotFactory {
+public class IntelligentRobotFactoryRpcImpl implements IntelligentRobotFactory {
     private static ConcurrentHashMap<String, IntelligentRobot> intelligentRobotMap
             = new ConcurrentHashMap<>();//根据用户找session
 
@@ -29,7 +29,7 @@ public class IntelligentRobotFactoryImpl implements IntelligentRobotFactory {
             return null;
         IntelligentRobot robot = intelligentRobotMap.get(osId);
         if(robot == null){
-            IntelligentRobotImpl robotImpl = new IntelligentRobotImpl();
+            IntelligentRobotRpcImpl robotImpl = new IntelligentRobotRpcImpl();
             OsInfo osInfo = integrationEnvironment.getOsInfo(osId);
             robotImpl.initAppSession(osInfo.getOsUrl()+"/service/askrobot");
             intelligentRobotMap.put(osId,robotImpl);

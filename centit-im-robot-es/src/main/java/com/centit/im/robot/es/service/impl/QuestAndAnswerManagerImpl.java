@@ -1,9 +1,9 @@
-package com.centit.im.web.service.impl;
+package com.centit.im.robot.es.service.impl;
 
 import com.centit.framework.hibernate.service.BaseEntityManagerImpl;
-import com.centit.im.web.dao.QuestAndAnswerDao;
-import com.centit.im.web.po.QuestAndAnswer;
-import com.centit.im.web.service.QuestAndAnswerManager;
+import com.centit.im.robot.es.dao.QuestAndAnswerDao;
+import com.centit.im.robot.es.po.QuestAndAnswer;
+import com.centit.im.robot.es.service.QuestAndAnswerManager;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,6 +11,6 @@ import org.springframework.stereotype.Service;
  */
 @Service("questAndAnswerManager")
 public class QuestAndAnswerManagerImpl extends BaseEntityManagerImpl<QuestAndAnswer,
-        String,QuestAndAnswerDao>
+        String, QuestAndAnswerDao >
         implements QuestAndAnswerManager {
 }

@@ -1,8 +1,7 @@
-package com.centit.im.web.po;
+package com.centit.im.robot.es.po;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.centit.im.po.WebImCustomer;
 import com.centit.search.annotation.ESType;
 import com.centit.search.document.ESDocument;
 import org.hibernate.annotations.GenericGenerator;

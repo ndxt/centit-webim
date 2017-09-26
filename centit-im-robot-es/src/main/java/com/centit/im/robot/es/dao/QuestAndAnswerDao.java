@@ -1,8 +1,8 @@
-package com.centit.im.web.dao;
+package com.centit.im.robot.es.dao;
 
 import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.hibernate.dao.BaseDaoImpl;
-import com.centit.im.web.po.QuestAndAnswer;
+import com.centit.im.robot.es.po.QuestAndAnswer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;

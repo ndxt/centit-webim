@@ -1,7 +1,7 @@
-package com.centit.im.web.service;
+package com.centit.im.robot.es.service;
 
 import com.centit.framework.hibernate.service.BaseEntityManager;
-import com.centit.im.web.po.QuestAndAnswer;
+import com.centit.im.robot.es.po.QuestAndAnswer;
 
 /**
  * Created by zhang_gd on 2017/9/26.

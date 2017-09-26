@@ -87,6 +87,7 @@
         <module>centit-im-client</module>
         <module>centit-im-web</module>
         <module>centit-im-view</module>
+        <module>centit-im-robot-es</module>
     </modules>
 
 

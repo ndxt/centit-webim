@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.centit.product</groupId>
-            <artifactId>centit-im-module</artifactId>
+            <artifactId>centit-im-robot-es</artifactId>
             <version>${centit.webim.version}</version>
         </dependency>
 
@@ -33,12 +33,6 @@
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-ip-app</artifactId>
             <version>${centit.ip.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.centit.support</groupId>
-            <artifactId>centit-es-client</artifactId>
-            <version>${centit.search.version}</version>
         </dependency>
 
         <!-- server runtime library -->

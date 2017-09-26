@@ -16,9 +16,9 @@ import java.net.URLEncoder;
  * Created by codefan on 17-6-19.
  */
 
-public class IntelligentRobotImpl implements IntelligentRobot {
+public class IntelligentRobotRpcImpl implements IntelligentRobot {
 
-    private static Logger log = LoggerFactory.getLogger(IntelligentRobotImpl.class);
+    private static Logger log = LoggerFactory.getLogger(IntelligentRobotRpcImpl.class);
 
     private AppSession appSession;
 

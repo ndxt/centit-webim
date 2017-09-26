@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>centit-webim</artifactId>
+        <groupId>com.centit.product</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>centit-im-robot-es</artifactId>
+    <name>com.centit.product:centit-im-robot-es</name>
+    <packaging>jar</packaging>
+    <description>用ES实现的一个简易的机器人</description>
+    <dependencies>
+
+        <dependency>
+            <groupId>com.centit.product</groupId>
+            <artifactId>centit-im-module</artifactId>
+            <version>${centit.webim.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.support</groupId>
+            <artifactId>centit-es-client</artifactId>
+            <version>${centit.search.version}</version>
+        </dependency>
+
+        <!-- server runtime library -->
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>${jdk.version}</version>
+            <systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+    </dependencies>
+</project>

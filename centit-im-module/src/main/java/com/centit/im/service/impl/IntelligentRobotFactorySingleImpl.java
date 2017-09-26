@@ -1,4 +1,4 @@
-package com.centit.im.web.plugins;
+package com.centit.im.service.impl;
 
 import com.centit.im.service.IntelligentRobot;
 import com.centit.im.service.IntelligentRobotFactory;
@@ -17,7 +17,7 @@ public class IntelligentRobotFactorySingleImpl implements IntelligentRobotFactor
     @Override
     public IntelligentRobot getIntelligentRobot(String osId){
         if(intelligentRobot==null)
-            intelligentRobot = new IntelligentRobotDemoImpl();
+            intelligentRobot = new IntelligentRobotDummyImpl();
         return intelligentRobot;
     }
 

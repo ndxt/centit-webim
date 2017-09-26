@@ -1,14 +1,13 @@
-package com.centit.im.web.plugins;
+package com.centit.im.service.impl;
 
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.service.IntelligentRobot;
-import org.springframework.stereotype.Service;
 
 /**
  * Created by codefan on 17-6-19.
  */
 //@Service("intelligentRobot")
-public class IntelligentRobotDemoImpl implements IntelligentRobot {
+public class IntelligentRobotDummyImpl implements IntelligentRobot {
 
 
     @Override
