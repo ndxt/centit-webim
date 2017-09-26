@@ -457,6 +457,7 @@ function _getContextPath() {
         setTimeout(function() {
           let mode = this.config.mode
           if (mode === MODE_SERVICE) {
+
             // 申请客服
             this.sendAsk4ServiceCommand()
           } else if (mode === MODE_QUESTION) {
