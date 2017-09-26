@@ -1,6 +1,6 @@
 create table question_and_answer
 (
-  question_id VARCHAR(100) not null primary key,
+  question_id VARCHAR(48) not null primary key,
   os_id VARCHAR(32),
   opt_Id VARCHAR(32),
   key_words VARCHAR(1000),
