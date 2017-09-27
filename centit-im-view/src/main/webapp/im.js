@@ -143,6 +143,37 @@ function _getContextPath() {
                 });
             });
         }
+
+        showNoticeMessage(data){
+            var friendCode = data.sender;
+            var $friendList =   $('.layim-list-friend li[data-type="friend"]');
+            for(var counter = 0,length = $friendList.length; counter < length; counter++){
+                var tempFriendCode = $friendList.eq(counter).attr("class").split(" ")[0].substr(12).trim();
+                if(tempFriendCode == friendCode){
+                    var state = data.content.state;
+                    switch(state){
+                        case "online":
+                            $friendList.eq(0).removeClass("layim-list-gray");
+                        case "offline":
+                            $friendList.eq(0).addClass("layim-list-gray");
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        onBroadcastMessage(data){
+            var type = data.contentType;
+
+            switch (type)
+            {
+                case CONTENT_TYPE_NOTICE:
+                    this.showNoticeMessage(data);
+                    break;
+                default:
+                    break;
+            }
+        }
         /**
          * 初始化后实例做的事
          */
@@ -521,6 +552,7 @@ function _getContextPath() {
                     break;
 
                 case MSG_TYPE_BROADCAST:
+                    this.onBroadcastMessage(data);
                     break
                 default:
                     console.warn(`未知的数据类型：${data.type}`)
