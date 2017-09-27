@@ -70,7 +70,7 @@ public class ImMessageUtils {
                 .contentType(ImMessage.CONTENT_TYPE_TEXT)
                 .sender("system")
                 .senderName("系统提示")
-                .addContent("senderId",senderId)
+                .addContent("Id",senderId)
                 .message(message).build();
     }
 
