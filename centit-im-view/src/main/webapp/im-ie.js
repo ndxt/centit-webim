@@ -9,9 +9,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
-*
-* 图片路径
-*/
+ *
+ * 图片路径
+ */
 var Default_Avatar = 'http://tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg';
 var SERVICE_AVATAR = '/src/avatar/service.jpg';
 var USER_AVATAR = '/src/avatar/user.png';
@@ -44,9 +44,13 @@ var CONTENT_TYPE_ASKROBOT = "askRobot";
 var CONTENT_TYPE_NOTICE = "notice";
 var CONTENT_TYPE_FORM = "form";
 var CONTENT_TYPE_PUSH_FORM = "pushForm";
+
 // 默认IM配置
 var Default_IM_Config = {
     mode: MODE_QUESTION
+    //添加全局函数
+};String.prototype.trim = function () {
+    return this.replace(/(^\s*)|(\s*$)/g, '');
 };
 window.ctx = _getContextPath();
 /**
@@ -114,37 +118,76 @@ function _getContextPath() {
                 });
             }
         }, {
+            key: 'sendEvaluatedScore',
+            value: function sendEvaluatedScore(sender, receiver, score) {
+                var contentType = CONTENT_TYPE_FORM;
+                var content = {};
+                content.service = sender;
+                content.formType = "praise";
+                content.score = score;
+                // 添加指定客服
+
+                this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
+            }
+        }, {
             key: 'scoreRate',
-            value: function scoreRate() {
+            value: function scoreRate(sender, receiver) {
+                var that = this;
                 layui.use('layer', function () {
                     var layer = layui.layer;
 
                     layer.open({
-                        title: '下线通知',
-                        content: '服务结束请对我的服务做出评价<div id="rate"></div>',
+                        title: '温馨提示',
+                        content: Mustache.render('店小二希望您对他的服务做出评价<div id="rate"></div>'),
                         yes: function yes(index) {
                             $('#rate').raty({
                                 number: 5, //多少个星星设置
-                                targetType: 'hint', //类型选择，number是数字值，hint，是设置的数组值
-                                path: 'demo/img',
-                                hints: ['差', '一般', '好', '非常好', '全五星'],
-                                cancelOff: 'cancel-off-big.png',
-                                cancelOn: 'cancel-on-big.png',
+                                path: 'plugins/images',
+                                hints: ['不满意', '不太满意', '基本满意', '满意', '非常满意'],
                                 size: 24,
-                                starHalf: 'star-half-big.png',
-                                starOff: 'star-off-big.png',
-                                starOn: 'star-on-big.png',
-                                target: '#function-hint',
                                 cancel: false,
-                                targetKeep: true,
-                                targetText: '请选择评分',
                                 click: function click(score, evt) {
-                                    alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt.type);
+                                    that.sendEvaluatedScore(sender, receiver, score);
+                                    layer.close(index);
+                                    window.close();
                                 }
                             });
                         }
                     });
                 });
+            }
+        }, {
+            key: 'showNoticeMessage',
+            value: function showNoticeMessage(data) {
+                var friendCode = data.sender;
+                var $friendList = $('.layim-list-friend li[data-type="friend"]');
+                for (var counter = 0, length = $friendList.length; counter < length; counter++) {
+                    var tempFriendCode = $friendList.eq(counter).attr("class").split(" ")[0].substr(12).trim();
+                    if (tempFriendCode == friendCode) {
+                        var state = data.content.state;
+                        switch (state) {
+                            case "online":
+                                $friendList.eq(0).removeClass("layim-list-gray");
+                            case "offline":
+                                $friendList.eq(0).addClass("layim-list-gray");
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }, {
+            key: 'onBroadcastMessage',
+            value: function onBroadcastMessage(data) {
+                var type = data.contentType;
+
+                switch (type) {
+                    case CONTENT_TYPE_NOTICE:
+                        this.showNoticeMessage(data);
+                        break;
+                    default:
+                        break;
+                }
             }
             /**
              * 初始化后实例做的事
@@ -275,6 +318,9 @@ function _getContextPath() {
                         this.showSystemMessage($.extend({ id: '0' }, data, { content: content.msg }));
                         this.changeUserName(content.userName);
                         this.to = $.extend({ id: content.userCode }, content);
+                        break;
+                    case CONTENT_TYPE_PUSH_FORM:
+                        this.scoreRate(this.mine.userCode, data.sender);
                         break;
                     default:
                         break;
@@ -535,7 +581,6 @@ function _getContextPath() {
                     setTimeout(function () {
                         var mode = this.config.mode;
                         if (mode === MODE_SERVICE) {
-
                             // 申请客服
                             this.sendAsk4ServiceCommand();
                         } else if (mode === MODE_QUESTION) {
@@ -587,10 +632,9 @@ function _getContextPath() {
                     case MSG_TYPE_QUESTION:
                         this.createProblemList(data.content, data);
                         break;
-                    case CONTENT_TYPE_PUSH_FORM:
-                        this.scoreRate();
-                        break;
+
                     case MSG_TYPE_BROADCAST:
+                        this.onBroadcastMessage(data);
                         break;
                     default:
                         console.warn('\u672A\u77E5\u7684\u6570\u636E\u7C7B\u578B\uFF1A' + data.type);
@@ -813,7 +857,13 @@ function _getContextPath() {
                     this.dealSwitchServiceMessage(params);
                     return;
                 }
-                this.showChatMessage(params);
+                this.im.getMessage({
+                    type: 'friend',
+                    system: true,
+                    username: params.senderName,
+                    id: "0",
+                    content: params.content
+                });
             }
         }, {
             key: 'queryUsers',
@@ -1060,7 +1110,7 @@ function _getContextPath() {
                 this.queryUnread();
                 var that = this;
                 this.im.on('tool(over)', function () {
-                    this.sendAsk4Evaluate(this.mine.userCode, $(".layim-chat-username").attr('userCode'));
+                    this.sendAsk4Evaluate(this.mine.userCode, $(".layim-chat-username").attr('userCode').trim());
                 }.bind(this));
                 this.im.on('tool(transfer)', function () {
 
