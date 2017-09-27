@@ -419,11 +419,11 @@ public class WebImSocketImpl implements WebImSocket {
         Session custSession = getSessionByUserCode(message.getReceiver());
         if(custSession==null){
             pushMessage(session /*message.getSender()*/,ImMessageUtils
-                    .buildSystemMessagePraise("对方已经离线，您的表单无法推送。",message.getSender()) );
+                    .buildSystemMessagePraise("对方已经离线，您的表单无法推送。",message.getReceiver()) );
         }else{
             pushMessage(custSession,message);
             pushMessage(session /*message.getSender()*/,ImMessageUtils
-                    .buildSystemMessagePraise("您的表单已经成功推送。",message.getSender()) );
+                    .buildSystemMessagePraise("您的表单已经成功推送。",message.getReceiver()) );
         }
     }
 
