@@ -183,13 +183,16 @@ public class WebImSocketImpl implements WebImSocket {
         String userName = message.fetchContentString("userName");
         WebImCustomer cust = customerDao.getObjectById(userCode);
         Date currDate = DatetimeOpt.currentUtilDate();
+        String headSculpture = message.fetchContentString("headSculpture");
         //保存和服信息
         if(cust!=null){
             cust.setLastActiveDate(currDate);
             if(StringUtils.isNotBlank(userName)) {
                 cust.setUserName(userName);
             }
-            cust.setHeadSculpture(message.fetchContentString("headSculpture"));
+            if(StringUtils.isNotBlank(headSculpture)) {
+                cust.setHeadSculpture(headSculpture);
+            }
             cust.setUserType(message.fetchContentString("userType"));
             String serviceOpts = message.fetchContentString("serviceOpts");
             if(StringUtils.isNotBlank(serviceOpts))
@@ -202,7 +205,9 @@ public class WebImSocketImpl implements WebImSocket {
             cust.setUserCode(custUserCode);
             cust.setOsId(osId);
             cust.setUserName(StringUtils.isNotBlank(userName)?userName:custUserCode);
-            cust.setHeadSculpture(message.fetchContentString("headSculpture"));
+            if(StringUtils.isNotBlank(headSculpture)) {
+                cust.setHeadSculpture(headSculpture);
+            }
             cust.setUserType(message.fetchContentString("userType"));
             cust.setCreateTime(currDate);
             cust.setLastActiveDate(currDate);
@@ -224,7 +229,7 @@ public class WebImSocketImpl implements WebImSocket {
         }
 
         broadcastMessage(
-                ImMessageUtils.buildOnlineMessage(userCode));
+                ImMessageUtils.buildOnlineMessage(userCode, userName,headSculpture));
          /*{
             pushMessage(session ,ImMessageUtils
                     .buildSystemMessage(message.getReceiver(), "系统错误：您的用户信息不存在！"));
