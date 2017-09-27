@@ -146,20 +146,35 @@ function _getContextPath() {
 
         showNoticeMessage(data){
             var friendCode = data.sender;
+            var flag = 1;
             var $friendList =   $('.layim-list-friend li[data-type="friend"]');
             for(var counter = 0,length = $friendList.length; counter < length; counter++){
                 var tempFriendCode = $friendList.eq(counter).attr("class").split(" ")[0].substr(12).trim();
                 if(tempFriendCode == friendCode){
+                    flag = 0;
                     var state = data.content.state;
+                    var tempNode = $friendList.eq(counter);
                     switch(state){
                         case "online":
-                            $friendList.eq(0).removeClass("layim-list-gray");
+                            tempNode.removeClass("layim-list-gray");
+                            break;
                         case "offline":
-                            $friendList.eq(0).addClass("layim-list-gray");
+                            tempNode.addClass("layim-list-gray");
+                            break;
                         default:
+
                             break;
                     }
+                    var parentList = tempNode.parent();
+                    parentList.prepend(tempNode.remove());
                 }
+            }
+            if(flag == 1 && data.sender !=  this.mine.userCode){
+               var parent =  $friendList.eq(0).parent();
+               var newFriend = $friendList.eq(0).clone(true);
+               newFriend.removeClass();
+               newFriend.addClass("layim-friend" + data.sender)
+                parent.prepend( newFriend)
             }
         }
         onBroadcastMessage(data){
@@ -761,7 +776,7 @@ function _getContextPath() {
                 type: 'friend',
                 system: true,
                 username: params.senderName,
-                id: "0",
+                id: params.id,
                 content: params.content
             });
         }
@@ -893,7 +908,7 @@ function _getContextPath() {
 
             $("body").on("click",'*[layim-event="chat"]',function () {
 
-                var userCode = $(this).attr('class').substr(12);
+                var userCode = $(this).attr("class").split(" ")[0].substr(12).trim();
                 $(".layim-chat-username").attr('userCode',userCode);
                 $(".layim-chat-username").data('pageNo'+userCode,1);
 
