@@ -222,6 +222,9 @@ public class WebImSocketImpl implements WebImSocket {
             cust.setUserState(ImMessage.USER_STATE_ONLINE);
             onlineCustService.put(cust.getUserCode(), cust);
         }
+
+        broadcastMessage(
+                ImMessageUtils.buildOnlineMessage(userCode));
          /*{
             pushMessage(session ,ImMessageUtils
                     .buildSystemMessage(message.getReceiver(), "系统错误：您的用户信息不存在！"));

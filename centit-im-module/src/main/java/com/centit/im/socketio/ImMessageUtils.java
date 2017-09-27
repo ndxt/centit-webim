@@ -29,6 +29,13 @@ public class ImMessageUtils {
         return true;
     }
 
+    public static ImMessage buildOnlineMessage(String userCode){
+        return new ImMessageBuild().type(ImMessage.MSG_TYPE_BROADCAST)
+                .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                .sender(userCode)
+                .addContent("state","online").build();
+    }
+
     public static ImMessage buildOfflineMessage(String userCode){
         return new ImMessageBuild().type(ImMessage.MSG_TYPE_BROADCAST)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
