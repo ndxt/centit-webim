@@ -176,6 +176,7 @@ function _getContextPath() {
                                 tempNode.addClass("layim-list-gray");
                                 break;
                             default:
+
                                 break;
                         }
                         var parentList = tempNode.parent();
@@ -187,6 +188,7 @@ function _getContextPath() {
                     var newFriend = $friendList.eq(0).clone(true);
                     newFriend.removeClass();
                     newFriend.addClass("layim-friend" + data.sender);
+                    newFriend.find('span').html(data.senderName);
                     parent.prepend(newFriend);
                 }
             }
@@ -1124,7 +1126,17 @@ function _getContextPath() {
                 this.queryUnread();
                 var that = this;
                 this.im.on('tool(over)', function () {
-                    this.sendAsk4Evaluate(this.mine.userCode, $(".layim-chat-username").attr('userCode').trim());
+                    var layer = this.layer;
+                    layer.open({
+                        title: '结束会话',
+                        content: '确认发送评价给客户，并结束本次回话吗？',
+                        btn: ['确认', '取消'],
+                        yes: function yes(index) {
+                            that.sendAsk4Evaluate(that.mine.userCode, $(".layim-chat-username").attr('userCode').trim());
+                            layer.close(index);
+                            that.im.closeThisChat();
+                        }
+                    });
                 }.bind(this));
                 this.im.on('tool(transfer)', function () {
 
