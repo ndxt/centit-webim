@@ -448,7 +448,7 @@ public class WebImSocketImpl implements WebImSocket {
                         .buildSystemMessage("您的评价已经成功提交。") );
 
                 pushMessage(message.getReceiver() ,ImMessageUtils
-                        .buildSystemMessage("对方已经给您评价。") );
+                        .buildSystemMessagePraise("对方已经给您评价。",message.getSender()) );
                 break;
             default:
                 break;

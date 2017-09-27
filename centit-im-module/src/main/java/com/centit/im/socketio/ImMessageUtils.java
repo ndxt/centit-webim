@@ -65,6 +65,15 @@ public class ImMessageUtils {
                 .message(message).build();
     }
 
+    public static ImMessage buildSystemMessagePraise(String message,String senderId){
+        return new ImMessageBuild().type(ImMessage.MSG_TYPE_SYSTEM)
+                .contentType(ImMessage.CONTENT_TYPE_TEXT)
+                .sender("system")
+                .senderName("系统提示")
+                .addContent("senderId",senderId)
+                .message(message).build();
+    }
+
     public static ImMessage buildSystemMessage(String message){
         return buildSystemMessage("system",message);
     }
