@@ -894,6 +894,7 @@ function _getContextPath() {
                     return;
                 }
                 this.im.getMessage({
+                    avatar: ctx + USER_AVATAR,
                     type: 'friend',
                     system: true,
                     username: params.senderName,

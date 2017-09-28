@@ -644,6 +644,9 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
   
   //记录历史会话
   var setHistory = function(data){
+      if(data.system == true){
+          return;
+      }
     var local = layui.data('layim-mobile')[cache.mine.id] || {};
     var obj = {}, history = local.history || {};
     var is = history[data.type + data.id];
