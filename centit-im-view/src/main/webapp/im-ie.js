@@ -138,7 +138,7 @@ function _getContextPath() {
 
                     layer.open({
                         title: '温馨提示',
-                        content: Mustache.render('店小二希望您对他的服务做出评价<div id="rate"></div>'),
+                        content: Mustache.render('客服人员希望您对他的服务做出评价<div id="rate"></div>'),
                         yes: function yes(index) {
                             $('#rate').raty({
                                 number: 5, //多少个星星设置
@@ -205,6 +205,7 @@ function _getContextPath() {
                         break;
                 }
             }
+
             /**
              * 初始化后实例做的事
              */
@@ -422,6 +423,7 @@ function _getContextPath() {
                     content: Mustache.render('客服可能暂时不在，请稍作等待')
                 });
             }
+
             /**
              * 发送注册（上线）指令
              */
@@ -509,6 +511,7 @@ function _getContextPath() {
 
                 this.sendWSMessage(data);
             }
+
             /**
              * 再次请求问题
              * @param contentType
@@ -540,6 +543,7 @@ function _getContextPath() {
                 this.im.showQuestion({ content: content.questionContent });
                 this.sendQuestionRequest(content);
             }
+
             /**
              * 将信息通过WS发送
              * @param data
@@ -640,7 +644,11 @@ function _getContextPath() {
                         this.showChatMessage($.extend({ id: data.sender }, data, { content: data.content.msg }));
                         break;
                     case MSG_TYPE_SYSTEM:
-                        this.showSystemMessage($.extend({ id: '0' }, data, { content: data.content.msg, id: data.content.id, data: data.content }));
+                        this.showSystemMessage($.extend({ id: '0' }, data, {
+                            content: data.content.msg,
+                            id: data.content.id,
+                            data: data.content
+                        }));
                         break;
                     case MSG_TYPE_COMMAND:
                         this.onCommandMessage(data, data.content);
@@ -650,7 +658,7 @@ function _getContextPath() {
                         break;
 
                     case MSG_TYPE_BROADCAST:
-                        this.onBroadcastMessage(data);
+                        // this.onBroadcastMessage(data);
                         break;
                     default:
                         console.warn('\u672A\u77E5\u7684\u6570\u636E\u7C7B\u578B\uFF1A' + data.type);
@@ -669,6 +677,7 @@ function _getContextPath() {
 
                     layer.open({
                         title: '系统通知',
+
                         content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229);cursor: pointer">刷新</a>重新连接')
                     });
                 });
@@ -923,7 +932,8 @@ function _getContextPath() {
                 lastReadDate.setDate(lastReadDate.getDate() + 1);
                 var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
                 var pageNo = 1;
-                $.ajax({ url: ctx + '/service/webim/historyMessage/' + receiver + '/' + sender,
+                $.ajax({
+                    url: ctx + '/service/webim/historyMessage/' + receiver + '/' + sender,
                     async: false,
                     dataType: 'json',
                     data: { pageNo: pageNo, lastReadDate: dateStr, pageSize: 100000 },
@@ -964,7 +974,8 @@ function _getContextPath() {
                 lastReadDate.setDate(lastReadDate.getDate() + 1);
                 var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
                 var pageNo = $(".layim-chat-username").data('pageNo' + sender) || 1;
-                $.ajax({ url: ctx + '/service/webim/historyMessage/' + receiver + '/' + sender,
+                $.ajax({
+                    url: ctx + '/service/webim/historyMessage/' + receiver + '/' + sender,
                     dataType: 'json',
                     data: { pageNo: pageNo, lastReadDate: dateStr },
                     success: function success(res) {
@@ -1117,7 +1128,8 @@ function _getContextPath() {
 
                 this.bindEvent(this.im, this.mine.userCode);
 
-                ;[].concat(users, services).forEach(function (d) {
+                ;
+                [].concat(users, services).forEach(function (d) {
                     if ('F' === d.userState) {
                         _this4.im.setFriendStatus(d.userCode, 'offline');
                     }
@@ -1129,7 +1141,7 @@ function _getContextPath() {
                     var layer = this.layer;
                     layer.open({
                         title: '结束会话',
-                        content: '确认发送评价给客户，并结束本次回话吗？',
+                        content: '是否结束本次会话，并发送评价请求？',
                         btn: ['确认', '取消'],
                         yes: function yes(index) {
                             that.sendAsk4Evaluate(that.mine.userCode, $(".layim-chat-username").attr('userCode').trim());
@@ -1329,9 +1341,6 @@ function _getContextPath() {
                     }
                 }.bind(this));
 
-                // this.im.on('tool(over)',function(){
-                //
-                // });尚未实现
                 this.im.on('tool(quickReply)', function () {
                     $.get(this.contextPath + '/json/reply.txt', function (res) {
                         if (!!$("div.layui-show .selectContainer").html()) {
@@ -1383,7 +1392,8 @@ function _getContextPath() {
                 lastReadDate.setDate(lastReadDate.getDate() + 1);
                 var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
 
-                $.ajax({ url: ctx + '/service/webim/statUnread/' + userCode,
+                $.ajax({
+                    url: ctx + '/service/webim/statUnread/' + userCode,
                     dataType: 'json',
                     async: false,
                     // data: {pageNo: pageNo,lastReadDate: dateStr},
@@ -1407,7 +1417,8 @@ function _getContextPath() {
 
                 var _loop = function _loop(i, length) {
 
-                    $.ajax({ url: ctx + '/service/webim/historyMessage/' + userCode + '/' + arr[i],
+                    $.ajax({
+                        url: ctx + '/service/webim/historyMessage/' + userCode + '/' + arr[i],
                         dataType: 'json',
                         async: false,
                         data: { pageNo: 1, lastReadDate: dateStr },
@@ -1429,7 +1440,10 @@ function _getContextPath() {
                                         avatar: ctx + USER_AVATAR
                                     }, true);
                                 } else {
-                                    im.showMineMessage({ content: JSON.parse(message.content).msg, timestamp: message.sendTime });
+                                    im.showMineMessage({
+                                        content: JSON.parse(message.content).msg,
+                                        timestamp: message.sendTime
+                                    });
                                 }
                             }
                         }

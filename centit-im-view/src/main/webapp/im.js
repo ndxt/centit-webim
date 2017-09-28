@@ -41,8 +41,7 @@ const Default_IM_Config = {
     mode: MODE_QUESTION
 }
 //添加全局函数
-String.prototype.trim=function()
-{
+String.prototype.trim = function () {
     return this.replace(/(^\s*)|(\s*$)/g, '');
 }
 window.ctx = _getContextPath();
@@ -58,9 +57,8 @@ function _getContextPath() {
         return match[1]
     }
 }
-;(function(global) {
+;(function (global) {
     'use strict'
-
 
 
     class IM {
@@ -78,7 +76,7 @@ function _getContextPath() {
             this.getMineInfo()
 
             this.beforeInit()
-                .then(function() {
+                .then(function () {
 
                     // 初始化IM
                     this.initIM()
@@ -95,18 +93,19 @@ function _getContextPath() {
 
         onAfterSendChatMessage(data, mode) {
 
-            if(mode == 'askForService') {
-                if(!!this.messageHandler){
+            if (mode == 'askForService') {
+                if (!!this.messageHandler) {
                     clearTimeout(this.messageHandler);
                 }
-                this.messageHandler = setTimeout(this.sendNotice.bind(this),120000);
+                this.messageHandler = setTimeout(this.sendNotice.bind(this), 120000);
             }
         }
 
         beforeInit() {
             return new Promise(resolve => resolve())
         }
-        sendEvaluatedScore(sender,receiver,score){
+
+        sendEvaluatedScore(sender, receiver, score) {
             let contentType = CONTENT_TYPE_FORM;
             let content = {};
             content.service = sender;
@@ -114,26 +113,27 @@ function _getContextPath() {
             content.score = score
             // 添加指定客服
 
-            this.sendCommandMessage({ contentType, content,receiver })
+            this.sendCommandMessage({contentType, content, receiver})
 
         }
-        scoreRate(sender,receiver){
+
+        scoreRate(sender, receiver) {
             var that = this;
-            layui.use('layer', function(){
+            layui.use('layer', function () {
                 var layer = layui.layer;
 
                 layer.open({
-                    title:'温馨提示'
-                    ,content:Mustache.render('店小二希望您对他的服务做出评价<div id="rate"></div>')
-                    ,yes:function(index){
+                    title: '温馨提示'
+                    , content: Mustache.render('客服人员希望您对他的服务做出评价<div id="rate"></div>')
+                    , yes: function (index) {
                         $('#rate').raty({
                             number: 5, //多少个星星设置
                             path: 'plugins/images',
-                            hints: ['不满意','不太满意','基本满意','满意','非常满意'],
+                            hints: ['不满意', '不太满意', '基本满意', '满意', '非常满意'],
                             size: 24,
                             cancel: false,
-                            click: function(score, evt) {
-                                that.sendEvaluatedScore(sender,receiver,score);
+                            click: function (score, evt) {
+                                that.sendEvaluatedScore(sender, receiver, score);
                                 layer.close(index);
                                 window.close();
                             }
@@ -144,17 +144,17 @@ function _getContextPath() {
             });
         }
 
-        showNoticeMessage(data){
+        showNoticeMessage(data) {
             var friendCode = data.sender;
             var flag = 1;
-            var $friendList =   $('.layim-list-friend li[data-type="friend"]');
-            for(var counter = 0,length = $friendList.length; counter < length; counter++){
+            var $friendList = $('.layim-list-friend li[data-type="friend"]');
+            for (var counter = 0, length = $friendList.length; counter < length; counter++) {
                 var tempFriendCode = $friendList.eq(counter).attr("class").split(" ")[0].substr(12).trim();
-                if(tempFriendCode == friendCode){
+                if (tempFriendCode == friendCode) {
                     flag = 0;
                     var state = data.content.state;
                     var tempNode = $friendList.eq(counter);
-                    switch(state){
+                    switch (state) {
                         case "online":
                             tempNode.removeClass("layim-list-gray");
                             break;
@@ -169,20 +169,20 @@ function _getContextPath() {
                     parentList.prepend(tempNode.remove());
                 }
             }
-            if(flag == 1 && data.sender !=  this.mine.userCode){
-               var parent =  $friendList.eq(0).parent();
-               var newFriend = $friendList.eq(0).clone(true);
-               newFriend.removeClass();
-               newFriend.addClass("layim-friend" + data.sender)
+            if (flag == 1 && data.sender != this.mine.userCode) {
+                var parent = $friendList.eq(0).parent();
+                var newFriend = $friendList.eq(0).clone(true);
+                newFriend.removeClass();
+                newFriend.addClass("layim-friend" + data.sender)
                 newFriend.find('span').html(data.senderName)
-                parent.prepend( newFriend)
+                parent.prepend(newFriend)
             }
         }
-        onBroadcastMessage(data){
+
+        onBroadcastMessage(data) {
             var type = data.contentType;
 
-            switch (type)
-            {
+            switch (type) {
                 case CONTENT_TYPE_NOTICE:
                     this.showNoticeMessage(data);
                     break;
@@ -190,6 +190,7 @@ function _getContextPath() {
                     break;
             }
         }
+
         /**
          * 初始化后实例做的事
          */
@@ -236,14 +237,13 @@ function _getContextPath() {
         }
 
 
-
         /**
          * 创建WS链接
          */
         createWSConnection() {
             let contextPath = _getContextPath()
-                ,id = this.mine.id
-                ,wsHost
+                , id = this.mine.id
+                , wsHost
 
             if (contextPath) {
                 wsHost = contextPath.replace(/^http/, 'ws')
@@ -276,7 +276,7 @@ function _getContextPath() {
                 id,
                 content,
                 timestamp: timestamp || _getTimestamp(),
-                avatar:  ctx + USER_AVATAR
+                avatar: ctx + USER_AVATAR
             })
         }
 
@@ -292,14 +292,14 @@ function _getContextPath() {
         onCommandMessage(data, content) {
             let contentType = data.contentType
 
-            switch(contentType) {
+            switch (contentType) {
                 case CONTENT_TYPE_SERVICE:
                     this.showSystemMessage($.extend({id: '0'}, data, {content: content.msg}))
                     this.changeUserName(content.userName)
                     this.to = $.extend({id: content.userCode}, content)
                     break
                 case CONTENT_TYPE_PUSH_FORM:
-                    this.scoreRate(this.mine.userCode,data.sender);
+                    this.scoreRate(this.mine.userCode, data.sender);
                     break;
                 default:
                     break
@@ -341,14 +341,14 @@ function _getContextPath() {
                 sendTime: _getTimestamp()
             }
             let mode = this.config.mode;
-            if(mode == 'askForService') {
+            if (mode == 'askForService') {
                 this.sendWSMessage(data);
             }
             // console.log(data);
 
             // console.log(mode);
             // //现在先写成这样，等后台写好再修改。
-            if(mode == 'askRobot'){
+            if (mode == 'askRobot') {
                 this.sendQuestionRequest({question: (data.content.msg || '').replace(/\n/, '')});
             }
 
@@ -358,21 +358,22 @@ function _getContextPath() {
         }
 
         //创造问题消息列表
-        createProblemList(problems,data){
-            this.showChatMessage($.extend({id: '0'}, data, {content:Mustache.render("[span class=hintMsg]{{msg}}[/span][ul]{{#options}} [li class=question id={{value}} data-type={{type}}][a]{{label}}[/a][/li]{{/options}} [/ul]", problems)}));
+        createProblemList(problems, data) {
+            this.showChatMessage($.extend({id: '0'}, data, {content: Mustache.render("[span class=hintMsg]{{msg}}[/span][ul]{{#options}} [li class=question id={{value}} data-type={{type}}][a]{{label}}[/a][/li]{{/options}} [/ul]", problems)}));
 
         }
 
         /**
          *发送提醒
          */
-        sendNotice(){
+        sendNotice() {
             this.showSystemMessage({
                 id: '0',
                 content: Mustache.render('客服可能暂时不在，请稍作等待')
             })
 
         }
+
         /**
          * 发送注册（上线）指令
          */
@@ -393,25 +394,24 @@ function _getContextPath() {
             this.config.mode = MODE_SERVICE;
             // 添加指定客服
             if (this.config.customService) {
-                $.extend(content, { customerService: this.config.customService ,optId:this.config.optId})
+                $.extend(content, {customerService: this.config.customService, optId: this.config.optId})
             }
 
-            this.sendCommandMessage({ contentType, content })
+            this.sendCommandMessage({contentType, content})
         }
 
         /**
          * 发送切换客服指令
          *
          */
-        sendSwitchServiceCommand(service,receiver){
+        sendSwitchServiceCommand(service, receiver) {
             let contentType = CONTENT_TYPE_SERVICE
             let content = {};
             content.service = service;
             // 添加指定客服
 
-            this.sendCommandMessage({ contentType, content,receiver })
+            this.sendCommandMessage({contentType, content, receiver})
         }
-
 
 
         /**
@@ -421,7 +421,7 @@ function _getContextPath() {
             let contentType = CONTENT_TYPE_ASKROBOT
             let content = this.mine
             // this.config.mode = MODE_QUESTION;
-            this.sendCommandMessage({ contentType, content })
+            this.sendCommandMessage({contentType, content})
         }
 
         /**
@@ -443,6 +443,7 @@ function _getContextPath() {
 
             this.sendWSMessage(data)
         }
+
         /**
          * 再次请求问题
          * @param contentType
@@ -452,8 +453,8 @@ function _getContextPath() {
         sendQuestionRequest(content) {
             let data = {
                 type: MSG_TYPE_QUESTION,
-                contentType:'text',
-                content:content,
+                contentType: 'text',
+                content: content,
                 sender: 'robot',
                 sendTime: _getTimestamp()
             }
@@ -464,26 +465,27 @@ function _getContextPath() {
         /**
          * 显示用户所点击的问题
          */
-        showClickQuestion(content){
-            this.im.showQuestion({content:content.questionContent})
+        showClickQuestion(content) {
+            this.im.showQuestion({content: content.questionContent})
             this.sendQuestionRequest(content)
         }
+
         /**
          * 将信息通过WS发送
          * @param data
          */
-        bindProblemListClickEvent(){
+        bindProblemListClickEvent() {
             var that = this;
-            $("body").on('click','.question',function () {
+            $("body").on('click', '.question', function () {
                 var type = $(this).attr('data-type')
                 var keyValue = $(this).attr('id');
                 var questionContent = $(this).text();
-                switch(type){
+                switch (type) {
                     case 'http':
                         window.open(keyValue);
                         break;
                     case 'question':
-                        that.showClickQuestion({question: keyValue,questionContent:questionContent});
+                        that.showClickQuestion({question: keyValue, questionContent: questionContent});
                         break;
                     case 'command':
                         that.sendAsk4ServiceCommand();
@@ -494,6 +496,7 @@ function _getContextPath() {
                 }
             })
         }
+
         sendWSMessage(data) {
             console.log(data);
             if (this.socket.readyState == '3') {
@@ -514,7 +517,7 @@ function _getContextPath() {
 
             if (this.mine.userType === TYPE_USER) {
                 // 确保注册完成之后执行
-                setTimeout(function() {
+                setTimeout(function () {
                     let mode = this.config.mode
                     if (mode === MODE_SERVICE) {
                         // 申请客服
@@ -533,42 +536,46 @@ function _getContextPath() {
          */
         onWSMessage(res) {
             let data = res.data
-            if(!this.messageHandler){
+            if (!this.messageHandler) {
                 clearTimeout(this.messageHandler);
             }
             try {
                 data = JSON.parse(res.data)
                 console.log(data)
             }
-            catch(e) {
+            catch (e) {
                 // console.info(e)
             }
-            if(data.contentType == "offline" && this.mine.userType == "S"){
-                layui.use('layer', function(){
+            if (data.contentType == "offline" && this.mine.userType == "S") {
+                layui.use('layer', function () {
                     var layer = layui.layer;
 
                     layer.open({
-                        title:'下线通知'
-                        ,content:data.content.msg
+                        title: '下线通知'
+                        , content: data.content.msg
                     });
                 });
             }
-            switch(data.type) {
+            switch (data.type) {
                 case MSG_TYPE_CHAT:
                     this.showChatMessage($.extend({id: data.sender}, data, {content: data.content.msg}))
                     break
                 case MSG_TYPE_SYSTEM:
-                    this.showSystemMessage($.extend({id: '0'}, data, {content: data.content.msg,id:data.content.id,data:data.content}))
+                    this.showSystemMessage($.extend({id: '0'}, data, {
+                        content: data.content.msg,
+                        id: data.content.id,
+                        data: data.content
+                    }))
                     break
                 case MSG_TYPE_COMMAND:
                     this.onCommandMessage(data, data.content)
                     break;
                 case MSG_TYPE_QUESTION:
-                    this.createProblemList(data.content,data);
+                    this.createProblemList(data.content, data);
                     break;
 
                 case MSG_TYPE_BROADCAST:
-                    this.onBroadcastMessage(data);
+                    // this.onBroadcastMessage(data);
                     break
                 default:
                     console.warn(`未知的数据类型：${data.type}`)
@@ -579,12 +586,13 @@ function _getContextPath() {
          * WebSocket关闭打开事件
          */
         onWSClose() {
-            layui.use('layer', function(){
+            layui.use('layer', function () {
                 var layer = layui.layer;
 
                 layer.open({
-                    title:'系统通知'
-                    ,content:Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229);cursor: pointer">刷新</a>重新连接')
+                    title: '系统通知'
+                    ,
+                    content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229);cursor: pointer">刷新</a>重新连接')
                 });
             });
         }
@@ -604,20 +612,18 @@ function _getContextPath() {
      * @returns {number}
      * @private
      */
-    function _getTimestamp () {
+    function _getTimestamp() {
         return new Date().getTime()
     }
 
 
 })(window)
 
-;(function(global, IM) {
+;(function (global, IM) {
     'use strict'
 
 
-
     class UserIM extends IM {
-
 
 
         initIM() {
@@ -632,19 +638,18 @@ function _getContextPath() {
                     url: `${ctx}/service/file/upload` //（返回的数据格式见下文）
                     //默认post
                 }
-                ,uploadFile: {
+                , uploadFile: {
                     url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
                     //默认post
                 },
                 brief: true,
                 tool: [{
                     alias: 'robot' //工具别名
-                    ,title: '智能问答' //工具名称
-                    ,icon: '&#xe61a;' //工具图标，参考图标文档
+                    , title: '智能问答' //工具名称
+                    , icon: '&#xe61a;' //工具图标，参考图标文档
                 }]
             })
         }
-
 
 
         afterInit() {
@@ -657,7 +662,7 @@ function _getContextPath() {
                 avatar: ctx + SERVICE_AVATAR
             }
             let that = this;
-            this.im.on('tool(robot)', function(){
+            this.im.on('tool(robot)', function () {
                 that.config.mode = MODE_QUESTION;
                 that.sendAsk4QuestionCommand();
                 that.changeUserName('智能客服');
@@ -666,7 +671,6 @@ function _getContextPath() {
             this.im.chat(this.window);
 
         }
-
 
 
         /**
@@ -687,7 +691,7 @@ function _getContextPath() {
                 timestamp: timestamp || _getTimestamp(),
                 avatar: ctx + SERVICE_AVATAR
             })
-            if(this.messageHandler)
+            if (this.messageHandler)
                 clearTimeout(this.messageHandler);
         }
     }
@@ -697,16 +701,15 @@ function _getContextPath() {
      * @returns {number}
      * @private
      */
-    function _getTimestamp () {
+    function _getTimestamp() {
         return new Date().getTime()
     }
 
     global.UserIM = global.UserIM || UserIM
 })(window, window.IM)
 
-;(function(global, IM) {
+;(function (global, IM) {
     'use strict'
-
 
 
     class ServiceIM extends IM {
@@ -730,7 +733,7 @@ function _getContextPath() {
         }
 
 
-        dealSwitchServiceMessage(params){
+        dealSwitchServiceMessage(params) {
             let that = this;
             var data = {};
             data.avatar = Default_Avatar;
@@ -741,23 +744,23 @@ function _getContextPath() {
             data.timestamp = params.longSendTime;
             data.type = "friend";
             data.username = params.data.custName;
-            layui.use('layer', function(){
+            layui.use('layer', function () {
                 var layer = layui.layer;
 
                 layer.open({
-                    title:'系统通知'
-                    ,content:params.content
-                    ,btn:['确认','退回']
-                    ,yes:function(index){
+                    title: '系统通知'
+                    , content: params.content
+                    , btn: ['确认', '退回']
+                    , yes: function (index) {
                         that.im.chat(data);
-                        setTimeout(that.renderSwitchMessage(params.id,that.im,params.data.serviceCode,that.contextPath),500);
+                        setTimeout(that.renderSwitchMessage(params.id, that.im, params.data.serviceCode, that.contextPath), 500);
                         console.log(1);
-                        $('div.layui-show .layim-chat-username').data('preServiceCode',params.data.serviceCode);
+                        $('div.layui-show .layim-chat-username').data('preServiceCode', params.data.serviceCode);
                         layer.close(index);
 
                     }
-                    ,btn2:function(){
-                        that.sendSwitchServiceCommand(params.data.serviceCode,params.data.id);
+                    , btn2: function () {
+                        that.sendSwitchServiceCommand(params.data.serviceCode, params.data.id);
                     }
                 });
             });
@@ -766,10 +769,10 @@ function _getContextPath() {
 
         showSystemMessage(params) {
             params.system = true
-            if(typeof params.data.type === 'undefined'){
+            if (typeof params.data.type === 'undefined') {
                 params.data.type = "";
             }
-            if(params.data.type == 'A'){
+            if (params.data.type == 'A') {
                 this.dealSwitchServiceMessage(params);
                 return;
             }
@@ -787,22 +790,24 @@ function _getContextPath() {
                 id = this.mine.id
 
             return fetch(`${ctx }/service/webimcust/cust/${id }?lastServiceDate=1949-10-1`)
-                    .then(res => res.json())
-        .then(res => res.data)
+                    .then(res => res.json()
+        )
+        .
+            then(res => res.data
+        )
         }
-
 
 
         queryService() {
             let ctx = this.contextPath
 
             return fetch(`${ctx }/service/webimcust/services`)
-                    .then(res => res.json())
-        .then(res => res.data)
+                    .then(res => res.json()
+        )
+        .
+            then(res => res.data
+        )
         }
-
-
-
 
 
         beforeInit() {
@@ -812,33 +817,36 @@ function _getContextPath() {
                 this.queryService()
             ]).then(res => {
                 this.users.list = _parsedata(res[0])
-            this.services.list = _parsedata(res[1].filter(d => d.userCode !== this.mine.id))
+            this.services.list = _parsedata(res[1].filter(d => d.userCode !== this.mine.id)
+        )
         })
 
         }
-        renderSwitchMessage(sender,im,receiver,ctx){
+
+        renderSwitchMessage(sender, im, receiver, ctx) {
             var lastReadDate = new Date();
             lastReadDate.setDate(lastReadDate.getDate() + 1);
-            var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth()+1)+ '-' + lastReadDate.getDate();
+            var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
             var pageNo = 1;
-            $.ajax({url:`${ctx}/service/webim/historyMessage/${receiver}/${sender}`,
-                async:false,
-                dataType:'json',
-                data: {pageNo: pageNo,lastReadDate: dateStr,pageSize:100000},
-                success:function (res) {
+            $.ajax({
+                url: `${ctx}/service/webim/historyMessage/${receiver}/${sender}`,
+                async: false,
+                dataType: 'json',
+                data: {pageNo: pageNo, lastReadDate: dateStr, pageSize: 100000},
+                success: function (res) {
                     var messageList = res.data.objList,
                         message;
-                    if(messageList.length === 0){
+                    if (messageList.length === 0) {
                         layer.msg('已无更多聊天消息！');
-                    }else{
+                    } else {
                         pageNo++;
                     }
-                    for(var i = messageList.length - 1; i >= 0; i--) {
+                    for (var i = messageList.length - 1; i >= 0; i--) {
                         message = messageList[i];
                         console.log(message);
                         if (message.sender == sender.trim()) {
                             var avatar = ctx + USER_AVATAR
-                        }else{
+                        } else {
                             var avatar = ctx + SERVICE_AVATAR
                         }
                         im.getMessage({
@@ -858,28 +866,29 @@ function _getContextPath() {
 
         }
 
-        renderHistoryMessage(sender,im,receiver,ctx){
+        renderHistoryMessage(sender, im, receiver, ctx) {
             var lastReadDate = new Date();
             lastReadDate.setDate(lastReadDate.getDate() + 1);
-            var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth()+1)+ '-' + lastReadDate.getDate();
+            var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
             var pageNo = $(".layim-chat-username").data('pageNo' + sender) || 1;
-            $.ajax({url:`${ctx}/service/webim/historyMessage/${receiver}/${sender}`,
-                dataType:'json',
-                data: {pageNo: pageNo,lastReadDate: dateStr},
-                success:function (res) {
+            $.ajax({
+                url: `${ctx}/service/webim/historyMessage/${receiver}/${sender}`,
+                dataType: 'json',
+                data: {pageNo: pageNo, lastReadDate: dateStr},
+                success: function (res) {
                     var messageList = res.data.objList,
                         message;
-                    if(messageList.length === 0){
+                    if (messageList.length === 0) {
                         layer.msg('已无更多聊天消息！');
-                    }else{
+                    } else {
                         pageNo++;
                     }
-                    for(var i = 0,length = messageList.length; i < length; i++) {
+                    for (var i = 0, length = messageList.length; i < length; i++) {
                         message = messageList[i];
                         console.log(message);
-                        if(message.msgType == 'S'){
+                        if (message.msgType == 'S') {
                             im.showSystemMessage(message);
-                        }else if(message.sender == sender.trim()) {
+                        } else if (message.sender == sender.trim()) {
                             im.getMessage({
                                 type: 'friend',
                                 system: false,
@@ -891,60 +900,60 @@ function _getContextPath() {
                                 avatar: ctx + USER_AVATAR
                             }, false)
                         } else {
-                            im.showMineMessage({content: JSON.parse(message.content).msg,timestamp: message.sendTime});
+                            im.showMineMessage({content: JSON.parse(message.content).msg, timestamp: message.sendTime});
                         }
                     }
 
-                    $(".layim-chat-username").data('pageNo' + sender,pageNo);
+                    $(".layim-chat-username").data('pageNo' + sender, pageNo);
                 }
             });
 
 
         }
 
-        bindEvent(im,receiver){
+        bindEvent(im, receiver) {
             let ctx = this.contextPath,
                 renderHistoryMessage = this.renderHistoryMessage;
 
 
-            $("body").on("click",'*[layim-event="chat"]',function () {
+            $("body").on("click", '*[layim-event="chat"]', function () {
 
                 var userCode = $(this).attr("class").split(" ")[0].substr(12).trim();
-                $(".layim-chat-username").attr('userCode',userCode);
-                $(".layim-chat-username").data('pageNo'+userCode,1);
+                $(".layim-chat-username").attr('userCode', userCode);
+                $(".layim-chat-username").data('pageNo' + userCode, 1);
 
                 // renderHistoryMessage(userCode,im,receiver,ctx);(在layim的popchat函数中还会render一次)
 
             });
 
-            $("body").on("click",'*[layim-event="chatLog"]',function(){
+            $("body").on("click", '*[layim-event="chatLog"]', function () {
                 var userCode = $(".layim-chat-username").attr('userCode');
-                renderHistoryMessage(userCode,im,receiver,ctx);
+                renderHistoryMessage(userCode, im, receiver, ctx);
             });
         }
 
         /**
          * 发送请求评价指令
          */
-        sendAsk4Evaluate(service,receiver){
+        sendAsk4Evaluate(service, receiver) {
             let contentType = CONTENT_TYPE_PUSH_FORM;
             let content = {};
             content.service = service;
             // 添加指定客服
 
-            this.sendCommandMessage({ contentType, content,receiver })
+            this.sendCommandMessage({contentType, content, receiver})
 
         }
 
-        renderDistributableServicesList(){
+        renderDistributableServicesList() {
             let services = this.services.list;
             let servicesJson = {};
             servicesJson.services = services;
-            servicesJson.generateClass = function(){
+            servicesJson.generateClass = function () {
                 var className;
-                if(this.userState == "F"){
-                    className =  "offline";
-                }else{
+                if (this.userState == "F") {
+                    className = "offline";
+                } else {
                     className = "online";
                 }
                 return className;
@@ -979,38 +988,38 @@ function _getContextPath() {
                         this.services
                     ]
                 }
-                ,uploadImage: {
+                , uploadImage: {
                     url: `${ctx}/service/file/upload` //（返回的数据格式见下文）
                     //默认post
                 }
-                ,uploadFile: {
+                , uploadFile: {
                     url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
                     //默认post
                 }
-                ,tool:[{
+                , tool: [{
                     alias: 'return' //工具别名
-                    ,title: '请求退回' //工具名称
-                    ,icon: '&#xe627;' //工具图标，参考图标文档
+                    , title: '请求退回' //工具名称
+                    , icon: '&#xe627;' //工具图标，参考图标文档
                 }
-                    ,{
+                    , {
                         alias: 'over'
-                        ,title: '结束会话'
-                        ,icon: '&#xe60a;'
+                        , title: '结束会话'
+                        , icon: '&#xe60a;'
                     }
-                    ,{
+                    , {
                         alias: 'quickReply'
-                        ,title: '快速回复'
-                        ,icon: '&#xe611;'
+                        , title: '快速回复'
+                        , icon: '&#xe611;'
                     }]
-                ,isgroup: false
-                ,copyright: true
+                , isgroup: false
+                , copyright: true
             };
 
-            if(!!this.mine.switchServiceBtn){
+            if (!!this.mine.switchServiceBtn) {
                 config.tool.push({
                     alias: 'transfer' //工具别名
-                    ,title: '切换客服' //工具名称
-                    ,icon: '&#xe65c;' //工具图标，参考图标文档
+                    , title: '切换客服' //工具名称
+                    , icon: '&#xe65c;' //工具图标，参考图标文档
                 });
             }
             this.im.config(config)
@@ -1020,30 +1029,33 @@ function _getContextPath() {
             let users = this.users.list,
                 services = this.services.list;
 
-            this.bindEvent(this.im,this.mine.userCode);
+            this.bindEvent(this.im, this.mine.userCode);
 
-            ;[].concat(users, services).forEach(d => {
-                if ('F' === d.userState) {
+            ;
+            [].concat(users, services).forEach(d => {
+                if ('F' === d.userState
+        )
+            {
                 this.im.setFriendStatus(d.userCode, 'offline')
             }
         })
-            $('#layui-layer1').css('top','0px');//在右上角显示窗体
+            $('#layui-layer1').css('top', '0px');//在右上角显示窗体
             this.queryUnread();
             let that = this;
-            this.im.on('tool(over)',function(){
+            this.im.on('tool(over)', function () {
                 const layer = this.layer;
                 layer.open({
                     title: '结束会话'
-                    ,content: '确认发送评价给客户，并结束本次回话吗？'
-                    ,btn:['确认','取消']
-                    ,yes:function (index) {
-                        that.sendAsk4Evaluate(that.mine.userCode,$(".layim-chat-username").attr('userCode').trim());
+                    , content: '是否结束本次会话，并发送评价请求？'
+                    , btn: ['确认', '取消']
+                    , yes: function (index) {
+                        that.sendAsk4Evaluate(that.mine.userCode, $(".layim-chat-username").attr('userCode').trim());
                         layer.close(index);
                         that.im.closeThisChat();
                     }
                 });
             }.bind(this));
-            this.im.on('tool(transfer)', function(){
+            this.im.on('tool(transfer)', function () {
 
                 const layer = this.layer;
                 const mine = this.mine;
@@ -1073,9 +1085,9 @@ function _getContextPath() {
 
                         layer.open({
                             title: '切换客服'
-                            ,content: `已发送切换客服[${service.name}]命令！`
-                            ,btn:['确定']
-                            ,btn1:function(index, layero){
+                            , content: `已发送切换客服[${service.name}]命令！`
+                            , btn: ['确定']
+                            , btn1: function (index, layero) {
                                 this.im.closeThisChat();
                                 layer.close(index);
                             }.bind(this)
@@ -1088,7 +1100,7 @@ function _getContextPath() {
                     result = parseData(res)
                     createTree('#service_list', result)
                     let lastValue = null;
-                    $('#service_search').change(function() {
+                    $('#service_search').change(function () {
                         let value = $(this).val()
                         if (value !== lastValue) {
 
@@ -1126,7 +1138,7 @@ function _getContextPath() {
                      * @param value
                      */
                     function filterLeaf(data, value) {
-                        for (let i=data.length - 1; i>=0; i--) {
+                        for (let i = data.length - 1; i >= 0; i--) {
                             let node = data[i]
                             if (node.children) {
                                 if (node.name.indexOf(value) === -1) {
@@ -1151,10 +1163,14 @@ function _getContextPath() {
                 function parseData(res) {
                     // 将文本格式转换为树形结构
                     const nodes = res.split('\n')
-                            .map(line => line.replace(/\s/, ''))
-                .map(line => {
+                            .map(line => line.replace(/\s/, '')
+                )
+                .
+                    map(line => {
                         let level = 1
-                        while ((line = line.replace('#', '')).startsWith('#')) {
+                        while ((line = line.replace('#', '')).startsWith('#')
+                )
+                    {
                         level++
                     }
                     line = line.split(',')
@@ -1163,14 +1179,15 @@ function _getContextPath() {
                         id: line[0],
                         name: line[1] || line[0],
                         // 如果是自己或者客服不在线
-                        offline: mine.userCode === line[0] || list.some(user => (user.userCode === line[0] && user.userState === 'F') || list.every(user => user.userCode !== line[0]))
+                        offline: mine.userCode === line[0] || list.some(user => (user.userCode === line[0] && user.userState === 'F') || list.every(user => user.userCode !== line[0]
+                ))
                 }
                 })
 
                     // 重点是levels保存了上一个父级节点，所以数据的顺序一定要正确
                     const result = []
                     const levels = []
-                    nodes.forEach(function(node) {
+                    nodes.forEach(function (node) {
                         let level = node.level
 
 
@@ -1202,7 +1219,7 @@ function _getContextPath() {
 
                     layui.tree({
                         elem: '#service_list' //传入元素选择器
-                        ,nodes: data,
+                        , nodes: data,
                         click: function (node, li) {
                             if (!node.children) {
                                 $('li.selected', tree).removeClass('selected')
@@ -1213,7 +1230,7 @@ function _getContextPath() {
                         }
                     });
 
-                    tree.find('li').each(function() {
+                    tree.find('li').each(function () {
                         const li = $(this)
                         const node = li.data('node')
                         if (!node.children && node.offline) {
@@ -1223,8 +1240,6 @@ function _getContextPath() {
                 }
 
 
-
-
                 // if(!!$("div.layui-show .selectContainer").html()) {//判断Id = selectContainer的元素是否存在
                 //     $('div.layui-show .serviceList').css('display','block');
                 //     return;
@@ -1232,38 +1247,35 @@ function _getContextPath() {
                 // that.renderDistributableServicesList();
             }.bind(this));
 
-            this.im.on('tool(return)',function(){
-                var preServiceCode = $('div.layui-show .layim-chat-username').data('preServiceCode')||"",
+            this.im.on('tool(return)', function () {
+                var preServiceCode = $('div.layui-show .layim-chat-username').data('preServiceCode') || "",
                     userCode = $(".layim-chat-username").attr('usercode');
-                if(!!preServiceCode){
-                    this.sendSwitchServiceCommand(preServiceCode,userCode);
-                }else{
+                if (!!preServiceCode) {
+                    this.sendSwitchServiceCommand(preServiceCode, userCode);
+                } else {
                     layer.open({
                         title: '系统提示'
-                        ,content: '此用户不是转接的！'
+                        , content: '此用户不是转接的！'
                     });
                 }
             }.bind(this))
 
-            // this.im.on('tool(over)',function(){
-            //
-            // });尚未实现
-            this.im.on('tool(quickReply)',function(){
+
+            this.im.on('tool(quickReply)', function () {
                 $.get(`${this.contextPath}/json/reply.txt`, function (res) {
-                    if(!!$("div.layui-show .selectContainer").html()) {         //判断Id = selectContainer的元素是否存在
-                        $('div.layui-show .serviceList').css('display','block');
+                    if (!!$("div.layui-show .selectContainer").html()) {         //判断Id = selectContainer的元素是否存在
+                        $('div.layui-show .serviceList').css('display', 'block');
                         return;
                     }
                     var replys = res.split('\n');
                     console.log(replys);
                     var jsonReply = {};
                     var replyArr = [];
-                    for(var i = replys.length - 1 ;i+1; i--){
-                        let relyObj = {"reply":replys[i]};
+                    for (var i = replys.length - 1; i + 1; i--) {
+                        let relyObj = {"reply": replys[i]};
                         replyArr.push(relyObj);
                     }
                     jsonReply.replys = replyArr;
-
 
 
                     var render = Mustache.render('{{#replys}} <option class={{generateClass}}>{{reply}}</option>{{/replys}}', jsonReply);
@@ -1284,11 +1296,11 @@ function _getContextPath() {
 
                 })
             }.bind(this));
-            $("body").on('change','.serviceList',function(){
+            $("body").on('change', '.serviceList', function () {
                 var reply = $(this).val();
                 console.log(reply);
                 $("div.layui-show .layim-chat-textarea textarea").val(reply);
-                $(this).css('display','none');
+                $(this).css('display', 'none');
             })
 
             // this.scoreRate();
@@ -1296,29 +1308,30 @@ function _getContextPath() {
         }
 
 
-        queryUnread(){
+        queryUnread() {
             let ctx = this.contextPath,
                 userCode = this.mine.userCode,
                 im = this.im,
                 lastReadDate = new Date(),
                 arr = [];
             lastReadDate.setDate(lastReadDate.getDate() + 1);
-            var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth()+1)+ '-' + lastReadDate.getDate();
+            var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
 
-            $.ajax({url:`${ctx}/service/webim/statUnread/${userCode}`,
-                dataType:'json',
+            $.ajax({
+                url: `${ctx}/service/webim/statUnread/${userCode}`,
+                dataType: 'json',
                 async: false,
                 // data: {pageNo: pageNo,lastReadDate: dateStr},
 
-                success:function (res) {
+                success: function (res) {
                     // console.log(res.data);
-                    var unreadInfo = res.data,x;
+                    var unreadInfo = res.data, x;
 
-                    for(x in unreadInfo){
+                    for (x in unreadInfo) {
                         // console.log(x);
                         var attr = x;
                         // console.log(unreadInfo[attr]);
-                        if(unreadInfo[attr] > 0){
+                        if (unreadInfo[attr] > 0) {
                             arr.push(attr);
                         }
 
@@ -1327,16 +1340,17 @@ function _getContextPath() {
 
                 }
             });
-            for(let i = 0,length = arr.length; i < length; i++) {
+            for (let i = 0, length = arr.length; i < length; i++) {
 
-                $.ajax({url:`${ctx}/service/webim/historyMessage/${userCode}/${arr[i]}`,
-                    dataType:'json',
+                $.ajax({
+                    url: `${ctx}/service/webim/historyMessage/${userCode}/${arr[i]}`,
+                    dataType: 'json',
                     async: false,
-                    data: {pageNo: 1,lastReadDate: dateStr},
-                    success:function(res){
+                    data: {pageNo: 1, lastReadDate: dateStr},
+                    success: function (res) {
                         var messageList = res.data.objList,
                             message;
-                        for(let j = 0,length = messageList.length; j < length; j++) {
+                        for (let j = 0, length = messageList.length; j < length; j++) {
                             message = messageList[j];
                             console.log(message);
                             if (message.sender == arr[i]) {
@@ -1351,7 +1365,10 @@ function _getContextPath() {
                                     avatar: ctx + USER_AVATAR
                                 }, true)
                             } else {
-                                im.showMineMessage({content: JSON.parse(message.content).msg,timestamp: message.sendTime});
+                                im.showMineMessage({
+                                    content: JSON.parse(message.content).msg,
+                                    timestamp: message.sendTime
+                                });
                             }
                         }
 
@@ -1361,9 +1378,7 @@ function _getContextPath() {
             }
 
 
-
         }
-
 
 
     }
@@ -1375,8 +1390,13 @@ function _getContextPath() {
                 id: d.userCode,
                 username: d.userName,
                 avatar: ctx + USER_AVATAR
-            })).sort((me, other) => me.lastActiveDate >= other.lastActiveDate ? -1: 1)
-    .sort(me => 'O' === me.userState ? -1 : 1 )
+            })
+    ).
+        sort((me, other) => me.lastActiveDate >= other.lastActiveDate ? -1 : 1
+    )
+    .
+        sort(me => 'O' === me.userState ? -1 : 1
+    )
     }
 
     global.ServiceIM = global.ServiceIM || ServiceIM
