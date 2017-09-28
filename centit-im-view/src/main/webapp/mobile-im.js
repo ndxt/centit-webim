@@ -35,7 +35,6 @@ const CONTENT_TYPE_ASKROBOT = "askRobot";
 const CONTENT_TYPE_NOTICE = "notice";
 const CONTENT_TYPE_FORM = "form";
 const CONTENT_TYPE_PUSH_FORM = "pushForm";
-const CONTENT_TYPE_OVER = "over";
 
 // 默认IM配置
 const Default_IM_Config = {
@@ -302,9 +301,6 @@ function _getContextPath() {
                 case CONTENT_TYPE_PUSH_FORM:
                     this.scoreRate(this.mine.userCode, data.sender);
                     break;
-                case CONTENT_TYPE_OVER:
-                        this.im.closeThisChat();
-                        break;
                 default:
                     break
             }
@@ -1010,20 +1006,10 @@ function _getContextPath() {
                     url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
                     //默认post
                 }
-                , tool: [{
-                    alias: 'return' //工具别名
-                    , title: '请求退回' //工具名称
-                    , icon: '&#xe627;' //工具图标，参考图标文档
-                }
-                    , {
+                , tool: [ {
                         alias: 'over'
                         , title: '结束会话'
-                        , icon: '&#xe60a;'
-                    }
-                    , {
-                        alias: 'quickReply'
-                        , title: '快速回复'
-                        , icon: '&#xe611;'
+                        , iconUnicode: '&#xe60a;'
                     }]
                 , isgroup: false
                 , copyright: true
@@ -1063,9 +1049,8 @@ function _getContextPath() {
                     , content: '是否结束本次会话，并发送评价请求？'
                     , btn: ['确认', '取消']
                     , yes: function (index) {
-                        that.sendAsk4Evaluate(that.mine.userCode, $(".layim-chat-username").attr('userCode').trim());
+                        that.sendAsk4Evaluate(that.mine.userCode, $(".layim-chat-status").data('userCode'));
                         layer.close(index);
-                        that.im.closeThisChat();
                     }
                 });
             }.bind(this));

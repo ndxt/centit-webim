@@ -97,6 +97,22 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
     }, options);
     init(options);
   };
+    LAYIM.prototype.back = function(){
+        var layero = othis.parents('.layui-m-layer').eq(0)
+            ,index = layero.attr('index')
+            ,PANEL = '.layim-panel';
+        setTimeout(function(){
+            layer.close(index);
+        }, 300);
+        othis.parents(PANEL).eq(0).removeClass('layui-m-anim-left').addClass('layui-m-anim-rout');
+        layero.prev().find(PANEL).eq(0).removeClass('layui-m-anim-lout').addClass('layui-m-anim-right');
+        layui.each(call.back, function(index, item){
+            setTimeout(function(){
+                item && item();
+            }, 200);
+        });
+    }
+
     LAYIM.prototype.showMineMessage = function (content) {
         var data = {
             username: cache.mine ? cache.mine.username : '访客'
@@ -514,8 +530,8 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
                         showMineMessage({content: JSON.parse(message.content).msg, timestamp: message.sendTime});
                     }
                 }
-                $(".layim-chat-username").attr('userCode', data.id);
-                $(".layim-chat-username").data('pageNo' + data.id, 2);
+                $(".layim-chat-status").data('userCode', data.id);
+                $(".layim-chat-status").data('pageNo' + data.id, 2);
                 chatListMore();
             }
         });
@@ -537,7 +553,7 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
       ,isChat: !0
       ,success: function(elem){
         layimChat = $(elem);
-
+        $('.layim-chat-status').data('userCode',data.id);
         hotkeySend();
         
         delete cache.message[data.type + data.id]; //剔除缓存消息

@@ -756,10 +756,21 @@ function _getContextPath() {
                 };
                 var that = this;
                 this.im.on('tool(robot)', function () {
+
                     that.config.mode = MODE_QUESTION;
-                    that.sendAsk4QuestionCommand();
-                    that.changeUserName('智能客服');
+
+                    layer.open({
+                        title: '结束会话',
+                        content: '是否结束本次会话，并切换回智能问答吗？',
+                        btn: ['确认', '取消'],
+                        yes: function yes(index) {
+                            that.sendAsk4QuestionCommand();
+                            that.changeUserName('智能客服');
+                            layer.close(index);
+                        }
+                    });
                 });
+
                 this.im.chat(this.window);
             }
 
