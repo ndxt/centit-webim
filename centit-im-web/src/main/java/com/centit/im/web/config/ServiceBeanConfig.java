@@ -5,16 +5,15 @@ import com.centit.framework.components.impl.TextOperationLogWriterImpl;
 import com.centit.framework.core.config.DataSourceConfig;
 import com.centit.framework.hibernate.config.HibernateConfig;
 import com.centit.framework.ip.app.config.IPAppSystemBeanConfig;
+import com.centit.framework.ip.service.IntegrationEnvironment;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
 import com.centit.framework.staticsystem.config.SpringSecurityDaoConfig;
-import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.im.service.IntelligentRobotFactory;
-import com.centit.im.service.impl.IntelligentRobotFactorySingleImpl;
+import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
 import com.centit.im.web.listener.InstantiationServiceBeanPostProcessor;
 import com.centit.im.web.plugins.JsfgwSmsMessageSender;
-import com.centit.support.algorithm.NumberBaseOpt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -31,7 +30,7 @@ public class ServiceBeanConfig {
     @Autowired
     private Environment env;
 
-    /*@Bean
+    @Bean
     public IntelligentRobotFactory intelligentRobotFactory(
             @Autowired IntegrationEnvironment integrationEnvironment) {
         IntelligentRobotFactoryRpcImpl intelligentRobotFactory = new IntelligentRobotFactoryRpcImpl();
@@ -40,9 +39,9 @@ public class ServiceBeanConfig {
                 integrationEnvironment
         );
         return intelligentRobotFactory;
-    }*/
+    }
 
-    @Bean
+    /*@Bean
     public IntelligentRobotFactory intelligentRobotFactory() {
         IntelligentRobotFactorySingleImpl intelligentRobotFactory
                 = new IntelligentRobotFactorySingleImpl();
@@ -51,7 +50,7 @@ public class ServiceBeanConfig {
                         env.getProperty("question.robot.answer.maxsize"), 4));
         intelligentRobotFactory.setIntelligentRobot(intelligentRobot );
         return intelligentRobotFactory;
-    }
+    }*/
 
     @Bean
     public NotificationCenter notificationCenter() {
