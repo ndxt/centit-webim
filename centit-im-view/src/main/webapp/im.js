@@ -297,13 +297,23 @@ function _getContextPath() {
                 case CONTENT_TYPE_SERVICE:
                     this.showSystemMessage($.extend({id: '0'}, data, {content: content.msg}))
                     this.changeUserName(content.userName)
+                    $(".layim-chat-status").eq(0).data('userCode',content.userCode);
                     this.to = $.extend({id: content.userCode}, content)
                     break
                 case CONTENT_TYPE_PUSH_FORM:
                     this.scoreRate(this.mine.userCode, data.sender);
                     break;
                 case CONTENT_TYPE_OVER:
-                        this.im.closeThisChat();
+                    this.im.closeThisChat();
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+
+                        layer.open({
+                            title: '会话结束'
+                            , content: content.senderName + '客户结束了本次会话'
+                        });
+                    });
+
                         break;
                 default:
                     break
@@ -422,10 +432,22 @@ function _getContextPath() {
          * 发送申请机器人
          */
         sendAsk4QuestionCommand() {
-            let contentType = CONTENT_TYPE_ASKROBOT
-            let content = this.mine
+            let contentType = CONTENT_TYPE_ASKROBOT;
+            let content = this.mine;
+            let currentServiceCode = $('.layim-chat-status').data('userCode');
             // this.config.mode = MODE_QUESTION;
-            this.sendCommandMessage({contentType, content})
+            this.sendCommandMessage({contentType, content});
+            let senderName = content.userName;
+            this.sendCommandOver(currentServiceCode,senderName);
+        }
+
+        /**
+         * 发送结束命令
+         */
+        sendCommandOver(receiver,senderName){
+            let contentType = CONTENT_TYPE_OVER;
+            let content = {senderName};
+            this.sendCommandMessage({contentType, content,receiver});
         }
 
         /**

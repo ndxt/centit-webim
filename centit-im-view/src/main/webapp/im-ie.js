@@ -44,6 +44,7 @@ var CONTENT_TYPE_ASKROBOT = "askRobot";
 var CONTENT_TYPE_NOTICE = "notice";
 var CONTENT_TYPE_FORM = "form";
 var CONTENT_TYPE_PUSH_FORM = "pushForm";
+var CONTENT_TYPE_OVER = "over";
 
 // 默认IM配置
 var Default_IM_Config = {
@@ -334,10 +335,23 @@ function _getContextPath() {
                     case CONTENT_TYPE_SERVICE:
                         this.showSystemMessage($.extend({ id: '0' }, data, { content: content.msg }));
                         this.changeUserName(content.userName);
+                        $(".layim-chat-status").eq(0).data('userCode', content.userCode);
                         this.to = $.extend({ id: content.userCode }, content);
                         break;
                     case CONTENT_TYPE_PUSH_FORM:
                         this.scoreRate(this.mine.userCode, data.sender);
+                        break;
+                    case CONTENT_TYPE_OVER:
+                        this.im.closeThisChat();
+                        layui.use('layer', function () {
+                            var layer = layui.layer;
+
+                            layer.open({
+                                title: '会话结束',
+                                content: content.senderName + '客户结束了本次会话'
+                            });
+                        });
+
                         break;
                     default:
                         break;
@@ -481,8 +495,23 @@ function _getContextPath() {
             value: function sendAsk4QuestionCommand() {
                 var contentType = CONTENT_TYPE_ASKROBOT;
                 var content = this.mine;
+                var currentServiceCode = $('.layim-chat-status').data('userCode');
                 // this.config.mode = MODE_QUESTION;
                 this.sendCommandMessage({ contentType: contentType, content: content });
+                var senderName = content.userName;
+                this.sendCommandOver(currentServiceCode, senderName);
+            }
+
+            /**
+             * 发送结束命令
+             */
+
+        }, {
+            key: 'sendCommandOver',
+            value: function sendCommandOver(receiver, senderName) {
+                var contentType = CONTENT_TYPE_OVER;
+                var content = { senderName: senderName };
+                this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
             }
 
             /**
