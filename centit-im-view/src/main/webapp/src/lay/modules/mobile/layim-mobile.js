@@ -508,6 +508,7 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
                             type: 'friend',
                             system: true,
                             reverse: true,
+                            history:true,
                             username: message.senderName,
                             id: data.id,
                             content: JSON.parse(message.content).msg,
@@ -520,6 +521,7 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
                             type: 'friend',
                             system: false,
                             reverse: true,
+                            history:true,
                             username: message.senderName,
                             id: data.id,
                             content: JSON.parse(message.content).msg,
@@ -853,9 +855,12 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
           ul.append('<li class="layim-chat-system"><span>'+ data.content +'</span></li>');
       }
     } else if(data.content.replace(/\s/g, '') !== ''){
-      if(data.timestamp - (sendMessage.time||0) > 60*1000){
+        if (typeof data.timestamp === 'string') {
+            data.timestamp =(new Date(data.timestamp.replace(/-/g, "/"))).getTime();
+        }
+      if(data.timestamp - (sendMessage.time||0) > 60*1000 && data.history != true){
         if(data.reverse === true){
-            ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
+            ul.prepend('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
 
         }else{
             ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
@@ -867,6 +872,15 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
       }else{
           ul.append(laytpl(elemChatMain).render(data));
       }
+        if(data.history == true){
+            if(data.reverse === true){
+                ul.prepend('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
+
+            }else{
+                ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
+            }
+            sendMessage.time = data.timestamp;
+        }
     }
     chatListMore();
   };
