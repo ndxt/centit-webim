@@ -12,7 +12,16 @@ gulp.task('babel', () => {
         .pipe(gulp.dest('src/main/webapp'))
 })
 
-gulp.task('default', function() {
+gulp.task('mobile', () => {
+    return gulp.src('src/main/webapp/mobile-im.js')
+        .pipe(babel({
+            presets: ['es2015']
+        }))
+        .pipe(rename('mobile-im-ie.js'))
+        .pipe(gulp.dest('src/main/webapp'))
+})
+
+gulp.task('default',['mobile'], function() {
     return watch('src/main/webapp/im.js', { ignoreInitial: false })
         .pipe(babel({
             presets: ['es2015']

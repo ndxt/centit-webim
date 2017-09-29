@@ -424,11 +424,11 @@ public class WebImSocketImpl implements WebImSocket {
         Session custSession = getSessionByUserCode(message.getReceiver());
         if(custSession==null){
             pushMessage(session /*message.getSender()*/,ImMessageUtils
-                    .buildSystemMessagePraise("对方已经离线，您的表单无法推送。",message.getReceiver()) );
+                    .buildSystemMessagePraise("对方已经离线，无法对您的服务做出评价。",message.getReceiver()) );
         }else{
             pushMessage(custSession,message);
             pushMessage(session /*message.getSender()*/,ImMessageUtils
-                    .buildSystemMessagePraise("您的表单已经成功推送。",message.getReceiver()) );
+                    .buildSystemMessagePraise("您的评价请求已成功发给对方。",message.getReceiver()) );
         }
     }
 

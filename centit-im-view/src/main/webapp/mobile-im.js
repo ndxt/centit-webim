@@ -35,7 +35,6 @@ const CONTENT_TYPE_ASKROBOT = "askRobot";
 const CONTENT_TYPE_NOTICE = "notice";
 const CONTENT_TYPE_FORM = "form";
 const CONTENT_TYPE_PUSH_FORM = "pushForm";
-const CONTENT_TYPE_OVER = "over";
 
 // 默认IM配置
 const Default_IM_Config = {
@@ -297,24 +296,11 @@ function _getContextPath() {
                 case CONTENT_TYPE_SERVICE:
                     this.showSystemMessage($.extend({id: '0'}, data, {content: content.msg}))
                     this.changeUserName(content.userName)
-                    $(".layim-chat-status").eq(0).data('userCode',content.userCode);
                     this.to = $.extend({id: content.userCode}, content)
                     break
                 case CONTENT_TYPE_PUSH_FORM:
                     this.scoreRate(this.mine.userCode, data.sender);
                     break;
-                case CONTENT_TYPE_OVER:
-                    this.im.closeThisChat();
-                    layui.use('layer', function () {
-                        var layer = layui.layer;
-
-                        layer.open({
-                            title: '会话结束'
-                            , content: content.senderName + '客户结束了本次会话'
-                        });
-                    });
-
-                        break;
                 default:
                     break
             }
@@ -432,22 +418,10 @@ function _getContextPath() {
          * 发送申请机器人
          */
         sendAsk4QuestionCommand() {
-            let contentType = CONTENT_TYPE_ASKROBOT;
-            let content = this.mine;
-            let currentServiceCode = $('.layim-chat-status').data('userCode');
+            let contentType = CONTENT_TYPE_ASKROBOT
+            let content = this.mine
             // this.config.mode = MODE_QUESTION;
-            this.sendCommandMessage({contentType, content});
-            let senderName = content.userName;
-            this.sendCommandOver(currentServiceCode,senderName);
-        }
-
-        /**
-         * 发送结束命令
-         */
-        sendCommandOver(receiver,senderName){
-            let contentType = CONTENT_TYPE_OVER;
-            let content = {senderName};
-            this.sendCommandMessage({contentType, content,receiver});
+            this.sendCommandMessage({contentType, content})
         }
 
         /**
@@ -813,6 +787,7 @@ function _getContextPath() {
                 return;
             }
             this.im.getMessage({
+                avatar:ctx + USER_AVATAR,
                 type: 'friend',
                 system: true,
                 username: params.senderName,
@@ -1032,20 +1007,10 @@ function _getContextPath() {
                     url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
                     //默认post
                 }
-                , tool: [{
-                    alias: 'return' //工具别名
-                    , title: '请求退回' //工具名称
-                    , icon: '&#xe627;' //工具图标，参考图标文档
-                }
-                    , {
+                , tool: [ {
                         alias: 'over'
                         , title: '结束会话'
-                        , icon: '&#xe60a;'
-                    }
-                    , {
-                        alias: 'quickReply'
-                        , title: '快速回复'
-                        , icon: '&#xe611;'
+                        , iconUnicode: '&#xe60a;'
                     }]
                 , isgroup: false
                 , copyright: true
@@ -1085,9 +1050,8 @@ function _getContextPath() {
                     , content: '是否结束本次会话，并发送评价请求？'
                     , btn: ['确认', '取消']
                     , yes: function (index) {
-                        that.sendAsk4Evaluate(that.mine.userCode, $(".layim-chat-username").attr('userCode').trim());
+                        that.sendAsk4Evaluate(that.mine.userCode, $(".layim-chat-status").data('userCode'));
                         layer.close(index);
-                        that.im.closeThisChat();
                     }
                 });
             }.bind(this));

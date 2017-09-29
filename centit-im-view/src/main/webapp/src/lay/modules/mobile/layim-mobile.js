@@ -97,6 +97,22 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
     }, options);
     init(options);
   };
+    LAYIM.prototype.back = function(){
+        var layero = othis.parents('.layui-m-layer').eq(0)
+            ,index = layero.attr('index')
+            ,PANEL = '.layim-panel';
+        setTimeout(function(){
+            layer.close(index);
+        }, 300);
+        othis.parents(PANEL).eq(0).removeClass('layui-m-anim-left').addClass('layui-m-anim-rout');
+        layero.prev().find(PANEL).eq(0).removeClass('layui-m-anim-lout').addClass('layui-m-anim-right');
+        layui.each(call.back, function(index, item){
+            setTimeout(function(){
+                item && item();
+            }, 200);
+        });
+    }
+
     LAYIM.prototype.showMineMessage = function (content) {
         var data = {
             username: cache.mine ? cache.mine.username : '访客'
@@ -492,6 +508,7 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
                             type: 'friend',
                             system: true,
                             reverse: true,
+                            history:true,
                             username: message.senderName,
                             id: data.id,
                             content: JSON.parse(message.content).msg,
@@ -504,6 +521,7 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
                             type: 'friend',
                             system: false,
                             reverse: true,
+                            history:true,
                             username: message.senderName,
                             id: data.id,
                             content: JSON.parse(message.content).msg,
@@ -514,8 +532,8 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
                         showMineMessage({content: JSON.parse(message.content).msg, timestamp: message.sendTime});
                     }
                 }
-                $(".layim-chat-username").attr('userCode', data.id);
-                $(".layim-chat-username").data('pageNo' + data.id, 2);
+                $(".layim-chat-status").data('userCode', data.id);
+                $(".layim-chat-status").data('pageNo' + data.id, 2);
                 chatListMore();
             }
         });
@@ -537,7 +555,7 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
       ,isChat: !0
       ,success: function(elem){
         layimChat = $(elem);
-
+        $('.layim-chat-status').data('userCode',data.id);
         hotkeySend();
         
         delete cache.message[data.type + data.id]; //剔除缓存消息
@@ -628,6 +646,9 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
   
   //记录历史会话
   var setHistory = function(data){
+      if(data.system == true){
+          return;
+      }
     var local = layui.data('layim-mobile')[cache.mine.id] || {};
     var obj = {}, history = local.history || {};
     var is = history[data.type + data.id];
@@ -834,9 +855,12 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
           ul.append('<li class="layim-chat-system"><span>'+ data.content +'</span></li>');
       }
     } else if(data.content.replace(/\s/g, '') !== ''){
-      if(data.timestamp - (sendMessage.time||0) > 60*1000){
+        if (typeof data.timestamp === 'string') {
+            data.timestamp =(new Date(data.timestamp.replace(/-/g, "/"))).getTime();
+        }
+      if(data.timestamp - (sendMessage.time||0) > 60*1000 && data.history != true){
         if(data.reverse === true){
-            ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
+            ul.prepend('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
 
         }else{
             ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
@@ -848,6 +872,15 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
       }else{
           ul.append(laytpl(elemChatMain).render(data));
       }
+        if(data.history == true){
+            if(data.reverse === true){
+                ul.prepend('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
+
+            }else{
+                ul.append('<li class="layim-chat-system"><span>'+ layui.data.date(data.timestamp) +'</span></li>');
+            }
+            sendMessage.time = data.timestamp;
+        }
     }
     chatListMore();
   };
