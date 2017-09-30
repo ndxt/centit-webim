@@ -28,17 +28,17 @@ import java.sql.SQLException;
 public class ImportQuestionToEs {
 
     public static void main(String [] arg){
-        RobotAnswer answer = searchEs("发电项目");
+        /*RobotAnswer answer = searchEs("发电项目");
         for(RobotAnswerItem item : answer.getOptions()){
             System.out.println(item.getLabel());
         }
-        System.out.println(answer.getMessage());
-       /* try {
+        System.out.println(answer.getMessage());*/
+        try {
             importDataToEs();
             System.out.println("done!");
         } catch (SQLException | IOException| DocumentException e) {
             e.printStackTrace();
-        }*/
+        }
 
     }
 
@@ -78,6 +78,7 @@ public class ImportQuestionToEs {
             }
         }
     }
+
     public static RobotAnswer searchEs(String question){
         IntelligentRobotEsImpl intelligentRobot = new IntelligentRobotEsImpl();
         return intelligentRobot.askQuestion("userCode",question);

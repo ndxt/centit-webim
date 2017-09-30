@@ -10,10 +10,13 @@ import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
 import com.centit.framework.staticsystem.config.SpringSecurityDaoConfig;
+import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
+import com.centit.im.service.impl.IntelligentRobotFactorySingleImpl;
 import com.centit.im.web.listener.InstantiationServiceBeanPostProcessor;
 import com.centit.im.web.plugins.JsfgwSmsMessageSender;
+import com.centit.support.algorithm.NumberBaseOpt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -30,27 +33,28 @@ public class ServiceBeanConfig {
     @Autowired
     private Environment env;
 
+    @Autowired
+    IntegrationEnvironment integrationEnvironment;
+
     @Bean
-    public IntelligentRobotFactory intelligentRobotFactory(
-            @Autowired IntegrationEnvironment integrationEnvironment) {
-        IntelligentRobotFactoryRpcImpl intelligentRobotFactory = new IntelligentRobotFactoryRpcImpl();
-
-        intelligentRobotFactory.setIntegrationEnvironment(
-                integrationEnvironment
-        );
-        return intelligentRobotFactory;
-    }
-
-    /*@Bean
     public IntelligentRobotFactory intelligentRobotFactory() {
-        IntelligentRobotFactorySingleImpl intelligentRobotFactory
-                = new IntelligentRobotFactorySingleImpl();
-        IntelligentRobotEsImpl intelligentRobot = new IntelligentRobotEsImpl();
-        intelligentRobot.setMaxAnswer( NumberBaseOpt.parseInteger(
-                        env.getProperty("question.robot.answer.maxsize"), 4));
-        intelligentRobotFactory.setIntelligentRobot(intelligentRobot );
-        return intelligentRobotFactory;
-    }*/
+        if("es".equals(env.getProperty("webim.robot.type"))){
+            IntelligentRobotFactorySingleImpl intelligentRobotFactory
+                    = new IntelligentRobotFactorySingleImpl();
+            IntelligentRobotEsImpl intelligentRobot = new IntelligentRobotEsImpl();
+            intelligentRobot.setMaxAnswer( NumberBaseOpt.parseInteger(
+                            env.getProperty("question.robot.answer.maxsize"), 4));
+            intelligentRobotFactory.setIntelligentRobot(intelligentRobot );
+            return intelligentRobotFactory;
+        }else{
+            IntelligentRobotFactoryRpcImpl intelligentRobotFactory
+                    = new IntelligentRobotFactoryRpcImpl();
+            intelligentRobotFactory.setIntegrationEnvironment(
+                    integrationEnvironment
+            );
+            return intelligentRobotFactory;
+        }
+    }
 
     @Bean
     public NotificationCenter notificationCenter() {
