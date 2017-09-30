@@ -68,7 +68,7 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 问题标题联url
      */
-    @ESType(type="text")
+    @ESType(type="text", revert = true)
     @Column(name = "QUESTION_URL")
     private String questionUrl;
 
