@@ -46,11 +46,13 @@ String.prototype.trim = function () {
     return this.replace(/(^\s*)|(\s*$)/g, '');
 }
 window.ctx = _getContextPath();
+
 /**
  * 工具函数：获取当前contentPath
  * @returns {*}
  * @private
  */
+
 function _getContextPath() {
     let match = location.href.match(/^(http:\/\/.*?\/.*?)\//)
 
@@ -58,6 +60,7 @@ function _getContextPath() {
         return match[1]
     }
 }
+
 ;(function (global) {
     'use strict'
 
@@ -290,6 +293,10 @@ function _getContextPath() {
             this.showChatMessage(params)
         }
 
+        /**
+         * 接受到over命令时的操作
+         * @param senderName
+         */
         overCommandOp(senderName){
             var panelList = $('.layui-unselect.layim-chat-list li');
             var name;
@@ -312,6 +319,11 @@ function _getContextPath() {
             });
         }
 
+        /**
+         * 根据接受到的不同命令采取不同操作
+         * @param data
+         * @param content
+         */
         onCommandMessage(data, content) {
             let contentType = data.contentType
 
@@ -372,9 +384,6 @@ function _getContextPath() {
             if (mode == 'askForService') {
                 this.sendWSMessage(data);
             }
-            // console.log(data);
-
-            // console.log(mode);
             // //现在先写成这样，等后台写好再修改。
             if (mode == 'askRobot') {
                 this.sendQuestionRequest({question: (data.content.msg || '').replace(/\n/, '')});
@@ -970,7 +979,6 @@ function _getContextPath() {
 
                 var userCode = $(this).attr("class").split(" ")[0].substr(12).trim();
                 $(".layim-chat-username").attr('userCode', userCode);
-                $(".layim-chat-username").data('pageNo' + userCode, 1);
 
                 // renderHistoryMessage(userCode,im,receiver,ctx);(在layim的popchat函数中还会render一次)
 
