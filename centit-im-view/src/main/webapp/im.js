@@ -304,7 +304,17 @@ function _getContextPath() {
                     this.scoreRate(this.mine.userCode, data.sender);
                     break;
                 case CONTENT_TYPE_OVER:
-                    this.im.closeThisChat();
+                    var panelList = $('.layui-unselect.layim-chat-list li');
+                    var name;
+                    for (var j = 0, length = panelList.length; j < length; j++) {
+                        name = panelList[j].innerText;
+                        if (name.indexOf(content.senderName) != -1) {
+                            $('.layui-unselect.layim-chat-list li').eq(j).find("i").click();
+                        }
+                    }
+                    if($('.layim-chat-username').eq(0).html().indexOf(content.senderName) != -1){
+                        this.im.closeThisChat();
+                    }
                     layui.use('layer', function () {
                         var layer = layui.layer;
 
