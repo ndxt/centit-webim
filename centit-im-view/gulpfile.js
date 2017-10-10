@@ -21,6 +21,15 @@ gulp.task('mobile', () => {
         .pipe(gulp.dest('src/main/webapp'))
 })
 
+gulp.task('monitorChat', () => {
+    return gulp.src('src/main/webapp/monitorChat.js')
+        .pipe(babel({
+            presets: ['es2015']
+        }))
+        .pipe(rename('monitorChat-ie.js'))
+        .pipe(gulp.dest('src/main/webapp'))
+})
+
 gulp.task('default',['mobile'], function() {
     return watch('src/main/webapp/im.js', { ignoreInitial: false })
         .pipe(babel({
