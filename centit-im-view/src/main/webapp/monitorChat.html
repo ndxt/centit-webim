@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+    <link rel="stylesheet" href="src/css/layui.css">
+    <link rel="stylesheet" href="plugins/jquery.raty.css">
+    <link rel="stylesheet" href="src/css/user.css">
+</head>
+<body>
+
+<script src="src/layui.js"></script>
+<script src="plugins/url.js"></script>
+<script src="plugins/mustache.min.js"></script>
+<script src="plugins/jquery-1.9.1.min.js"></script>
+<script src="plugins/base64.js"></script>
+<script src="plugins/shim/promise.min.js"></script>
+<script src="plugins/jquery.raty.js"></script>
+<script src="im-ie.js"></script>
+<script>
+    var result = parseURL(),
+        token = result.params.token,
+        params = JSON.parse(decodeURIComponent(base64.decode(token))),
+        mine = {
+            userCode: params.userCode,
+            userName: params.userName,
+
+        },
+
+        config = {
+            customService: params.customService,
+            mode: params.mode,
+            optId:params.optId || 'ww',//原先有默认值‘12345’
+            osId: params.osId
+        };
+    console.log(params);
+    document.title = 'User - ' + params.userName;
+
+    layui.use('layim', function (im) {
+        new UserIM(im, $.extend({
+            userType: 'C'
+        }, mine), config)
+    })
+
+
+</script>
+</body>
+</html>

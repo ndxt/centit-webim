@@ -340,7 +340,7 @@ function _getContextPath() {
                 case CONTENT_TYPE_OVER:
                     this.overCommandOp(content.senderName);
 
-                        break;
+                    break;
                 default:
                     break
             }
@@ -849,11 +849,11 @@ function _getContextPath() {
                 id = this.mine.id
 
             return fetch(`${ctx }/service/webimcust/cust/${id }?lastServiceDate=1949-10-1`)
-                    .then(res => res.json()
-        )
-        .
-            then(res => res.data
-        )
+                .then(res => res.json()
+                )
+                .
+                then(res => res.data
+                )
         }
 
 
@@ -861,11 +861,11 @@ function _getContextPath() {
             let ctx = this.contextPath
 
             return fetch(`${ctx }/service/webimcust/services`)
-                    .then(res => res.json()
-        )
-        .
-            then(res => res.data
-        )
+                .then(res => res.json()
+                )
+                .
+                then(res => res.data
+                )
         }
 
 
@@ -876,9 +876,9 @@ function _getContextPath() {
                 this.queryService()
             ]).then(res => {
                 this.users.list = _parsedata(res[0])
-            this.services.list = _parsedata(res[1].filter(d => d.userCode !== this.mine.id)
-        )
-        })
+                this.services.list = _parsedata(res[1].filter(d => d.userCode !== this.mine.id)
+                )
+            })
 
         }
 
@@ -1097,11 +1097,11 @@ function _getContextPath() {
             ;
             [].concat(users, services).forEach(d => {
                 if ('F' === d.userState
-        )
-            {
-                this.im.setFriendStatus(d.userCode, 'offline')
-            }
-        })
+                )
+                {
+                    this.im.setFriendStatus(d.userCode, 'offline')
+                }
+            })
             $('#layui-layer1').css('top', '0px');//在右上角显示窗体
             this.queryUnread();
             let that = this;
@@ -1226,26 +1226,26 @@ function _getContextPath() {
                 function parseData(res) {
                     // 将文本格式转换为树形结构
                     const nodes = res.split('\n')
-                            .map(line => line.replace(/\s/, '')
-                )
-                .
-                    map(line => {
-                        let level = 1
-                        while ((line = line.replace('#', '')).startsWith('#')
-                )
-                    {
-                        level++
-                    }
-                    line = line.split(',')
-                    return {
-                        level,
-                        id: line[0],
-                        name: line[1] || line[0],
-                        // 如果是自己或者客服不在线
-                        offline: mine.userCode === line[0] || list.some(user => (user.userCode === line[0] && user.userState === 'F') || list.every(user => user.userCode !== line[0]
-                ))
-                }
-                })
+                        .map(line => line.replace(/\s/, '')
+                        )
+                        .
+                        map(line => {
+                            let level = 1
+                            while ((line = line.replace('#', '')).startsWith('#')
+                                )
+                            {
+                                level++
+                            }
+                            line = line.split(',')
+                            return {
+                                level,
+                                id: line[0],
+                                name: line[1] || line[0],
+                                // 如果是自己或者客服不在线
+                                offline: mine.userCode === line[0] || list.some(user => (user.userCode === line[0] && user.userState === 'F') || list.every(user => user.userCode !== line[0]
+                                ))
+                            }
+                        })
 
                     // 重点是levels保存了上一个父级节点，所以数据的顺序一定要正确
                     const result = []
@@ -1371,7 +1371,7 @@ function _getContextPath() {
         }
 
 
-        queryUnread() {
+        queryUnread(){
             let ctx = this.contextPath,
                 userCode = this.mine.userCode,
                 im = this.im,
@@ -1454,12 +1454,12 @@ function _getContextPath() {
                 username: d.userName,
                 avatar: ctx + USER_AVATAR
             })
-    ).
+        ).
         sort((me, other) => me.lastActiveDate >= other.lastActiveDate ? -1 : 1
-    )
-    .
-        sort(me => 'O' === me.userState ? -1 : 1
-    )
+        )
+            .
+            sort(me => 'O' === me.userState ? -1 : 1
+            )
     }
 
     global.ServiceIM = global.ServiceIM || ServiceIM
