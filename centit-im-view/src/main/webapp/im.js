@@ -418,7 +418,6 @@ function _getContextPath() {
             let contentType = CONTENT_TYPE_REGISTER,
                 content = this.mine,
                 receiver = this.window ? this.window.id : this.mine.id
-
             this.sendCommandMessage({contentType, content, receiver})
         }
 
@@ -549,6 +548,7 @@ function _getContextPath() {
         sendWSMessage(data) {
             console.log(data);
             if (this.socket.readyState == '3') {
+                window.location.reload();
                 this.showSystemMessage({
                     id: '0',
                     content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229)">刷新</a>重新连接')
@@ -635,6 +635,7 @@ function _getContextPath() {
          * WebSocket关闭打开事件
          */
         onWSClose() {
+            window.location.reload();
             layui.use('layer', function () {
                 var layer = layui.layer;
 
@@ -700,6 +701,56 @@ function _getContextPath() {
             })
         }
 
+        /**
+         * 显示receiver所有的聊天记录
+         * @param im
+         * @param receiver
+         */
+        renderAllHistoryMessage( im, receiver) {
+            var lastReadDate = new Date();
+            lastReadDate.setDate(lastReadDate.getDate() + 1);
+            var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
+
+            $.ajax({
+                url: `${ctx}/service/webim/allHistoryMessage/${receiver}`,
+                dataType: 'json',
+                data: { lastReadDate: dateStr,pageSize:100000},
+                success: function (res) {
+                    var messageList = res.data.objList,
+                        message;
+                    if (messageList.length === 0) {
+                        layer.msg('已无更多聊天消息！');
+                    }
+                    for (var i = 0, length = messageList.length; i < length; i++) {
+                        message = messageList[i];
+                        console.log(message);
+                        if(message.sender=="robot"){
+
+                        }else if (message.msgType == 'S') {
+                            this.showSystemMessage(message);
+                        } else if (message.sender == receiver.trim()) {
+                            im.showMineMessage({content: JSON.parse(message.content).msg, timestamp: message.sendTime});
+                        } else {
+                            im.getMessage({
+                                type: 'friend',
+                                system: false,
+                                reverse: true,
+                                username: message.senderName,
+                                id: '0',
+                                content: JSON.parse(message.content).msg,
+                                timestamp: message.sendTime,
+                                avatar: ctx + USER_AVATAR
+                            }, false)
+
+                        }
+                    }
+
+
+                }
+            });
+
+
+        }
 
         afterInit() {
             this.bindProblemListClickEvent();
@@ -728,7 +779,7 @@ function _getContextPath() {
             });
 
             this.im.chat(this.window);
-
+            this.renderAllHistoryMessage(this.im,this.mine.userCode);
         }
 
 
@@ -946,7 +997,7 @@ function _getContextPath() {
                         message = messageList[i];
                         console.log(message);
                         if (message.msgType == 'S') {
-                            im.showSystemMessage(message);
+                            this.showSystemMessage(message);
                         } else if (message.sender == sender.trim()) {
                             im.getMessage({
                                 type: 'friend',

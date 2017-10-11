@@ -665,7 +665,17 @@ function _getContextPath() {
                         message = messageList[i];
                         console.log(message);
                         if (message.msgType == 'S') {
-                            im.showSystemMessage(message);
+                            im.getMessage({
+                                type: 'friend',
+                                system: true,
+                                reverse: true,
+                                username: message.senderName,
+                                id: '0',
+                                fromid:'0',
+                                content: JSON.parse(message.content).msg,
+                                timestamp: message.sendTime,
+                                avatar: ctx + USER_AVATAR
+                            }, false)
                         } else if (message.sender == sender.trim()) {
                             im.getMessage({
                                 type: 'friend',
