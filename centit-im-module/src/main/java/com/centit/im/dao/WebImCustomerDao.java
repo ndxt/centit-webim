@@ -1,7 +1,9 @@
 package com.centit.im.dao;
 
 import com.centit.framework.core.dao.CodeBook;
+import com.centit.framework.core.dao.PageDesc;
 import com.centit.framework.hibernate.dao.BaseDaoImpl;
+import com.centit.framework.hibernate.dao.DatabaseOptUtils;
 import com.centit.im.po.WebImCustomer;
 import com.centit.support.algorithm.DatetimeOpt;
 import org.apache.commons.logging.Log;
@@ -68,9 +70,20 @@ public class WebImCustomerDao extends BaseDaoImpl<WebImCustomer,String>
 	public List<WebImCustomer> listServiceCustomer(String serviceUserCode, Date lastServiceDate) {
 		Date lsd = lastServiceDate==null? DatetimeOpt.addMonths(
 					DatetimeOpt.currentUtilDate(),-1) :lastServiceDate;
-		return this.listObjects(
-				"From WebImCustomer where customerService = ? and lastActiveDate >= ?" +
-						" order by lastActiveDate desc",
-				new Object[]{serviceUserCode,lsd});
+		String sql = "select b.USER_CODE,b.OS_ID,b.USER_TYPE,b.USER_NAME,b.HEAD_SCULPTURE,b.CUSTOMER_SERVICE," +
+				" b.LAST_ACTIVE_DATE,b.CREATOR,b.Service_Opts,b.CREATE_TIME " +
+				" from  (SELECT f.SENDER FROM f_web_im_message f WHERE (f.SENDER=? OR f.RECEIVER=?) " +
+				" UNION " +
+				" SELECT f.RECEIVER FROM f_web_im_message f WHERE (f.SENDER=? OR f.RECEIVER=?) ) t " +
+				" join f_web_im_customer b on t.SENDER= b.USER_CODE " +
+				" where t.SENDER!=? AND b.LAST_ACTIVE_DATE >=? " +
+				" ORDER BY b.LAST_ACTIVE_DATE ";
+		return DatabaseOptUtils.findObjectsBySql(this,sql,
+				new Object[]{serviceUserCode,serviceUserCode,serviceUserCode,serviceUserCode,
+				serviceUserCode,lsd}, new PageDesc(-1, -1),WebImCustomer.class);
+//		return this.listObjects(
+//				"From WebImCustomer where customerService = ? and lastActiveDate >= ?" +
+//						" order by lastActiveDate desc",
+//				new Object[]{serviceUserCode,lsd});
 	}
 }
