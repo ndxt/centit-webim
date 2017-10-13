@@ -559,7 +559,6 @@ function _getContextPath() {
                     type: MSG_TYPE_COMMAND,
                     contentType: contentType,
                     content: content,
-
                     receiver: receiver,
                     sender: this.mine.id,
                     sendTime: _getTimestamp()
@@ -810,7 +809,7 @@ function _getContextPath() {
 
         }, {
             key: 'renderAllHistoryMessage',
-            value: function renderAllHistoryMessage(im, receiver) {
+            value: function renderAllHistoryMessage(im, receiver, that) {
                 var lastReadDate = new Date();
                 lastReadDate.setDate(lastReadDate.getDate() + 1);
                 var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
@@ -829,7 +828,7 @@ function _getContextPath() {
                             message = messageList[i];
                             console.log(message);
                             if (message.sender == "robot") {} else if (message.msgType == 'S') {
-                                this.showSystemMessage(message);
+                                that.showSystemMessage({ content: JSON.parse(message.content).msg, timestamp: message.sendTime });
                             } else if (message.sender == receiver.trim()) {
                                 im.showMineMessage({ content: JSON.parse(message.content).msg, timestamp: message.sendTime });
                             } else {
@@ -877,7 +876,7 @@ function _getContextPath() {
                 });
 
                 this.im.chat(this.window);
-                this.renderAllHistoryMessage(this.im, this.mine.userCode);
+                this.renderAllHistoryMessage(this.im, this.mine.userCode, that);
             }
 
             /**

@@ -631,17 +631,7 @@ function _getContextPath() {
             }
         }, {
             key: 'sendWSMessage',
-            value: function sendWSMessage(data) {
-                console.log(data);
-                if (this.socket.readyState == '3') {
-                    this.showSystemMessage({
-                        id: '0',
-                        content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229)">刷新</a>重新连接')
-                    });
-                } else if (this.socket.readyState == '1') {
-                    this.socket.send(JSON.stringify(data));
-                }
-            }
+            value: function sendWSMessage(data) {}
 
             /**
              * WebSocket通道打开事件
@@ -682,17 +672,7 @@ function _getContextPath() {
 
         }, {
             key: 'onWSClose',
-            value: function onWSClose() {
-                layui.use('layer', function () {
-                    var layer = layui.layer;
-
-                    layer.open({
-                        title: '系统通知',
-
-                        content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229);cursor: pointer">刷新</a>重新连接')
-                    });
-                });
-            }
+            value: function onWSClose() {}
         }, {
             key: 'changeUserName',
             value: function changeUserName(name) {
