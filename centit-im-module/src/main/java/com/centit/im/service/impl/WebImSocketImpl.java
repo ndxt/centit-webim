@@ -368,7 +368,7 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setSender(cust.getUserCode());
         webMessage.setSenderName(cust.getUserName());
         JSONObject json = new JSONObject();
-        json.put("msg",beforeChangeService.getUserName()+"分配您为我服务。");
+        json.put("msg","你好");
         json.put("chatType","service");
         json.put("beforeId",beforeChangeService.getUserCode());
         webMessage.setContent(json.toString());
