@@ -380,6 +380,11 @@ public class WebImSocketImpl implements WebImSocket {
             webMessage.setMsgId(UuidOpt.getUuidAsString32());
         }
         messageDao.saveNewObject(webMessage);
+        notificationCenter.sendMessage(
+                cust.getUserCode(),service.getUserCode(),
+                "客服转接",
+                "你好",
+                "sms");
     }
 
     /**
