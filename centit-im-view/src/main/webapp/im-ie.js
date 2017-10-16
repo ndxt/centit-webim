@@ -54,11 +54,13 @@ var Default_IM_Config = {
     return this.replace(/(^\s*)|(\s*$)/g, '');
 };
 window.ctx = _getContextPath();
+
 /**
  * 工具函数：获取当前contentPath
  * @returns {*}
  * @private
  */
+
 function _getContextPath() {
     var match = location.href.match(/^(http:\/\/.*?\/.*?)\//);
 
@@ -66,6 +68,7 @@ function _getContextPath() {
         return match[1];
     }
 }
+
 ;(function (global) {
     'use strict';
 
@@ -326,6 +329,42 @@ function _getContextPath() {
                 params.system = true;
                 this.showChatMessage(params);
             }
+
+            /**
+             * 接受到over命令时的操作
+             * @param senderName
+             */
+
+        }, {
+            key: 'overCommandOp',
+            value: function overCommandOp(senderName) {
+                var panelList = $('.layui-unselect.layim-chat-list li');
+                var name;
+                for (var j = 0, length = panelList.length; j < length; j++) {
+                    name = panelList[j].innerText;
+                    if (name.indexOf(senderName) != -1) {
+                        $('.layui-unselect.layim-chat-list li').eq(j).find("i").click();
+                    }
+                }
+                if ($('.layim-chat-username').eq(0).html().indexOf(senderName) != -1) {
+                    this.im.closeThisChat();
+                }
+                layui.use('layer', function () {
+                    var layer = layui.layer;
+
+                    layer.open({
+                        title: '会话结束',
+                        content: senderName + '客户结束了本次会话'
+                    });
+                });
+            }
+
+            /**
+             * 根据接受到的不同命令采取不同操作
+             * @param data
+             * @param content
+             */
+
         }, {
             key: 'onCommandMessage',
             value: function onCommandMessage(data, content) {
@@ -342,15 +381,7 @@ function _getContextPath() {
                         this.scoreRate(this.mine.userCode, data.sender);
                         break;
                     case CONTENT_TYPE_OVER:
-                        this.im.closeThisChat();
-                        layui.use('layer', function () {
-                            var layer = layui.layer;
-
-                            layer.open({
-                                title: '会话结束',
-                                content: content.senderName + '客户结束了本次会话'
-                            });
-                        });
+                        this.overCommandOp(content.senderName);
 
                         break;
                     default:
@@ -404,9 +435,6 @@ function _getContextPath() {
                 if (mode == 'askForService') {
                     this.sendWSMessage(data);
                 }
-                // console.log(data);
-
-                // console.log(mode);
                 // //现在先写成这样，等后台写好再修改。
                 if (mode == 'askRobot') {
                     this.sendQuestionRequest({ question: (data.content.msg || '').replace(/\n/, '') });
@@ -448,7 +476,6 @@ function _getContextPath() {
                 var contentType = CONTENT_TYPE_REGISTER,
                     content = this.mine,
                     receiver = this.window ? this.window.id : this.mine.id;
-
                 this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
             }
 
@@ -532,7 +559,6 @@ function _getContextPath() {
                     type: MSG_TYPE_COMMAND,
                     contentType: contentType,
                     content: content,
-
                     receiver: receiver,
                     sender: this.mine.id,
                     sendTime: _getTimestamp()
@@ -607,6 +633,7 @@ function _getContextPath() {
             value: function sendWSMessage(data) {
                 console.log(data);
                 if (this.socket.readyState == '3') {
+                    window.location.reload();
                     this.showSystemMessage({
                         id: '0',
                         content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229)">刷新</a>重新连接')
@@ -701,6 +728,7 @@ function _getContextPath() {
         }, {
             key: 'onWSClose',
             value: function onWSClose() {
+                window.location.reload();
                 layui.use('layer', function () {
                     var layer = layui.layer;
 
@@ -772,6 +800,54 @@ function _getContextPath() {
                     }]
                 });
             }
+
+            /**
+             * 显示receiver所有的聊天记录
+             * @param im
+             * @param receiver
+             */
+
+        }, {
+            key: 'renderAllHistoryMessage',
+            value: function renderAllHistoryMessage(im, receiver, that) {
+                var lastReadDate = new Date();
+                lastReadDate.setDate(lastReadDate.getDate() + 1);
+                var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
+
+                $.ajax({
+                    url: ctx + '/service/webim/allHistoryMessage/' + receiver,
+                    dataType: 'json',
+                    data: { lastReadDate: dateStr, pageSize: 100000 },
+                    success: function success(res) {
+                        var messageList = res.data.objList,
+                            message;
+                        if (messageList.length === 0) {
+                            layer.msg('已无更多聊天消息！');
+                        }
+                        for (var i = 0, length = messageList.length; i < length; i++) {
+                            message = messageList[i];
+                            console.log(message);
+                            var content = JSON.parse(message.content);
+                            if (content.chatType == 'service' || message.sender == "robot") {} else if (message.msgType == 'S') {
+                                that.showSystemMessage({ content: JSON.parse(message.content).msg, timestamp: message.sendTime });
+                            } else if (message.sender == receiver.trim()) {
+                                im.showMineMessage({ content: JSON.parse(message.content).msg, timestamp: message.sendTime });
+                            } else {
+                                im.getMessage({
+                                    type: 'friend',
+                                    system: false,
+                                    reverse: true,
+                                    username: message.senderName,
+                                    id: '0',
+                                    content: content.msg,
+                                    timestamp: message.sendTime,
+                                    avatar: ctx + USER_AVATAR
+                                }, false);
+                            }
+                        }
+                    }
+                });
+            }
         }, {
             key: 'afterInit',
             value: function afterInit() {
@@ -801,6 +877,7 @@ function _getContextPath() {
                 });
 
                 this.im.chat(this.window);
+                this.renderAllHistoryMessage(this.im, this.mine.userCode, that);
             }
 
             /**
@@ -1030,7 +1107,7 @@ function _getContextPath() {
                             message = messageList[i];
                             console.log(message);
                             if (message.msgType == 'S') {
-                                im.showSystemMessage(message);
+                                this.showSystemMessage(message);
                             } else if (message.sender == sender.trim()) {
                                 im.getMessage({
                                     type: 'friend',
@@ -1051,6 +1128,13 @@ function _getContextPath() {
                     }
                 });
             }
+
+            /**
+             * 绑定自定义的事件
+             * @param im
+             * @param receiver
+             */
+
         }, {
             key: 'bindEvent',
             value: function bindEvent(im, receiver) {
@@ -1061,7 +1145,6 @@ function _getContextPath() {
 
                     var userCode = $(this).attr("class").split(" ")[0].substr(12).trim();
                     $(".layim-chat-username").attr('userCode', userCode);
-                    $(".layim-chat-username").data('pageNo' + userCode, 1);
 
                     // renderHistoryMessage(userCode,im,receiver,ctx);(在layim的popchat函数中还会render一次)
                 });
@@ -1442,7 +1525,7 @@ function _getContextPath() {
                         // console.log(res.data);
                         var unreadInfo = res.data,
                             x;
-
+                        console.log(res);
                         for (x in unreadInfo) {
                             // console.log(x);
                             var attr = x;

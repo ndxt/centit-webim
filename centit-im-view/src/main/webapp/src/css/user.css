@@ -67,6 +67,6 @@
     font-size:18px;
     font-weight: 400;
 }
-span.layui-layer-setwin a.layui-layer-close1{
+[layim-event=chatLog]{
     display: none;
 }

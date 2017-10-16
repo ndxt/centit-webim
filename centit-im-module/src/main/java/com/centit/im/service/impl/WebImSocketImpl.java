@@ -356,7 +356,26 @@ public class WebImSocketImpl implements WebImSocket {
             pushMessage(service.getUserCode() ,ImMessageUtils
                     .buildSystemMessageChangService(receiver,"请为"+cust.getUserName()+"客户服务。",cust,beforeChangeService,"A") );//切换后客服标识After
             saveChangeCustomerService(receiver,beforeChangeService,service);//保存切换客服提示信息
+            saveChangeCustomerCall(service,cust,beforeChangeService);//保存切换后给切换客服的提示信息
         }
+    }
+
+    @Transactional
+    public void saveChangeCustomerCall(WebImCustomer service,WebImCustomer cust,WebImCustomer beforeChangeService){
+        WebImMessage webMessage = new WebImMessage();
+        webMessage.setMsgType("C");
+        webMessage.setReceiver(service.getUserCode());
+        webMessage.setSender(cust.getUserCode());
+        webMessage.setSenderName(cust.getUserName());
+        JSONObject json = new JSONObject();
+        json.put("msg","你好");
+        json.put("chatType","service");
+        json.put("beforeId",beforeChangeService.getUserCode());
+        webMessage.setContent(json.toString());
+        webMessage.setSendTime(DatetimeOpt.currentUtilDate());
+        webMessage.setMsgState("U");
+        webMessage.setMsgId(UuidOpt.getUuidAsString32());
+        messageDao.saveNewObject(webMessage);
     }
 
     /**

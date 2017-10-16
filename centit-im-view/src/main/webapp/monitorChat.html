@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="src/css/layui.css">
     <link rel="stylesheet" href="plugins/jquery.raty.css">
     <link rel="stylesheet" href="src/css/user.css">
-
 </head>
 <body>
 
@@ -17,15 +16,16 @@
 <script src="plugins/base64.js"></script>
 <script src="plugins/shim/promise.min.js"></script>
 <script src="plugins/jquery.raty.js"></script>
-<script src="im-ie.js"></script>
+<script src="monitorChat-ie.js"></script>
 <script>
     var result = parseURL(),
         token = result.params.token,
         params = JSON.parse(decodeURIComponent(base64.decode(token))),
         mine = {
+            receiver:params.receiver,
+            sender:params.sender,
             userCode: params.userCode,
-            userName: params.userName,
-
+            userName: params.userName
         },
 
         config = {
@@ -35,7 +35,7 @@
             osId: params.osId
         };
     console.log(params);
-    document.title = 'User - ' + params.userName;
+    document.title = '历史消息';
 
     layui.use('layim', function (im) {
         new UserIM(im, $.extend({
