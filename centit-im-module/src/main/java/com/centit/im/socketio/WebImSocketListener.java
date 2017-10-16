@@ -13,6 +13,7 @@ import javax.websocket.server.ServerEndpoint;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
 /**
  * Created by codefan on 17-5-19.
+ * @author codefan
  */
 @ServerEndpoint(value="/im/{userCode}" ,configurator = SpringConfigurator.class)
 @Service
@@ -30,8 +31,9 @@ public class WebImSocketListener {
     public void onOpen(Session session, @PathParam("userCode") String userCode) {
         try {
             webImSocket.signInUser(userCode, session);
+            //logger.debug("User Login : " + userCode + " session :" + session.getId());
         }catch (Exception e){
-            logger.info("onOpen",e);
+            logger.error("onOpen",e);
         }
     }
 
@@ -42,8 +44,9 @@ public class WebImSocketListener {
     public void onClose(Session session) {
         try {
             webImSocket.signOutUser(session);
+            //logger.debug("User Logout session :" + session.getId());
         }catch (Exception e){
-            logger.info("onClose",e);
+            logger.error("onClose",e);
         }
     }
 
@@ -55,7 +58,7 @@ public class WebImSocketListener {
         try{
             webImSocket.recvMessage(session, message);
         }catch (Exception e){
-            logger.info("onMessage" + message,e);
+            logger.error("onMessage" + message,e);
         }
     }
 
@@ -66,7 +69,7 @@ public class WebImSocketListener {
      */
     @OnError
     public void onError(Throwable error) {
-        logger.info("onError" + error);
-        error.printStackTrace();
+        logger.error("onError" + error.getMessage(),error);
+        //error.printStackTrace();
     }
 }
