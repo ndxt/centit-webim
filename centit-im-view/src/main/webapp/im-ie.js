@@ -827,7 +827,8 @@ function _getContextPath() {
                         for (var i = 0, length = messageList.length; i < length; i++) {
                             message = messageList[i];
                             console.log(message);
-                            if (message.sender == "robot") {} else if (message.msgType == 'S') {
+                            var content = JSON.parse(message.content);
+                            if (content.chatType == 'service' || message.sender == "robot") {} else if (message.msgType == 'S') {
                                 that.showSystemMessage({ content: JSON.parse(message.content).msg, timestamp: message.sendTime });
                             } else if (message.sender == receiver.trim()) {
                                 im.showMineMessage({ content: JSON.parse(message.content).msg, timestamp: message.sendTime });
@@ -838,7 +839,7 @@ function _getContextPath() {
                                     reverse: true,
                                     username: message.senderName,
                                     id: '0',
-                                    content: JSON.parse(message.content).msg,
+                                    content: content.msg,
                                     timestamp: message.sendTime,
                                     avatar: ctx + USER_AVATAR
                                 }, false);
@@ -1524,7 +1525,7 @@ function _getContextPath() {
                         // console.log(res.data);
                         var unreadInfo = res.data,
                             x;
-
+                        console.log(res);
                         for (x in unreadInfo) {
                             // console.log(x);
                             var attr = x;
