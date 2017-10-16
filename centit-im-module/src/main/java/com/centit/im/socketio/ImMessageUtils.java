@@ -78,6 +78,15 @@ public class ImMessageUtils {
                 .message(message).build();
     }
 
+    //切换客服后向新客服发送提示信息
+    public static ImMessage buildChatMessage(String message,WebImCustomer cust){
+        return new ImMessageBuild().type(ImMessage.MSG_TYPE_CHAT)
+                .contentType(ImMessage.CONTENT_TYPE_TEXT)
+                .sender(cust.getUserCode())
+                .senderName(cust.getUserName())
+                .message(message).build();
+    }
+
     public static ImMessage buildSystemMessage(String message){
         return buildSystemMessage("system",message);
     }
