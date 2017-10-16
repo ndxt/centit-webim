@@ -355,6 +355,7 @@ public class WebImSocketImpl implements WebImSocket {
 
             pushMessage(service.getUserCode() ,ImMessageUtils
                     .buildSystemMessageChangService(receiver,"请为"+cust.getUserName()+"客户服务。",cust,beforeChangeService,"A") );//切换后客服标识After
+            pushMessage(service.getUserCode() ,ImMessageUtils.buildChatMessage("你好",cust) );//切换后向新客服发送提示信息
             saveChangeCustomerService(receiver,beforeChangeService,service);//保存切换客服提示信息
             saveChangeCustomerCall(service,cust,beforeChangeService);//保存切换后给切换客服的提示信息
         }
