@@ -727,16 +727,29 @@ layui.define(['layer', 'laytpl', 'upload'], function (exports) {
                     } else {
                         var avatar = ctx + SERVICE_AVATAR
                     }
-                    getMessage({
-                        type: 'friend',
-                        system: false,
-                        reverse: false,
-                        username: message.senderName,
-                        id: receiver,
-                        content: JSON.parse(message.content).msg,
-                        timestamp: message.sendTime,
-                        avatar: avatar
-                    }, true)
+                    if(message.msgType == "S") {
+                        getMessage({
+                            type: 'friend',
+                            system: true,
+                            reverse: true,
+                            id: message.receiver,
+                            content: JSON.parse(message.content).msg,
+                            timestamp: message.sendTime,
+
+                        }, false)
+                    }else{
+                        getMessage({
+                            type: 'friend',
+                            system: false,
+                            reverse: false,
+                            username: message.senderName,
+                            id: receiver,
+                            content: JSON.parse(message.content).msg,
+                            timestamp: message.sendTime,
+                            avatar: avatar
+                        }, true)
+                    }
+
                 }
                 $('div.layui-show .layim-chat-username').data('preServiceCode', sender);
             }

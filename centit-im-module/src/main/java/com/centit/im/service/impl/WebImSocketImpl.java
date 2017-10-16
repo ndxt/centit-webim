@@ -366,7 +366,7 @@ public class WebImSocketImpl implements WebImSocket {
         Session session = getSessionByUserCode(service.getUserCode());
         WebImMessage webMessage = new WebImMessage();
         if(session!=null){
-            pushMessage(service.getUserCode() ,ImMessageUtils.buildChatMessage("你好",cust,service,beforeChangeService) );//切换后向新客服发送提示信息
+
         }else {
             webMessage.setMsgType("C");
             webMessage.setReceiver(service.getUserCode());
