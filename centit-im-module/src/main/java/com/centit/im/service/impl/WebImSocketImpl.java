@@ -365,9 +365,7 @@ public class WebImSocketImpl implements WebImSocket {
     public void saveAndSendChangeCustomerCall(WebImCustomer service,WebImCustomer cust,WebImCustomer beforeChangeService){
         Session session = getSessionByUserCode(service.getUserCode());
         WebImMessage webMessage = new WebImMessage();
-        if(session!=null){
-
-        }else {
+        if(session==null){
             webMessage.setMsgType("C");
             webMessage.setReceiver(service.getUserCode());
             webMessage.setSender(cust.getUserCode());
