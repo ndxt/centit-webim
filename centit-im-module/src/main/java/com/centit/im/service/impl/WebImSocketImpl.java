@@ -366,6 +366,8 @@ public class WebImSocketImpl implements WebImSocket {
         Session session = getSessionByUserCode(service.getUserCode());
         WebImMessage webMessage = new WebImMessage();
         if(session!=null){
+            pushMessage(service.getUserCode() ,ImMessageUtils.buildChatMessage("你好",cust,service,beforeChangeService) );//切换后向新客服发送提示信息
+        }else {
             webMessage.setMsgType("C");
             webMessage.setReceiver(service.getUserCode());
             webMessage.setSender(cust.getUserCode());
@@ -378,8 +380,6 @@ public class WebImSocketImpl implements WebImSocket {
             webMessage.setSendTime(DatetimeOpt.currentUtilDate());
             webMessage.setMsgState("U");
             webMessage.setMsgId(UuidOpt.getUuidAsString32());
-        }else {
-            pushMessage(service.getUserCode() ,ImMessageUtils.buildChatMessage("你好",cust,service,beforeChangeService) );//切换后向新客服发送提示信息
         }
         messageDao.saveNewObject(webMessage);
     }
