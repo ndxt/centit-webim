@@ -476,7 +476,63 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
         }
 
     };
+    var renderSwitchMessage = function(sender, receiver) {
+        var lastReadDate = new Date();
+        lastReadDate.setDate(lastReadDate.getDate() + 1);
+        var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
+        var pageNo = 1;
+        var url = ctx + '/service/webim/historyMessage/' + receiver + '/' + sender;
+        console.log(url);
+        $.ajax({
+            url: url,
+            async: false,
+            dataType: 'json',
+            data: {pageNo: pageNo, lastReadDate: dateStr, pageSize: 100000},
+            success: function (res) {
+                var messageList = res.data.objList,
+                    message;
+                if (messageList.length === 0) {
+                    layer.msg('已无更多聊天消息！');
+                } else {
+                    pageNo++;
+                }
+                for (var i = messageList.length - 1; i >= 0; i--) {
+                    message = messageList[i];
+                    console.log(message);
+                    if (message.sender == sender.trim()) {
+                        var avatar = ctx + USER_AVATAR
+                    } else {
+                        var avatar = ctx + SERVICE_AVATAR
+                    }
+                    if(message.msgType == "S") {
+                        getMessage({
+                            type: 'friend',
+                            system: true,
+                            reverse: true,
+                            id: message.receiver,
+                            content: JSON.parse(message.content).msg,
+                            timestamp: message.sendTime,
 
+                        }, false)
+                    }else{
+                        getMessage({
+                            type: 'friend',
+                            system: false,
+                            reverse: false,
+                            username: message.senderName,
+                            id: receiver,
+                            content: JSON.parse(message.content).msg,
+                            timestamp: message.sendTime,
+                            avatar: avatar
+                        }, true)
+                    }
+
+                }
+                $('div.layui-show .layim-chat-username').data('preServiceCode', sender);
+            }
+        });
+
+    }
     var getHistoryChatLog = function (data) {
         var match = location.href.match(/^(http:\/\/.*?\/.*?)\//);
         var ctx = match[1];
@@ -503,7 +559,10 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
                 for (var i = 0, length = messageList.length; i < length; i++) {
                     message = messageList[i];
                     console.log(message);
-                    if(message.msgType === 'S'){
+                    var content = JSON.parse(message.content);
+                    if(content.chatType == "service" && i == 0){
+                        renderSwitchMessage(content.beforeId,message.sender);
+                    }else if(message.msgType === 'S'){
                         getMessage({
                             type: 'friend',
                             system: true,
