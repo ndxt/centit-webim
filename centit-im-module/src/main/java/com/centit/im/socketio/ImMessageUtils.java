@@ -79,11 +79,14 @@ public class ImMessageUtils {
     }
 
     //切换客服后向新客服发送提示信息
-    public static ImMessage buildChatMessage(String message,WebImCustomer cust){
+    public static ImMessage buildChatMessage(String message,WebImCustomer cust,WebImCustomer service,WebImCustomer beforeChangeService){
         return new ImMessageBuild().type(ImMessage.MSG_TYPE_CHAT)
                 .contentType(ImMessage.CONTENT_TYPE_TEXT)
                 .sender(cust.getUserCode())
                 .senderName(cust.getUserName())
+                .receiver(service.getUserCode())
+                .addContent("chatType","service")
+                .addContent("beforeId",beforeChangeService.getUserCode())
                 .message(message).build();
     }
 
