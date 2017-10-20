@@ -1140,19 +1140,6 @@ function _getContextPath() {
             value: function bindEvent(im, receiver) {
                 var ctx = this.contextPath,
                     renderHistoryMessage = this.renderHistoryMessage;
-
-                $("body").on("click", '*[layim-event="chat"]', function () {
-
-                    var userCode = $(this).attr("class").split(" ")[0].substr(12).trim();
-                    $(".layim-chat-username").attr('userCode', userCode);
-
-                    // renderHistoryMessage(userCode,im,receiver,ctx);(在layim的popchat函数中还会render一次)
-                });
-
-                $("body").on("click", '*[layim-event="chatLog"]', function () {
-                    var userCode = $(".layim-chat-username").attr('userCode');
-                    renderHistoryMessage(userCode, im, receiver, ctx);
-                });
             }
 
             /**
