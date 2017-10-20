@@ -1,4 +1,4 @@
-﻿/**
+/**
  
  @Name: layim
  @Author: 贤心
@@ -71,7 +71,7 @@ body .layui-layim-chat .layui-layer-content{overflow: visible;}
 .layui-layim-list li img{position: absolute; left: 15px; top: 8px; width: 36px; height: 36px; border-radius: 100%;}
 .layui-layim-list li p{display: block; padding-right: 30px; line-height: 18px; font-size: 12px; color: #999;}
 .layui-layim-list li .layim-msg-status{display: none; position: absolute; right: 10px; bottom: 7px; padding: 0 5px; height: 16px; line-height: 16px; border-radius: 16px; text-align: center; font-size: 10px; background-color: #F74C31; color: #fff;}
-.layim-list-gray img{-webkit-filter: invert(70%);  -ms-filter: invert(70%); filter: invert(70%); filter: gray;}
+.layim-list-gray{-webkit-filter: grayscale(100%);  -ms-filter: grayscale(100%); filter: grayscale(100%); filter: gray;}
 
 .layui-layim-tool{padding: 0 10px; font-size: 0;  background-color: #F6F6F6; border-radius:0 0 2px 2px;}
 .layui-layim-tool li{position: relative; width: 48px; height: 37px; line-height: 40px; text-align: center; font-size: 22px; cursor: pointer;}

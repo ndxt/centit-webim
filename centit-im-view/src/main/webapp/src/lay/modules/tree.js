@@ -10,8 +10,8 @@
 layui.define('jquery', function(exports){
   "use strict";
   
-  var $ = layui.jquery;
-  var hint = layui.hint();
+  var $ = layui.$
+  ,hint = layui.hint();
   
   var enterSkin = 'layui-tree-enter', Tree = function(options){
     this.options = options;
@@ -86,8 +86,6 @@ layui.define('jquery', function(exports){
       }
       
       elem.append(li);
-
-      li.data('node', item)
       
       //触发点击节点回调
       typeof options.click === 'function' && that.click(li, item); 
@@ -105,7 +103,7 @@ layui.define('jquery', function(exports){
     var that = this, options = that.options;
     elem.children('a').on('click', function(e){
       layui.stope(e);
-      options.click(item, elem)
+      options.click(item)
     });
   };
   

@@ -9,9 +9,9 @@
 layui.define(['layer', 'form'], function(exports){
   "use strict";
   
-  var $ = layui.jquery
+  var $ = layui.$
   ,layer = layui.layer
-  ,form = layui.form()
+  ,form = layui.form
   ,hint = layui.hint()
   ,device = layui.device()
   
@@ -387,12 +387,11 @@ layui.define(['layer', 'form'], function(exports){
         var that = this;
         layui.use('upload', function(upload){
           var uploadImage = set.uploadImage || {};
-          upload({
+          upload.render({
             url: uploadImage.url
             ,method: uploadImage.type
             ,elem: $(that).find('input')[0]
-            ,unwrap: true
-            ,success: function(res){
+            ,done: function(res){
               if(res.code == 0){
                 res.data = res.data || {};
                 insertInline.call(iframeWin, 'img', {
