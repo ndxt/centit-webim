@@ -1229,7 +1229,8 @@ function _getContextPath() {
                         icon: '&#xe611;'
                     }],
                     isgroup: false,
-                    copyright: true
+                    copyright: true,
+                    chatLog: layui.cache.dir + 'css/modules/layim/html/chatlog.html'
                 };
 
                 if (!!this.mine.switchServiceBtn) {

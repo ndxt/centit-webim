@@ -1127,6 +1127,7 @@ function _getContextPath() {
                     }]
                 , isgroup: false
                 , copyright: true
+                ,chatLog: layui.cache.dir + 'css/modules/layim/html/chatlog.html'
             };
 
             if (!!this.mine.switchServiceBtn) {
