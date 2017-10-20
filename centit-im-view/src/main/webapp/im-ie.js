@@ -49,8 +49,11 @@ var CONTENT_TYPE_OVER = "over";
 // 默认IM配置
 var Default_IM_Config = {
     mode: MODE_QUESTION
-    //添加全局函数
-};String.prototype.trim = function () {
+};
+
+var elemChatMain = ['<li {{ d.mine ? "class=layim-chat-mine" : "" }} {{# if(d.cid){ }}data-cid="{{d.cid}}"{{# } }}>', '<div class="layim-chat-user"><img src="{{ d.avatar }}"><cite>', '{{# if(d.mine){ }}', '<i>{{ layui.data.date(d.timestamp) }}</i>{{ d.username||"佚名" }}', '{{# } else { }}', '{{ d.username||"佚名" }}<i>{{ layui.data.date(d.timestamp) }}</i>', '{{# } }}', '</cite></div>', '<div class="layim-chat-text">{{ layui.data.content(d.content||"&nbsp") }}</div>', '</li>'].join('');
+//添加全局函数
+String.prototype.trim = function () {
     return this.replace(/(^\s*)|(\s*$)/g, '');
 };
 window.ctx = _getContextPath();
@@ -450,7 +453,7 @@ function _getContextPath() {
         }, {
             key: 'createProblemList',
             value: function createProblemList(problems, data) {
-                this.showChatMessage($.extend({ id: '0' }, data, { content: Mustache.render("[span class=hintMsg]{{msg}}[/span][ul]{{#options}} [li class=question id={{value}} data-type={{type}}][a]{{label}}[/a][/li]{{/options}} [/ul]", problems) }));
+                this.showChatMessage($.extend({ id: '0' }, data, { content: Mustache.render("[span class=hintMsg]{{msg}}[/span][ul]{{#options}} [li class=question id={{value}} data-type={{type}}][span]{{label}}[/span][/li]{{/options}} [/ul]", problems) }));
             }
 
             /**
@@ -586,17 +589,6 @@ function _getContextPath() {
                 };
 
                 this.sendWSMessage(data);
-            }
-
-            /**
-             * 显示用户所点击的问题
-             */
-
-        }, {
-            key: 'showClickQuestion',
-            value: function showClickQuestion(content) {
-                this.im.showQuestion({ content: content.questionContent });
-                this.sendQuestionRequest(content);
             }
 
             /**
@@ -775,6 +767,32 @@ function _getContextPath() {
         }
 
         _createClass(UserIM, [{
+            key: 'showQuestionMessage',
+            value: function showQuestionMessage(content) {
+                var message = {};
+                message.content = content;
+                message.type = 'friend';
+                message.id = '0';
+                message.timestamp = message.sendTime || new Date().getTime();
+                var cache = layui.layim.cache();
+                message.username = cache.mine.username;
+                message.fromid = cache.mine.userCode;
+                message.mine = true;
+                message.avatar = ctx + '/src/avatar/user.png';
+                this.im.getMessage(message);
+            }
+
+            /**
+             * 显示用户所点击的问题
+             */
+
+        }, {
+            key: 'showClickQuestion',
+            value: function showClickQuestion(content) {
+                this.showQuestionMessage(content.question);
+                this.sendQuestionRequest(content);
+            }
+        }, {
             key: 'initIM',
             value: function initIM() {
                 var ctx = this.contextPath;
@@ -797,7 +815,8 @@ function _getContextPath() {
                         alias: 'robot' //工具别名
                         , title: '智能问答' //工具名称
                         , icon: '&#xe61a;' //工具图标，参考图标文档
-                    }]
+                    }],
+                    chatLog: layui.cache.dir + 'css/modules/layim/html/chatlog.html'
                 });
             }
 
@@ -1544,17 +1563,13 @@ function _getContextPath() {
                                         type: 'friend',
                                         system: false,
                                         reverse: true,
+                                        fromid: message.sender,
                                         username: message.senderName,
                                         id: arr[i],
                                         content: JSON.parse(message.content).msg,
                                         timestamp: message.sendTime,
                                         avatar: ctx + USER_AVATAR
                                     }, true);
-                                } else {
-                                    im.showMineMessage({
-                                        content: JSON.parse(message.content).msg,
-                                        timestamp: message.sendTime
-                                    });
                                 }
                             }
                         }
