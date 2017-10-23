@@ -42,6 +42,21 @@ const Default_IM_Config = {
     mode: MODE_QUESTION
 }
 
+//layim扩展部分
+const THIS = 'layim-this';
+const SHOW = 'layui-show';
+
+function closeThisChat() {
+    var currentCloseBtn = $(".layim-this.layim-list-gray .layui-icon");
+    if($(".layim-this.layim-list-gray .layui-icon").length > 0){
+        currentCloseBtn.click();
+    }else{
+        $(".layui-layim-chat .layui-layer-ico.layui-layer-close.layui-layer-close1").click();
+    }
+
+
+}
+
 var elemChatMain = ['<li {{ d.mine ? "class=layim-chat-mine" : "" }} {{# if(d.cid){ }}data-cid="{{d.cid}}"{{# } }}>'
     ,'<div class="layim-chat-user"><img src="{{ d.avatar }}"><cite>'
     ,'{{# if(d.mine){ }}'
@@ -319,7 +334,7 @@ function _getContextPath() {
                 }
             }
             if($('.layim-chat-username').eq(0).html().indexOf(senderName) != -1){
-                this.im.closeThisChat();
+                closeThisChat();
             }
             layui.use('layer', function () {
                 var layer = layui.layer;
@@ -341,18 +356,17 @@ function _getContextPath() {
 
             switch (contentType) {
                 case CONTENT_TYPE_SERVICE:
-                    this.showSystemMessage($.extend({id: '0'}, data, {content: content.msg}))
-                    this.changeUserName(content.userName)
+                    this.showSystemMessage($.extend({id: '0'}, data, {content: content.msg}));
+                    this.changeUserName(content.userName);
                     $(".layim-chat-status").eq(0).data('userCode',content.userCode);
-                    this.to = $.extend({id: content.userCode}, content)
+                    this.to = $.extend({id: content.userCode}, content);
                     break
                 case CONTENT_TYPE_PUSH_FORM:
                     this.scoreRate(this.mine.userCode, data.sender);
                     break;
                 case CONTENT_TYPE_OVER:
                     this.overCommandOp(content.senderName);
-
-                        break;
+                    break;
                 default:
                     break
             }
@@ -1193,7 +1207,7 @@ function _getContextPath() {
                 const mine = this.mine;
                 const list = this.services.list;
 
-                let result = []
+                let result = [];
                 let service = null;
 
                 layer.open({
@@ -1220,7 +1234,7 @@ function _getContextPath() {
                             , content: `已发送切换客服[${service.name}]命令！`
                             , btn: ['确定']
                             , btn1: function (index, layero) {
-                                this.im.closeThisChat();
+                                closeThisChat();
                                 layer.close(index);
                             }.bind(this)
                         });
@@ -1352,10 +1366,12 @@ function _getContextPath() {
                     layui.tree({
                         elem: '#service_list' //传入元素选择器
                         , nodes: data,
-                        click: function (node, li) {
-                            if (!node.children) {
-                                $('li.selected', tree).removeClass('selected')
-                                li.addClass('selected')
+                        click: function (node) {
+                            if(typeof  node == "undefined"){
+
+                            }else if (!node.children) {
+                                // $('li.selected', tree).removeClass('selected')
+                                // li.addClass('selected')
                                 $('#service_text').html(`已选中客服：${node.name}${node.offline ? '(不在线)' : ''}`)
                                 service = node
                             }
@@ -1365,7 +1381,9 @@ function _getContextPath() {
                     tree.find('li').each(function () {
                         const li = $(this)
                         const node = li.data('node')
-                        if (!node.children && node.offline) {
+                        if(typeof node == "undefined"){
+
+                        }else if (!node.children && node.offline) {
                             li.addClass('offline')
                         }
                     })

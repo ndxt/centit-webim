@@ -49,7 +49,19 @@ var CONTENT_TYPE_OVER = "over";
 // 默认IM配置
 var Default_IM_Config = {
     mode: MODE_QUESTION
-};
+
+    //layim扩展部分
+};var THIS = 'layim-this';
+var SHOW = 'layui-show';
+
+function closeThisChat() {
+    var currentCloseBtn = $(".layim-this.layim-list-gray .layui-icon");
+    if ($(".layim-this.layim-list-gray .layui-icon").length > 0) {
+        currentCloseBtn.click();
+    } else {
+        $(".layui-layim-chat .layui-layer-ico.layui-layer-close.layui-layer-close1").click();
+    }
+}
 
 var elemChatMain = ['<li {{ d.mine ? "class=layim-chat-mine" : "" }} {{# if(d.cid){ }}data-cid="{{d.cid}}"{{# } }}>', '<div class="layim-chat-user"><img src="{{ d.avatar }}"><cite>', '{{# if(d.mine){ }}', '<i>{{ layui.data.date(d.timestamp) }}</i>{{ d.username||"佚名" }}', '{{# } else { }}', '{{ d.username||"佚名" }}<i>{{ layui.data.date(d.timestamp) }}</i>', '{{# } }}', '</cite></div>', '<div class="layim-chat-text">{{ layui.data.content(d.content||"&nbsp") }}</div>', '</li>'].join('');
 //添加全局函数
@@ -350,7 +362,7 @@ function _getContextPath() {
                     }
                 }
                 if ($('.layim-chat-username').eq(0).html().indexOf(senderName) != -1) {
-                    this.im.closeThisChat();
+                    closeThisChat();
                 }
                 layui.use('layer', function () {
                     var layer = layui.layer;
@@ -385,7 +397,6 @@ function _getContextPath() {
                         break;
                     case CONTENT_TYPE_OVER:
                         this.overCommandOp(content.senderName);
-
                         break;
                     default:
                         break;
@@ -1306,7 +1317,7 @@ function _getContextPath() {
                                 content: '\u5DF2\u53D1\u9001\u5207\u6362\u5BA2\u670D[' + service.name + ']\u547D\u4EE4\uFF01',
                                 btn: ['确定'],
                                 btn1: function (index, layero) {
-                                    this.im.closeThisChat();
+                                    closeThisChat();
                                     layer.close(index);
                                 }.bind(this)
                             });
@@ -1432,10 +1443,10 @@ function _getContextPath() {
                         layui.tree({
                             elem: '#service_list' //传入元素选择器
                             , nodes: data,
-                            click: function click(node, li) {
-                                if (!node.children) {
-                                    $('li.selected', tree).removeClass('selected');
-                                    li.addClass('selected');
+                            click: function click(node) {
+                                if (typeof node == "undefined") {} else if (!node.children) {
+                                    // $('li.selected', tree).removeClass('selected')
+                                    // li.addClass('selected')
                                     $('#service_text').html('\u5DF2\u9009\u4E2D\u5BA2\u670D\uFF1A' + node.name + (node.offline ? '(不在线)' : ''));
                                     service = node;
                                 }
@@ -1445,7 +1456,7 @@ function _getContextPath() {
                         tree.find('li').each(function () {
                             var li = $(this);
                             var node = li.data('node');
-                            if (!node.children && node.offline) {
+                            if (typeof node == "undefined") {} else if (!node.children && node.offline) {
                                 li.addClass('offline');
                             }
                         });
