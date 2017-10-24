@@ -23,10 +23,10 @@ body .layim-chat-main{height: auto;}
 
 <textarea title="消息模版" id="LAY_tpl" style="display:none;">
 {{# layui.each(d.data, function(index, item){
-  if(item.id == parent.layui.layim.cache().mine.id){ }}
-    <li class="layim-chat-mine"><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite><i>{{ layui.data.date(item.timestamp) }}</i>{{ item.username }}</cite></div><div class="layim-chat-text">{{ layui.layim.content(item.content) }}</div></li>
-  {{# } else if(item.system == true){ }}
+  if(item.system == true){ }}
   <li class="layim-chat-system"><span>{{ layui.layim.content(item.content) }}</span></li>
+  {{# } else if(item.id == parent.layui.layim.cache().mine.id){ }}
+      <li class="layim-chat-mine"><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite><i>{{ layui.data.date(item.timestamp) }}</i>{{ item.username }}</cite></div><div class="layim-chat-text">{{ layui.layim.content(item.content) }}</div></li>
   {{# }else{ }}
     <li><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite>{{ item.username }}<i>{{ layui.data.date(item.timestamp) }}</i></cite></div><div class="layim-chat-text">{{ layui.layim.content(item.content) }}</div></li>
   {{# }
@@ -101,6 +101,7 @@ layui.use(['layim', 'laypage'], function(){
                 message.id = message.sender;
                 message.timestamp = message.sendTime;
                 message.username = message.senderName;
+                message.avatar = ctx + '/src/avatar/service.jpg';
                 if(message.msgType == "S"){
                     message.system = true;
                 }

@@ -1,0 +1,20 @@
+/*滤镜*/
+.layim-list-gray{-webkit-filter: invert(0%);  -ms-filter: invert(0%); filter: invert(0%); filter: white;}
+.layim-list-gray img{-webkit-filter: invert(70%);  -ms-filter: invert(70%); filter: invert(70%); filter: gray;}
+
+/*字体样式*/
+@font-face {
+    font-family: 'iconfont';
+    src: url('../font/font/iconfont.eot');
+    src: url('../font/font/iconfont.eot?#iefix') format('embedded-opentype'),
+    url('../font/font/iconfont.woff') format('woff'),
+    url('../font/font/iconfont.ttf') format('truetype'),
+    url('../font/font/iconfont.svg#iconfont') format('svg');
+}
+.layui-icon{
+    font-family:"iconfont","layui-icon" !important;
+    font-size:16px;font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}

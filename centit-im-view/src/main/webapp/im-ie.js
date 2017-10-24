@@ -49,9 +49,21 @@ var CONTENT_TYPE_OVER = "over";
 // 默认IM配置
 var Default_IM_Config = {
     mode: MODE_QUESTION
-
-    //layim扩展部分
-};var THIS = 'layim-this';
+};
+function thisChat() {
+    var layimChat = $(".layui-box.layui-layim-chat");
+    if (!layimChat) return;
+    var index = $('.layim-chat-list .' + THIS).index();
+    var cont = layimChat.find('.layim-chat').eq(index);
+    var to = JSON.parse(decodeURIComponent(cont.find('.layim-chat-tool').data('json')));
+    return {
+        elem: cont,
+        data: to,
+        textarea: cont.find('textarea')
+    };
+};
+//layim扩展部分
+var THIS = 'layim-this';
 var SHOW = 'layui-show';
 
 function closeThisChat() {
@@ -861,7 +873,17 @@ function _getContextPath() {
                             if (content.chatType == 'service' || message.sender == "robot") {} else if (message.msgType == 'S') {
                                 that.showSystemMessage({ content: JSON.parse(message.content).msg, timestamp: message.sendTime });
                             } else if (message.sender == receiver.trim()) {
-                                im.showMineMessage({ content: JSON.parse(message.content).msg, timestamp: message.sendTime });
+                                im.getMessage({
+                                    fromid: message.sender,
+                                    type: 'friend',
+                                    system: false,
+                                    reverse: true,
+                                    username: message.senderName,
+                                    id: '0',
+                                    content: content.msg,
+                                    timestamp: message.sendTime,
+                                    avatar: ctx + USER_AVATAR
+                                }, false);
                             } else {
                                 im.getMessage({
                                     type: 'friend',
@@ -1095,14 +1117,17 @@ function _getContextPath() {
                         for (var i = messageList.length - 1; i >= 0; i--) {
                             message = messageList[i];
                             console.log(message);
-                            if (message.sender == sender.trim()) {
+                            var system = false;
+                            if (message.Type == "S") {
+                                system = true;
+                            } else if (message.sender == sender.trim()) {
                                 var avatar = ctx + USER_AVATAR;
                             } else {
                                 var avatar = ctx + SERVICE_AVATAR;
                             }
                             im.getMessage({
                                 type: 'friend',
-                                system: false,
+                                system: system,
                                 reverse: false,
                                 username: message.senderName,
                                 id: sender,
@@ -1285,9 +1310,10 @@ function _getContextPath() {
                         content: '是否结束本次会话，并发送评价请求？',
                         btn: ['确认', '取消'],
                         yes: function yes(index) {
-                            that.sendAsk4Evaluate(that.mine.userCode, $(".layim-chat-username").attr('userCode').trim());
+                            var currentChatId = thisChat().data.id;
+                            that.sendAsk4Evaluate(that.mine.userCode, currentChatId);
                             layer.close(index);
-                            that.im.closeThisChat();
+                            closeThisChat();
                         }
                     });
                 }.bind(this));
@@ -1309,8 +1335,8 @@ function _getContextPath() {
                                 layer.alert('没有选择客服！');
                                 return;
                             }
-
-                            this.sendSwitchServiceCommand(service.id, $(".layim-chat-username").attr('usercode'));
+                            var currentChatId = thisChat().data.id;
+                            this.sendSwitchServiceCommand(service.id, currentChatId);
 
                             layer.open({
                                 title: '切换客服',
@@ -1444,6 +1470,7 @@ function _getContextPath() {
                             elem: '#service_list' //传入元素选择器
                             , nodes: data,
                             click: function click(node) {
+                                $("#service_list").find();
                                 if (typeof node == "undefined") {} else if (!node.children) {
                                     // $('li.selected', tree).removeClass('selected')
                                     // li.addClass('selected')
@@ -1471,7 +1498,7 @@ function _getContextPath() {
 
                 this.im.on('tool(return)', function () {
                     var preServiceCode = $('div.layui-show .layim-chat-username').data('preServiceCode') || "",
-                        userCode = $(".layim-chat-username").attr('usercode');
+                        userCode = thisChat().data.id;
                     if (!!preServiceCode) {
                         this.sendSwitchServiceCommand(preServiceCode, userCode);
                     } else {
@@ -1528,6 +1555,7 @@ function _getContextPath() {
                 var ctx = this.contextPath,
                     userCode = this.mine.userCode,
                     im = this.im,
+                    that = this,
                     lastReadDate = new Date(),
                     arr = [];
                 lastReadDate.setDate(lastReadDate.getDate() + 1);
@@ -1569,19 +1597,20 @@ function _getContextPath() {
                             for (var j = 0, _length = messageList.length; j < _length; j++) {
                                 message = messageList[j];
                                 console.log(message);
-                                if (message.sender == arr[i]) {
-                                    im.getMessage({
-                                        type: 'friend',
-                                        system: false,
-                                        reverse: true,
-                                        fromid: message.sender,
-                                        username: message.senderName,
-                                        id: arr[i],
-                                        content: JSON.parse(message.content).msg,
-                                        timestamp: message.sendTime,
-                                        avatar: ctx + USER_AVATAR
-                                    }, true);
+                                var content = JSON.parse(message.content);
+                                if (content.chatTye == "service") {
+                                    that.renderSwitchMessage(content.beforeId, im, message.sender, ctx);
                                 }
+                                im.getMessage({
+                                    type: 'friend',
+                                    system: false,
+                                    reverse: true,
+                                    username: message.senderName,
+                                    id: arr[i],
+                                    content: content.msg,
+                                    timestamp: message.sendTime,
+                                    avatar: ctx + USER_AVATAR
+                                }, true);
                             }
                         }
                     });
