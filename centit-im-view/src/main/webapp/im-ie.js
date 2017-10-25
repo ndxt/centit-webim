@@ -927,9 +927,7 @@ function _getContextPath() {
                         }
                     });
                 });
-
                 this.im.chat(this.window);
-                this.renderAllHistoryMessage(this.im, this.mine.userCode, that);
             }
 
             /**

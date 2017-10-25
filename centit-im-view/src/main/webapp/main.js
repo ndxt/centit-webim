@@ -1,0 +1,12 @@
+require.config({
+    "baseUrl":"plugins/",
+    "paths":{
+        "mustache":"mustache.min.js",
+        "jquery":"jquery-1.9.1.min.js",
+        "base64":"base64.js",
+    },
+    "shim":{
+        "jquery.raty":["jquery"],
+        "shim/promise"
+    }
+});
