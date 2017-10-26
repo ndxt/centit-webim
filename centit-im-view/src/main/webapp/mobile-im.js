@@ -1169,11 +1169,12 @@ function _getContextPath() {
                     cache = that.im.cache(),
                     serviceId = cache.mine.id,
                     localLogL = 0,
-                    pageItem = localLogL % 20;
+                    pageItem = 0;
                 if(typeof cache.local.chatlog["friend" + userId] != "undefine"){
                     localLogL = cache.local.chatlog["friend" + userId].length;
+                    pageItem = localLogL % 20;
                 }
-                var pageNo = $("#layui-m-layer0").data('pageNo' + userId) || Math.floor(localLogL / 20);
+                var pageNo = $("#layui-m-layer0").data('pageNo' + userId) || (Math.floor(localLogL / 20) + 1);
                 var lastReadDate = new Date();
                 lastReadDate.setDate(lastReadDate.getDate() + 1);
                 var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
@@ -1186,7 +1187,7 @@ function _getContextPath() {
                         var messageList = res.data.objList,
                             message;
                         var i = 0
-                        if(pageNo == 0 && pageItem != 0){
+                        if(pageNo == 1 && pageItem != 0){
                             i = pageItem - 1;
                         }
                         if (messageList.length === 0) {
