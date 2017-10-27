@@ -1,0 +1,25 @@
+require(["../plugins/jquery-1.9.1.min", "../plugins/base64", "../im-ie","../plugins/url","layui"], function ($,base64) {
+    var result = parseURL(),
+        token = result.params.token,
+        params = JSON.parse(decodeURIComponent(base64.decode(token))),
+        mine = {
+            userCode: params.userCode,
+            userName: params.userName,
+
+        },
+
+        config = {
+            customService: params.customService,
+            mode: params.mode,
+            optId:params.optId || 'ww',//原先有默认值‘12345’
+            osId: params.osId
+        };
+    console.log(params);
+    document.title = 'User - ' + params.userName;
+
+    layui.use('layim', function (im) {
+        new UserIM(im, layui.$.extend({
+            userType: 'C'
+        }, mine), config)
+    })
+})

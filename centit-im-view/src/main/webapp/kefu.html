@@ -9,36 +9,7 @@
   <link rel="stylesheet" href="src/css/layim.extend.css">
 </head>
 <body>
-
-
-<script src="plugins/require.js" data-main="main.js"></script>
-<script src="src/layui.js"></script>
-<script src="plugins/url.js"></script>
-<script src="plugins/mustache.min.js"></script>
-<script src="plugins/jquery-1.9.1.min.js"></script>
-<script src="plugins/base64.js"></script>
-<script src="plugins/shim/promise.min.js"></script>
-<script src="plugins/shim/fetch.js"></script>
-<script src="plugins/jquery.raty.js"></script>
-<script src="im-ie.js"></script>
-
-<script>
-    var result = parseURL(),
-        token = result.params.token,
-        params = JSON.parse(decodeURIComponent(base64.decode(token)));
-    mine = {
-        userCode: params.userCode,
-        userName: params.userName,
-        switchServiceBtn:params.switchServiceBtn || ""
-    },
-
-        document.title = 'KF - ' + params.userName
-
-    layui.use(['layim', 'layer', 'tree'], function (im, layer) {
-        new ServiceIM(im, $.extend({
-            userType: 'S'
-        }, mine), {layer:layer})
-    })
-</script>
+<script src="plugins/require.js" data-main="src/config.js"></script>
+<script src="src/service.js"></script>
 </body>
 </html>
