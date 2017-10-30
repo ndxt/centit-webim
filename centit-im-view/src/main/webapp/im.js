@@ -41,6 +41,11 @@ const CONTENT_TYPE_OVER = "over";
 const Default_IM_Config = {
     mode: MODE_QUESTION
 }
+
+//layim扩展部分
+const THIS = 'layim-this';
+const SHOW = 'layui-show';
+
 function thisChat(){
     var layimChat = $(".layui-box.layui-layim-chat");
     if(!layimChat) return;
@@ -53,9 +58,7 @@ function thisChat(){
         ,textarea: cont.find('textarea')
     };
 };
-//layim扩展部分
-const THIS = 'layim-this';
-const SHOW = 'layui-show';
+
 
 function closeThisChat() {
     var currentCloseBtn = $(".layim-this.layim-list-gray .layui-icon");

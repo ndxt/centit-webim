@@ -3,13 +3,21 @@ const rename = require('gulp-rename')
 const babel = require('gulp-babel')
 const watch = require('gulp-watch')
 
-gulp.task('babel', () => {
-    return gulp.src('src/main/webapp/im.js')
+// gulp.task('babel', () => {
+//     return gulp.src('src/main/webapp/im.js')
+//         .pipe(babel({
+//             presets: ['es2015']
+//         }))
+//         .pipe(rename('im-ie.js'))
+//         .pipe(gulp.dest('src/main/webapp'))
+// })
+
+gulp.task('babel',()=>{
+    return gulp.src('src/main/webapp/src/js/src/*.js')
         .pipe(babel({
-            presets: ['es2015']
+            presets:['es2015']
         }))
-        .pipe(rename('im-ie.js'))
-        .pipe(gulp.dest('src/main/webapp'))
+        .pipe(gulp.dest('src/main/webapp/src/js/ie'))
 })
 
 gulp.task('mobile', () => {
