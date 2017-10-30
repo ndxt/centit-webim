@@ -1,4 +1,5 @@
 require.config({
+    baseUrl: './',
     "shim":{
         "jquery.raty":["jquery"],
         "common.unit":["jquery"],
@@ -27,7 +28,7 @@ require.config({
         "common.unit":"js/ie/common.unit",
 
     //    jquery插件
-        "jquery.raty":"plugins/jquery.raty"
+        "jquery.raty":"../plugins/jquery.raty"
     },
     waitSeconds: 0
 });

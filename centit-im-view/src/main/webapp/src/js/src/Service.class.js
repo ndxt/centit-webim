@@ -227,6 +227,44 @@ define(["IM"],function (IM) {
 
         }
 
+        sendEvaluatedScore(sender, receiver, score) {//belong to Service
+            let contentType = CONTENT_TYPE_FORM;
+            let content = {};
+            content.service = sender;
+            content.formType = "praise";
+            content.score = score
+            // 添加指定客服
+
+            this.sendCommandMessage({contentType, content, receiver})
+
+        }
+
+        /**
+         * 接受到over命令时的操作
+         * @param senderName
+         */
+        overCommandOp(senderName){//belong to Service
+            var panelList = $('.layui-unselect.layim-chat-list li');
+            var name;
+            for (var j = 0, length = panelList.length; j < length; j++) {
+                name = panelList[j].innerText;
+                if (name.indexOf(senderName) != -1) {
+                    $('.layui-unselect.layim-chat-list li').eq(j).find("i").click();
+                }
+            }
+            if($('.layim-chat-username').eq(0).html().indexOf(senderName) != -1){
+                closeThisChat();
+            }
+            layui.use('layer', function () {
+                var layer = layui.layer;
+
+                layer.open({
+                    title: '会话结束'
+                    , content: senderName + '客户结束了本次会话'
+                });
+            });
+        }
+
         renderDistributableServicesList() {
             let services = this.services.list;
             let servicesJson = {};

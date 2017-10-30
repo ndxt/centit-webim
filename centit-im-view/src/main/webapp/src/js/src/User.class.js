@@ -1,4 +1,4 @@
-define(["js/ie/IM.class"],function (IM) {
+define(["IM","mustache","jquery.raty"],function (IM,Mustache) {
     class UserIM extends IM {
         showQuestionMessage(content){
             var message = {};
@@ -12,7 +12,6 @@ define(["js/ie/IM.class"],function (IM) {
             message.mine = true;
             message.avatar = ctx + '/src/avatar/user.png';
             this.im.getMessage(message);
-
         }
 
         /**
@@ -49,6 +48,185 @@ define(["js/ie/IM.class"],function (IM) {
             })
         }
 
+        onAfterSendChatMessage(data, mode) {//BTU
+
+            if (mode == 'askForService') {
+                if (!!this.messageHandler) {
+                    clearTimeout(this.messageHandler);
+                }
+                this.messageHandler = setTimeout(this.sendNotice.bind(this), 120000);
+            }
+        }
+
+        scoreRate(sender, receiver) {//belong to User
+            var that = this;
+            layui.use('layer', function () {
+                var layer = layui.layer;
+
+                layer.open({
+                    title: '温馨提示'
+                    , content: Mustache.render('客服人员希望您对他的服务做出评价<div id="rate"></div>')
+                    , yes: function (index) {
+                        $('#rate').raty({
+                            number: 5, //多少个星星设置
+                            path: 'plugins/images',
+                            hints: ['不满意', '不太满意', '基本满意', '满意', '非常满意'],
+                            size: 24,
+                            cancel: false,
+                            click: function (score, evt) {
+                                that.sendEvaluatedScore(sender, receiver, score);
+                                layer.close(index);
+                                window.close();
+                            }
+                        });
+
+                    }
+                });
+            });
+        }
+
+        /**
+         * 发送聊天信息
+         * @param mine
+         * @param to
+         */
+        sendChatMessage({mine, to}) {//belong to User
+            let data = {
+                type: MSG_TYPE_CHAT,
+                contentType: CONTENT_TYPE_TEXT,
+                content: {
+                    msg: mine.content || mine
+                },
+                sender: mine.id,
+                senderName: mine.username,
+                receiver: to.id,
+                sendTime: _getTimestamp()
+            }
+            let mode = this.config.mode;
+            if (mode == 'askForService') {
+                this.sendWSMessage(data);
+            }
+            // //现在先写成这样，等后台写好再修改。
+            if (mode == 'askRobot') {
+                this.sendQuestionRequest({question: (data.content.msg || '').replace(/\n/, '')});
+            }
+
+            if (this.onAfterSendChatMessage) {
+                this.onAfterSendChatMessage.call(this, data, mode)
+            }
+        }
+
+        //创造问题消息列表
+        createProblemList(problems, data) {//belong to User
+            this.showChatMessage($.extend({id: '0'}, data, {content: Mustache.render("[span class=hintMsg]{{msg}}[/span][ul]{{#options}} [li class=question id={{value}} data-type={{type}}][span]{{label}}[/span][/li]{{/options}} [/ul]", problems)}));
+
+        }
+
+        /**
+         *发送提醒
+         */
+        sendNotice() {//belong to User
+            this.showSystemMessage({
+                id: '0',
+                content: Mustache.render('客服可能暂时不在，请稍作等待')
+            })
+
+        }
+
+        /**
+         * 发送申请客服指令
+         */
+        sendAsk4ServiceCommand() {//belong to User
+            let contentType = CONTENT_TYPE_ASKFORSERVICE
+            let content = this.mine
+            this.config.mode = MODE_SERVICE;
+            // 添加指定客服
+            if (this.config.customService) {
+                $.extend(content, {customerService: this.config.customService, optId: this.config.optId})
+            }
+
+            this.sendCommandMessage({contentType, content})
+        }
+
+        /**
+         * 发送切换客服指令
+         *
+         */
+        sendSwitchServiceCommand(service, receiver) {//belong to User
+            let contentType = CONTENT_TYPE_SERVICE
+            let content = {};
+            content.service = service;
+            // 添加指定客服
+
+            this.sendCommandMessage({contentType, content, receiver})
+        }
+
+        /**
+         * 发送申请机器人命令
+         */
+        sendAsk4QuestionCommand() {//belong to User
+            let contentType = CONTENT_TYPE_ASKROBOT;
+            let content = this.mine;
+            let currentServiceCode = $('.layim-chat-status').data('userCode');
+            // this.config.mode = MODE_QUESTION;
+            this.sendCommandMessage({contentType, content});
+            let senderName = content.userName;
+            this.sendCommandOver(currentServiceCode,senderName);
+        }
+
+        /**
+         * 发送结束命令
+         */
+        sendCommandOver(receiver,senderName){//belong to User
+            let contentType = CONTENT_TYPE_OVER;
+            let content = {senderName};
+            this.sendCommandMessage({contentType, content,receiver});
+        }
+
+        /**
+         * 再次请求问题
+         * @param contentType
+         * @param content
+         * @param receiver
+         */
+        sendQuestionRequest(content) {//BTU
+            let data = {
+                type: MSG_TYPE_QUESTION,
+                contentType: 'text',
+                content: content,
+                sender: 'robot',
+                sendTime: _getTimestamp()
+            }
+
+            this.sendWSMessage(data)
+        }
+
+        /**
+         * 将信息通过WS发送
+         * @param data
+         */
+        bindProblemListClickEvent() {//BTU
+            var that = this;
+            $("body").on('click', '.question', function () {
+                var type = $(this).attr('data-type')
+                var keyValue = $(this).attr('id');
+                var questionContent = $(this).text();
+                switch (type) {
+                    case 'http':
+                        window.open(keyValue);
+                        break;
+                    case 'question':
+                        that.showClickQuestion({question: keyValue, questionContent: questionContent});
+                        break;
+                    case 'command':
+                        that.sendAsk4ServiceCommand();
+                        break;
+                    default:
+                        console.warn('未知的命令类型：' + type);
+
+                }
+            })
+        }
         /**
          * 显示receiver所有的聊天记录
          * @param im

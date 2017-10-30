@@ -240,6 +240,49 @@ define(["IM"], function (IM) {
                 this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
             }
         }, {
+            key: "sendEvaluatedScore",
+            value: function sendEvaluatedScore(sender, receiver, score) {
+                //belong to Service
+                var contentType = CONTENT_TYPE_FORM;
+                var content = {};
+                content.service = sender;
+                content.formType = "praise";
+                content.score = score;
+                // 添加指定客服
+
+                this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
+            }
+
+            /**
+             * 接受到over命令时的操作
+             * @param senderName
+             */
+
+        }, {
+            key: "overCommandOp",
+            value: function overCommandOp(senderName) {
+                //belong to Service
+                var panelList = $('.layui-unselect.layim-chat-list li');
+                var name;
+                for (var j = 0, length = panelList.length; j < length; j++) {
+                    name = panelList[j].innerText;
+                    if (name.indexOf(senderName) != -1) {
+                        $('.layui-unselect.layim-chat-list li').eq(j).find("i").click();
+                    }
+                }
+                if ($('.layim-chat-username').eq(0).html().indexOf(senderName) != -1) {
+                    closeThisChat();
+                }
+                layui.use('layer', function () {
+                    var layer = layui.layer;
+
+                    layer.open({
+                        title: '会话结束',
+                        content: senderName + '客户结束了本次会话'
+                    });
+                });
+            }
+        }, {
             key: "renderDistributableServicesList",
             value: function renderDistributableServicesList() {
                 var services = this.services.list;
