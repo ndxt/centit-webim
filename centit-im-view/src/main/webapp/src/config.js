@@ -15,7 +15,7 @@ require.config({
         "mustache":"../plugins/mustache.min",
         "jquery":"../plugins/jquery-1.9.1.min",
         "base64":"../plugins/base64",
-        "IM":"js/ie/IM.class",
+        "IM":"src/js/ie/IM.class",
         "Service":"src/js/ie/Service.class",
         "User":"src/js/ie/User.class",
         //不支持AMD的模块
