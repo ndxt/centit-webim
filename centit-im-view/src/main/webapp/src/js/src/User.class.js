@@ -1,4 +1,4 @@
-define(["IM","common.unit"],function (IM) {
+define(["js/ie/IM.class"],function (IM) {
     class UserIM extends IM {
         showQuestionMessage(content){
             var message = {};

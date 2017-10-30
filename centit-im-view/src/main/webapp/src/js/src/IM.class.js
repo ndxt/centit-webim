@@ -1,4 +1,4 @@
-define(["mustache","layui","promise","fetch","url","common.unit"],function (mustache) {
+define(["mustache", "layui", "promise", "fetch", "url", "common.unit"],function (Mustache) {
     class IM {
         constructor(im, mine, config) {
             this.im = im

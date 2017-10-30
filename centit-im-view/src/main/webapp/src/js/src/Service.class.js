@@ -1,4 +1,4 @@
-define(["IM","common.unit","layui"],function (IM) {
+define(["js/ie/IM.class"],function (IM) {
 
     class ServiceIM extends IM {
         constructor(im, mine, config) {
