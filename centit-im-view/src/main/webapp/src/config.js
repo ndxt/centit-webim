@@ -26,8 +26,7 @@ require.config({
         "layui":"layui",
         "im-ie":"../im-ie",
         "common.unit":"js/ie/common.unit",
-
-    //    jquery插件
+        //jquery插件
         "jquery.raty":"../plugins/jquery.raty"
     },
     waitSeconds: 0

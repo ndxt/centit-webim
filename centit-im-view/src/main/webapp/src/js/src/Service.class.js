@@ -21,39 +21,6 @@ define(["IM"],function (IM) {
         }
 
 
-        dealSwitchServiceMessage(params) {
-            let that = this;
-            var data = {};
-            data.avatar = Default_Avatar;
-            data.id = params.data.id;
-            data.name = params.data.custName;
-            data.system = false;
-            data.temporary = true;
-            data.timestamp = params.longSendTime;
-            data.type = "friend";
-            data.username = params.data.custName;
-            layui.use('layer', function () {
-                var layer = layui.layer;
-
-                layer.open({
-                    title: '系统通知'
-                    , content: params.content
-                    , btn: ['确认', '退回']
-                    , yes: function (index) {
-                        that.im.chat(data);
-                        setTimeout(that.renderSwitchMessage(params.id, that.im, params.data.serviceCode, that.contextPath), 500);
-                        console.log(1);
-                        $('div.layui-show .layim-chat-username').data('preServiceCode', params.data.serviceCode);
-                        layer.close(index);
-
-                    }
-                    , btn2: function () {
-                        that.sendSwitchServiceCommand(params.data.serviceCode, params.data.id);
-                    }
-                });
-            });
-
-        }
 
         showSystemMessage(params) {
             params.system = true
@@ -111,6 +78,13 @@ define(["IM"],function (IM) {
 
         }
 
+        /**
+         * 渲染转接后的历史消息
+         * @param sender
+         * @param im
+         * @param receiver
+         * @param ctx
+         */
         renderSwitchMessage(sender, im, receiver, ctx) {
             var lastReadDate = new Date();
             lastReadDate.setDate(lastReadDate.getDate() + 1);
@@ -156,51 +130,45 @@ define(["IM"],function (IM) {
             });
 
         }
+        /**
+         * 转接的历史消息
+         * @param params
+         */
+        dealSwitchServiceMessage(params) {
+            let that = this;
+            var data = {};
+            data.avatar = Default_Avatar;
+            data.id = params.data.id;
+            data.name = params.data.custName;
+            data.system = false;
+            data.temporary = true;
+            data.timestamp = params.longSendTime;
+            data.type = "friend";
+            data.username = params.data.custName;
+            layui.use('layer', function () {
+                var layer = layui.layer;
 
-        renderHistoryMessage(sender, im, receiver, ctx) {
-            var lastReadDate = new Date();
-            lastReadDate.setDate(lastReadDate.getDate() + 1);
-            var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
-            var pageNo = $(".layim-chat-username").data('pageNo' + sender) || 1;
-            $.ajax({
-                url: `${ctx}/service/webim/historyMessage/${receiver}/${sender}`,
-                dataType: 'json',
-                data: {pageNo: pageNo, lastReadDate: dateStr},
-                success: function (res) {
-                    var messageList = res.data.objList,
-                        message;
-                    if (messageList.length === 0) {
-                        layer.msg('已无更多聊天消息！');
-                    } else {
-                        pageNo++;
-                    }
-                    for (var i = 0, length = messageList.length; i < length; i++) {
-                        message = messageList[i];
-                        console.log(message);
-                        if (message.msgType == 'S') {
-                            this.showSystemMessage(message);
-                        } else if (message.sender == sender.trim()) {
-                            im.getMessage({
-                                type: 'friend',
-                                system: false,
-                                reverse: true,
-                                username: message.senderName,
-                                id: sender,
-                                content: JSON.parse(message.content).msg,
-                                timestamp: message.sendTime,
-                                avatar: ctx + USER_AVATAR
-                            }, false)
-                        } else {
-                            im.showMineMessage({content: JSON.parse(message.content).msg, timestamp: message.sendTime});
-                        }
-                    }
+                layer.open({
+                    title: '系统通知'
+                    , content: params.content
+                    , btn: ['确认', '退回']
+                    , yes: function (index) {
+                        that.im.chat(data);
+                        setTimeout(that.renderSwitchMessage(params.id, that.im, params.data.serviceCode, that.contextPath), 500);
+                        console.log(1);
+                        $('div.layui-show .layim-chat-username').data('preServiceCode', params.data.serviceCode);
+                        layer.close(index);
 
-                    $(".layim-chat-username").data('pageNo' + sender, pageNo);
-                }
+                    }
+                    , btn2: function () {
+                        that.sendSwitchServiceCommand(params.data.serviceCode, params.data.id);
+                    }
+                });
             });
 
-
         }
+
+
 
         /**
          * 绑定自定义的事件
@@ -208,8 +176,7 @@ define(["IM"],function (IM) {
          * @param receiver
          */
         bindEvent(im, receiver) {
-            let ctx = this.contextPath,
-                renderHistoryMessage = this.renderHistoryMessage;
+            let ctx = this.contextPath;
 
 
         }
@@ -565,13 +532,6 @@ define(["IM"],function (IM) {
                         }
                     })
                 }
-
-
-                // if(!!$("div.layui-show .selectContainer").html()) {//判断Id = selectContainer的元素是否存在
-                //     $('div.layui-show .serviceList').css('display','block');
-                //     return;
-                // }
-                // that.renderDistributableServicesList();
             }.bind(this));
 
             this.im.on('tool(return)', function () {
@@ -671,7 +631,7 @@ define(["IM"],function (IM) {
             for (let i = 0, length = arr.length; i < length; i++) {
 
                 $.ajax({
-                    url: `${ctx}/service/webim/historyMessage/${userCode}/${arr[i]}`,
+                    url: `${ctx}/service/webim/historyMessage/${userCode}/${arr[i]}`,//这里也调用了history接口
                     dataType: 'json',
                     async: false,
                     data: {pageNo: 1, lastReadDate: dateStr},
