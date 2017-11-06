@@ -312,7 +312,7 @@ define(["src/js/ie/IM.class"], function (IM) {
                     }],
                     isgroup: false,
                     copyright: true,
-                    chatLog: layui.cache.dir + 'css/modules/layim/html/chatlog.html'
+                    chatLog: layui.cache.dir + '../chatlog.html'
                 };
 
                 if (!!this.mine.switchServiceBtn) {

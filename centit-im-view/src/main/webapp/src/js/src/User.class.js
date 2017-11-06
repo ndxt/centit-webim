@@ -44,7 +44,7 @@ define(["IM","mustache","jquery.raty"],function (IM,Mustache) {
                     , title: '智能问答' //工具名称
                     , icon: '&#xe61a;' //工具图标，参考图标文档
                 }],
-                chatLog:layui.cache.dir + 'css/modules/layim/html/allChatLog.html'
+                chatLog:layui.cache.dir + '../allChatLog.html'
             })
         }
 
