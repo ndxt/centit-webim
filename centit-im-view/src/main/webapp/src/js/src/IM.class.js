@@ -156,7 +156,36 @@ define(["mustache", "layui", "promise", "fetch", "url", "common.unit"],function 
 
             socket.onclose = this.onWSClose.bind(this)
         }
+        /**
+         * 发送聊天信息
+         * @param mine
+         * @param to
+         */
+        sendChatMessage({mine, to}) {//CF
+            let data = {
+                type: MSG_TYPE_CHAT,
+                contentType: CONTENT_TYPE_TEXT,
+                content: {
+                    msg: mine.content || mine
+                },
+                sender: mine.id,
+                senderName: mine.username,
+                receiver: to.id,
+                sendTime: _getTimestamp()
+            }
+            let mode = this.config.mode;
+            if (mode == 'askForService') {
+                this.sendWSMessage(data);
+            }
+            // //现在先写成这样，等后台写好再修改。
+            if (mode == 'askRobot') {
+                this.sendQuestionRequest({question: (data.content.msg || '').replace(/\n/, '')});
+            }
 
+            if (this.onAfterSendChatMessage) {
+                this.onAfterSendChatMessage.call(this, data, mode)
+            }
+        }
         /**
          * 显示收到的聊天信息
          * @param id

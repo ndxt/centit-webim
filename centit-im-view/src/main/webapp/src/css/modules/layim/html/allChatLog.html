@@ -94,7 +94,10 @@
                 for (var i = 0, length = messageList.length; i < length; i++) {
                     message = messageList[i];
                     console.log(message);
-                    message.content = JSON.parse(message.content).msg;
+                    if(message.senderName == "智能客服"){
+                    }else{
+                        message.content = JSON.parse(message.content).msg;
+                    }
                     message.type = 'friend';
                     message.id = message.sender;
                     message.timestamp = message.sendTime;

@@ -112,43 +112,6 @@ define(["IM", "mustache", "jquery.raty"], function (IM, Mustache) {
                 });
             }
 
-            /**
-             * 发送聊天信息
-             * @param mine
-             * @param to
-             */
-
-        }, {
-            key: "sendChatMessage",
-            value: function sendChatMessage(_ref) {
-                var mine = _ref.mine,
-                    to = _ref.to;
-                //belong to User
-                var data = {
-                    type: MSG_TYPE_CHAT,
-                    contentType: CONTENT_TYPE_TEXT,
-                    content: {
-                        msg: mine.content || mine
-                    },
-                    sender: mine.id,
-                    senderName: mine.username,
-                    receiver: to.id,
-                    sendTime: _getTimestamp()
-                };
-                var mode = this.config.mode;
-                if (mode == 'askForService') {
-                    this.sendWSMessage(data);
-                }
-                // //现在先写成这样，等后台写好再修改。
-                if (mode == 'askRobot') {
-                    this.sendQuestionRequest({ question: (data.content.msg || '').replace(/\n/, '') });
-                }
-
-                if (this.onAfterSendChatMessage) {
-                    this.onAfterSendChatMessage.call(this, data, mode);
-                }
-            }
-
             //创造问题消息列表
 
         }, {
@@ -387,12 +350,12 @@ define(["IM", "mustache", "jquery.raty"], function (IM, Mustache) {
 
         }, {
             key: "showChatMessage",
-            value: function showChatMessage(_ref2) {
-                var content = _ref2.content,
-                    timestamp = _ref2.timestamp,
-                    senderName = _ref2.senderName,
-                    _ref2$system = _ref2.system,
-                    system = _ref2$system === undefined ? false : _ref2$system;
+            value: function showChatMessage(_ref) {
+                var content = _ref.content,
+                    timestamp = _ref.timestamp,
+                    senderName = _ref.senderName,
+                    _ref$system = _ref.system,
+                    system = _ref$system === undefined ? false : _ref$system;
 
                 var ctx = this.contextPath;
                 this.im.getMessage({

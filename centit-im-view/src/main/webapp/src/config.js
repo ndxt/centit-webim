@@ -13,21 +13,21 @@ require.config({
     },
     "paths":{
         //支持AMD的模块
-        "mustache":"../plugins/mustache.min",
-        "jquery":"../plugins/jquery-1.9.1.min",
-        "base64":"../plugins/base64",
+        "mustache":"plugins/mustache.min",
+        "jquery":"plugins/jquery-1.9.1.min",
+        "base64":"plugins/base64",
         "IM":"src/js/ie/IM.class",
         "Service":"src/js/ie/Service.class",
         "User":"src/js/ie/User.class",
         //不支持AMD的模块
-        "promise":"../plugins/shim/promise.min",
-        "url":"../plugins/url",
-        "fetch":"../plugins/shim/fetch",
-        "layui":"layui",
-        "im-ie":"../im-ie",
-        "common.unit":"js/ie/common.unit",
+        "promise":"plugins/shim/promise.min",
+        "url":"plugins/url",
+        "fetch":"plugins/shim/fetch",
+        "layui":"src/layui",
+        "im-ie":"im-ie",
+        "common.unit":"src/js/ie/common.unit",
         //jquery插件
-        "jquery.raty":"../plugins/jquery.raty"
+        "jquery.raty":"plugins/jquery.raty"
     },
     waitSeconds: 0
 });

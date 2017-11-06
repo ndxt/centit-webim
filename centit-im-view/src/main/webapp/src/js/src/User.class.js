@@ -85,36 +85,7 @@ define(["IM","mustache","jquery.raty"],function (IM,Mustache) {
             });
         }
 
-        /**
-         * 发送聊天信息
-         * @param mine
-         * @param to
-         */
-        sendChatMessage({mine, to}) {//belong to User
-            let data = {
-                type: MSG_TYPE_CHAT,
-                contentType: CONTENT_TYPE_TEXT,
-                content: {
-                    msg: mine.content || mine
-                },
-                sender: mine.id,
-                senderName: mine.username,
-                receiver: to.id,
-                sendTime: _getTimestamp()
-            }
-            let mode = this.config.mode;
-            if (mode == 'askForService') {
-                this.sendWSMessage(data);
-            }
-            // //现在先写成这样，等后台写好再修改。
-            if (mode == 'askRobot') {
-                this.sendQuestionRequest({question: (data.content.msg || '').replace(/\n/, '')});
-            }
 
-            if (this.onAfterSendChatMessage) {
-                this.onAfterSendChatMessage.call(this, data, mode)
-            }
-        }
 
         //创造问题消息列表
         createProblemList(problems, data) {//belong to User
