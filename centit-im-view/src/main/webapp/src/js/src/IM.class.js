@@ -157,6 +157,18 @@ define(["mustache", "layui", "promise", "fetch", "url", "common.unit"],function 
             socket.onclose = this.onWSClose.bind(this)
         }
         /**
+         * 发送切换客服指令
+         *
+         */
+        sendSwitchServiceCommand(service, receiver) {//CF
+            let contentType = CONTENT_TYPE_SERVICE
+            let content = {};
+            content.service = service;
+            // 添加指定客服
+
+            this.sendCommandMessage({contentType, content, receiver})
+        }
+        /**
          * 发送聊天信息
          * @param mine
          * @param to

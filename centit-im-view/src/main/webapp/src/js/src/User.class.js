@@ -119,18 +119,7 @@ define(["IM","mustache","jquery.raty"],function (IM,Mustache) {
             this.sendCommandMessage({contentType, content})
         }
 
-        /**
-         * 发送切换客服指令
-         *
-         */
-        sendSwitchServiceCommand(service, receiver) {//belong to User
-            let contentType = CONTENT_TYPE_SERVICE
-            let content = {};
-            content.service = service;
-            // 添加指定客服
 
-            this.sendCommandMessage({contentType, content, receiver})
-        }
 
         /**
          * 发送申请机器人命令
