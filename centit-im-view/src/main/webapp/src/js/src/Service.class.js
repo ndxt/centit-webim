@@ -614,6 +614,7 @@ define(["src/js/ie/IM.class"],function (IM) {
                 // data: {pageNo: pageNo,lastReadDate: dateStr},
 
                 success: function (res) {
+
                     // console.log(res.data);
                     var unreadInfo = res.data, x;
                     console.log(res);
