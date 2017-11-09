@@ -155,23 +155,6 @@ define(["IM", "mustache", "jquery.raty"], function (IM, Mustache) {
             }
 
             /**
-             * 发送切换客服指令
-             *
-             */
-
-        }, {
-            key: "sendSwitchServiceCommand",
-            value: function sendSwitchServiceCommand(service, receiver) {
-                //belong to User
-                var contentType = CONTENT_TYPE_SERVICE;
-                var content = {};
-                content.service = service;
-                // 添加指定客服
-
-                this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
-            }
-
-            /**
              * 发送申请机器人命令
              */
 

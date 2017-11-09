@@ -4,7 +4,8 @@ define(["src/js/ie/IM.class"],function (IM) {
         constructor(im, mine, config) {
             super(im, mine, config)
             let ctx = this.contextPath;
-            this.layer = config.layer
+            this.layer = config.layer;
+            this.tree = config.tree;
             this.config.mode = 'askForService';//因为在发送消息时会判断是否为'askForService',最好改为在UserIM中重写方法
 
             this.services = {
@@ -321,8 +322,7 @@ define(["src/js/ie/IM.class"],function (IM) {
 
             ;
             [].concat(users, services).forEach(d => {
-                if ('F' === d.userState
-        )
+                if ('F' === d.userState)
             {
                 this.im.setFriendStatus(d.userCode, 'offline')
             }
@@ -505,22 +505,24 @@ define(["src/js/ie/IM.class"],function (IM) {
                 function createTree(selector, data) {
                     const tree = $(selector)
                     tree.html('');
+                    layui.use('tree',function () {
+                        layui.tree({
+                            elem: '#service_list' //传入元素选择器
+                            , nodes: data,
+                            click: function (node) {
+                                $("#service_list").find();
+                                if(typeof  node == "undefined"){
 
-                    layui.tree({
-                        elem: '#service_list' //传入元素选择器
-                        , nodes: data,
-                        click: function (node) {
-                            $("#service_list").find();
-                            if(typeof  node == "undefined"){
-
-                            }else if (!node.children) {
-                                // $('li.selected', tree).removeClass('selected')
-                                // li.addClass('selected')
-                                $('#service_text').html(`已选中客服：${node.name}${node.offline ? '(不在线)' : ''}`)
-                                service = node;
+                                }else if (!node.children) {
+                                    // $('li.selected', tree).removeClass('selected')
+                                    // li.addClass('selected')
+                                    $('#service_text').html(`已选中客服：${node.name}${node.offline ? '(不在线)' : ''}`)
+                                    service = node;
+                                }
                             }
-                        }
+                        });
                     });
+
 
                     tree.find('li').each(function () {
                         const li = $(this)
