@@ -640,7 +640,7 @@ define(["src/js/ie/IM.class"],function (IM) {
                     success: function (res) {
                         var messageList = res.data.objList,
                             message;
-                        for (let j = 0, length = messageList.length; j < length; j++) {
+                        for (let j = messageList.length-1; j >= 0;j--) {
                             message = messageList[j];
                             console.log(message);
                             var content = JSON.parse(message.content);
