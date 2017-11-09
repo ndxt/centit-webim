@@ -13,8 +13,8 @@ require.config({
     },
     "paths":{
         //支持AMD的模块
-        "mustache":"plugins/mustache.min",
         "jquery":"plugins/jquery-1.9.1.min",
+        "mustache":"plugins/mustache.min",
         "base64":"plugins/base64",
         "IM":"src/js/ie/IM.class",
         "Service":"src/js/ie/Service.class",

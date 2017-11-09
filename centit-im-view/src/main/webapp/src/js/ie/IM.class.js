@@ -10,7 +10,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     CF: common Function;
 
  */
-define(["mustache", "layui", "promise", "fetch", "url", "common.unit"], function (Mustache) {
+define(["jquery", "mustache", "layui", "promise", "fetch", "url", "common.unit"], function ($, Mustache) {
     var IM = function () {
         function IM(im, mine, config) {
             _classCallCheck(this, IM);
@@ -188,7 +188,6 @@ define(["mustache", "layui", "promise", "fetch", "url", "common.unit"], function
                 var content = {};
                 content.service = service;
                 // 添加指定客服
-
                 this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
             }
             /**
