@@ -4,7 +4,7 @@
     CF: common Function;
 
  */
-define(["mustache", "layui", "promise", "fetch", "url", "common.unit"],function (Mustache) {
+define(["jquery","mustache", "layui", "promise", "fetch", "url", "common.unit"],function ($,Mustache) {
     class IM {
         constructor(im, mine, config) {
             this.im = im
@@ -165,7 +165,6 @@ define(["mustache", "layui", "promise", "fetch", "url", "common.unit"],function 
             let content = {};
             content.service = service;
             // 添加指定客服
-
             this.sendCommandMessage({contentType, content, receiver})
         }
         /**
