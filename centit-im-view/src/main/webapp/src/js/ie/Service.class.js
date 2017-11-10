@@ -8,7 +8,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(["src/js/ie/IM.class"], function (IM) {
+define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
     var ServiceIM = function (_IM) {
         _inherits(ServiceIM, _IM);
 
@@ -205,19 +205,6 @@ define(["src/js/ie/IM.class"], function (IM) {
                 var contentType = CONTENT_TYPE_PUSH_FORM;
                 var content = {};
                 content.service = service;
-                // 添加指定客服
-
-                this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
-            }
-        }, {
-            key: "sendEvaluatedScore",
-            value: function sendEvaluatedScore(sender, receiver, score) {
-                //belong to Service
-                var contentType = CONTENT_TYPE_FORM;
-                var content = {};
-                content.service = sender;
-                content.formType = "praise";
-                content.score = score;
                 // 添加指定客服
 
                 this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
@@ -487,7 +474,7 @@ define(["src/js/ie/IM.class"], function (IM) {
                                 result.push(node);
                             } else {
                                 // 取最后一个父级节点，并放入
-                                var last = levels[level - 1][levels[level - 1].length - 1];
+                                var last = levels[level - 1][levels[level - 1].length - 1]; //这段也不太懂
                                 if (last) {
                                     last.children = last.children || [];
                                     last.children.push(node);
@@ -562,7 +549,7 @@ define(["src/js/ie/IM.class"], function (IM) {
                         }
                         jsonReply.replys = replyArr;
 
-                        var render = Mustache.render('{{#replys}} <option class={{generateClass}}>{{reply}}</option>{{/replys}}', jsonReply);
+                        var render = Mustache.render('{{#replys}} <option class={{generateClass}}>{{reply}}</option>{{/replys}}', jsonReply); //这段报错，并且不懂
 
                         var form = $('<div class="layui-form" style="display: inline-block;font-size: 16px;"></div>');
                         var selectContainer = $('<div  class="layui-form-item selectContainer"></div>');
@@ -604,6 +591,7 @@ define(["src/js/ie/IM.class"], function (IM) {
                     // data: {pageNo: pageNo,lastReadDate: dateStr},
 
                     success: function success(res) {
+
                         // console.log(res.data);
                         var unreadInfo = res.data,
                             x;

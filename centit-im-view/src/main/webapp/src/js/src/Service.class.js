@@ -1,4 +1,4 @@
-define(["src/js/ie/IM.class"],function (IM) {
+define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
 
     class ServiceIM extends IM {
         constructor(im, mine, config) {
@@ -195,17 +195,7 @@ define(["src/js/ie/IM.class"],function (IM) {
 
         }
 
-        sendEvaluatedScore(sender, receiver, score) {//belong to Service
-            let contentType = CONTENT_TYPE_FORM;
-            let content = {};
-            content.service = sender;
-            content.formType = "praise";
-            content.score = score
-            // 添加指定客服
 
-            this.sendCommandMessage({contentType, content, receiver})
-
-        }
 
         /**
          * 接受到over命令时的操作
@@ -567,7 +557,7 @@ define(["src/js/ie/IM.class"],function (IM) {
                     jsonReply.replys = replyArr;
 
 
-                    var render = Mustache.render('{{#replys}} <option class={{generateClass}}>{{reply}}</option>{{/replys}}', jsonReply);
+                    var render = Mustache.render('{{#replys}} <option class={{generateClass}}>{{reply}}</option>{{/replys}}', jsonReply);//这段报错，并且不懂
 
                     var form = $('<div class="layui-form" style="display: inline-block;font-size: 16px;"></div>')
                     var selectContainer = $('<div  class="layui-form-item selectContainer"></div>');

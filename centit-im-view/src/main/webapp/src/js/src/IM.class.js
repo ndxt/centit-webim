@@ -130,7 +130,6 @@ define(["jquery","mustache", "layui", "promise", "fetch", "url", "common.unit"],
             mine.username = mine.username || mine.userName // 后台需要的名字是userName
             mine.avatar = mine.avatar || Default_Avatar
             mine.userType = mine.userType || 'C'
-
             return mine
         }
 

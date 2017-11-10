@@ -324,6 +324,27 @@ define(["IM", "mustache", "jquery.raty"], function (IM, Mustache) {
             }
 
             /**
+             * 向后台发送评价
+             * @param sender
+             * @param receiver
+             * @param score
+             */
+
+        }, {
+            key: "sendEvaluatedScore",
+            value: function sendEvaluatedScore(sender, receiver, score) {
+                //belong to user
+                var contentType = CONTENT_TYPE_FORM;
+                var content = {};
+                content.service = sender;
+                content.formType = "praise";
+                content.score = score;
+                // 添加指定客服
+
+                this.sendCommandMessage({ contentType: contentType, content: content, receiver: receiver });
+            }
+
+            /**
              * 显示收到的聊天信息
              * @param content
              * @param senderName

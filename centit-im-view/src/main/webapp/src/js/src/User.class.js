@@ -277,6 +277,23 @@ define(["IM","mustache","jquery.raty"],function (IM,Mustache) {
             this.im.chat(this.window);
         }
 
+        /**
+         * 向后台发送评价
+         * @param sender
+         * @param receiver
+         * @param score
+         */
+        sendEvaluatedScore(sender, receiver, score) {//belong to user
+            let contentType = CONTENT_TYPE_FORM;
+            let content = {};
+            content.service = sender;
+            content.formType = "praise";
+            content.score = score
+            // 添加指定客服
+
+            this.sendCommandMessage({contentType, content, receiver})
+
+        }
 
         /**
          * 显示收到的聊天信息
