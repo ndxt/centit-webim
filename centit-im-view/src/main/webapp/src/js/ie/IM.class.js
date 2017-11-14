@@ -307,6 +307,7 @@ define(["jquery", "mustache", "layui", "promise", "fetch", "url", "common.unit"]
         }, {
             key: "onIMMessage",
             value: function onIMMessage(res) {
+                console.log(res);
                 var mine = res.mine,
                     to = res.to;
 
@@ -429,6 +430,7 @@ define(["jquery", "mustache", "layui", "promise", "fetch", "url", "common.unit"]
                 switch (data.type) {
                     case MSG_TYPE_CHAT:
                         this.showChatMessage($.extend({ id: data.sender }, data, { content: data.content.msg }));
+                        console.log($.extend({ id: data.sender }, data, { content: data.content.msg }));
                         break;
                     case MSG_TYPE_SYSTEM:
                         this.showSystemMessage($.extend({ id: '0' }, data, {

@@ -83,7 +83,6 @@ layui.use(['layim', 'laypage'], function(){
     var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
     var receiver = cache.mine.id;
     var url = ctx + "/service/webim/historyMessage/" + receiver + '/' + params.id;
-    console.log(url);
     $.ajax({
         url: url,
         dataType: 'json',

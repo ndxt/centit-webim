@@ -259,6 +259,7 @@ define(["jquery","mustache", "layui", "promise", "fetch", "url", "common.unit"],
          * @param res
          */
         onIMMessage(res) {
+            console.log(res);
             let mine = res.mine,
                 to = res.to
 
@@ -369,6 +370,7 @@ define(["jquery","mustache", "layui", "promise", "fetch", "url", "common.unit"],
             switch (data.type) {
                 case MSG_TYPE_CHAT:
                     this.showChatMessage($.extend({id: data.sender}, data, {content: data.content.msg}))
+                    console.log($.extend({id: data.sender}, data, {content: data.content.msg}));
                     break
                 case MSG_TYPE_SYSTEM:
                     this.showSystemMessage($.extend({id: '0'}, data, {

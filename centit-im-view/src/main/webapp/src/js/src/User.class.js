@@ -76,7 +76,7 @@ define(["IM","mustache","jquery.raty"],function (IM,Mustache) {
                             click: function (score, evt) {
                                 that.sendEvaluatedScore(sender, receiver, score);
                                 layer.close(index);
-                                window.close();
+                                // window.close();
                             }
                         });
 
@@ -255,7 +255,7 @@ define(["IM","mustache","jquery.raty"],function (IM,Mustache) {
             this.window = {
                 id: '0',
                 type: 'friend',
-                name: '智能客服',
+                name: '客服',
                 avatar: ctx + SERVICE_AVATAR
             }
             let that = this;
