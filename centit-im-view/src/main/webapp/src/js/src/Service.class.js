@@ -44,7 +44,6 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
         queryUsers() {
             let ctx = this.contextPath,
                 id = this.mine.id
-
             return fetch(`${ctx }/service/webimcust/cust/${id }?lastServiceDate=1949-10-1`)
                 .then(res => res.json()
         )
@@ -73,7 +72,9 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
                 this.queryService()
             ]).then(res => {
                 this.users.list = _parsedata(res[0])
-            this.services.list = _parsedata(res[1].filter(d => d.userCode !== this.mine.id)
+            this.services.list = _parsedata(res[1].filter(d =>
+                d.userCode !== this.mine.id
+             )
         )
         })
 
@@ -488,9 +489,7 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
                 })
 
                 function filterData(data, value) {
-
-                    let temp = JSON.parse(JSON.stringify(data))
-
+                    let temp = JSON.parse(JSON.stringify(data));
                     filterLeaf(temp, value)
 
                     return temp
@@ -692,8 +691,6 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
                 // data: {pageNo: pageNo,lastReadDate: dateStr},
 
                 success: function (res) {
-
-                    // console.log(res.data);
                     var unreadInfo = res.data, x;
                     console.log(res);
                     for (x in unreadInfo) {

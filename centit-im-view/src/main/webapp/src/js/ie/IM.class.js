@@ -244,7 +244,6 @@ define(["jquery", "mustache", "layui", "promise", "fetch", "url", "common.unit"]
                     _ref2$system = _ref2.system,
                     system = _ref2$system === undefined ? false : _ref2$system;
                 //rewrite TODO
-
                 this.im.getMessage({
                     type: 'friend',
                     system: system,
@@ -354,14 +353,12 @@ define(["jquery", "mustache", "layui", "promise", "fetch", "url", "common.unit"]
                     sender: this.mine.id,
                     sendTime: _getTimestamp()
                 };
-
                 this.sendWSMessage(data);
             }
         }, {
             key: "sendWSMessage",
             value: function sendWSMessage(data) {
                 //CF
-                console.log(data);
                 if (this.socket.readyState == '3') {
                     window.location.reload();
                     this.showSystemMessage({
@@ -369,6 +366,7 @@ define(["jquery", "mustache", "layui", "promise", "fetch", "url", "common.unit"]
                         content: Mustache.render('您已掉线，请<a onclick="window.location.reload();" style="color: RGB(98, 158, 229)">刷新</a>重新连接')
                     });
                 } else if (this.socket.readyState == '1') {
+                    console.log(data);
                     this.socket.send(JSON.stringify(data));
                 }
             }
@@ -413,7 +411,7 @@ define(["jquery", "mustache", "layui", "promise", "fetch", "url", "common.unit"]
                 }
                 try {
                     data = JSON.parse(res.data);
-                    console.log(data);
+                    console.log(res);
                 } catch (e) {
                     // console.info(e)
                 }
@@ -430,7 +428,6 @@ define(["jquery", "mustache", "layui", "promise", "fetch", "url", "common.unit"]
                 switch (data.type) {
                     case MSG_TYPE_CHAT:
                         this.showChatMessage($.extend({ id: data.sender }, data, { content: data.content.msg }));
-                        console.log($.extend({ id: data.sender }, data, { content: data.content.msg }));
                         break;
                     case MSG_TYPE_SYSTEM:
                         this.showSystemMessage($.extend({ id: '0' }, data, {
@@ -445,7 +442,6 @@ define(["jquery", "mustache", "layui", "promise", "fetch", "url", "common.unit"]
                     case MSG_TYPE_QUESTION:
                         this.createProblemList(data.content, data);
                         break;
-
                     case MSG_TYPE_BROADCAST:
                         // this.onBroadcastMessage(data);
                         break;

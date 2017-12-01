@@ -60,7 +60,6 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
             value: function queryUsers() {
                 var ctx = this.contextPath,
                     id = this.mine.id;
-
                 return fetch(ctx + "/service/webimcust/cust/" + id + "?lastServiceDate=1949-10-1").then(function (res) {
                     return res.json();
                 }).then(function (res) {
@@ -491,9 +490,7 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                     });
 
                     function filterData(data, value) {
-
                         var temp = JSON.parse(JSON.stringify(data));
-
                         filterLeaf(temp, value);
 
                         return temp;
@@ -679,8 +676,6 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                     // data: {pageNo: pageNo,lastReadDate: dateStr},
 
                     success: function success(res) {
-
-                        // console.log(res.data);
                         var unreadInfo = res.data,
                             x;
                         console.log(res);
