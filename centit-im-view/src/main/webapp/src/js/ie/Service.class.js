@@ -395,7 +395,6 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                                 i = pageItem - 1;
                             }
                             if (messageList.length === 0) {
-                                console.log();
                                 layer.msg('已无更多聊天消息！');
                             } else {
                                 pageNo++;

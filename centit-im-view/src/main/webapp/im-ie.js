@@ -49,7 +49,11 @@ var CONTENT_TYPE_OVER = "over";
 // 默认IM配置
 var Default_IM_Config = {
     mode: MODE_QUESTION
-};
+
+    //layim扩展部分
+};var THIS = 'layim-this';
+var SHOW = 'layui-show';
+
 function thisChat() {
     var layimChat = $(".layui-box.layui-layim-chat");
     if (!layimChat) return;
@@ -62,9 +66,6 @@ function thisChat() {
         textarea: cont.find('textarea')
     };
 };
-//layim扩展部分
-var THIS = 'layim-this';
-var SHOW = 'layui-show';
 
 function closeThisChat() {
     var currentCloseBtn = $(".layim-this.layim-list-gray .layui-icon");

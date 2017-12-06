@@ -669,7 +669,7 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setMsgState("U");
         Session session = getSessionByUserCode(userCode);
         if(session!=null) {
-            webMessage.setMsgState("");
+            webMessage.setMsgState("C");
             pushMessage(session, message);
         }else{
             if(StringUtils.equals("sms",noticeType)){

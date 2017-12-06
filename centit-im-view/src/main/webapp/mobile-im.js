@@ -1021,7 +1021,7 @@ function _getContextPath() {
                         }
                         im.getMessage({
                             type: 'friend',
-                            system: system,
+                            system: system ,
                             reverse: false,
                             username: message.senderName,
                             id: sender,
@@ -1030,10 +1030,8 @@ function _getContextPath() {
                             avatar: avatar
                         }, true)
                     }
-
                 }
             });
-
         }
 
 

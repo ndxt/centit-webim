@@ -308,18 +308,17 @@ define(["IM", "mustache", "jquery.raty"], function (IM, Mustache) {
                 var that = this;
                 this.im.on('tool(robot)', function () {
                     if (that.config.mode == MODE_QUESTION) {
-                        that.config.mode = MODE_SERVICE;
                         layer.open({
                             title: '结束会话',
                             content: '是否结束本次会话，并切换回人工服务吗？',
                             btn: ['确认', '取消'],
                             yes: function yes(index) {
+                                that.config.mode = MODE_SERVICE;
                                 that.sendAsk4ServiceCommand();
                                 layer.close(index);
                             }
                         });
                     } else {
-                        that.config.mode = MODE_QUESTION;
                         layer.open({
                             title: '结束会话',
                             content: '是否结束本次会话，并切换回智能问答吗？',
@@ -327,6 +326,7 @@ define(["IM", "mustache", "jquery.raty"], function (IM, Mustache) {
                             yes: function yes(index) {
                                 that.sendAsk4QuestionCommand();
                                 that.changeUserName('智能客服');
+                                that.config.mode = MODE_QUESTION;
                                 layer.close(index);
                             }
                         });
