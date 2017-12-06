@@ -10,6 +10,7 @@ require(["../plugins/jquery-1.9.1.min", "../plugins/base64", "../src/js/ie/Servi
 
         document.title = 'KF - ' + params.userName
 
+
     layui.use(['layim', 'layer'], function (im, layer) {
         new ServiceIM(im, layui.$.extend({
             userType: 'S'
