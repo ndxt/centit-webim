@@ -49,16 +49,27 @@ var SHOW = 'layui-show';
 window.ctx = _getContextPath();
 //公共方法部分
 function thisChat() {
+
     var layimChat = $(".layui-box.layui-layim-chat");
     if (!layimChat) return;
-    var index = $('.layim-chat-list .' + THIS).index();
-    var cont = layimChat.find('.layim-chat').eq(index);
-    var to = JSON.parse(decodeURIComponent(cont.find('.layim-chat-tool').data('json')));
-    return {
-        elem: cont,
-        data: to,
-        textarea: cont.find('textarea')
-    };
+    if (!layimChat.length) {
+        var cont = $(".layui-unselect.layim-content .layim-chat");
+        var to = JSON.parse(decodeURIComponent(cont.find('.layim-chat-tool').data('json')));
+        return {
+            elem: cont,
+            data: to,
+            textarea: cont.find('input')
+        };
+    } else {
+        var index = $('.layim-chat-list .' + THIS).index();
+        var cont = layimChat.find('.layim-chat').eq(index);
+        var to = JSON.parse(decodeURIComponent(cont.find('.layim-chat-tool').data('json')));
+        return {
+            elem: cont,
+            data: to,
+            textarea: cont.find('textarea')
+        };
+    }
 };
 
 function closeThisChat() {

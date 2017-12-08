@@ -274,15 +274,17 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
                     url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
                     //默认post
                 }
-                , tool: [{
-                    alias: 'return' //工具别名
-                    , title: '请求退回' //工具名称
-                    , icon: '&#xe627;' //工具图标，参考图标文档
-                }
-                    , {
+                , tool: [
+                    {
                         alias: 'over'
                         , title: '结束会话'
+                        ,iconUnicode: '&#xe60a;'
                         , icon: '&#xe60a;'
+                    },
+                    {
+                        alias: 'return' //工具别名
+                        , title: '请求退回' //工具名称
+                        , icon: '&#xe627;' //工具图标，参考图标文档
                     }
                     , {
                         alias: 'quickReply'
