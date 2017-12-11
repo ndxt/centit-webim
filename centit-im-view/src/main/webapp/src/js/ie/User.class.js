@@ -54,14 +54,14 @@ define(["IM", "mustache", "jquery.raty"], function (IM, Mustache) {
                     init: {
                         mine: this.mine
                     },
-                    uploadImage: {
-                        url: ctx + "/service/file/upload" //（返回的数据格式见下文）
-                        //默认post
-                    },
-                    uploadFile: {
-                        url: ctx + "/service/file/upload" //（返回的数据格式见下文）
-                        //默认post
-                    },
+                    // uploadImage: {
+                    //     url: `${ctx}/service/file/upload` //（返回的数据格式见下文）
+                    //     //默认post
+                    // }
+                    // , uploadFile: {
+                    //     url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
+                    //     //默认post
+                    // },
                     brief: true,
                     tool: [{
                         alias: 'robot' //工具别名

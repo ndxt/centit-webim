@@ -275,16 +275,15 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                     init: {
                         mine: this.mine,
                         friend: [this.users, this.services]
-                    },
-                    uploadImage: {
-                        url: ctx + "/service/file/upload" //（返回的数据格式见下文）
-                        //默认post
-                    },
-                    uploadFile: {
-                        url: ctx + "/service/file/upload" //（返回的数据格式见下文）
-                        //默认post
-                    },
-                    tool: [{
+                        // , uploadImage: {
+                        //     url: `${ctx}/service/file/upload` //（返回的数据格式见下文）
+                        //     //默认post
+                        // }
+                        // , uploadFile: {
+                        //     url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
+                        //     //默认post
+                        // }
+                    }, tool: [{
                         alias: 'over',
                         title: '结束会话',
                         iconUnicode: '&#xe60a;',
