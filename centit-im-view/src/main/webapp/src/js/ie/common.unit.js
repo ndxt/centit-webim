@@ -77,7 +77,18 @@ function closeThisChat() {
     if ($(".layim-this.layim-list-gray .layui-icon").length > 0) {
         currentCloseBtn.click();
     } else {
-        $(".layui-layim-chat .layui-layer-ico.layui-layer-close.layui-layer-close1").click();
+        if ($(".layui-layim-chat .layui-layer-ico.layui-layer-close.layui-layer-close1").length > 0) {
+            $(".layui-layim-chat .layui-layer-ico.layui-layer-close.layui-layer-close1").click();
+        } else {
+            var layero = $('.layui-m-layer .layim-title .layim-chat-back').parents('.layui-m-layer').eq(0),
+                index = layero.attr('index'),
+                PANEL = '.layim-panel';
+            setTimeout(function () {
+                $('.layui-m-layer .layim-title .layim-chat-back').parents(PANEL).eq(0).removeClass('layui-m-anim-left').addClass('layui-m-anim-rout');
+                layero.prev().find(PANEL).eq(0).removeClass('layui-m-anim-lout').addClass('layui-m-anim-right');
+                layero.remove();
+            }, 500);
+        }
     }
 }
 
