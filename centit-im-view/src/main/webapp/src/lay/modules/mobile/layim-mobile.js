@@ -527,7 +527,7 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
     var local = layui.data('layim-mobile')[cache.mine.id] || {};
     var obj = {}, history = local.history || {};
     var is = history[data.type + data.id];
-    
+
     if(!layimMain) return;
     
     var historyElem = layimMain.find('.layim-list-history');
@@ -542,7 +542,6 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
       key: cache.mine.id
       ,value: local
     });
-    
     var msgItem = historyElem.find('.layim-'+ data.type + data.id)
     ,msgNums = (cache.message[data.type+data.id]||[]).length //未读消息数
     ,showMsg = function(){
@@ -567,8 +566,7 @@ layui.define(['laytpl', 'upload-mobile', 'layer-mobile', 'zepto'], function(expo
       showMsg();
       historyElem.find('.layim-null').remove();
     }
-
-    showNew('Msg');
+      showNew('Msg');
   };
   
   //标注底部导航新动态徽章

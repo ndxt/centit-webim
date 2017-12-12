@@ -435,11 +435,10 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
 
                     var layer = this.layer;
                     var mine = this.mine;
-                    var list = this.services.list;
-
+                    var that = this;
+                    var list = [];
                     var result = [];
                     var service = null;
-
                     layer.open({
                         title: '选择客服',
                         area: ['1024px', '480px'],
@@ -465,29 +464,33 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                     });
 
                     $.get(this.contextPath + "/json/service.txt", function (res) {
-                        result = parseData(res);
-                        createTree('#service_list', result);
-                        var lastValue = null;
-                        $('#service_search').change(function () {
-                            var value = $(this).val();
-                            if (value !== lastValue) {
+                        that.queryService().then(function (res1) {
+                            list = _parsedata(res1.filter(function (d) {
+                                return d.userCode !== mine.id;
+                            }));
+                            console.log(res);
+                            result = parseData(res);
+                            createTree('#service_list', result);
+                            var lastValue = null;
+                            $('#service_search').change(function () {
+                                var value = $(this).val();
+                                if (value !== lastValue) {
+                                    // 清空查询条件
+                                    if (!value) {
+                                        createTree('#service_list', result);
+                                    } else {
+                                        var tempData = filterData(result, value);
+                                        console.log(tempData);
+                                        createTree('#service_list', tempData);
+                                    }
 
-                                // 清空查询条件
-                                if (!value) {
-                                    createTree('#service_list', result);
-                                } else {
-                                    var tempData = filterData(result, value);
-                                    console.log(tempData);
-                                    createTree('#service_list', tempData);
+                                    service = null;
+                                    $('#service_text').html('未选中任何客服');
                                 }
-
-                                service = null;
-                                $('#service_text').html('未选中任何客服');
-                            }
-                            lastValue = value;
+                                lastValue = value;
+                            });
                         });
                     });
-
                     function filterData(data, value) {
                         var temp = JSON.parse(JSON.stringify(data));
                         filterLeaf(temp, value);
@@ -534,6 +537,7 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                                 level++;
                             }
                             line = line.split(',');
+
                             return {
                                 level: level,
                                 id: line[0],
@@ -586,13 +590,13 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                                     if (typeof node == "undefined") {} else if (!node.children) {
                                         // $('li.selected', tree).removeClass('selected')
                                         // li.addClass('selected')
+                                        console.log(node);
                                         $('#service_text').html("\u5DF2\u9009\u4E2D\u5BA2\u670D\uFF1A" + node.name + (node.offline ? '(不在线)' : ''));
                                         service = node;
                                     }
                                 }
                             });
                         });
-
                         tree.find('li').each(function () {
                             var li = $(this);
                             var node = li.data('node');
