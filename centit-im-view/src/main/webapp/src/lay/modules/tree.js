@@ -88,8 +88,8 @@ layui.define('jquery', function(exports){
       elem.append(li);
       
       //触发点击节点回调
-      typeof options.click === 'function' && that.click(li, item); 
-      
+      typeof options.click === 'function' && that.click(li, item);
+
       //伸展节点
       that.spread(li, item);
       
@@ -106,7 +106,7 @@ layui.define('jquery', function(exports){
       options.click(item)
     });
   };
-  
+
   //伸展节点
   Tree.prototype.spread = function(elem, item){
     var that = this, options = that.options;

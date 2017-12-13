@@ -357,7 +357,6 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
                     ,data: messageList
                 });
             }.bind(this));
-
             // this.im.on('chatlog',function(data,ul){
             //     var userId = data.id,
             //         cache = that.im.cache(),
