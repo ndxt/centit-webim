@@ -346,90 +346,79 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                 }.bind(this));
 
                 //手机端的聊天记录
-                //             this.im.on('chatlog',function(data, ul) {
-                //                 var messageList = this.mobileHistory(data.id);
-                //                 console.log(data); //得到当前会话对象的基本信息
-                //                 //弹出一个更多聊天记录面板
-                //                 this.im.panel({
-                //                     title: '与 '+ data.username +' 的聊天记录' //标题
-                //                     ,tpl: `<div class="layim-chat-main" style="bottom:0px;">
-                // <ul id="LAY_view">
-                // {{# layui.each(d.data, function(index, item){
-                //   if(item.system == true){ }}
-                //   <li class="layim-chat-system"><span>{{ layui.data.content(item.content||"&nbsp") }}</span></li>
-                //   {{# } else if(item.mine){ }}
-                //       <li class="layim-chat-mine"><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite><i>{{ layui.data.date(item.timestamp) }}</i>{{ item.username }}</cite></div><div class="layim-chat-text">{{ layui.data.content(item.content||"&nbsp") }}</div></li>
-                //   {{# }else{ }}
-                //     <li><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite>{{ item.username }}<i>{{ layui.data.date(item.timestamp) }}</i></cite></div><div class="layim-chat-text">{{ layui.data.content(item.content||"&nbsp") }}</div></li>
-                //   {{# }
-                // }); }}
-                // </ul></div>` //模版
-                //                     ,data: messageList
-                //                 });
-                //             }.bind(this));
-
                 this.im.on('chatlog', function (data, ul) {
-                    var userId = data.id,
-                        cache = that.im.cache(),
-                        serviceId = cache.mine.id,
-                        localLogL = 0,
-                        pageItem = 0;
-                    if (typeof cache.local.chatlog["friend" + userId] != "undefine") {
-                        localLogL = cache.local.chatlog["friend" + userId].length;
-                        pageItem = localLogL % 20;
-                    }
-                    var pageNo = $("#layui-m-layer0").data('pageNo' + userId) || Math.floor(localLogL / 20) + 1;
-                    var lastReadDate = new Date();
-                    lastReadDate.setDate(lastReadDate.getDate() + 1);
-                    var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
-                    $.ajax({
-                        url: ctx + '/service/webim/historyMessage/' + serviceId + '/' + userId,
-                        dataType: 'json',
-                        async: false,
-                        data: { pageNo: pageNo, lastReadDate: dateStr },
-                        success: function success(res) {
-                            var messageList = res.data.objList,
-                                message;
-                            var i = 0;
-                            if (pageNo == 1 && pageItem != 0) {
-                                i = pageItem - 1;
-                            }
-                            if (messageList.length === 0) {
-                                layer.msg('已无更多聊天消息！');
-                            } else {
-                                pageNo++;
-                            }
-                            for (var length = messageList.length; i < length; i++) {
-                                message = messageList[i];
-                                message.type = 'friend';
-                                message.id = message.sender;
-                                message.content = JSON.parse(message.content).msg;
-                                message.timestamp = message.sendTime;
-                                message.username = message.senderName;
-                                message.avatar = ctx + '/src/avatar/service.jpg';
-                                if (message.msgType == 'S') {
-                                    message.system = true;
-                                } else if (message.id == serviceId) {
-                                    message.mine = true;
-                                    message.avatar = ctx + '/src/avatar/service.jpg';
-                                } else {
-                                    message.mine = false;
-                                    message.avatar = ctx + '/src/avatar/user.png';
-                                }
-                                if (message.system) {
-                                    ul.prepend('<li class="layim-chat-system"><span>' + message.content + '</span></li>');
-                                } else if (message.content.replace(/\s/g, '') !== '') {
-                                    ul.prepend('<li class="layim-chat-system"><span>' + layui.data.date(data.timestamp) + '</span></li>');
-                                    layui.use('laytpl', function () {
-                                        var laytpl = layui.laytpl;
-                                        ul.prepend(laytpl(elemChatMain).render(message));
-                                    });
-                                }
-                            }
-                            $("#layui-m-layer0").data('pageNo' + userId, pageNo);
-                        }
+                    var messageList = this.mobileHistory(data.id);
+                    console.log(data); //得到当前会话对象的基本信息
+                    //弹出一个更多聊天记录面板
+                    this.im.panel({
+                        title: '与 ' + data.username + ' 的聊天记录' //标题
+                        , tpl: "<div class=\"layim-chat-main\" style=\"bottom:0px;\">\n<ul id=\"LAY_view\">\n{{# layui.each(d.data, function(index, item){\n  if(item.system == true){ }}\n  <li class=\"layim-chat-system\"><span>{{ layui.data.content(item.content||\"&nbsp\") }}</span></li>\n  {{# } else if(item.mine){ }}\n      <li class=\"layim-chat-mine\"><div class=\"layim-chat-user\"><img src=\"{{ item.avatar }}\"><cite><i>{{ layui.data.date(item.timestamp) }}</i>{{ item.username }}</cite></div><div class=\"layim-chat-text\">{{ layui.data.content(item.content||\"&nbsp\") }}</div></li>\n  {{# }else{ }}\n    <li><div class=\"layim-chat-user\"><img src=\"{{ item.avatar }}\"><cite>{{ item.username }}<i>{{ layui.data.date(item.timestamp) }}</i></cite></div><div class=\"layim-chat-text\">{{ layui.data.content(item.content||\"&nbsp\") }}</div></li>\n  {{# }\n}); }}\n</ul></div>" //模版
+                        , data: messageList
                     });
                 }.bind(this));
+
+                // this.im.on('chatlog',function(data,ul){
+                //     var userId = data.id,
+                //         cache = that.im.cache(),
+                //         serviceId = cache.mine.id,
+                //         localLogL = 0,
+                //         pageItem = 0;
+                //     if (typeof cache.local.chatlog["friend" + userId] != "undefine") {
+                //         localLogL = cache.local.chatlog["friend" + userId].length;
+                //         pageItem = localLogL % 20;
+                //     }
+                //     var pageNo = $("#layui-m-layer0").data('pageNo' + userId) || Math.floor(localLogL / 20) + 1;
+                //     var lastReadDate = new Date();
+                //     lastReadDate.setDate(lastReadDate.getDate() + 1);
+                //     var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
+                //     $.ajax({
+                //         url: ctx + '/service/webim/historyMessage/' + serviceId + '/' + userId,
+                //         dataType: 'json',
+                //         async: false,
+                //         data: {pageNo: pageNo, lastReadDate: dateStr ,pageSize:20},
+                //         success:function(res){
+                //             var messageList = res.data.objList,
+                //                 message;
+                //             var i = 0;
+                //             if (pageNo == 1 && pageItem != 0) {
+                //                 i = pageItem - 1;
+                //             }
+                //             if (messageList.length === 0) {
+                //                 layer.msg('已无更多聊天消息！');
+                //             } else {
+                //                 pageNo++;
+                //             }
+                //             for(var length = messageList.length; i < length; i++){
+                //                 message = messageList[i];
+                //                 message.type = 'friend';
+                //                 message.id = message.sender;
+                //                 message.content = JSON.parse(message.content).msg;
+                //                 message.timestamp = message.sendTime;
+                //                 message.username = message.senderName;
+                //                 message.avatar = ctx + '/src/avatar/service.jpg';
+                //                 if(message.msgType == 'S'){
+                //                     message.system = true;
+                //                 }else if(message.id == serviceId){
+                //                     message.mine = true;
+                //                     message.avatar = ctx + '/src/avatar/service.jpg';
+                //                 }else{
+                //                     message.mine = false;
+                //                     message.avatar = ctx + '/src/avatar/user.png';
+                //                 }
+                //                 if (message.system) {
+                //                     ul.prepend('<li class="layim-chat-system"><span>' + message.content + '</span></li>');
+                //                 }else if(message.content.replace(/\s/g, '') !== ''){
+                //                     ul.prepend('<li class="layim-chat-system"><span>' + layui.data.date(data.timestamp) + '</span></li>');
+                //                     layui.use('laytpl', function () {
+                //                         var laytpl = layui.laytpl;
+                //                         ul.prepend(laytpl(elemChatMain).render(message));
+                //                     });
+                //                 }
+                //             }
+                //             $("#layui-m-layer0").data('pageNo' + userId, pageNo);
+                //         }
+                //     })
+                // }.bind(this))
 
                 this.im.on('tool(transfer)', function () {
 
@@ -442,7 +431,7 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                     layer.open({
                         title: '选择客服',
                         area: ['1024px', '480px'],
-                        content: '<div id="service_container">' + '<div style="width: 200px; height: 340px; border-right: 1px solid #ccc; float: left; padding-right: 20px;">' + '<input type="text" name="title" id="service_search"  placeholder="输入类型、客服名称搜索" autocomplete="off" class="layui-input"><h5 id="service_text" style="padding: 15px 5px; color: #aaa;">未选中任何客服</h5>' + '</div>' + '<div style="margin-left: 230px; overflow: auto; height: 340px;">' + '<ul id="service_list"></ul>' + '</div>' + '</div>',
+                        content: '<div id="service_container">' + '<div style="width: 200px; height: 340px; border-right: 1px solid #ccc; float: left; padding-right: 20px;">' + '<input type="text" name="title" id="service_search"  placeholder="输入类型、客服名称搜索" autocomplete="off" class="layui-input" style="padding-left: 30px;"><i class="layui-icon layui-search" style="position: relative;top:-30px;left:10px;">&#xe615;</i><h5 id="service_text" style="padding: 15px 5px; color: #aaa;">未选中任何客服</h5>' + '</div>' + '<div style="margin-left: 230px; overflow: auto; height: 340px;">' + '<ul id="service_list"></ul>' + '</div>' + '</div>',
                         yes: function () {
                             if (!service) {
                                 layer.alert('没有选择客服！');
@@ -468,7 +457,6 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                             list = _parsedata(res1.filter(function (d) {
                                 return d.userCode !== mine.id;
                             }));
-                            console.log(res);
                             result = parseData(res);
                             createTree('#service_list', result);
                             var lastValue = null;
@@ -594,6 +582,23 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                                         $('#service_text').html("\u5DF2\u9009\u4E2D\u5BA2\u670D\uFF1A" + node.name + (node.offline ? '(不在线)' : ''));
                                         service = node;
                                     }
+                                    $('a').on('dblclick', function ($event) {
+                                        console.log(3333);
+                                        $event.stopPropagation();
+                                        if (!node.children) {
+                                            var currentChatId = thisChat().data.id;
+                                            that.sendSwitchServiceCommand(service.id, currentChatId);
+                                            layer.open({
+                                                title: '切换客服',
+                                                content: "\u5DF2\u53D1\u9001\u5207\u6362\u5BA2\u670D[" + service.name + "]\u547D\u4EE4\uFF01",
+                                                btn: ['确定'],
+                                                btn1: function (index, layero) {
+                                                    closeThisChat();
+                                                    layer.close(index);
+                                                }.bind(this)
+                                            });
+                                        }
+                                    });
                                 }
                             });
                         });
@@ -668,7 +673,8 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                     im = this.im,
                     that = this,
                     lastReadDate = new Date(),
-                    arr = [];
+                    arr = [],
+                    arrNum = [];
                 lastReadDate.setDate(lastReadDate.getDate() + 1);
                 var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
 
@@ -681,21 +687,20 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                     success: function success(res) {
                         var unreadInfo = res.data,
                             x;
-                        console.log(res);
+                        console.log(unreadInfo);
                         for (x in unreadInfo) {
-                            // console.log(x);
+                            console.log(x);
                             var attr = x;
                             // console.log(unreadInfo[attr]);
                             if (unreadInfo[attr] > 0) {
                                 arr.push(attr);
+                                arrNum.push(unreadInfo[attr]);
                             }
                         }
-                        // console.log(arr);
                     }
                 });
 
                 var _loop = function _loop(i, length) {
-
                     $.ajax({
                         url: ctx + "/service/webim/historyMessage/" + userCode + "/" + arr[i], //这里也调用了history接口
                         dataType: 'json',
@@ -704,7 +709,7 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                         success: function success(res) {
                             var messageList = res.data.objList,
                                 message;
-                            for (var j = messageList.length - 1; j >= 0; j--) {
+                            for (var j = arrNum[i] - 1; j >= 0; j--) {
                                 message = messageList[j];
                                 console.log(message);
                                 var content = JSON.parse(message.content);
