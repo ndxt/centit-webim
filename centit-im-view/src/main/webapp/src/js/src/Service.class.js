@@ -158,7 +158,6 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
                         console.log(1);
                         $('div.layui-show .layim-chat-username').data('preServiceCode', params.data.serviceCode);
                         layer.close(index);
-
                     }
                     , btn2: function () {
                         that.sendSwitchServiceCommand(params.data.serviceCode, params.data.id);
@@ -597,25 +596,27 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
                                     $('#service_text').html(`已选中客服：${node.name}${node.offline ? '(不在线)' : ''}`)
                                     service = node;
                                 }
-                                $('a').on('dblclick',function($event){
-                                    $event.stopPropagation();
-                                    if(!node.children){
-                                        var currentChatId = thisChat().data.id;
-                                        that.sendSwitchServiceCommand(service.id, currentChatId)
-                                        layer.open({
-                                            title: '切换客服'
-                                            , content: `已发送切换客服[${service.name}]命令！`
-                                            , btn: ['确定']
-                                            , btn1: function (index, layero) {
-                                                closeThisChat();
-                                                layer.close(index);
-                                            }.bind(this)
-                                        });
-                                    }
-                                })
                             }
                         });
+                        // $('a').on('dblclick',function(){
+                        //     clearTimeout(time);
+                        //     if(!service.children){
+                        //         console.log(2333);
+                        //         var currentChatId = thisChat().data.id;
+                        //         // that.sendSwitchServiceCommand(service.id, currentChatId)
+                        //         layer.open({
+                        //             title: '切换客服'
+                        //             , content: `已发送切换客服[${service.name}]命令！`
+                        //             , btn: ['确定']
+                        //             , btn1: function (index, layero) {
+                        //                 closeThisChat();
+                        //                 layer.close(index);
+                        //             }.bind(this)
+                        //         });
+                        //     }
+                        // })
                     });
+
                     tree.find('li').each(function () {
                         const li = $(this)
                         const node = li.data('node')
