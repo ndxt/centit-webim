@@ -256,7 +256,7 @@ define(["IM","mustache","jquery.raty"],function (IM,Mustache) {
             this.window = {
                 id: '0',
                 type: 'friend',
-                name: '客服',
+                name: '智能客服',
                 avatar: ctx + SERVICE_AVATAR
             }
             let that = this;

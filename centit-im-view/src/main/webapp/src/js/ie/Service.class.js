@@ -689,7 +689,6 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                             x;
                         console.log(unreadInfo);
                         for (x in unreadInfo) {
-                            console.log(x);
                             var attr = x;
                             // console.log(unreadInfo[attr]);
                             if (unreadInfo[attr] > 0) {
