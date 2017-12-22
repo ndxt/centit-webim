@@ -279,7 +279,6 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
                     }]
                 , isgroup: false
                 , copyright: true
-                ,chatLog: layui.cache.dir + '../chatlog.html'
             };
 
             if (!!this.mine.switchServiceBtn) {
@@ -533,7 +532,7 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
     }
 
 
-    return ServiceIM;
+    return MobileIM;
 })/**
  * Created by lu_sn on 2017/12/21.
  */
