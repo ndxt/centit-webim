@@ -16,12 +16,12 @@ import java.util.Map;
 @Repository
 public class QuestAndAnswerDao extends BaseDaoImpl<QuestAndAnswer,String> {
 
-    public static final Log logger = LogFactory.getLog(QuestAndAnswerDao.class);
+    //public static final Log logger = LogFactory.getLog(QuestAndAnswerDao.class);
 
     @Override
     public Map<String, String> getFilterField() {
         if( filterField == null){
-            filterField = new HashMap<String, String>();
+            filterField = new HashMap<>();
 
             filterField.put("questionId" , CodeBook.EQUAL_HQL_ID);
 
