@@ -355,28 +355,36 @@ public class WebImSocketImpl implements WebImSocket {
 
             pushMessage(service.getUserCode() ,ImMessageUtils
                     .buildSystemMessageChangService(receiver,"请为"+cust.getUserName()+"客户服务。",cust,beforeChangeService,"A") );//切换后客服标识After
-            pushMessage(service.getUserCode() ,ImMessageUtils.buildChatMessage("你好",cust) );//切换后向新客服发送提示信息
+//            pushMessage(service.getUserCode() ,ImMessageUtils.buildChatMessage("你好",cust) );//切换后向新客服发送提示信息
             saveChangeCustomerService(receiver,beforeChangeService,service);//保存切换客服提示信息
-            saveChangeCustomerCall(service,cust,beforeChangeService);//保存切换后给切换客服的提示信息
+            saveAndSendChangeCustomerCall(service,cust,beforeChangeService);//保存切换后给切换客服的提示信息
         }
     }
 
     @Transactional
-    public void saveChangeCustomerCall(WebImCustomer service,WebImCustomer cust,WebImCustomer beforeChangeService){
+    public void saveAndSendChangeCustomerCall(WebImCustomer service,WebImCustomer cust,WebImCustomer beforeChangeService){
+        Session session = getSessionByUserCode(service.getUserCode());
         WebImMessage webMessage = new WebImMessage();
-        webMessage.setMsgType("C");
-        webMessage.setReceiver(service.getUserCode());
-        webMessage.setSender(cust.getUserCode());
-        webMessage.setSenderName(cust.getUserName());
-        JSONObject json = new JSONObject();
-        json.put("msg","你好");
-        json.put("chatType","service");
-        json.put("beforeId",beforeChangeService.getUserCode());
-        webMessage.setContent(json.toString());
-        webMessage.setSendTime(DatetimeOpt.currentUtilDate());
-        webMessage.setMsgState("U");
-        webMessage.setMsgId(UuidOpt.getUuidAsString32());
+        if(session==null){
+            webMessage.setMsgType("C");
+            webMessage.setReceiver(service.getUserCode());
+            webMessage.setSender(cust.getUserCode());
+            webMessage.setSenderName(cust.getUserName());
+            JSONObject json = new JSONObject();
+            json.put("msg","你好");
+            json.put("chatType","service");
+            json.put("beforeId",beforeChangeService.getUserCode());
+            webMessage.setContent(json.toString());
+            webMessage.setSendTime(DatetimeOpt.currentUtilDate());
+            webMessage.setMsgState("U");
+            webMessage.setMsgId(UuidOpt.getUuidAsString32());
+        }
         messageDao.saveNewObject(webMessage);
+        notificationCenter.sendMessage(
+                cust.getUserCode(),service.getUserCode(),
+                "客服转接",
+                "你好",
+                "sms");
     }
 
     /**
@@ -661,6 +669,7 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setMsgState("U");
         Session session = getSessionByUserCode(userCode);
         if(session!=null) {
+            webMessage.setMsgState("C");
             pushMessage(session, message);
         }else{
             if(StringUtils.equals("sms",noticeType)){

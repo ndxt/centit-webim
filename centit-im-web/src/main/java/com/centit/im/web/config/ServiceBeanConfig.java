@@ -9,7 +9,7 @@ import com.centit.framework.ip.service.IntegrationEnvironment;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
-import com.centit.framework.staticsystem.config.SpringSecurityDaoConfig;
+import com.centit.framework.config.SpringSecurityDaoConfig;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;

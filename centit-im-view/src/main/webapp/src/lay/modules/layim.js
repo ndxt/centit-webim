@@ -9,9 +9,6 @@
 
 layui.define(['layer', 'laytpl', 'upload'], function (exports) {
 
-    const Default_Avatar = 'http://tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg'
-    const SERVICE_AVATAR = '/src/avatar/service.jpg';
-    const USER_AVATAR = '/src/avatar/user.png';
 
     var v = '3.5.4 Pro';
     var $ = layui.jquery;
@@ -727,16 +724,29 @@ layui.define(['layer', 'laytpl', 'upload'], function (exports) {
                     } else {
                         var avatar = ctx + SERVICE_AVATAR
                     }
-                    getMessage({
-                        type: 'friend',
-                        system: false,
-                        reverse: false,
-                        username: message.senderName,
-                        id: receiver,
-                        content: JSON.parse(message.content).msg,
-                        timestamp: message.sendTime,
-                        avatar: avatar
-                    }, true)
+                    if(message.msgType == "S") {
+                        getMessage({
+                            type: 'friend',
+                            system: true,
+                            reverse: true,
+                            id: message.receiver,
+                            content: JSON.parse(message.content).msg,
+                            timestamp: message.sendTime,
+
+                        }, false)
+                    }else{
+                        getMessage({
+                            type: 'friend',
+                            system: false,
+                            reverse: false,
+                            username: message.senderName,
+                            id: receiver,
+                            content: JSON.parse(message.content).msg,
+                            timestamp: message.sendTime,
+                            avatar: avatar
+                        }, true)
+                    }
+
                 }
                 $('div.layui-show .layim-chat-username').data('preServiceCode', sender);
             }
