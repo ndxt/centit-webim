@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>聊天记录</title>
+
+    <link rel="stylesheet" href="src/css/layui.css">
+    <style>
+        body .layim-chat-main{height: auto;}
+    </style>
+</head>
+<body>
+
+<div class="layim-chat-main">
+    <ul id="LAY_view"></ul>
+</div>
+
+<div id="LAY_page" style="margin: 0 10px;"></div>
+
+
+<textarea title="消息模版" id="LAY_tpl" style="display:none;">
+{{# layui.each(d.data, function(index, item){
+  if(item.id == parent.layui.layim.cache().mine.id){ }}
+    <li class="layim-chat-mine"><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite><i>{{ layui.data.date(item.timestamp) }}</i>{{ item.username }}</cite></div><div class="layim-chat-text">{{ layui.data.content(item.content||"&nbsp") }}</div></li>
+  {{# } else if(item.system == true){ }}
+  <li class="layim-chat-system"><span>{{ layui.data.content(item.content||"&nbsp") }}</span></li>
+  {{# }else{ }}
+    <li><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite>{{ item.username }}<i>{{ layui.data.date(item.timestamp) }}</i></cite></div><div class="layim-chat-text">{{ layui.data.content(item.content||"&nbsp") }}</div></li>
+  {{# }
+}); }}
+</textarea>
+
+<!-- 
+上述模版采用了 laytpl 语法，不了解的同学可以去看下文档：http://www.layui.com/doc/modules/laytpl.html
+
+-->
+
+
+<script src="src/layui.js"></script>
+<script>
+    function getURLParams(){
+        var url =  location.search;
+        if(url.indexOf("?")!= -1){
+            var paramStr = url.substr(1);
+        }
+        var strArr = paramStr.split("&");
+        var key,value,temp,params = {};
+        for(var i = 0, length = strArr.length; i < length; i ++){
+            temp = strArr[i].split("=");
+            key = temp[0];
+            value = temp[1];
+            params[key] = value;
+        }
+        return params
+    }
+
+    layui.use(['layim', 'laypage'], function(){
+        var layim = layui.layim
+            ,layer = layui.layer
+            ,laytpl = layui.laytpl
+            ,$ = layui.jquery
+            ,laypage = layui.laypage;
+
+        //聊天记录的分页此处不做演示，你可以采用laypage，不了解的同学见文档：http://www.layui.com/doc/modules/laypage.html
+
+
+        //开始请求聊天记录
+
+        var params =  getURLParams()//获得URL参数。该窗口url会携带会话id和type，他们是你请求聊天记录的重要凭据
+
+
+        //实际使用时，下述的res一般是通过Ajax获得，而此处仅仅只是演示数据格式
+
+        var cache =  window.parent.layui.layim.cache(),
+            ctx = window.parent.ctx;
+        console.log(cache)
+        //console.log(param)
+        var lastReadDate = new Date();
+        lastReadDate.setDate(lastReadDate.getDate() + 1);
+        var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
+        var receiver = cache.mine.id;
+        var url = ctx + "/service/webim/allHistoryMessage/" + receiver ;
+        console.log(url);
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            async: false,
+            data: {pageNo: 1, lastReadDate: dateStr,pageSize:1000000},
+            success: function (res) {
+                var messageList = res.data.objList,
+                    message;
+                var newMessageList = [];
+                for (var i = 0, length = messageList.length; i < length; i++) {
+                    message = messageList[i];
+                    console.log(message);
+                    if(message.senderName == "智能客服"){
+                    }else{
+                        message.content = JSON.parse(message.content).msg;
+                    }
+                    message.type = 'friend';
+                    message.id = message.sender;
+                    message.timestamp = message.sendTime;
+                    message.username = message.senderName;
+                    if(message.msgType == "S"){
+                        message.system = true;
+                    }
+                    else if (message.sender == receiver) {
+                        message.mine = true;
+                        message.avatar = ctx + '/src/avatar/service.jpg';
+                    }else{
+                        message.mine = false;
+                        message.avatar = ctx + '/src/avatar/user.png';
+                    }
+                    newMessageList.unshift(message);
+
+                }
+                var html = laytpl(LAY_tpl.value).render({
+                    data: newMessageList
+                });
+                $('#LAY_view').html(html);
+                setTimeout(function(){
+                    $(document).scrollTop($('body').height());
+                },300)
+            }
+        })
+
+    });
+
+</script>
+</body>
+</html>

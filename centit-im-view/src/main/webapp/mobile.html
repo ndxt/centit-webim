@@ -4,39 +4,37 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>LayIM移动版测试</title>
-
     <link rel="stylesheet" href="src/css/layui.mobile.css" media="all">
+    <link rel="stylesheet" href="src/css/layim.extend.css">
     <link rel="stylesheet" href="src/css/mobile.css">
 </head>
+<style>
+    .layui-layim-tab li{
+        width:50%!important;
+    }
+    .layui-layim-tab li:last-of-type{
+        display: none;
+    }
+    .layim-chat-tool{
+        overflow-x: hidden!important;
+    }
+    @media only screen and (min-device-width : 768px) and (max-device-width : 1024px){
+        .layui-layim{
+            bottom:70px!important;
+        }
+        .layui-layim-tab{
+            height:70px!important;
+        }
+        .layim-chat-main{
+            bottom:105px!important;
+        }
+        .layim-chat-footer{
+            height:100px!important;
+        }
+    }
+</style>
 <body>
-<script src="src/layui.js"></script>
-<script src="plugins/url.js"></script>
-<script src="plugins/mustache.min.js"></script>
-<script src="plugins/jquery-1.9.1.min.js"></script>
-<script src="plugins/base64.js"></script>
-<script src="mobile-im-ie.js"></script>
-
-<script>
-    var result = parseURL(),
-        token = result.params.token,
-        params = JSON.parse(decodeURIComponent(base64.decode(token)));
-    mine = {
-        userCode: params.userCode,
-        userName: params.userName,
-        switchServiceBtn:params.switchServiceBtn || ""
-    },
-
-        document.title = 'KF - ' + params.userName
-
-    layui.use(['mobile','layer'], function (mobile,layer) {
-        var mobile = layui.mobile
-            ,im = mobile.layim;
-        new ServiceIM(im, $.extend({
-            userType: 'S'
-        }, mine), {layer})
-    })
-
-</script>
-<script src="plugins/vconsole.min.js"></script>
+<script src="plugins/require.js" data-main="src/config.js"></script>
+<script src="src/mobile.js"></script>
 </body>
 </html>

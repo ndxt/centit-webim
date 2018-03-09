@@ -55,8 +55,7 @@
             mode: 'askForService'
         },
          token = 'token=' + base64.encode(encodeURIComponent(JSON.stringify(params)));
-
-      _openWindow(location.href + 'user.html', token)
+         _openWindow(location.href + 'user.html', token)
     }
 
     /**
@@ -70,8 +69,8 @@
         switchServiceBtn: '123'
       }),
         token = 'token=' + base64.encode(encodeURIComponent(JSON.stringify(params)));
-      queryCustomService(2000)
-      _openWindow(location.href + 'kefu.html', token)
+        queryCustomService(2000)
+        _openWindow(location.href + 'kefu.html', token)
     }
 
     function _openWindow(url, token) {

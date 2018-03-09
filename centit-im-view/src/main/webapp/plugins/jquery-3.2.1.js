@@ -15,7 +15,7 @@
 
 	"use strict";
 
-	if ( typeof module === "object" && typeof module.exports === "object" ) {
+	if ( typeof module === "object" && typeof module.exports === "object" ) {//module.export和export是node.js中用来创建模块的方法，那么就好理解了，若此条件成立，则要执行下面语句来兼容node.js（说白了就是利用形参factory做中间人，来把JQ的各个功能模块用node.js创建模块的方法创建起来）
 
 		// For CommonJS and CommonJS-like environments where a proper `window`
 		// is present, execute the factory and get jQuery.
@@ -330,9 +330,9 @@ jQuery.extend( {
 		return true;
 	},
 
-	type: function( obj ) {
+	type: function( obj ) {//如果是对象类型，返回对象的类型判断，否则返回基本类型的判断！
 		if ( obj == null ) {
-			return obj + "";
+			return obj + "";//字符串
 		}
 
 		// Support: Android <=2.3 only (functionish RegExp)
@@ -2957,12 +2957,12 @@ var rootjQuery,
 	// Shortcut simple #id case for speed
 	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
 
-	init = jQuery.fn.init = function( selector, context, root ) {
+	init = jQuery.fn.init = function( selector, context, root ) {//光是init函数就无数技术知识
 		var match, elem;
 
 		// HANDLE: $(""), $(null), $(undefined), $(false)
 		if ( !selector ) {
-			return this;
+			return this;//此时的this指向哪？
 		}
 
 		// Method init() accepts an alternate rootjQuery

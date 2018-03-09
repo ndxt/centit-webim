@@ -41,6 +41,46 @@ const CONTENT_TYPE_OVER = "over";
 const Default_IM_Config = {
     mode: MODE_QUESTION
 }
+
+//layim扩展部分
+const THIS = 'layim-this';
+const SHOW = 'layui-show';
+
+function thisChat(){
+    var layimChat = $(".layui-box.layui-layim-chat");
+    if(!layimChat) return;
+    var index = $('.layim-chat-list .' + THIS).index();
+    var cont = layimChat.find('.layim-chat').eq(index);
+    var to = JSON.parse(decodeURIComponent(cont.find('.layim-chat-tool').data('json')));
+    return {
+        elem: cont
+        ,data: to
+        ,textarea: cont.find('textarea')
+    };
+};
+
+
+function closeThisChat() {
+    var currentCloseBtn = $(".layim-this.layim-list-gray .layui-icon");
+    if($(".layim-this.layim-list-gray .layui-icon").length > 0){
+        currentCloseBtn.click();
+    }else{
+        $(".layui-layim-chat .layui-layer-ico.layui-layer-close.layui-layer-close1").click();
+    }
+
+
+}
+
+var elemChatMain = ['<li {{ d.mine ? "class=layim-chat-mine" : "" }} {{# if(d.cid){ }}data-cid="{{d.cid}}"{{# } }}>'
+    ,'<div class="layim-chat-user"><img src="{{ d.avatar }}"><cite>'
+    ,'{{# if(d.mine){ }}'
+    ,'<i>{{ layui.data.date(d.timestamp) }}</i>{{ d.username||"佚名" }}'
+    ,'{{# } else { }}'
+    ,'{{ d.username||"佚名" }}<i>{{ layui.data.date(d.timestamp) }}</i>'
+    ,'{{# } }}'
+    ,'</cite></div>'
+    ,'<div class="layim-chat-text">{{ layui.data.content(d.content||"&nbsp") }}</div>'
+    ,'</li>'].join('');
 //添加全局函数
 String.prototype.trim = function () {
     return this.replace(/(^\s*)|(\s*$)/g, '');
@@ -94,6 +134,7 @@ function _getContextPath() {
                     this.afterInit()
                 }.bind(this))
         }
+
 
         onAfterSendChatMessage(data, mode) {
 
@@ -307,7 +348,7 @@ function _getContextPath() {
                 }
             }
             if($('.layim-chat-username').eq(0).html().indexOf(senderName) != -1){
-                this.im.closeThisChat();
+                closeThisChat();
             }
             layui.use('layer', function () {
                 var layer = layui.layer;
@@ -329,18 +370,17 @@ function _getContextPath() {
 
             switch (contentType) {
                 case CONTENT_TYPE_SERVICE:
-                    this.showSystemMessage($.extend({id: '0'}, data, {content: content.msg}))
-                    this.changeUserName(content.userName)
+                    this.showSystemMessage($.extend({id: '0'}, data, {content: content.msg}));
+                    this.changeUserName(content.userName);
                     $(".layim-chat-status").eq(0).data('userCode',content.userCode);
-                    this.to = $.extend({id: content.userCode}, content)
+                    this.to = $.extend({id: content.userCode}, content);
                     break
                 case CONTENT_TYPE_PUSH_FORM:
                     this.scoreRate(this.mine.userCode, data.sender);
                     break;
                 case CONTENT_TYPE_OVER:
                     this.overCommandOp(content.senderName);
-
-                        break;
+                    break;
                 default:
                     break
             }
@@ -396,7 +436,7 @@ function _getContextPath() {
 
         //创造问题消息列表
         createProblemList(problems, data) {
-            this.showChatMessage($.extend({id: '0'}, data, {content: Mustache.render("[span class=hintMsg]{{msg}}[/span][ul]{{#options}} [li class=question id={{value}} data-type={{type}}][a]{{label}}[/a][/li]{{/options}} [/ul]", problems)}));
+            this.showChatMessage($.extend({id: '0'}, data, {content: Mustache.render("[span class=hintMsg]{{msg}}[/span][ul]{{#options}} [li class=question id={{value}} data-type={{type}}][span]{{label}}[/span][/li]{{/options}} [/ul]", problems)}));
 
         }
 
@@ -509,13 +549,7 @@ function _getContextPath() {
             this.sendWSMessage(data)
         }
 
-        /**
-         * 显示用户所点击的问题
-         */
-        showClickQuestion(content) {
-            this.im.showQuestion({content: content.questionContent})
-            this.sendQuestionRequest(content)
-        }
+
 
         /**
          * 将信息通过WS发送
@@ -675,6 +709,29 @@ function _getContextPath() {
     class UserIM extends IM {
 
 
+        showQuestionMessage(content){
+            var message = {};
+            message.content = content;
+            message.type = 'friend';
+            message.id = '0';
+            message.timestamp = message.sendTime || new Date().getTime();
+            var cache = layui.layim.cache();
+            message.username = cache.mine.username;
+            message.fromid = cache.mine.userCode;
+                message.mine = true;
+                message.avatar = ctx + '/src/avatar/user.png';
+                this.im.getMessage(message);
+
+        }
+
+        /**
+         * 显示用户所点击的问题
+         */
+        showClickQuestion(content) {
+            this.showQuestionMessage(content.question);
+            this.sendQuestionRequest(content);
+        }
+
         initIM() {
             let ctx = this.contextPath;
             this.mine.avatar = ctx + USER_AVATAR;
@@ -696,7 +753,8 @@ function _getContextPath() {
                     alias: 'robot' //工具别名
                     , title: '智能问答' //工具名称
                     , icon: '&#xe61a;' //工具图标，参考图标文档
-                }]
+                }],
+                chatLog:layui.cache.dir + 'css/modules/layim/html/allChatLog.html'
             })
         }
 
@@ -729,7 +787,17 @@ function _getContextPath() {
                         }else if (message.msgType == 'S') {
                             that.showSystemMessage({content: JSON.parse(message.content).msg, timestamp: message.sendTime});
                         } else if (message.sender == receiver.trim()) {
-                            im.showMineMessage({content: JSON.parse(message.content).msg, timestamp: message.sendTime});
+                            im.getMessage({
+                                fromid:message.sender,
+                                type: 'friend',
+                                system: false,
+                                reverse: true,
+                                username: message.senderName,
+                                id: '0',
+                                content: content.msg,
+                                timestamp: message.sendTime,
+                                avatar: ctx + USER_AVATAR
+                            }, false)
                         } else {
                             im.getMessage({
                                 type: 'friend',
@@ -777,9 +845,7 @@ function _getContextPath() {
                     }
                 });
             });
-
             this.im.chat(this.window);
-            this.renderAllHistoryMessage(this.im,this.mine.userCode,that);
         }
 
 
@@ -954,14 +1020,17 @@ function _getContextPath() {
                     for (var i = messageList.length - 1; i >= 0; i--) {
                         message = messageList[i];
                         console.log(message);
-                        if (message.sender == sender.trim()) {
+                        var system = false;
+                        if(message.Type == "S"){
+                            system = true;
+                        }else if (message.sender == sender.trim()) {
                             var avatar = ctx + USER_AVATAR
                         } else {
                             var avatar = ctx + SERVICE_AVATAR
                         }
                         im.getMessage({
                             type: 'friend',
-                            system: false,
+                            system: system,
                             reverse: false,
                             username: message.senderName,
                             id: sender,
@@ -1031,19 +1100,6 @@ function _getContextPath() {
                 renderHistoryMessage = this.renderHistoryMessage;
 
 
-            $("body").on("click", '*[layim-event="chat"]', function () {
-
-                var userCode = $(this).attr("class").split(" ")[0].substr(12).trim();
-                $(".layim-chat-username").attr('userCode', userCode);
-
-                // renderHistoryMessage(userCode,im,receiver,ctx);(在layim的popchat函数中还会render一次)
-
-            });
-
-            $("body").on("click", '*[layim-event="chatLog"]', function () {
-                var userCode = $(".layim-chat-username").attr('userCode');
-                renderHistoryMessage(userCode, im, receiver, ctx);
-            });
         }
 
         /**
@@ -1127,6 +1183,7 @@ function _getContextPath() {
                     }]
                 , isgroup: false
                 , copyright: true
+                ,chatLog: layui.cache.dir + 'css/modules/layim/html/chatlog.html'
             };
 
             if (!!this.mine.switchServiceBtn) {
@@ -1163,9 +1220,10 @@ function _getContextPath() {
                     , content: '是否结束本次会话，并发送评价请求？'
                     , btn: ['确认', '取消']
                     , yes: function (index) {
-                        that.sendAsk4Evaluate(that.mine.userCode, $(".layim-chat-username").attr('userCode').trim());
+                        var currentChatId = thisChat().data.id;
+                        that.sendAsk4Evaluate(that.mine.userCode, currentChatId);
                         layer.close(index);
-                        that.im.closeThisChat();
+                        closeThisChat();
                     }
                 });
             }.bind(this));
@@ -1175,7 +1233,7 @@ function _getContextPath() {
                 const mine = this.mine;
                 const list = this.services.list;
 
-                let result = []
+                let result = [];
                 let service = null;
 
                 layer.open({
@@ -1194,15 +1252,15 @@ function _getContextPath() {
                             layer.alert('没有选择客服！')
                             return;
                         }
-
-                        this.sendSwitchServiceCommand(service.id, $(".layim-chat-username").attr('usercode'))
+                        var currentChatId = thisChat().data.id;
+                        this.sendSwitchServiceCommand(service.id, currentChatId)
 
                         layer.open({
                             title: '切换客服'
                             , content: `已发送切换客服[${service.name}]命令！`
                             , btn: ['确定']
                             , btn1: function (index, layero) {
-                                this.im.closeThisChat();
+                                closeThisChat();
                                 layer.close(index);
                             }.bind(this)
                         });
@@ -1334,12 +1392,15 @@ function _getContextPath() {
                     layui.tree({
                         elem: '#service_list' //传入元素选择器
                         , nodes: data,
-                        click: function (node, li) {
-                            if (!node.children) {
-                                $('li.selected', tree).removeClass('selected')
-                                li.addClass('selected')
+                        click: function (node) {
+                            $("#service_list").find();
+                            if(typeof  node == "undefined"){
+
+                            }else if (!node.children) {
+                                // $('li.selected', tree).removeClass('selected')
+                                // li.addClass('selected')
                                 $('#service_text').html(`已选中客服：${node.name}${node.offline ? '(不在线)' : ''}`)
-                                service = node
+                                service = node;
                             }
                         }
                     });
@@ -1347,7 +1408,9 @@ function _getContextPath() {
                     tree.find('li').each(function () {
                         const li = $(this)
                         const node = li.data('node')
-                        if (!node.children && node.offline) {
+                        if(typeof node == "undefined"){
+
+                        }else if (!node.children && node.offline) {
                             li.addClass('offline')
                         }
                     })
@@ -1363,7 +1426,7 @@ function _getContextPath() {
 
             this.im.on('tool(return)', function () {
                 var preServiceCode = $('div.layui-show .layim-chat-username').data('preServiceCode') || "",
-                    userCode = $(".layim-chat-username").attr('usercode');
+                    userCode = thisChat().data.id;
                 if (!!preServiceCode) {
                     this.sendSwitchServiceCommand(preServiceCode, userCode);
                 } else {
@@ -1426,6 +1489,7 @@ function _getContextPath() {
             let ctx = this.contextPath,
                 userCode = this.mine.userCode,
                 im = this.im,
+                that = this,
                 lastReadDate = new Date(),
                 arr = [];
             lastReadDate.setDate(lastReadDate.getDate() + 1);
@@ -1467,23 +1531,20 @@ function _getContextPath() {
                         for (let j = 0, length = messageList.length; j < length; j++) {
                             message = messageList[j];
                             console.log(message);
-                            if (message.sender == arr[i]) {
-                                im.getMessage({
-                                    type: 'friend',
-                                    system: false,
-                                    reverse: true,
-                                    username: message.senderName,
-                                    id: arr[i],
-                                    content: JSON.parse(message.content).msg,
-                                    timestamp: message.sendTime,
-                                    avatar: ctx + USER_AVATAR
-                                }, true)
-                            } else {
-                                im.showMineMessage({
-                                    content: JSON.parse(message.content).msg,
-                                    timestamp: message.sendTime
-                                });
+                            var content = JSON.parse(message.content);
+                            if(content.chatTye == "service"){
+                                that.renderSwitchMessage(content.beforeId,im,message.sender,ctx);
                             }
+                            im.getMessage({
+                                type: 'friend',
+                                system: false,
+                                reverse: true,
+                                username: message.senderName,
+                                id: arr[i],
+                                content: content.msg,
+                                timestamp: message.sendTime,
+                                avatar: ctx + USER_AVATAR
+                            }, true)
                         }
 
 

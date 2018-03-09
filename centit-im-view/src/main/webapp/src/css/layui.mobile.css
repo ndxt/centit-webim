@@ -32,17 +32,6 @@ label,input{vertical-align: middle;}
 
 
 /** 图标字体 **/
-@font-face {
-  font-family: 'iconfont';
-  src: url('../font/font/iconfont.eot');
-  src: url('../font/font/iconfont.eot?#iefix') format('embedded-opentype'),
-  url('../font/font/iconfont.woff') format('woff'),
-  url('../font/font/iconfont.ttf') format('truetype'),
-  url('../font/font/iconfont.svg#iconfont') format('svg');
-}
-
-
-
 @font-face {font-family: 'layui-icon';
   src: url('../font/iconfont.eot?v=1.0.7');
   src: url('../font/iconfont.eot?v=1.0.7#iefix') format('embedded-opentype'),
@@ -50,9 +39,9 @@ label,input{vertical-align: middle;}
   url('../font/iconfont.ttf?v=1.0.7') format('truetype'),
   url('../font/iconfont.svg?v=1.0.7#iconfont') format('svg');
 }
-
+                    
 .layui-icon{
-  font-family:"iconfont","layui-icon" !important;
+  font-family:"layui-icon" !important;
   font-size: 16px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;

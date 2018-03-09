@@ -9,7 +9,7 @@
 layui.define('layer', function(exports){
   "use strict";
   
-  var $ = layui.jquery
+  var $ = layui.$
   ,layer = layui.layer
   ,hint = layui.hint()
   ,device = layui.device()
@@ -35,10 +35,9 @@ layui.define('layer', function(exports){
           /(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/
           ,'链接格式不正确'
         ]
-        ,number: [
-          /^\d+$/
-          ,'只能填写数字'
-        ]
+        ,number: function(value){
+          if(!value || isNaN(value)) return '只能填写数字'
+        }
         ,date: [
           /^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/
           ,'日期格式不正确'
@@ -67,21 +66,25 @@ layui.define('layer', function(exports){
   
   //表单事件监听
   Form.prototype.on = function(events, callback){
-    return layui.onevent(MOD_NAME, events, callback);
+    return layui.onevent.call(this, MOD_NAME, events, callback);
   };
   
   //表单控件渲染
-  Form.prototype.render = function(type){
-    var that = this, items = {
+  Form.prototype.render = function(type, filter){
+    var that = this
+    ,elemForm = $(ELEM + function(){
+      return filter ? ('[lay-filter="' + filter +'"]') : '';
+    }())
+    ,items = {
       
       //下拉选择框
       select: function(){
         var TIPS = '请选择', CLASS = 'layui-form-select', TITLE = 'layui-select-title'
         ,NONE = 'layui-select-none', initValue = '', thatInput
         
-        ,selects = $(ELEM).find('select'), hide = function(e, clear){
+        ,selects = elemForm.find('select'), hide = function(e, clear){
           if(!$(e.target).parent().hasClass(TITLE) || clear){
-            $('.'+CLASS).removeClass(CLASS+'ed');
+            $('.'+CLASS).removeClass(CLASS+'ed ' + CLASS+'up');
             thatInput && initValue && thatInput.val(initValue);
           }
           thatInput = null;
@@ -99,11 +102,20 @@ layui.define('layer', function(exports){
           
           //展开下拉
           var showDown = function(){
+            var top = reElem.offset().top + reElem.outerHeight() + 5 - win.scrollTop()
+            ,dlHeight = dl.outerHeight();
             reElem.addClass(CLASS+'ed');
             dds.removeClass(HIDE);
-          }, hideDown = function(){
-            reElem.removeClass(CLASS+'ed');
+            
+            //上下定位识别
+            if(top + dlHeight > win.height() && top >= dlHeight){
+              reElem.addClass(CLASS + 'up');
+            }
+          }, hideDown = function(choose){
+            reElem.removeClass(CLASS+'ed ' + CLASS+'up');
             input.blur();
+            
+            if(choose) return;
             
             notOption(input.val(), function(none){
               if(none){
@@ -204,16 +216,22 @@ layui.define('layer', function(exports){
 
             if(othis.hasClass(DISABLED)) return false;
             
-            select.val(value).removeClass('layui-form-danger'), input.val(othis.text());
-            othis.addClass(THIS).siblings().removeClass(THIS);
+            if(othis.hasClass('layui-select-tips')){
+              input.val('');
+            } else {
+              input.val(othis.text());
+              othis.addClass(THIS);
+            }
+            
+            othis.siblings().removeClass(THIS);
+            select.val(value).removeClass('layui-form-danger')
             layui.event.call(this, MOD_NAME, 'select('+ filter +')', {
               elem: select[0]
               ,value: value
               ,othis: reElem
             });
 
-            hideDown();
-            
+            hideDown(true);
             return false;
           });
           
@@ -226,33 +244,42 @@ layui.define('layer', function(exports){
         }
         
         selects.each(function(index, select){
-          var othis = $(this), hasRender = othis.next('.'+CLASS), disabled = this.disabled;
-          var value = select.value, selected = $(select.options[select.selectedIndex]); //获取当前选中项
+          var othis = $(this)
+          ,hasRender = othis.next('.'+CLASS)
+          ,disabled = this.disabled
+          ,value = select.value
+          ,selected = $(select.options[select.selectedIndex]) //获取当前选中项
+          ,optionsFirst = select.options[0];
           
           if(typeof othis.attr('lay-ignore') === 'string') return othis.show();
           
-          var isSearch = typeof othis.attr('lay-search') === 'string';
+          var isSearch = typeof othis.attr('lay-search') === 'string'
+          ,placeholder = optionsFirst ? (
+            optionsFirst.value ? TIPS : (optionsFirst.innerHTML || TIPS)
+          ) : TIPS;
 
           //替代元素
           var reElem = $(['<div class="layui-unselect '+ CLASS + (disabled ? ' layui-select-disabled' : '') +'">'
-            ,'<div class="'+ TITLE +'"><input type="text" placeholder="'+ (select.options[0].innerHTML ? select.options[0].innerHTML : TIPS) +'" value="'+ (value ? selected.html() : '') +'" '+ (isSearch ? '' : 'readonly') +' class="layui-input layui-unselect'+ (disabled ? (' '+DISABLED) : '') +'">'
+            ,'<div class="'+ TITLE +'"><input type="text" placeholder="'+ placeholder +'" value="'+ (value ? selected.html() : '') +'" '+ (isSearch ? '' : 'readonly') +' class="layui-input layui-unselect'+ (disabled ? (' '+DISABLED) : '') +'">'
             ,'<i class="layui-edge"></i></div>'
             ,'<dl class="layui-anim layui-anim-upbit'+ (othis.find('optgroup')[0] ? ' layui-select-group' : '') +'">'+ function(options){
               var arr = [];
               layui.each(options, function(index, item){
-                if(index === 0 && !item.value) return;
-                if(item.tagName.toLowerCase() === 'optgroup'){
+                if(index === 0 && !item.value){
+                  arr.push('<dd lay-value="" class="layui-select-tips">'+ (item.innerHTML || TIPS) +'</dd>');
+                } else if(item.tagName.toLowerCase() === 'optgroup'){
                   arr.push('<dt>'+ item.label +'</dt>'); 
                 } else {
                   arr.push('<dd lay-value="'+ item.value +'" class="'+ (value === item.value ?  THIS : '') + (item.disabled ? (' '+DISABLED) : '') +'">'+ item.innerHTML +'</dd>');
                 }
               });
+              arr.length === 0 && arr.push('<dd lay-value="" class="'+ DISABLED +'">没有选项</dd>');
               return arr.join('');
             }(othis.find('*')) +'</dl>'
           ,'</div>'].join(''));
           
           hasRender[0] && hasRender.remove(); //如果已经渲染，则Rerender
-          othis.after(reElem);
+          othis.after(reElem);          
           events.call(this, reElem, disabled, isSearch);
         });
       }
@@ -262,7 +289,7 @@ layui.define('layer', function(exports){
           checkbox: ['layui-form-checkbox', 'layui-form-checked', 'checkbox']
           ,_switch: ['layui-form-switch', 'layui-form-onswitch', 'switch']
         }
-        ,checks = $(ELEM).find('input[type=checkbox]')
+        ,checks = elemForm.find('input[type=checkbox]')
         
         ,events = function(reElem, RE_CLASS){
           var check = $(this);
@@ -315,7 +342,7 @@ layui.define('layer', function(exports){
       //单选框
       ,radio: function(){
         var CLASS = 'layui-form-radio', ICON = ['&#xe643;', '&#xe63f;']
-        ,radios = $(ELEM).find('input[type=radio]')
+        ,radios = elemForm.find('input[type=radio]')
         
         ,events = function(reElem){
           var radio = $(this), ANIM = 'layui-anim-scaleSpring';
@@ -421,13 +448,16 @@ layui.define('layer', function(exports){
   };
 
   //自动完成渲染
-  var form = new Form(), dom = $(document);
+  var form = new Form()
+  ,dom = $(document), win = $(window);
+  
   form.render();
   
   //表单reset重置渲染
   dom.on('reset', ELEM, function(){
+    var filter = $(this).attr('lay-filter');
     setTimeout(function(){
-      form.render();
+      form.render(null, filter);
     }, 50);
   });
   
@@ -435,9 +465,7 @@ layui.define('layer', function(exports){
   dom.on('submit', ELEM, submit)
   .on('click', '*[lay-submit]', submit);
   
-  exports(MOD_NAME, function(options){
-    return form.set(options);
-  });
+  exports(MOD_NAME, form);
 });
 
  
