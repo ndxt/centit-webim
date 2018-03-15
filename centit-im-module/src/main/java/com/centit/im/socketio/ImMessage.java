@@ -28,7 +28,7 @@ public class ImMessage implements  java.io.Serializable {
     public static final String MSG_TYPE_TOALL = "A";
 
     /**
-     * chat 聊天
+     * chat 一对一聊天
      * group    群聊
      * toall 群发所有人
      * system 系统通知
@@ -40,7 +40,8 @@ public class ImMessage implements  java.io.Serializable {
     public static final String CONTENT_TYPE_TEXT = "text";
     public static final String CONTENT_TYPE_FILE = "file";
     public static final String CONTENT_TYPE_IMAGE = "image";
-
+    public static final String CONTENT_TYPE_VOICE = "voice";
+    public static final String CONTENT_TYPE_VIDEO = "video";
 
     public static final String CONTENT_TYPE_REGISTER = "register";
     public static final String CONTENT_TYPE_READ = "read";
@@ -73,7 +74,7 @@ public class ImMessage implements  java.io.Serializable {
 
     public static final String CONTENT_FIELD_MESSAGE = "msg";
     public static final String CONTENT_FIELD_FILE = "file";
-    public static final String CONTENT_FIELD_IMAGE = "image";
+
     /**
      * 消息内容，可能式富文本，
      */

@@ -1,6 +1,5 @@
 package com.centit.im.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.PlatformEnvironment;
@@ -176,7 +175,6 @@ public class WebImSocketImpl implements WebImSocket {
      *      content OsID:userName
      *      sender  userCode
      */
-    @Transactional
     private void registerUser(Session session, ImMessage message) {
         String userCode = message.getSender();
         String osId = message.fetchContentString("osId");
@@ -236,7 +234,6 @@ public class WebImSocketImpl implements WebImSocket {
          }*/
     }
 
-    @Transactional
     private void askForService(Session session, ImMessage message) {
         String userCode = message.getSender();
         WebImCustomer cust = customerDao.getObjectById(userCode);
@@ -313,7 +310,7 @@ public class WebImSocketImpl implements WebImSocket {
                     .buildSystemMessage(message.getReceiver(), "系统错误：服务端没有客服人员，请联系技术支持人员"));
         }
     }
-    @Transactional
+
     private void setReadState(Session session, ImMessage message) {
 
         if(StringUtils.isBlank(message.getReceiver()) ||
@@ -327,7 +324,6 @@ public class WebImSocketImpl implements WebImSocket {
         }
     }
 
-    @Transactional
     private void setGroupReadState(Session session, ImMessage message) {
        /* messageDao.updateGroupReadState(message.getSender(),
                 message.getReceiver(), DatetimeOpt.currentUtilDate());*/
@@ -336,7 +332,6 @@ public class WebImSocketImpl implements WebImSocket {
     }
 
 
-    @Transactional
     private void successChangeCustomerService(Session session, String receiver,
                                               WebImCustomer service ) {
         Session receiverSession = getSessionByUserCode( receiver );
@@ -361,7 +356,6 @@ public class WebImSocketImpl implements WebImSocket {
         }
     }
 
-    @Transactional
     public void saveAndSendChangeCustomerCall(WebImCustomer service,WebImCustomer cust,WebImCustomer beforeChangeService){
         Session session = getSessionByUserCode(service.getUserCode());
         WebImMessage webMessage = new WebImMessage();
@@ -410,7 +404,6 @@ public class WebImSocketImpl implements WebImSocket {
 
     }
 
-    @Transactional
     private void changeOnlineCustomerService(Session session, ImMessage message) {
         String serviceUserCode = message.fetchContentString("service");
         WebImCustomer service = getOnlineServiceByUserCode(serviceUserCode);
@@ -424,7 +417,6 @@ public class WebImSocketImpl implements WebImSocket {
     }
 
 
-    @Transactional
     private void changeCustomerService(Session session, ImMessage message) {
         String serviceUserCode = message.fetchContentString("service");
         WebImCustomer service = getOnlineServiceByUserCode(serviceUserCode);
@@ -447,7 +439,6 @@ public class WebImSocketImpl implements WebImSocket {
         }
     }
 
-    @Transactional
     private void pushForm(Session session, ImMessage message){
         Session custSession = getSessionByUserCode(message.getReceiver());
         if(custSession==null){
@@ -494,7 +485,7 @@ public class WebImSocketImpl implements WebImSocket {
      * @param message
      */
     @Transactional
-    private void onCommand(Session session, ImMessage message) {
+    public void onCommand(Session session, ImMessage message) {
         switch (message.getContentType()) {
             case ImMessage.CONTENT_TYPE_READ :// "read";
                 setReadState(session, message);
@@ -530,7 +521,6 @@ public class WebImSocketImpl implements WebImSocket {
         }
     }
 
-    @Transactional
     private void saveRobotAnswer(String recever,  RobotAnswer answer){
         WebImMessage webMessage = new WebImMessage();
         webMessage.setSenderName("智能客服");

@@ -61,17 +61,32 @@ public class ImMessageBuild {
 
 
     public ImMessageBuild message(String text){
+        this.msg.setContentType(ImMessage.CONTENT_TYPE_TEXT);
         this.msg.getContent().put(ImMessage.CONTENT_FIELD_MESSAGE,text);
         return this;
     }
 
     public ImMessageBuild file(String fileUrl){
+        this.msg.setContentType(ImMessage.CONTENT_TYPE_FILE);
         this.msg.getContent().put(ImMessage.CONTENT_FIELD_FILE,fileUrl);
         return this;
     }
 
     public ImMessageBuild iamge(String iamgeUrl){
-        this.msg.getContent().put(ImMessage.CONTENT_FIELD_IMAGE,iamgeUrl);
+        this.msg.setContentType(ImMessage.CONTENT_TYPE_IMAGE);
+        this.msg.getContent().put(ImMessage.CONTENT_FIELD_FILE,iamgeUrl);
+        return this;
+    }
+
+    public ImMessageBuild voice(String voiceUrl){
+        this.msg.setContentType(ImMessage.CONTENT_TYPE_VOICE);
+        this.msg.getContent().put(ImMessage.CONTENT_FIELD_FILE,voiceUrl);
+        return this;
+    }
+
+    public ImMessageBuild video(String videoUrl) {
+        this.msg.setContentType(ImMessage.CONTENT_TYPE_VIDEO);
+        this.msg.getContent().put(ImMessage.CONTENT_FIELD_FILE, videoUrl);
         return this;
     }
 

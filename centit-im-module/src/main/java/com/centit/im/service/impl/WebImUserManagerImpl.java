@@ -40,8 +40,16 @@ public class WebImUserManagerImpl implements WebImUserManager {
      */
     @Override
     @Transactional
-    public WebImCustomer getUser(String userCode){
+    public WebImCustomer getUser(String userCode) {
         WebImCustomer cust = customerDao.getObjectById(userCode);
+        if (cust == null) {
+            IUserInfo ui = platformEnvironment.getUserInfoByUserCode(userCode);
+            if (ui != null) {
+                cust = new WebImCustomer(userCode, ui.getUserName());
+                cust.setUserType("U");
+                cust.setOsId(ImMessage.DEFAULT_OSID);
+            }
+        }
         if(cust!=null) {
             cust.setUserState(
                     webImSocket.checkUserState(userCode));
