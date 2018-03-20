@@ -61,7 +61,7 @@ public class ImMessageBuild {
 
 
     public ImMessageBuild message(String text){
-        this.msg.setContentType(ImMessage.CONTENT_TYPE_TEXT);
+//        this.msg.setContentType(ImMessage.CONTENT_TYPE_TEXT);
         this.msg.getContent().put(ImMessage.CONTENT_FIELD_MESSAGE,text);
         return this;
     }
