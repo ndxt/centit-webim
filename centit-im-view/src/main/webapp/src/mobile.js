@@ -1,7 +1,7 @@
 /**
  * Created by lu_sn on 2017/11/8.
  */
-require(["../plugins/jquery-1.9.1.min", "../plugins/base64", "../src/js/src/Mobile.class"], function ($,base64,MobileIM) {
+require(["../plugins/jquery-1.9.1.min", "../plugins/base64", "../src/js/ie/Mobile.class"], function ($,base64,MobileIM) {
     var result = parseURL(),
         token = result.params.token,
         params = JSON.parse(decodeURIComponent(base64.decode(token)));
