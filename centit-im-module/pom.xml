@@ -58,6 +58,11 @@
             <artifactId>framework-adapter</artifactId>
             <version>${centit.framework.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>framework-config</artifactId>
+            <version>${centit.framework.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>

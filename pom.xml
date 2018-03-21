@@ -13,7 +13,7 @@
         <centit.commons.version>2.2.5-SNAPSHOT</centit.commons.version>
         <centit.ip.version>1.0.2-SNAPSHOT</centit.ip.version>
         <centit.ui.version>3.0.1-SNAPSHOT</centit.ui.version>
-        <centit.framework.version>4.0.4-SNAPSHOT</centit.framework.version>
+        <centit.framework.version>4.1-SNAPSHOT</centit.framework.version>
         <centit.persistence.version>1.0.2-SNAPSHOT</centit.persistence.version>
         <centit.search.version>0.1.1-SNAPSHOT</centit.search.version>
         <centit.fileserver.version>2.0.2-SNAPSHOT</centit.fileserver.version>

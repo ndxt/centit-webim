@@ -31,8 +31,14 @@
 
         <dependency>
             <groupId>com.centit.framework</groupId>
-            <artifactId>centit-ip-app</artifactId>
+            <artifactId>centit-ip-app-config</artifactId>
             <version>${centit.ip.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>framework-config</artifactId>
+            <version>${centit.framework.version}</version>
         </dependency>
 
         <!-- server runtime library -->
