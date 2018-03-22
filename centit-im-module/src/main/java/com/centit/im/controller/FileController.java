@@ -1,6 +1,7 @@
 package com.centit.im.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.centit.fileserver.utils.FileRangeInfo;
 import com.centit.fileserver.utils.FileServerConstant;
 import com.centit.fileserver.utils.FileStore;
 import com.centit.fileserver.utils.UploadDownloadUtils;
@@ -34,12 +35,11 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.util.HtmlUtils;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,8 +73,59 @@ public class FileController extends BaseController {
     private static void downFileRange(HttpServletRequest request, HttpServletResponse response,
                                       InputStream inputStream, long fSize, String fileName)
             throws IOException {
-        UploadDownloadUtils.downFileRange(request, response,
-                inputStream, fSize, encodeFilename(fileName));
+//        UploadDownloadUtils.downFileRange(request, response,
+//                inputStream, fSize, encodeFilename(fileName));
+
+        response.setContentType(FileType.getFileMimeType(fileName)+";charset=ISO8859-1");
+        //"application/octet-stream"); //application/x-download "multipart/form-data"
+        //String isoFileName = this.encodeFilename(proposeFile.getName(), request);
+        response.setHeader("Accept-Ranges", "bytes");
+        //这个需要设置成真正返回的长度
+        //response.setHeader("Content-Length", String.valueOf(fSize));
+        String s = request.getParameter("downloadType");
+        response.setHeader("Content-Disposition",
+                ("inline".equalsIgnoreCase(s)?"inline": "attachment")+"; filename="
+                        + UploadDownloadUtils.encodeDownloadFilename(fileName));
+        long pos = 0;
+
+        FileRangeInfo fr = FileRangeInfo.parseRange(request.getHeader("Range"));
+
+        if(fr == null){
+            fr = new FileRangeInfo(0,fSize - 1,fSize);
+        }else{
+            if(fr.getRangeEnd()<=0)
+                fr.setRangeEnd(fSize - 1);
+            fr.setFileSize(fSize);
+            pos = fr.getRangeStart();
+            if(fr.getPartSize() < fr.getFileSize()) //206
+                response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+        }
+
+        response.setHeader("Content-Length", String.valueOf(fr.getPartSize()));
+        // Content-Range: bytes 500-999/1234
+        response.setHeader("Content-Range", fr.getResponseRange());
+        //logger.debug("Content-Range :" + contentRange);
+        try(ServletOutputStream out = response.getOutputStream();
+            BufferedOutputStream bufferOut = new BufferedOutputStream(out)){
+
+            if(pos>0) {
+                inputStream.skip(pos);
+            }
+            byte[] buffer = new byte[64 * 1024];
+            int needSize = new Long(fr.getPartSize()).intValue(); //需要传输的字节
+            int length = 0;
+            while ((needSize > 0) && ((length = inputStream.read(buffer, 0, buffer.length)) != -1)) {
+                int writeLen =  needSize > length ? length: needSize;
+                bufferOut.write(buffer, 0, writeLen);
+                bufferOut.flush();
+                needSize -= writeLen;
+            }
+            //bufferOut.flush();
+            //bufferOut.close();
+            //out.close();
+        } catch (SocketException e){
+//            logger.info("客户端断开链接："+e.getMessage(), e);
+        }
     }
 
 
