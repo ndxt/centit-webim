@@ -21,6 +21,8 @@ import com.centit.support.algorithm.NumberBaseOpt;
 import com.centit.support.algorithm.StringBaseOpt;
 import com.centit.support.algorithm.UuidOpt;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.websocket.Session;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,6 +40,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Service
 public class WebImSocketImpl implements WebImSocket {
+
+    public static final Log log = LogFactory.getLog(WebImSocketImpl.class);
     private static AtomicInteger onlineCount = new AtomicInteger(0);
     //ConcurrentHashMap是线程安全的，而HashMap是线程不安全的。
     private static ConcurrentHashMap<String, Session> userCodeToSession
@@ -213,6 +218,16 @@ public class WebImSocketImpl implements WebImSocket {
             //cust.setUserState("O");
             cust.setCreator("U0000000");
             customerDao.saveNewObject(cust);
+        }
+
+        Session oldSession = getSessionByUserCode(userCode);
+        if(oldSession!=null) {
+            signOutUser(oldSession);
+            try {
+                oldSession.close();
+            } catch (IOException e) {
+                log.info("用户多点登录导致session关闭异常 :" + e.getMessage());
+            }
         }
 
         sessionToUserCode.put(session, cust);
