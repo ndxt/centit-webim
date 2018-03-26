@@ -48,6 +48,7 @@ public class ImMessage implements  java.io.Serializable {
     public static final String CONTENT_TYPE_READGROUP = "readGroup";
     public static final String CONTENT_TYPE_SERVICE = "service";
     public static final String CONTENT_TYPE_OFFLINE = "offline";
+    public static final String CONTENT_TYPE_RECONNECT = "reconnect";
     public static final String CONTENT_TYPE_ASKFORSERVICE = "askForService";
     public static final String CONTENT_TYPE_ASKROBOT = "askRobot";
     public static final String CONTENT_TYPE_NOTICE = "notice";

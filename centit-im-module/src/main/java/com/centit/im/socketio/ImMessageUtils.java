@@ -47,6 +47,13 @@ public class ImMessageUtils {
                 .addContent("state","offline").build();
     }
 
+    public static ImMessage buildOfflineCommand(){
+        return new ImMessageBuild().type(ImMessage.MSG_TYPE_SYSTEM)
+                .contentType(ImMessage.CONTENT_TYPE_OFFLINE)
+                .sender("system")
+                .message("同名用户在其他地方登录，您被迫下线！").build();
+    }
+
     public static ImMessage buildSystemMessage(String sender, String message){
         return new ImMessageBuild().type(ImMessage.MSG_TYPE_SYSTEM)
                 .contentType(ImMessage.CONTENT_TYPE_TEXT)

@@ -107,27 +107,23 @@ public class WebImSocketImpl implements WebImSocket {
     /**
      * 登录
      *
-     * @param userCode
-     * @param session
+     * @param userCode 用户代码
+     * @param session ws 链接上下文
      */
     @Override
     public void signInUser(String userCode, Session session) {
-        Session oldSession = getSessionByUserCode(userCode);
+        /*Session oldSession = getSessionByUserCode(userCode);
         if(oldSession!=null){
-            ImMessage message = new ImMessageBuild().type(ImMessage.MSG_TYPE_SYSTEM)
-                    .contentType(ImMessage.CONTENT_TYPE_OFFLINE)
-                    .sender("system")
-                    .message("同名用户在其他地方登录，您被迫下线！").build();
-            pushMessage(oldSession,message);
+            pushMessage(oldSession,ImMessageUtils.buildOfflineCommand());
             sessionToUserCode.remove(oldSession);
-        }
+        }*/
     }
 
     /**
      * 等出服务
      *
-     * @param userCode
-     * @param session
+     * @param userCode 用户代码
+     * @param session ws 链接上下文
      */
     private void signOutUser(String userCode, Session session) {
         if (!StringUtils.isBlank(userCode)) {
@@ -144,8 +140,7 @@ public class WebImSocketImpl implements WebImSocket {
 
     /**
      * 登出服务
-     *
-     * @param session
+     * @param session ws 链接上下文
      */
     @Override
     public void signOutUser(Session session) {
@@ -171,12 +166,14 @@ public class WebImSocketImpl implements WebImSocket {
                                 " 正在为您服务。":" 为您服务，暂时不在线，请留言。")).build());
     }
 
+
+
     /**
      * 注册匿名用户
      *  message.type = 'command'
      *  message.contenttype= 'register'
-     * @param session
-     * @param message
+     * @param session ws 链接上下文
+     * @param message 消息
      *      content OsID:userName
      *      sender  userCode
      */
@@ -222,7 +219,10 @@ public class WebImSocketImpl implements WebImSocket {
 
         Session oldSession = getSessionByUserCode(userCode);
         if(oldSession!=null) {
-            signOutUser(oldSession);
+            //发送一个被迫下线的通知
+            pushMessage(oldSession,ImMessageUtils.buildOfflineCommand());
+            sessionToUserCode.remove(oldSession);
+            //signOutUser(oldSession);
             try {
                 oldSession.close();
             } catch (IOException e) {
@@ -332,7 +332,7 @@ public class WebImSocketImpl implements WebImSocket {
                 "all".equalsIgnoreCase(message.getReceiver())) {
             messageDao.updateReadState(message.getSender());
         }else{
-            /**
+            /*
              * 这边的传参没有错，是设置发送方的未读消息，所以在消息中 需要 receiver 为消息的发送者
              */
             messageDao.updateReadState(message.getSender(), message.getReceiver());
@@ -398,9 +398,9 @@ public class WebImSocketImpl implements WebImSocket {
 
     /**
      * 保存切换客服提示信息
-     * @param receiver
-     * @param beforeChangeService
-     * @param afterChangeService
+     * @param receiver 接受人
+     * @param beforeChangeService 更改前客服
+     * @param afterChangeService 更改后客服
      */
     @Transactional
     public void saveChangeCustomerService(String receiver,WebImCustomer beforeChangeService,WebImCustomer afterChangeService){
@@ -511,6 +511,9 @@ public class WebImSocketImpl implements WebImSocket {
             case ImMessage.CONTENT_TYPE_REGISTER ://  "register";
                 registerUser(session, message);
                 break;
+            /*case ImMessage.CONTENT_TYPE_RECONNECT ://  "reconnect";
+                reconnectUser(session, message);
+                break;   */
             case ImMessage.CONTENT_TYPE_SERVICE ://  "service";
                 changeCustomerService(session, message);
                 break;
@@ -598,8 +601,8 @@ public class WebImSocketImpl implements WebImSocket {
     /**
      * 接受消息，并对消息进行处理
      *
-     * @param session
-     * @param message
+     * @param session 链接上下文
+     * @param message 消息
      */
     @Override
     @Transactional
@@ -632,8 +635,8 @@ public class WebImSocketImpl implements WebImSocket {
     }
     /**
      * 接受消息，并对消息进行处理
-     * @param session
-     * @param jsonMessage
+     * @param session 链接上下文
+     * @param jsonMessage json 消息
      */
     @Override
     @Transactional
@@ -660,8 +663,8 @@ public class WebImSocketImpl implements WebImSocket {
     /**
      * 发送消息
      *
-     * @param userCode
-     * @param message
+     * @param userCode 用户代码
+     * @param message 消息
      */
     @Override
     @Transactional
@@ -692,8 +695,8 @@ public class WebImSocketImpl implements WebImSocket {
 
     /**
      * 发送小组（群）信息
-     * @param unitCode
-     * @param message
+     * @param unitCode 机构代码
+     * @param message 消息
      */
     @Override
     @Transactional
@@ -716,7 +719,7 @@ public class WebImSocketImpl implements WebImSocket {
     /**
      * 广播信息（所有人）
      *
-     * @param message
+     * @param message 消息
      */
     @Override
     @Transactional
@@ -740,7 +743,7 @@ public class WebImSocketImpl implements WebImSocket {
     /**
      * 广播信息（在线人员）
      *
-     * @param message
+     * @param message 消息
      */
     @Override
     public void broadcastMessage( ImMessage message) {
@@ -752,7 +755,8 @@ public class WebImSocketImpl implements WebImSocket {
     /**
      * 检验用户的状态
      *
-     * @param users
+     * @param users 用户集合
+     * @return  用户状态
      */
     @Override
     public Map<String, String> checkUsersState(List<? extends IUserInfo> users) {
@@ -769,6 +773,8 @@ public class WebImSocketImpl implements WebImSocket {
 
     /**
      * 检验用户的状态
+     * @param userCode 用户代码
+     * @return  用户状态
      */
     @Override
     public String checkUserState(String userCode){
@@ -778,7 +784,8 @@ public class WebImSocketImpl implements WebImSocket {
     /**
      * 检验用户的状态
      *
-     * @param users
+     * @param users 用户集合
+     * @return  用户状态
      */
     @Override
     public Map<String, String> checkUnitUserState(List<? extends IUserUnit> users) {

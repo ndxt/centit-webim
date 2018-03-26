@@ -196,9 +196,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
 
     /**
      * 配置用户信息
-     * @param userCode
-     * @param cust
-     * @return
+     * @param userCode 用户代码
+     * @param cust 聊天客户信息
+     * @return 用户代码
      */
     @Override
     @Transactional
