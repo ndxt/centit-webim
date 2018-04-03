@@ -1,6 +1,7 @@
 package com.centit.im.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
@@ -114,6 +115,24 @@ public class WebImController extends BaseController {
             @PathVariable String userCode,
             HttpServletResponse response) {
         Map<String,Integer> unreadSum = webImMessageManager.statGroupUnreadMessage(userCode);
+        JsonResultUtils.writeSingleDataJson(unreadSum, response);
+    }
+
+    //获取未读信息统计数据 包括最后一条未读消息
+    @RequestMapping(value = "/getUnreadLastMsg/{userCode}", method = RequestMethod.GET)
+    public void statUnreadWithLastMsg(
+            @PathVariable String userCode,
+            HttpServletResponse response) {
+        JSONArray unreadSum = webImMessageManager.statUnreadWithLastMsg(userCode);
+        JsonResultUtils.writeSingleDataJson(unreadSum, response);
+    }
+
+    //获取未读群信息统计数据 包括最后一条未读消息
+    @RequestMapping(value = "/getGroupUnreadLastMsg/{userCode}", method = RequestMethod.GET)
+    public void statGroupUnreadeWithLastMsg(
+            @PathVariable String userCode,
+            HttpServletResponse response) {
+        JSONArray unreadSum = webImMessageManager.statGroupUnreadWithLastMsg(userCode);
         JsonResultUtils.writeSingleDataJson(unreadSum, response);
     }
 

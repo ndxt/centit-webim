@@ -1,6 +1,8 @@
 package com.centit.im.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.dao.PageDesc;
+import com.centit.framework.hibernate.dao.DatabaseOptUtils;
 import com.centit.framework.hibernate.service.BaseEntityManager;
 import com.centit.im.po.WebImMessage;
 
@@ -32,6 +34,11 @@ public interface WebImMessageManager extends BaseEntityManager<WebImMessage,Stri
 
 
     Map<String,Integer> statGroupUnreadMessage(String userCode);
+
+    JSONArray statUnreadWithLastMsg(String receiver);
+
+
+    JSONArray statGroupUnreadWithLastMsg(String userCode);
     /**
      * 更改阅读状态  将未读信息 U 状态设置为 C
      * @param receiver 接受者

@@ -1,5 +1,6 @@
 package com.centit.im.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.dao.PageDesc;
 import com.centit.framework.hibernate.service.BaseEntityManagerImpl;
 import com.centit.im.dao.WebImMessageDao;
@@ -68,30 +69,38 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
     public Map<String, Integer> statUnreadMessage(String receiver) {
-       Map<String, Integer> map = webImMessageDao.statUnreadMsg(receiver);//通过视图统计个人未读消息数量
-        return map;
+        return webImMessageDao.statUnreadMsg(receiver);//通过视图统计个人未读消息数量
     }
 
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
     public Map<String, Integer> statGroupUnreadMessage(String userCode) {
-        Map<String, Integer> map = webImMessageDao.statGroupUnreadMsg(userCode);//通过视图统计组未读消息数量
-        return map;
+        return webImMessageDao.statGroupUnreadMsg(userCode);//通过视图统计组未读消息数量
+    }
+
+    @Override
+    @Transactional(propagation= Propagation.REQUIRED)
+    public JSONArray statUnreadWithLastMsg(String receiver) {
+        return webImMessageDao.statUnreadWithLastMsg(receiver);
+    }
+
+    @Override
+    @Transactional(propagation= Propagation.REQUIRED)
+    public JSONArray statGroupUnreadWithLastMsg(String userCode) {
+        return webImMessageDao.statGroupUnreadWithLastMsg(userCode);
     }
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
     public int setReadState(String receiver, String sender) {
-       int ret = webImMessageDao.updateReadState(sender,receiver);//将消息设置为已读
-        return ret;
+       return webImMessageDao.updateReadState(sender,receiver);//将消息设置为已读
     }
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
     public int setReadState(String userCode) {
-        int ret = webImMessageDao.updateReadState(userCode);//将消息设置为已读
-        return ret;
+        return webImMessageDao.updateReadState(userCode);//将消息设置为已读
     }
 
     @Override
@@ -99,6 +108,5 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
     public void setGroupReadState(String userCode, String unitCode) {
         webImReadGroupDao.setGroupReadState(userCode,unitCode);
     }
-
 
 }

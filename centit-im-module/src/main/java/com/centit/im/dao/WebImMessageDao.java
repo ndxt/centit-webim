@@ -1,5 +1,6 @@
 package com.centit.im.dao;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.core.dao.PageDesc;
 import com.centit.framework.hibernate.dao.BaseDaoImpl;
@@ -119,7 +120,7 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
 
 
     public  Map<String, Integer> statGroupUnreadMsg(String userCode){
-        String sql = "select v.USER_CODE, v.UNREAD_SUM  from  F_V_UNREAD_GROUP_MSG v where v.USER_CODE = ?";
+        String sql = "select v.UNIT_CODE, v.UNREAD_SUM  from  F_V_UNREAD_GROUP_MSG v where v.USER_CODE = ?";
         List<Object[]> jsonArray = (List<Object[]>) DatabaseOptUtils.findObjectsBySql(this,sql, new Object[] {userCode}, new PageDesc(-1, -1));
         Map<String, Integer> map = new HashMap<>(jsonArray.size() * 2);
         for(Object[] obj : jsonArray){
@@ -129,4 +130,23 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
         return map;
     }
 
+    public JSONArray statUnreadWithLastMsg(String receiver){
+        String sql = "select v.SENDER, v.RECEIVER, v.UNREAD_SUM, v.SEND_TIME," +
+                "v.MSG_ID, v.MSG_TYPE, v.MSG_STATE, v.CONTENT from  F_V_LAST_UNREAD_CHAT_MSG v where  v.RECEIVER= ? ";
+        JSONArray jsonArray = DatabaseOptUtils.findObjectsAsJSONBySql(
+                this,sql, new Object[] {receiver}, new PageDesc(-1, -1));
+
+        return jsonArray;
+    }
+
+
+    public  JSONArray statGroupUnreadWithLastMsg(String userCode){
+        String sql = "select v.USER_CODE, v.UNIT_CODE, v.UNREAD_SUM, v.SEND_TIME," +
+                "v.MSG_ID, v.MSG_TYPE, v.MSG_STATE, v.CONTENT from  F_V_LAST_UNREAD_GROUP_MSG v where  v.USER_CODE= ? ";
+        JSONArray jsonArray = DatabaseOptUtils.findObjectsAsJSONBySql(
+                this,sql, new Object[] {userCode}, new PageDesc(-1, -1));
+
+        return jsonArray;
+
+    }
 }
