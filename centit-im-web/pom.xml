@@ -41,6 +41,12 @@
             <version>${centit.framework.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>centit-persistence-hibernate-config</artifactId>
+            <version>${centit.persistence.version}</version>
+        </dependency>
+
         <!-- server runtime library -->
         <dependency>
             <groupId>javax.servlet</groupId>

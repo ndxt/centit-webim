@@ -14,7 +14,6 @@ import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
 import com.centit.im.service.impl.IntelligentRobotFactorySingleImpl;
-import com.centit.im.web.listener.InstantiationServiceBeanPostProcessor;
 import com.centit.im.web.plugins.JsfgwSmsMessageSender;
 import com.centit.support.algorithm.NumberBaseOpt;
 import org.springframework.beans.factory.annotation.Autowired;
