@@ -2,18 +2,11 @@ package com.centit.im.po;
 
 import java.util.Date;
 import java.sql.Timestamp;
-import javax.persistence.Column;
-
-import javax.persistence.EmbeddedId;
+import javax.persistence.*;
 
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import javax.persistence.GeneratedValue;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -46,6 +39,7 @@ public class FriendMemo implements java.io.Serializable {
 	 */
 	@Column(name = "LAST_UPDATE_TIME")
 	@NotBlank(message = "字段不能为空")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date  lastUpdateTime;
 	/**
 	 * 备注名称 null 

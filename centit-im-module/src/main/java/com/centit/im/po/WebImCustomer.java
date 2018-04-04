@@ -78,6 +78,7 @@ public class WebImCustomer implements java.io.Serializable {
 	 * 最後活躍的時間
 	 */
 	@Column(name = "LAST_ACTIVE_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date  lastActiveDate;
 	/**
 	 * 创建人员 null 
@@ -89,6 +90,7 @@ public class WebImCustomer implements java.io.Serializable {
 	 * 创建时间 null 
 	 */
 	@Column(name = "CREATE_TIME")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date  createTime;
 
 	/**

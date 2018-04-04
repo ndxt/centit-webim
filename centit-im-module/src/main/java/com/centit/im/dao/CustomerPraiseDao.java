@@ -32,7 +32,6 @@ public class CustomerPraiseDao extends BaseDaoImpl<CustomerPraise,java.lang.Stri
 
 			filterField.put("praiseId" , CodeBook.EQUAL_HQL_ID);
 
-
 			filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
 
 			filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);

@@ -82,6 +82,7 @@ public class QuestAndAnswer implements ESDocument, Serializable {
 
     @ESType(type="date")
     @Column(name = "CREATE_TIME")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
     /**
@@ -93,6 +94,7 @@ public class QuestAndAnswer implements ESDocument, Serializable {
      * 更新时间
      */
     @Column(name = "LAST_UPDATE_TIME")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdateTime;
 
     @Override

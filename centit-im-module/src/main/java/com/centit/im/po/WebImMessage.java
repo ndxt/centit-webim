@@ -2,6 +2,7 @@ package com.centit.im.po;
 
 import com.alibaba.fastjson.JSON;
 import com.centit.im.socketio.ImMessage;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -68,6 +69,7 @@ public class WebImMessage implements java.io.Serializable {
 	 * 发送时间 null 
 	 */
 	@Column(name = "SEND_TIME")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date  sendTime;
 	/**
 	 * 状态 U 未读 C  已读 
