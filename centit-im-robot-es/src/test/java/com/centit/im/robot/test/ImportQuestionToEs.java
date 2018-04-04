@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.SysParametersUtils;
 import com.centit.framework.core.dao.ExtendedQueryPool;
 import com.centit.im.po.RobotAnswer;
-import com.centit.im.po.RobotAnswerItem;
 import com.centit.im.robot.es.po.QuestAndAnswer;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.search.service.ESServerConfig;

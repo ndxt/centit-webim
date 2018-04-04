@@ -1,5 +1,8 @@
 package com.centit.im.web.config;
 
+import com.centit.fileserver.utils.FileStore;
+import com.centit.fileserver.utils.OsFileStore;
+import com.centit.framework.common.SysParametersUtils;
 import com.centit.framework.components.impl.NotificationCenterImpl;
 import com.centit.framework.components.impl.TextOperationLogWriterImpl;
 import com.centit.framework.core.config.DataSourceConfig;
@@ -16,6 +19,7 @@ import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
 import com.centit.im.service.impl.IntelligentRobotFactorySingleImpl;
 import com.centit.im.web.plugins.JsfgwSmsMessageSender;
 import com.centit.support.algorithm.NumberBaseOpt;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -28,6 +32,7 @@ import org.springframework.core.env.Environment;
         HibernateConfig.class,
         SpringSecurityDaoConfig.class})
 public class ServiceBeanConfig {
+
 
     @Autowired
     private Environment env;
@@ -53,6 +58,17 @@ public class ServiceBeanConfig {
             );
             return intelligentRobotFactory;
         }
+    }
+
+    @Bean
+    public FileStore fileStore(){
+
+        String baseHome = env.getProperty("os.file.base.dir");
+        if(StringUtils.isBlank(baseHome)) {
+            baseHome = SysParametersUtils.getUploadHome();
+        }
+
+        return new OsFileStore(baseHome);
     }
 
     @Bean

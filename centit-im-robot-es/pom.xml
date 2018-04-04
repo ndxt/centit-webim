@@ -27,6 +27,13 @@
             <version>${centit.search.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.centit.support</groupId>
+            <artifactId>centit-database-datasource</artifactId>
+            <version>${centit.commons.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- server runtime library -->
         <dependency>
             <groupId>com.sun</groupId>
