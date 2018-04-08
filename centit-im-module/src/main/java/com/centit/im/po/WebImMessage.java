@@ -196,6 +196,7 @@ public class WebImMessage implements java.io.Serializable {
 		this.receiver= other.getReceiver();
 		this.sendTime= other.getSendTime();
 		this.senderName= other.getSenderName();
+		//other.getContent().put("contentType",other.getContentType());
 		this.content = JSON.toJSONString(other.getContent());
 		this.msgType= other.getType();
 		return this;

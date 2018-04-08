@@ -1,7 +1,9 @@
 package com.centit.im.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
@@ -11,6 +13,7 @@ import com.centit.im.service.WebImMessageManager;
 import com.centit.im.service.WebImSocket;
 import com.centit.im.socketio.ImMessage;
 import com.centit.im.socketio.ImMessageUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +39,21 @@ public class WebImController extends BaseController {
     @Resource
     protected WebImSocket webImSocket;
 
+    public static JSONArray messgeListToJson(JSONArray messageList){
+        if(CollectionUtils.isEmpty(messageList))
+            return messageList;
+        for(Object obj : messageList){
+            JSONObject jsonObject = (JSONObject)obj;
+            jsonObject.put("content", JSON.parse(jsonObject.getString("content")));
+        }
+        return messageList;
+    }
 
+    public static JSONArray messgeListToJson(List<WebImMessage> messageList){
+        if(CollectionUtils.isEmpty(messageList))
+            return null;
+        return messgeListToJson((JSONArray)JSON.toJSON(messageList));
+    }
     /**
      * 获取历史信息
      * @param receiver 接收人（一般为自己或者自己所在的组
@@ -53,7 +70,7 @@ public class WebImController extends BaseController {
         List<WebImMessage> listObjects = webImMessageManager
                 .listChatMessage(sender, receiver, lastReadDate, pageDesc);
         ResponseMapData resData = new ResponseMapData();
-        resData.addResponseData(OBJLIST, listObjects);
+        resData.addResponseData(OBJLIST, messgeListToJson(listObjects));
         resData.addResponseData(PAGE_DESC, pageDesc);
         JsonResultUtils.writeResponseDataAsJson(resData, response);
     }
@@ -70,10 +87,10 @@ public class WebImController extends BaseController {
             @PathVariable String receiver,
             PageDesc pageDesc, Date lastReadDate,
             HttpServletResponse response) {
-        List<WebImMessage> jsonArry = webImMessageManager
+        List<WebImMessage> listObjects = webImMessageManager
                 .listAllChatMessage(receiver, lastReadDate, pageDesc);
         ResponseMapData resData = new ResponseMapData();
-        resData.addResponseData(OBJLIST, jsonArry);
+        resData.addResponseData(OBJLIST, messgeListToJson(listObjects));
         resData.addResponseData(PAGE_DESC, pageDesc);
         JsonResultUtils.writeResponseDataAsJson(resData, response);
     }
@@ -95,7 +112,7 @@ public class WebImController extends BaseController {
         List<WebImMessage> listObjects = webImMessageManager
                 .listGroupChatMessage(userCode, unitCode, lastReadDate, pageDesc);
         ResponseMapData resData = new ResponseMapData();
-        resData.addResponseData(OBJLIST, listObjects);
+        resData.addResponseData(OBJLIST, messgeListToJson(listObjects));
         resData.addResponseData(PAGE_DESC, pageDesc);
         JsonResultUtils.writeResponseDataAsJson(resData, response);
     }
@@ -124,7 +141,7 @@ public class WebImController extends BaseController {
             @PathVariable String userCode,
             HttpServletResponse response) {
         JSONArray unreadSum = webImMessageManager.statUnreadWithLastMsg(userCode);
-        JsonResultUtils.writeSingleDataJson(unreadSum, response);
+        JsonResultUtils.writeSingleDataJson(messgeListToJson(unreadSum), response);
     }
 
     //获取未读群信息统计数据 包括最后一条未读消息
@@ -133,7 +150,7 @@ public class WebImController extends BaseController {
             @PathVariable String userCode,
             HttpServletResponse response) {
         JSONArray unreadSum = webImMessageManager.statGroupUnreadWithLastMsg(userCode);
-        JsonResultUtils.writeSingleDataJson(unreadSum, response);
+        JsonResultUtils.writeSingleDataJson(messgeListToJson(unreadSum), response);
     }
 
     //设置信息状态
@@ -195,6 +212,5 @@ public class WebImController extends BaseController {
         webImSocket.broadcastMessage(message);
         JsonResultUtils.writeSuccessJson(response);
     }
-
 
 }

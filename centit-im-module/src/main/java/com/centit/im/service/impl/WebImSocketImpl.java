@@ -382,6 +382,7 @@ public class WebImSocketImpl implements WebImSocket {
             JSONObject json = new JSONObject();
             json.put("msg","你好");
             json.put("chatType","service");
+            json.put("contentType",ImMessage.CONTENT_TYPE_TEXT);
             json.put("beforeId",beforeChangeService.getUserCode());
             webMessage.setContent(json.toString());
             webMessage.setSendTime(DatetimeOpt.currentUtilDate());
@@ -411,6 +412,7 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setSenderName(beforeChangeService.getUserName());
         JSONObject json = new JSONObject();
         json.put("msg",beforeChangeService.getUserName()+"切换至客服"+afterChangeService.getUserName());
+        json.put("contentType",ImMessage.CONTENT_TYPE_TEXT);
         webMessage.setContent(json.toString());
             webMessage.setSendTime(DatetimeOpt.currentUtilDate());
         webMessage.setMsgState("C");
@@ -583,6 +585,7 @@ public class WebImSocketImpl implements WebImSocket {
             return;
         }else{
             WebImMessage webMessage = new WebImMessage();
+            message.getContent().put("contentType",message.getContentType());
             webMessage.copy(message);
             webMessage.setMsgId(UuidOpt.getUuidAsString32());
             webMessage.setMsgType("C");
@@ -671,6 +674,7 @@ public class WebImSocketImpl implements WebImSocket {
     public void sendMessage(String userCode, ImMessage message) {
 
         WebImMessage webMessage = new WebImMessage();
+        message.getContent().put("contentType",message.getContentType());
         webMessage.copy(message);
         webMessage.setMsgId(UuidOpt.getUuidAsString32());
         webMessage.setMsgType("C");
@@ -706,7 +710,7 @@ public class WebImSocketImpl implements WebImSocket {
         for(IUserUnit user : users){
             pushMessage(user.getUserCode(), message);
         }
-
+        message.getContent().put("contentType",message.getContentType());
         WebImMessage webMessage = new WebImMessage();
         webMessage.copy(message);
         webMessage.setMsgId(UuidOpt.getUuidAsString32());
@@ -729,7 +733,7 @@ public class WebImSocketImpl implements WebImSocket {
         for(IUserInfo user : users){
             pushMessage(user.getUserCode(), message);
         }
-
+        message.getContent().put("contentType",message.getContentType());
         WebImMessage webMessage = new WebImMessage();
         webMessage.copy(message);
         webMessage.setMsgId(UuidOpt.getUuidAsString32());
