@@ -44,7 +44,9 @@ public class WebImController extends BaseController {
             return messageList;
         for(Object obj : messageList){
             JSONObject jsonObject = (JSONObject)obj;
-            jsonObject.put("content", JSON.parse(jsonObject.getString("content")));
+            JSONObject jsonContent =  (JSONObject)JSON.parse(jsonObject.getString("content"));
+            jsonObject.put("content", jsonContent);
+            jsonObject.put("contentType", jsonContent.get("contentType"));
         }
         return messageList;
     }
@@ -84,6 +86,26 @@ public class WebImController extends BaseController {
      */
     @RequestMapping(value = "/allHistoryMessage/{receiver}", method = RequestMethod.GET)
     public void listAllHistoryMessage(
+            @PathVariable String receiver,
+            PageDesc pageDesc, Date lastReadDate,
+            HttpServletResponse response) {
+        List<WebImMessage> listObjects = webImMessageManager
+                .listAllChatMessage(receiver, lastReadDate, pageDesc);
+        ResponseMapData resData = new ResponseMapData();
+        resData.addResponseData(OBJLIST, messgeListToJson(listObjects));
+        resData.addResponseData(PAGE_DESC, pageDesc);
+        JsonResultUtils.writeResponseDataAsJson(resData, response);
+    }
+
+    /**
+     * 获取群聊历史信息; 获取对方的所有信息
+     * @param receiver 一般为用户所在的组
+     * @param pageDesc  分页信息
+     * @param lastReadDate 上次阅读消息的时间
+     * @param response HttpServletResponse
+     */
+    @RequestMapping(value = "/groupHistoryMessage/{receiver}", method = RequestMethod.GET)
+    public void listGroupHistoryMessage(
             @PathVariable String receiver,
             PageDesc pageDesc, Date lastReadDate,
             HttpServletResponse response) {
