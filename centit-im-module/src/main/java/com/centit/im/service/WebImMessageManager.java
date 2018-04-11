@@ -19,13 +19,30 @@ public interface WebImMessageManager extends BaseEntityManager<WebImMessage,Stri
      * 获取 消息列表
      * @param sender 发送者
      * @param receiver 接收者
-     * @param lastReadDate 历史记录
+     * @param lastReadDate 历史记录时间点
      * @param pageDesc 分页
      * @return 消息集合
      */
     List<WebImMessage> listChatMessage(String sender, String receiver, Date lastReadDate, PageDesc pageDesc);
 
+    /**
+     * 获取一个公户的所有消息，主要用户客服模式
+     * @param receiver 接受用户
+     * @param lastReadDate 历史记录时间点
+     * @param pageDesc 分页信息
+     * @return 聊天记录
+     */
     List<WebImMessage> listAllChatMessage(String receiver, Date lastReadDate, PageDesc pageDesc);
+
+    /**
+     * 获取 群聊消息
+     * @param receiver 群号
+     * @param lastReadDate 历史记录时间点
+     * @param pageDesc 分页信息
+     * @return 聊天记录
+     */
+    List<WebImMessage> listGroupChatMessage(String receiver, Date lastReadDate, PageDesc pageDesc);
+
 
     List<WebImMessage> listGroupChatMessage(String userCode ,String unitCode, Date lastReadDate, PageDesc pageDesc);
 

@@ -110,7 +110,7 @@ public class WebImController extends BaseController {
             PageDesc pageDesc, Date lastReadDate,
             HttpServletResponse response) {
         List<WebImMessage> listObjects = webImMessageManager
-                .listAllChatMessage(receiver, lastReadDate, pageDesc);
+                .listGroupChatMessage(receiver, lastReadDate, pageDesc);
         ResponseMapData resData = new ResponseMapData();
         resData.addResponseData(OBJLIST, messgeListToJson(listObjects));
         resData.addResponseData(PAGE_DESC, pageDesc);

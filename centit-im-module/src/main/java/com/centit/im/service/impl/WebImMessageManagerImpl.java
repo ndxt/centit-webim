@@ -57,6 +57,13 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
+    public  List<WebImMessage> listGroupChatMessage(String receiver, Date lastReadDate, PageDesc pageDesc){
+        return webImMessageDao.listGroupChatMessage(receiver,lastReadDate,pageDesc);
+    }
+
+
+    @Override
+    @Transactional(propagation= Propagation.REQUIRED)
     public List<WebImMessage> listGroupChatMessage(String userCode,
                                                    String unitCode, Date lastReadDate, PageDesc pageDesc){
         webImReadGroupDao.setGroupReadState(userCode,unitCode);
