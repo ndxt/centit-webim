@@ -53,7 +53,7 @@ public class WebImCustomer implements java.io.Serializable {
 	 */
 	@Column(name = "USER_NAME")
 	@NotBlank(message = "字段不能为空")
-	@Length(max = 50, message = "字段长度不能大于{max}")
+	@Length(max = 100, message = "字段长度不能大于{max}")
 	private String  userName;
 	/**
 	 * 用户头像

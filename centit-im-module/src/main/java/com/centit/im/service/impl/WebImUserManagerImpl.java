@@ -6,7 +6,7 @@ import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.IUserUnit;
 import com.centit.im.dao.FriendMemoDao;
 import com.centit.im.dao.WebImCustomerDao;
-import com.centit.im.po.FriendMemo;
+import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImCustomer;
 import com.centit.im.service.WebImSocket;
 import com.centit.im.service.WebImUserManager;
@@ -211,7 +211,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
 
     @Override
     @Transactional
-    public void saveUserFriendMemo(FriendMemo memo){
+    public void saveUserFriendMemo(WebImFriendMemo memo){
         friendMemoDao.saveNewObject(memo);
     }
 }

@@ -1,13 +1,9 @@
 package com.centit.im.po;
 
 import java.util.Date;
-import java.sql.Timestamp;
 import javax.persistence.*;
 
 
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -19,12 +15,12 @@ import org.hibernate.validator.constraints.NotBlank;
   好友别名和备注用于为好友（同事）重命名 和 填写备注信息   
 */
 @Entity
-@Table(name = "F_FRIEND_MEMO")
-public class FriendMemo implements java.io.Serializable {
+@Table(name = "F_WEB_IM_FRIEND_MEMO")
+public class WebImFriendMemo implements java.io.Serializable {
 	private static final long serialVersionUID =  1L;
 
 	@EmbeddedId
-	private com.centit.im.po.FriendMemoId cid;
+	private WebImFriendMemoId cid;
 
 
 	/**
@@ -56,12 +52,12 @@ public class FriendMemo implements java.io.Serializable {
 
 	// Constructors
 	/** default constructor */
-	public FriendMemo() {
+	public WebImFriendMemo() {
 	}
 	/** minimal constructor */
-	public FriendMemo(com.centit.im.po.FriendMemoId id 
+	public WebImFriendMemo(WebImFriendMemoId id
 				
-		,String  osId,Date  lastUpdateTime) {
+		, String  osId, Date  lastUpdateTime) {
 		this.cid = id; 
 			
 	
@@ -70,9 +66,9 @@ public class FriendMemo implements java.io.Serializable {
 	}
 
 /** full constructor */
-	public FriendMemo(com.centit.im.po.FriendMemoId id
+	public WebImFriendMemo(WebImFriendMemoId id
 			
-	,String  osId,Date  lastUpdateTime,String  friendAlias,String  friendMemo) {
+	, String  osId, Date  lastUpdateTime, String  friendAlias, String  friendMemo) {
 		this.cid = id; 
 			
 	
@@ -82,35 +78,35 @@ public class FriendMemo implements java.io.Serializable {
 		this.friendMemo= friendMemo;		
 	}
 
-	public com.centit.im.po.FriendMemoId getCid() {
+	public WebImFriendMemoId getCid() {
 		return this.cid;
 	}
 	
-	public void setCid(com.centit.im.po.FriendMemoId id) {
+	public void setCid(WebImFriendMemoId id) {
 		this.cid = id;
 	}
   
 	public String getUserCode() {
 		if(this.cid==null)
-			this.cid = new com.centit.im.po.FriendMemoId();
+			this.cid = new WebImFriendMemoId();
 		return this.cid.getUserCode();
 	}
 	
 	public void setUserCode(String userCode) {
 		if(this.cid==null)
-			this.cid = new com.centit.im.po.FriendMemoId();
+			this.cid = new WebImFriendMemoId();
 		this.cid.setUserCode(userCode);
 	}
   
 	public String getFriendCode() {
 		if(this.cid==null)
-			this.cid = new com.centit.im.po.FriendMemoId();
+			this.cid = new WebImFriendMemoId();
 		return this.cid.getFriendCode();
 	}
 	
 	public void setFriendCode(String friendCode) {
 		if(this.cid==null)
-			this.cid = new com.centit.im.po.FriendMemoId();
+			this.cid = new WebImFriendMemoId();
 		this.cid.setFriendCode(friendCode);
 	}
 	
@@ -152,7 +148,7 @@ public class FriendMemo implements java.io.Serializable {
 
 
 
-	public FriendMemo copy(FriendMemo other){
+	public WebImFriendMemo copy(WebImFriendMemo other){
   
 		this.setUserCode(other.getUserCode());  
 		this.setFriendCode(other.getFriendCode());
@@ -165,7 +161,7 @@ public class FriendMemo implements java.io.Serializable {
 		return this;
 	}
 	
-	public FriendMemo copyNotNullProperty(FriendMemo other){
+	public WebImFriendMemo copyNotNullProperty(WebImFriendMemo other){
   
 	if( other.getUserCode() != null)
 		this.setUserCode(other.getUserCode());  
@@ -184,7 +180,7 @@ public class FriendMemo implements java.io.Serializable {
 		return this;
 	}
 
-	public FriendMemo clearProperties(){
+	public WebImFriendMemo clearProperties(){
   
 		this.osId= null;  
 		this.lastUpdateTime= null;  

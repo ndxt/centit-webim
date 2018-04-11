@@ -72,7 +72,7 @@ public interface WebImMessageManager extends BaseEntityManager<WebImMessage,Stri
     int setReadState(String userCode);
 
     /**
-     * 更改群聊阅读状态 ，插入 F_WEB_IM_READ_GROUP 更新 最后阅读时间
+     * 更改群聊阅读状态 ，插入 F_WEB_IM_GROUP_MEMBER 更新 最后阅读时间
      * @param userCode 用户编号
      * @param unitCode 单位编号
      */

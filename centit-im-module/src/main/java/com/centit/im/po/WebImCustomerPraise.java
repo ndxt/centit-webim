@@ -1,11 +1,8 @@
 package com.centit.im.po;
 
 import java.util.Date;
-import java.sql.Timestamp;
 import javax.persistence.*;
 
-
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
@@ -19,8 +16,8 @@ import org.hibernate.validator.constraints.NotBlank;
   客服评价null   
 */
 @Entity
-@Table(name = "F_CUSTOMER_PRAISE")
-public class CustomerPraise implements java.io.Serializable {
+@Table(name = "F_WEB_IM_CUSTOMER_PRAISE")
+public class WebImCustomerPraise implements java.io.Serializable {
 	private static final long serialVersionUID =  1L;
 
 	/**
@@ -73,10 +70,10 @@ public class CustomerPraise implements java.io.Serializable {
 
 	// Constructors
 	/** default constructor */
-	public CustomerPraise() {
+	public WebImCustomerPraise() {
 	}
 	/** minimal constructor */
-	public CustomerPraise(
+	public WebImCustomerPraise(
 		String praiseId		
 		,String  osId,String  customerCode,int  serviceScore) {
 	
@@ -89,7 +86,7 @@ public class CustomerPraise implements java.io.Serializable {
 	}
 
 /** full constructor */
-	public CustomerPraise(
+	public WebImCustomerPraise(
 	 String praiseId		
 	,String  osId,String  userCode,String  customerCode,String  serviceSummary,int  serviceScore,Date  createTime) {
 	
@@ -165,7 +162,7 @@ public class CustomerPraise implements java.io.Serializable {
 
 
 
-	public CustomerPraise copy(CustomerPraise other){
+	public WebImCustomerPraise copy(WebImCustomerPraise other){
   
 		this.setPraiseId(other.getPraiseId());
   
@@ -179,7 +176,7 @@ public class CustomerPraise implements java.io.Serializable {
 		return this;
 	}
 	
-	public CustomerPraise copyNotNullProperty(CustomerPraise other){
+	public WebImCustomerPraise copyNotNullProperty(WebImCustomerPraise other){
   
 	if( other.getPraiseId() != null)
 		this.setPraiseId(other.getPraiseId());
@@ -200,7 +197,7 @@ public class CustomerPraise implements java.io.Serializable {
 		return this;
 	}
 
-	public CustomerPraise clearProperties(){
+	public WebImCustomerPraise clearProperties(){
   
 		this.osId= null;  
 		this.userCode= null;  

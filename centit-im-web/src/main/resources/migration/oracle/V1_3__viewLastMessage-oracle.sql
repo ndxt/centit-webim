@@ -8,7 +8,7 @@ group by OS_ID,RECEIVER,SENDER;
 
 CREATE or REPLACE  VIEW F_V_UNREAD_GROUP_MSG AS
 select a.OS_ID, b.USER_CODE, b.UNIT_CODE, COUNT(*) as UNREAD_SUM, MAX(SEND_TIME) as LAST_MSG_SEND_TIME
-from F_WEB_IM_MESSAGE a left join F_WEB_IM_READ_GROUP b on
+from F_WEB_IM_MESSAGE a left join F_WEB_IM_GROUP_MEMBER b on
     (a.OS_ID=b.OS_ID and a.RECEIVER = b.UNIT_CODE)
 where a.MSG_TYPE = 'G' and ( a.send_time > b.LAST_PUSH_TIME or b.LAST_PUSH_TIME is null)
 group by a.OS_ID, b.USER_CODE, b.UNIT_CODE;

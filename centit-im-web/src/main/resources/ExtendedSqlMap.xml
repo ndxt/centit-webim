@@ -48,7 +48,7 @@
     <sql id="LIST_ALL_ROLEINFO">
         <![CDATA[
             select ROLE_CODE as roleCode, ROLE_NAME as roleName, IS_VALID as isValid, ROLE_TYPE as roleType,
-                UNIT_CODE as unitCode, ROLE_DESC as roleDesc, CREATE_DATE as createDate, CREATOR as creator,
+                UNIT_CODE as groupId, ROLE_DESC as roleDesc, CREATE_DATE as createDate, CREATOR as creator,
                 UPDATOR as updator, UPDATE_DATE as updateDate
             from F_ROLEINFO
         ]]>
@@ -72,7 +72,7 @@
 
     <sql id="LIST_ALL_UNITINFO">
         <![CDATA[
-            select UNIT_CODE as unitCode, PARENT_UNIT as parentUnit, UNIT_TYPE as unitType, IS_VALID as isValid,
+            select UNIT_CODE as groupId, PARENT_UNIT as parentUnit, UNIT_TYPE as unitType, IS_VALID as isValid,
                 UNIT_NAME as unitName, ENGLISH_NAME as englishName, UNIT_SHORT_NAME as unitShortName, UNIT_WORD as unitWord,
                 UNIT_TAG as unitTag, UNIT_DESC as unitDesc, ADDRBOOK_ID as addrbookId, UNIT_ORDER as unitOrder,
                 UNIT_GRADE as unitGrade, DEP_NO as depNo, UNIT_PATH as unitPath, UNIT_MANAGER as unitManager,
@@ -83,7 +83,7 @@
 
     <sql id="LIST_ALL_USERUNIT">
         <![CDATA[
-            select USER_UNIT_ID as userUnitId, UNIT_CODE as unitCode, USER_CODE as userCode, USER_STATION as userStation,
+            select USER_UNIT_ID as userUnitId, UNIT_CODE as groupId, USER_CODE as userCode, USER_STATION as userStation,
                 USER_RANK as userRank, RANK_MEMO as rankMemo, IS_PRIMARY as isPrimary, USER_ORDER as userOrder,CREATE_DATE as createDate, CREATOR as creator, UPDATOR as updator, UPDATE_DATE as updateDate
             from F_USERUNIT
         ]]>

@@ -1,4 +1,4 @@
-create table question_and_answer
+create table F_QUESTION_AND_ANSWER
 (
   question_id VARCHAR(48) not null primary key comment 'uuid',
   os_id VARCHAR(32),

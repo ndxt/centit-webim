@@ -78,6 +78,12 @@ public class WebImMessage implements java.io.Serializable {
 	@Length(max = 1, message = "字段长度不能大于{max}")
 	private String  msgState;
 	/**
+	 * 内容 null
+	 */
+	@Column(name = "CONTENT_TYPE")
+	@Length(max = 20, message = "内容类型字段长度不能大于{max}")
+	private String  contentType;
+	/**
 	 * 内容 null 
 	 */
 	@Column(name = "CONTENT")
@@ -191,12 +197,21 @@ public class WebImMessage implements java.io.Serializable {
 		this.senderName = senderName;
 	}
 
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
 	public WebImMessage copy(ImMessage other){
 		this.sender= other.getSender();
 		this.receiver= other.getReceiver();
 		this.sendTime= other.getSendTime();
 		this.senderName= other.getSenderName();
-		//other.getContent().put("contentType",other.getContentType());
+		this.contentType = other.getContentType();
 		this.content = JSON.toJSONString(other.getContent());
 		this.msgType= other.getType();
 		return this;
@@ -205,12 +220,13 @@ public class WebImMessage implements java.io.Serializable {
 	public WebImMessage copy(WebImMessage other){
   
 		this.setMsgId(other.getMsgId());
-		this.osId= other.getOsId();  
-		this.msgType= other.getMsgType();  
-		this.sender= other.getSender();  
-		this.receiver= other.getReceiver();  
-		this.sendTime= other.getSendTime();  
-		this.msgState= other.getMsgState();  
+		this.osId= other.getOsId();
+		this.msgType= other.getMsgType();
+		this.sender= other.getSender();
+		this.receiver= other.getReceiver();
+		this.sendTime= other.getSendTime();
+		this.msgState= other.getMsgState();
+		this.contentType = other.getContentType();
 		this.content= other.getContent();
 		this.senderName= other.getSenderName();
 		return this;
@@ -222,17 +238,20 @@ public class WebImMessage implements java.io.Serializable {
 		this.setMsgId(other.getMsgId());
   
 		if( other.getOsId() != null)
-			this.osId= other.getOsId();  
+			this.osId= other.getOsId();
 		if( other.getMsgType() != null)
-			this.msgType= other.getMsgType();  
+			this.msgType= other.getMsgType();
 		if( other.getSender() != null)
-			this.sender= other.getSender();  
+			this.sender= other.getSender();
 		if( other.getReceiver() != null)
-			this.receiver= other.getReceiver();  
+			this.receiver= other.getReceiver();
 		if( other.getSendTime() != null)
-			this.sendTime= other.getSendTime();  
+			this.sendTime= other.getSendTime();
 		if( other.getMsgState() != null)
-			this.msgState= other.getMsgState();  
+			this.msgState= other.getMsgState();
+
+		if( other.getContentType() != null)
+			this.contentType = other.getContentType();
 		if( other.getContent() != null)
 			this.content= other.getContent();
 		if( other.getSenderName() != null)
@@ -243,15 +262,17 @@ public class WebImMessage implements java.io.Serializable {
 
 	public WebImMessage clearProperties(){
   
-		this.osId= null;  
-		this.msgType= null;  
-		this.sender= null;  
-		this.receiver= null;  
-		this.sendTime= null;  
-		this.msgState= null;  
+		this.osId= null;
+		this.msgType= null;
+		this.sender= null;
+		this.receiver= null;
+		this.sendTime= null;
+		this.msgState= null;
+		this.contentType= null;
 		this.content= null;
 		this.senderName= null;
 
 		return this;
 	}
+
 }

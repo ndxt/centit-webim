@@ -3,7 +3,7 @@ package com.centit.im.controller;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.model.basedata.IUnitInfo;
-import com.centit.im.po.FriendMemo;
+import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImCustomer;
 import com.centit.im.service.WebImUserManager;
 import org.springframework.stereotype.Controller;
@@ -32,7 +32,7 @@ public class WebImUserController extends BaseController {
     //配置用户信息
     @RequestMapping(value = "/friend", method = RequestMethod.POST)
     public void setFriendMemo(
-            @RequestBody FriendMemo memo,
+            @RequestBody WebImFriendMemo memo,
             HttpServletResponse response) {
         webImUserManager.saveUserFriendMemo(memo);
         JsonResultUtils.writeSuccessJson(response);

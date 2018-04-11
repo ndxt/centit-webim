@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
  * 用户组信息查看时间用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息   
 */
 @Embeddable
-public class WebImReadGroupId implements java.io.Serializable {
+public class WebImGroupMemberId implements java.io.Serializable {
 	private static final long serialVersionUID =  1L;
 
 	/**
@@ -24,17 +24,17 @@ public class WebImReadGroupId implements java.io.Serializable {
 	/**
 	 * 组代码 null 
 	 */
-	@Column(name = "UNIT_CODE")
+	@Column(name = "GROUP_ID")
 	@NotBlank(message = "字段不能为空")
-	private String unitCode;
+	private String groupId;
 
 	/** default constructor */
-	public WebImReadGroupId() {
+	public WebImGroupMemberId() {
 	}
 
-	public WebImReadGroupId( String userCode, String unitCode) {
+	public WebImGroupMemberId(String userCode, String groupId) {
 		this.userCode = userCode;
-		this.unitCode = unitCode;	
+		this.groupId = groupId;
 	}
 
 	public String getUserCode() {
@@ -45,12 +45,12 @@ public class WebImReadGroupId implements java.io.Serializable {
 		this.userCode = userCode;
 	}
   
-	public String getUnitCode() {
-		return this.unitCode;
+	public String getGroupId() {
+		return this.groupId;
 	}
 
-	public void setUnitCode(String unitCode) {
-		this.unitCode = unitCode;
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
 	}
 
 	public boolean equals(Object other) {
@@ -58,19 +58,19 @@ public class WebImReadGroupId implements java.io.Serializable {
 			return true;
 		if ((other == null))
 			return false;
-		if (!(other instanceof WebImReadGroupId))
+		if (!(other instanceof WebImGroupMemberId))
 			return false;
 		
-		WebImReadGroupId castOther = (WebImReadGroupId) other;
+		WebImGroupMemberId castOther = (WebImGroupMemberId) other;
 		boolean ret ;
   
 		ret = this.getUserCode() == castOther.getUserCode() ||
 					   (this.getUserCode() != null && castOther.getUserCode() != null
 							   && this.getUserCode().equals(castOther.getUserCode()));
   
-		ret = ret && ( this.getUnitCode() == castOther.getUnitCode() ||
-					   (this.getUnitCode() != null && castOther.getUnitCode() != null
-							   && this.getUnitCode().equals(castOther.getUnitCode())));
+		ret = ret && ( this.getGroupId() == castOther.getGroupId() ||
+					   (this.getGroupId() != null && castOther.getGroupId() != null
+							   && this.getGroupId().equals(castOther.getGroupId())));
 
 		return ret;
 	}
@@ -82,7 +82,7 @@ public class WebImReadGroupId implements java.io.Serializable {
 		 	(this.getUserCode() == null ? 0 :this.getUserCode().hashCode());
   
 		result = 37 * result +
-		 	(this.getUnitCode() == null ? 0 :this.getUnitCode().hashCode());
+		 	(this.getGroupId() == null ? 0 :this.getGroupId().hashCode());
 	
 		return result;
 	}

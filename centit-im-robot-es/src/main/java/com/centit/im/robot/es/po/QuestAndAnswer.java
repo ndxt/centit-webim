@@ -15,11 +15,11 @@ import java.util.Date;
  * @author codefan
  * @version 0.1
  */
-@ESType(type="QUESTION_AND_ANSWER")
+@ESType(type="F_QUESTION_AND_ANSWER")
 @Entity
-@Table(name="QUESTION_AND_ANSWER")
+@Table(name="F_QUESTION_AND_ANSWER")
 public class QuestAndAnswer implements ESDocument, Serializable {
-    public static final String ES_DOCUMENT_TYPE = "QUESTION_AND_ANSWER";
+    public static final String ES_DOCUMENT_TYPE = "F_QUESTION_AND_ANSWER";
     private static final long serialVersionUID =  1L;
 
     /**

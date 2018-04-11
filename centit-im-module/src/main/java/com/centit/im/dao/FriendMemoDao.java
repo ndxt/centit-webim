@@ -2,7 +2,8 @@ package com.centit.im.dao;
 
 import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.hibernate.dao.BaseDaoImpl;
-import com.centit.im.po.FriendMemo;
+import com.centit.im.po.WebImFriendMemo;
+import com.centit.im.po.WebImFriendMemoId;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
@@ -21,7 +22,7 @@ import java.util.Map;
 */
 
 @Repository
-public class FriendMemoDao extends BaseDaoImpl<FriendMemo,com.centit.im.po.FriendMemoId>
+public class FriendMemoDao extends BaseDaoImpl<WebImFriendMemo,WebImFriendMemoId>
 	{
 
 	public static final Log log = LogFactory.getLog(FriendMemoDao.class);
@@ -48,7 +49,7 @@ public class FriendMemoDao extends BaseDaoImpl<FriendMemo,com.centit.im.po.Frien
 		return filterField;
 	}
 
-	public List<FriendMemo> listUserFriendMemo(String userCode){
+	public List<WebImFriendMemo> listUserFriendMemo(String userCode){
 		return this.listObjects("From FriendMemo where cid.userCode = ? ",userCode);
 	}
 }

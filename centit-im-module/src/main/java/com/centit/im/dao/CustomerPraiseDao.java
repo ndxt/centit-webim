@@ -2,7 +2,7 @@ package com.centit.im.dao;
 
 import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.hibernate.dao.BaseDaoImpl;
-import com.centit.im.po.CustomerPraise;
+import com.centit.im.po.WebImCustomerPraise;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
@@ -20,7 +20,7 @@ import java.util.Map;
 */
 
 @Repository
-public class CustomerPraiseDao extends BaseDaoImpl<CustomerPraise,java.lang.String>
+public class CustomerPraiseDao extends BaseDaoImpl<WebImCustomerPraise,java.lang.String>
 	{
 
 	public static final Log log = LogFactory.getLog(CustomerPraiseDao.class);

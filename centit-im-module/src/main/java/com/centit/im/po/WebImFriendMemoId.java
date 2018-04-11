@@ -1,7 +1,5 @@
 package com.centit.im.po;
 
-import java.util.Date;
-import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import org.hibernate.validator.constraints.NotBlank;
@@ -14,7 +12,7 @@ import org.hibernate.validator.constraints.NotBlank;
 */
 //好友别名和备注 的主键
 @Embeddable
-public class FriendMemoId implements java.io.Serializable {
+public class WebImFriendMemoId implements java.io.Serializable {
 	private static final long serialVersionUID =  1L;
 
 	/**
@@ -33,10 +31,10 @@ public class FriendMemoId implements java.io.Serializable {
 
 	// Constructors
 	/** default constructor */
-	public FriendMemoId() {
+	public WebImFriendMemoId() {
 	}
 	/** full constructor */
-	public FriendMemoId(String userCode, String friendCode) {
+	public WebImFriendMemoId(String userCode, String friendCode) {
 
 		this.userCode = userCode;
 		this.friendCode = friendCode;	
@@ -65,10 +63,10 @@ public class FriendMemoId implements java.io.Serializable {
 			return true;
 		if ((other == null))
 			return false;
-		if (!(other instanceof FriendMemoId))
+		if (!(other instanceof WebImFriendMemoId))
 			return false;
 		
-		FriendMemoId castOther = (FriendMemoId) other;
+		WebImFriendMemoId castOther = (WebImFriendMemoId) other;
 		boolean ret;
   
 		ret = this.getUserCode() == castOther.getUserCode() ||

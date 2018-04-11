@@ -2,8 +2,8 @@ package com.centit.im.dao;
 
 import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.hibernate.dao.BaseDaoImpl;
-import com.centit.im.po.WebImReadGroup;
-import com.centit.im.po.WebImReadGroupId;
+import com.centit.im.po.WebImGroupMember;
+import com.centit.im.po.WebImGroupMemberId;
 import com.centit.im.socketio.ImMessage;
 import com.centit.support.algorithm.DatetimeOpt;
 import org.apache.commons.logging.Log;
@@ -22,7 +22,7 @@ import java.util.Map;
 */
 
 @Repository
-public class WebImReadGroupDao extends BaseDaoImpl<WebImReadGroup,com.centit.im.po.WebImReadGroupId>
+public class WebImReadGroupDao extends BaseDaoImpl<WebImGroupMember,WebImGroupMemberId>
 	{
 
 	public static final Log log = LogFactory.getLog(WebImReadGroupDao.class);
@@ -45,12 +45,12 @@ public class WebImReadGroupDao extends BaseDaoImpl<WebImReadGroup,com.centit.im.
 	}
 
 	public void setGroupReadState(String userCode,String unitCode){
-		WebImReadGroup dbWebImReadGroup = this.getObjectById(new WebImReadGroupId(userCode,unitCode));
+		WebImGroupMember dbWebImReadGroup = this.getObjectById(new WebImGroupMemberId(userCode,unitCode));
 		if (dbWebImReadGroup == null){
-			WebImReadGroup webImReadGroup = new WebImReadGroup();
+			WebImGroupMember webImReadGroup = new WebImGroupMember();
 			webImReadGroup.setOsId(ImMessage.DEFAULT_OSID);
 			webImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());
-			webImReadGroup.setCid(new WebImReadGroupId(userCode,unitCode));
+			webImReadGroup.setCid(new WebImGroupMemberId(userCode,unitCode));
 			this.saveNewObject(webImReadGroup);
 		}else {
 			dbWebImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());

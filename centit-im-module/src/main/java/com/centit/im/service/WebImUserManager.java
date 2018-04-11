@@ -1,7 +1,7 @@
 package com.centit.im.service;
 
 import com.centit.framework.model.basedata.IUnitInfo;
-import com.centit.im.po.FriendMemo;
+import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImCustomer;
 
 import java.util.Date;
@@ -82,5 +82,5 @@ public interface WebImUserManager {
      * 设置用户 朋友的备注信息
      * @param memo
      */
-    void saveUserFriendMemo(FriendMemo memo);
+    void saveUserFriendMemo(WebImFriendMemo memo);
 }

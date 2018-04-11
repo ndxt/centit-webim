@@ -1,4 +1,4 @@
-create table question_and_answer
+create table F_QUESTION_AND_ANSWER
 (
   question_id VARCHAR(48) not null primary key,
   os_id VARCHAR(32),
@@ -14,21 +14,21 @@ create table question_and_answer
 );
 
 -- Add comments to the columns
-comment on column question_and_answer.question_id
+comment on column F_QUESTION_AND_ANSWER.question_id
 is 'uuid';
-comment on column question_and_answer.key_words
+comment on column F_QUESTION_AND_ANSWER.key_words
 is '主题词 多个主题词用空格分开';
-comment on column question_and_answer.question_title
+comment on column F_QUESTION_AND_ANSWER.question_title
 is '问题';
-comment on column question_and_answer.question_url
+comment on column F_QUESTION_AND_ANSWER.question_url
 is '问题url链接';
-comment on column question_and_answer.question_answer
+comment on column F_QUESTION_AND_ANSWER.question_answer
 is '回答';
-comment on column question_and_answer.creator
+comment on column F_QUESTION_AND_ANSWER.creator
 is '创建人';
-comment on column question_and_answer.create_time
+comment on column F_QUESTION_AND_ANSWER.create_time
 is '创建时间';
-comment on column question_and_answer.last_update_time
+comment on column F_QUESTION_AND_ANSWER.last_update_time
 is '更新时间';
-comment on column question_and_answer.delete_sign
+comment on column F_QUESTION_AND_ANSWER.delete_sign
 is '是否删除志位 T/F';

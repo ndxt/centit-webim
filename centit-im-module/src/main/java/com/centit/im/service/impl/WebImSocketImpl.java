@@ -475,7 +475,7 @@ public class WebImSocketImpl implements WebImSocket {
             return;
         switch(fromType) {
             case "praise":
-                CustomerPraise praise = new CustomerPraise();
+                WebImCustomerPraise praise = new WebImCustomerPraise();
                 praise.setPraiseId(UuidOpt.getUuidAsString32());
                 praise.setCustomerCode(message.getSender());
                 praise.setUserCode(message.getReceiver());
