@@ -5,14 +5,13 @@ import com.centit.fileserver.utils.OsFileStore;
 import com.centit.framework.common.SysParametersUtils;
 import com.centit.framework.components.impl.NotificationCenterImpl;
 import com.centit.framework.components.impl.TextOperationLogWriterImpl;
-import com.centit.framework.core.config.DataSourceConfig;
-import com.centit.framework.hibernate.config.HibernateConfig;
+import com.centit.framework.config.SpringSecurityDaoConfig;
 import com.centit.framework.ip.app.config.IPAppSystemBeanConfig;
 import com.centit.framework.ip.service.IntegrationEnvironment;
+import com.centit.framework.jdbc.config.JdbcConfig;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
-import com.centit.framework.config.SpringSecurityDaoConfig;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
@@ -28,8 +27,7 @@ import org.springframework.core.env.Environment;
 @ComponentScan(basePackages = "com.centit",
         excludeFilters = @ComponentScan.Filter(value = org.springframework.stereotype.Controller.class))
 @Import({IPAppSystemBeanConfig.class,
-        DataSourceConfig.class,
-        HibernateConfig.class,
+        JdbcConfig.class,
         SpringSecurityDaoConfig.class})
 public class ServiceBeanConfig {
 

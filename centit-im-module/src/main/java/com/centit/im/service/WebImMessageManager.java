@@ -2,8 +2,7 @@ package com.centit.im.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.dao.PageDesc;
-import com.centit.framework.hibernate.dao.DatabaseOptUtils;
-import com.centit.framework.hibernate.service.BaseEntityManager;
+import com.centit.framework.jdbc.service.BaseEntityManager;
 import com.centit.im.po.WebImMessage;
 
 import java.util.Date;

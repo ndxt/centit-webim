@@ -2,7 +2,7 @@ package com.centit.im.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.dao.PageDesc;
-import com.centit.framework.hibernate.service.BaseEntityManagerImpl;
+import com.centit.framework.jdbc.service.BaseEntityManagerImpl;
 import com.centit.im.dao.WebImGroupDao;
 import com.centit.im.dao.WebImMessageDao;
 import com.centit.im.dao.WebImGroupMemberDao;

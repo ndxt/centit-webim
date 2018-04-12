@@ -1,15 +1,10 @@
 package com.centit.im.po;
 
-import java.util.Date;
-import java.sql.Timestamp;
-import javax.persistence.*;
-
-
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import java.util.Date;
 
 
 /**
@@ -30,8 +25,8 @@ public class WebImCustomer implements java.io.Serializable {
 	 */
 	@Id
 	@Column(name = "USER_CODE")
-	@GeneratedValue(generator = "assignedGenerator")
-	@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
+	//@GeneratedValue(generator = "assignedGenerator")
+	//@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
 	@NotBlank(message = "字段不能为空")
 	private String userCode;
 	/**

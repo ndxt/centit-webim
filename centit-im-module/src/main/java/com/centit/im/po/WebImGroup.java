@@ -1,6 +1,5 @@
 package com.centit.im.po;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -22,8 +21,8 @@ public class WebImGroup implements java.io.Serializable {
 
 	@Id
 	@Column(name = "GROUP_ID")
-	@GeneratedValue(generator = "assignedGenerator")
-	@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
+	//@GeneratedValue(generator = "assignedGenerator")
+	//@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
 	@NotBlank(message = "字段不能为空")
 	private String groupId;
 

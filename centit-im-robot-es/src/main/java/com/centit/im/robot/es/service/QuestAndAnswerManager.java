@@ -1,6 +1,6 @@
 package com.centit.im.robot.es.service;
 
-import com.centit.framework.hibernate.service.BaseEntityManager;
+import com.centit.framework.jdbc.service.BaseEntityManager;
 import com.centit.im.robot.es.po.QuestAndAnswer;
 
 /**

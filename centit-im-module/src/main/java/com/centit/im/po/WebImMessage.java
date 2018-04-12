@@ -2,8 +2,6 @@ package com.centit.im.po;
 
 import com.alibaba.fastjson.JSON;
 import com.centit.im.socketio.ImMessage;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -26,8 +24,8 @@ public class WebImMessage implements java.io.Serializable {
 	 */
 	@Id
 	@Column(name = "MSG_ID")
-	@GeneratedValue(generator = "assignedGenerator")
-	@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
+	//@GeneratedValue(generator = "assignedGenerator")
+	//@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
 	//UuidOpt.getUuidAsString32()
 	private String msgId;
 

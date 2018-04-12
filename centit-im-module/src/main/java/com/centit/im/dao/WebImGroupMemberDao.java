@@ -1,7 +1,7 @@
 package com.centit.im.dao;
 
 import com.centit.framework.core.dao.CodeBook;
-import com.centit.framework.hibernate.dao.BaseDaoImpl;
+import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.im.po.WebImGroupMember;
 import com.centit.im.po.WebImGroupMemberId;
 import com.centit.im.socketio.ImMessage;
@@ -54,7 +54,7 @@ public class WebImGroupMemberDao extends BaseDaoImpl<WebImGroupMember,WebImGroup
 			this.saveNewObject(webImReadGroup);
 		}else {
 			dbWebImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());
-			this.saveObject(dbWebImReadGroup);
+			this.updateObject(dbWebImReadGroup);
 		}
 	}
 }

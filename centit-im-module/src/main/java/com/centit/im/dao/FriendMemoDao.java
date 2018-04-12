@@ -1,7 +1,7 @@
 package com.centit.im.dao;
 
 import com.centit.framework.core.dao.CodeBook;
-import com.centit.framework.hibernate.dao.BaseDaoImpl;
+import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImFriendMemoId;
 import org.apache.commons.logging.Log;
@@ -50,6 +50,6 @@ public class FriendMemoDao extends BaseDaoImpl<WebImFriendMemo,WebImFriendMemoId
 	}
 
 	public List<WebImFriendMemo> listUserFriendMemo(String userCode){
-		return this.listObjects("From FriendMemo where cid.userCode = ? ",userCode);
+		return this.listObjectsByFilter("where user_Code = ? ",new Object[]{userCode});
 	}
 }

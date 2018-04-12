@@ -1,12 +1,10 @@
 package com.centit.im.po;
 
-import java.util.Date;
-import javax.persistence.*;
-
-
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import java.util.Date;
 
 
 /**
@@ -25,8 +23,8 @@ public class WebImCustomerPraise implements java.io.Serializable {
 	 */
 	@Id
 	@Column(name = "PRAISE_ID")
-	@GeneratedValue(generator = "assignedGenerator")
-	@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
+	//@GeneratedValue(generator = "assignedGenerator")
+	//@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
 	private String praiseId;
 
 	/**

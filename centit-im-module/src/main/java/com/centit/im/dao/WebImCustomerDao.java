@@ -1,11 +1,10 @@
 package com.centit.im.dao;
 
 import com.centit.framework.core.dao.CodeBook;
-import com.centit.framework.core.dao.PageDesc;
-import com.centit.framework.hibernate.dao.BaseDaoImpl;
-import com.centit.framework.hibernate.dao.DatabaseOptUtils;
+import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.im.po.WebImCustomer;
 import com.centit.support.algorithm.DatetimeOpt;
+import com.centit.support.database.utils.QueryUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
@@ -54,17 +53,17 @@ public class WebImCustomerDao extends BaseDaoImpl<WebImCustomer,String>
 	}
 
 	public List<WebImCustomer> listCustByType (String userType) {
-		 return this.listObjects("From WebImCustomer where userType = ?",userType);
+		 return this.listObjectsByFilter("where USER_TYPE = ?",new Object[]{userType});
 	}
 
 	public List<WebImCustomer> listCustomerService() {
-		return this.listObjects("From WebImCustomer where userType = 'S' or userType = 'P'");
+		return this.listObjectsByFilter(" where USER_TYPE = 'S' or USER_TYPE = 'P'", new Object[]{});
 	}
 
 	public List<WebImCustomer> listCustomerServiceByOptId(String optId) {
-		return this.listObjects("From WebImCustomer " +
+		return this.listObjectsByFilter(
 				"where (userType = 'S' or userType = 'P') and serviceOpts like ? ",
-				"%"+optId+"%");
+				new Object[]{"%"+optId+"%"});
 	}
 
 	public List<WebImCustomer> listServiceCustomer(String serviceUserCode, Date lastServiceDate) {
@@ -76,11 +75,14 @@ public class WebImCustomerDao extends BaseDaoImpl<WebImCustomer,String>
 				" UNION " +
 				" SELECT f.RECEIVER FROM f_web_im_message f WHERE (f.SENDER=? OR f.RECEIVER=?) ) t " +
 				" join f_web_im_customer b on t.SENDER= b.USER_CODE " +
-				" where t.SENDER!=? AND b.LAST_ACTIVE_DATE >=? " +
+				" where t.SENDER!= :userCode AND b.LAST_ACTIVE_DATE >= :serviceDate " +
 				" ORDER BY b.LAST_ACTIVE_DATE ";
-		return DatabaseOptUtils.findObjectsBySql(this,sql,
-				new Object[]{serviceUserCode,serviceUserCode,serviceUserCode,serviceUserCode,
-				serviceUserCode,lsd}, new PageDesc(-1, -1),WebImCustomer.class);
+		return this.listObjectsBySql(sql, QueryUtils.createSqlParamsMap(
+				"userCode",serviceUserCode,
+				"serviceDate",lsd));
+//		return DatabaseOptUtils. listObjectsBySql(this,sql,
+//				new Object[]{serviceUserCode,serviceUserCode,serviceUserCode,serviceUserCode,
+//				serviceUserCode,lsd}, new PageDesc(-1, -1),WebImCustomer.class);
 //		return this.listObjects(
 //				"From WebImCustomer where customerService = ? and lastActiveDate >= ?" +
 //						" order by lastActiveDate desc",
