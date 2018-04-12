@@ -1,5 +1,6 @@
 package com.centit.im.robot.es.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
@@ -38,7 +39,7 @@ public class QuestAndAnswerController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public void list(PageDesc pageDesc, HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> searchColumn = convertSearchColumn(request);
-        List<QuestAndAnswer> listObjects = questAndAnswerManager.listObjects(searchColumn, pageDesc);
+        JSONArray listObjects = questAndAnswerManager.listObjectsAsJson(searchColumn, pageDesc);
         ResponseMapData resData = new ResponseMapData();
         resData.addResponseData(OBJLIST, listObjects);
         resData.addResponseData(PAGE_DESC, pageDesc);

@@ -69,7 +69,7 @@ public class WebImController extends BaseController {
             @PathVariable String receiver,@PathVariable String sender,
             PageDesc pageDesc, Date lastReadDate,
             HttpServletResponse response) {
-        List<WebImMessage> listObjects = webImMessageManager
+        JSONArray listObjects = webImMessageManager
                 .listChatMessage(sender, receiver, lastReadDate, pageDesc);
         ResponseMapData resData = new ResponseMapData();
         resData.addResponseData(OBJLIST, messgeListToJson(listObjects));
@@ -89,7 +89,7 @@ public class WebImController extends BaseController {
             @PathVariable String receiver,
             PageDesc pageDesc, Date lastReadDate,
             HttpServletResponse response) {
-        List<WebImMessage> listObjects = webImMessageManager
+        JSONArray listObjects = webImMessageManager
                 .listAllChatMessage(receiver, lastReadDate, pageDesc);
         ResponseMapData resData = new ResponseMapData();
         resData.addResponseData(OBJLIST, messgeListToJson(listObjects));
@@ -109,7 +109,7 @@ public class WebImController extends BaseController {
             @PathVariable String receiver,
             PageDesc pageDesc, Date lastReadDate,
             HttpServletResponse response) {
-        List<WebImMessage> listObjects = webImMessageManager
+        JSONArray listObjects = webImMessageManager
                 .listGroupChatMessage(receiver, lastReadDate, pageDesc);
         ResponseMapData resData = new ResponseMapData();
         resData.addResponseData(OBJLIST, messgeListToJson(listObjects));
@@ -131,7 +131,7 @@ public class WebImController extends BaseController {
             PageDesc pageDesc, Date lastReadDate,
             HttpServletResponse response) {
 
-        List<WebImMessage> listObjects = webImMessageManager
+        JSONArray listObjects = webImMessageManager
                 .listGroupChatMessage(userCode, unitCode, lastReadDate, pageDesc);
         ResponseMapData resData = new ResponseMapData();
         resData.addResponseData(OBJLIST, messgeListToJson(listObjects));

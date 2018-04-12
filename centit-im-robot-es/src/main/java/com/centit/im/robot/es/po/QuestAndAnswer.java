@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.search.annotation.ESType;
 import com.centit.search.document.ESDocument;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,8 +27,8 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     @ESType(type="text")
     @Id
     @Column(name = "QUESTION_ID")
-    @GeneratedValue(generator = "assignedGenerator")
-    @GenericGenerator(name = "assignedGenerator", strategy = "assigned")
+    //@GeneratedValue(generator = "assignedGenerator")
+    //@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
     private String questionId;
 
     /**

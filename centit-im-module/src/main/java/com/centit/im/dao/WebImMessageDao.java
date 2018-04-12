@@ -1,6 +1,7 @@
 package com.centit.im.dao;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.core.dao.PageDesc;
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
@@ -59,35 +60,43 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
 		return filterField;
 	}
 
-    public List<WebImMessage> listChatMessage(String sender,String receiver,
+    /*
+     * TODO 重构这个sql语句，把这个语句 更改为 sql语句
+     */
+    public JSONArray listChatMessage(String sender,String receiver,
                                               Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
         String sql = "FROM WebImMessage f " +
                 "WHERE 1=1 AND f.sendTime <= ? " +
                 "AND (f.sender = ? AND f.receiver = ?) OR (f.sender = ? AND f.receiver = ?) " +
                 "ORDER BY f.sendTime DESC ";
-        return this.listObjects( sql,
+        return DatabaseOptUtils.listObjectsBySqlAsJson(this,  sql,
                 new Object[]{lrd,sender,receiver,receiver,sender}, pageDesc);
     }
 
-    public List<WebImMessage> listAllChatMessage(String receiver,
+    /*
+     * TODO 重构这个sql语句，把这个语句 更改为 sql语句，病添加和 T_Web_IM_CUSTOMER 表管理，返回 用户的姓名 和 头像
+     */
+    public JSONArray listAllChatMessage(String receiver,
                                                  Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
         String sql = "FROM WebImMessage f " +
                 "WHERE 1=1 AND f.sendTime <= ? AND ( f.receiver = ?  OR f.sender = ?) " +
                 "ORDER BY f.sendTime DESC";
-        return this.listObjects( sql,
+        return DatabaseOptUtils.listObjectsBySqlAsJson(this,  sql,
                 new Object[]{lrd,receiver,receiver}, pageDesc);
     }
 
-
-    public List<WebImMessage> listGroupChatMessage(String unitCode,
+    /*
+     * TODO 重构这个sql语句，把这个语句 更改为 sql语句，病添加和 T_Web_IM_CUSTOMER 表管理，返回 用户的姓名 和 头像
+     */
+    public JSONArray  listGroupChatMessage(String unitCode,
                                                    Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
         String sql = "FROM WebImMessage f " +
                 "WHERE f.sendTime <= ? AND f.receiver = ? AND f.msgType = 'G' " +
                 "ORDER BY f.sendTime DESC";
-        return  this.listObjects( sql,
+        return  DatabaseOptUtils.listObjectsBySqlAsJson(this,  sql,
                 new Object[]{lrd,unitCode}, pageDesc);
     }
 
@@ -96,7 +105,7 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
         String sql = "UPDATE WebImMessage f " +
                 "SET f.msgState='C' " +
                 "WHERE f.msgState='U' AND f.receiver=? AND f.sender=?";
-        return DatabaseOptUtils.doExecuteHql( this, sql, new Object[] {receiver,sender});
+        return DatabaseOptUtils.doExecuteSql( this, sql, new Object[] {receiver,sender});
     }
 
     @Transactional(propagation= Propagation.MANDATORY)
@@ -104,16 +113,18 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
         String sql = "UPDATE WebImMessage f " +
                 "SET f.msgState='C' " +
                 "WHERE f.msgState='U' AND f.receiver=? ";
-        return DatabaseOptUtils.doExecuteHql( this, sql, new Object[] {receiver});
+        return DatabaseOptUtils.doExecuteSql( this, sql, new Object[] {receiver});
     }
 
     public Map<String, Integer> statUnreadMsg(String receiver){
         String sql = "select v.SENDER, v.UNREAD_SUM  from  F_V_UNREAD_CHAT_MSG v where  v.RECEIVER= ? ";
-        List<Object[]> jsonArray = (List<Object[]>) DatabaseOptUtils.findObjectsBySql(this,sql, new Object[] {receiver}, new PageDesc(-1, -1));
+        JSONArray jsonArray =
+                DatabaseOptUtils.listObjectsBySqlAsJson(this,sql,
+                        new String[]{"userCode","unreadSum"}, new Object[] {receiver});
         Map<String, Integer> map = new HashMap<>(jsonArray.size() * 2);
-        for(Object[] obj : jsonArray){
-            map.put( StringBaseOpt.objectToString(obj[0]),
-                    NumberBaseOpt.castObjectToInteger(obj[1] ));
+        for(Object obj : jsonArray){
+            map.put( StringBaseOpt.objectToString( ((JSONObject)obj).get("unitCode") ),
+                    NumberBaseOpt.castObjectToInteger(((JSONObject)obj).get("unreadSum") ));
         }
         return map;
     }
@@ -121,11 +132,14 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
 
     public  Map<String, Integer> statGroupUnreadMsg(String userCode){
         String sql = "select v.UNIT_CODE, v.UNREAD_SUM  from  F_V_UNREAD_GROUP_MSG v where v.USER_CODE = ?";
-        List<Object[]> jsonArray = (List<Object[]>) DatabaseOptUtils.findObjectsBySql(this,sql, new Object[] {userCode}, new PageDesc(-1, -1));
+        JSONArray jsonArray =
+                DatabaseOptUtils.listObjectsBySqlAsJson(this,sql,
+                        new String[]{"userCode","unreadSum"},
+                        new Object[] {userCode});
         Map<String, Integer> map = new HashMap<>(jsonArray.size() * 2);
-        for(Object[] obj : jsonArray){
-            map.put( StringBaseOpt.objectToString(obj[0]),
-                    NumberBaseOpt.castObjectToInteger(obj[1] ));
+        for(Object obj : jsonArray){
+            map.put( StringBaseOpt.objectToString( ((JSONObject)obj).get("unitCode") ),
+                    NumberBaseOpt.castObjectToInteger(((JSONObject)obj).get("unreadSum") ));
         }
         return map;
     }
@@ -133,11 +147,11 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
     public JSONArray statUnreadWithLastMsg(String receiver){
         String sql = "select v.SENDER, v.RECEIVER, v.UNREAD_SUM, v.SEND_TIME," +
                 "v.MSG_ID, v.MSG_TYPE, v.MSG_STATE, v.CONTENT from  F_V_LAST_UNREAD_CHAT_MSG v where  v.RECEIVER= ? ";
-        JSONArray jsonArray = DatabaseOptUtils.findObjectsAsJSONBySql(
+        JSONArray jsonArray = DatabaseOptUtils.listObjectsBySqlAsJson(
                 this,sql,
                 new String[]{"sender","receiver","unreadSum","sendTime",
                         "msgId","msgType","msgState","content"},
-                new Object[] {receiver}, new PageDesc(-1, -1));
+                new Object[] {receiver});
 
         return jsonArray;
     }
@@ -146,11 +160,11 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
     public  JSONArray statGroupUnreadWithLastMsg(String userCode){
         String sql = "select v.USER_CODE, v.UNIT_CODE, v.UNREAD_SUM, v.SEND_TIME," +
                 "v.MSG_ID, v.MSG_TYPE, v.MSG_STATE, v.CONTENT from  F_V_LAST_UNREAD_GROUP_MSG v where  v.USER_CODE= ? ";
-        JSONArray jsonArray = DatabaseOptUtils.findObjectsAsJSONBySql(
+        JSONArray jsonArray = DatabaseOptUtils.listObjectsBySqlAsJson(
                 this,sql,
                 new String[]{"userCode","unitCode","unreadSum","sendTime",
                         "msgId","msgType","msgState","content"},
-                new Object[] {userCode}, new PageDesc(-1, -1));
+                new Object[] {userCode});
 
         return jsonArray;
 

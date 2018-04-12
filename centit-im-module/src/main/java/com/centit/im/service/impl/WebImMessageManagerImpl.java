@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.dao.PageDesc;
 import com.centit.framework.jdbc.service.BaseEntityManagerImpl;
 import com.centit.im.dao.WebImGroupDao;
-import com.centit.im.dao.WebImMessageDao;
 import com.centit.im.dao.WebImGroupMemberDao;
+import com.centit.im.dao.WebImMessageDao;
 import com.centit.im.po.WebImMessage;
 import com.centit.im.service.WebImMessageManager;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,7 +44,7 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
-    public List<WebImMessage> listChatMessage(String sender, String receiver,
+    public JSONArray listChatMessage(String sender, String receiver,
                                               Date lastReadDate, PageDesc pageDesc) {
         webImMessageDao.updateReadState(sender, receiver);//将消息设置为已读
         return webImMessageDao.listChatMessage(sender,receiver,lastReadDate,pageDesc);
@@ -53,7 +52,7 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
-    public List<WebImMessage>  listAllChatMessage(String receiver,
+    public JSONArray  listAllChatMessage(String receiver,
                                                   Date lastReadDate, PageDesc pageDesc) {
         webImMessageDao.updateReadState(receiver);//将消息设置为已读
         return webImMessageDao.listAllChatMessage(receiver,lastReadDate,pageDesc);
@@ -61,14 +60,14 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
-    public  List<WebImMessage> listGroupChatMessage(String receiver, Date lastReadDate, PageDesc pageDesc){
+    public  JSONArray listGroupChatMessage(String receiver, Date lastReadDate, PageDesc pageDesc){
         return webImMessageDao.listGroupChatMessage(receiver,lastReadDate,pageDesc);
     }
 
 
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
-    public List<WebImMessage> listGroupChatMessage(String userCode,
+    public JSONArray listGroupChatMessage(String userCode,
                                                    String unitCode, Date lastReadDate, PageDesc pageDesc){
         webImGroupMemberDao.setGroupReadState(userCode,unitCode);
 //        setGroupReadState(userCode,unitCode);

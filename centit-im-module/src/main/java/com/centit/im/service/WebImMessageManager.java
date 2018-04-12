@@ -6,7 +6,6 @@ import com.centit.framework.jdbc.service.BaseEntityManager;
 import com.centit.im.po.WebImMessage;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,7 +21,7 @@ public interface WebImMessageManager extends BaseEntityManager<WebImMessage,Stri
      * @param pageDesc 分页
      * @return 消息集合
      */
-    List<WebImMessage> listChatMessage(String sender, String receiver, Date lastReadDate, PageDesc pageDesc);
+    JSONArray listChatMessage(String sender, String receiver, Date lastReadDate, PageDesc pageDesc);
 
     /**
      * 获取一个公户的所有消息，主要用户客服模式
@@ -31,7 +30,7 @@ public interface WebImMessageManager extends BaseEntityManager<WebImMessage,Stri
      * @param pageDesc 分页信息
      * @return 聊天记录
      */
-    List<WebImMessage> listAllChatMessage(String receiver, Date lastReadDate, PageDesc pageDesc);
+    JSONArray listAllChatMessage(String receiver, Date lastReadDate, PageDesc pageDesc);
 
     /**
      * 获取 群聊消息
@@ -40,10 +39,10 @@ public interface WebImMessageManager extends BaseEntityManager<WebImMessage,Stri
      * @param pageDesc 分页信息
      * @return 聊天记录
      */
-    List<WebImMessage> listGroupChatMessage(String receiver, Date lastReadDate, PageDesc pageDesc);
+    JSONArray listGroupChatMessage(String receiver, Date lastReadDate, PageDesc pageDesc);
 
 
-    List<WebImMessage> listGroupChatMessage(String userCode ,String unitCode, Date lastReadDate, PageDesc pageDesc);
+    JSONArray listGroupChatMessage(String userCode ,String unitCode, Date lastReadDate, PageDesc pageDesc);
 
 
     Map<String,Integer> statUnreadMessage(String receiver);
