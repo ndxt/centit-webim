@@ -8,7 +8,7 @@ import com.centit.framework.model.basedata.IUserUnit;
 import com.centit.im.dao.CustomerPraiseDao;
 import com.centit.im.dao.WebImCustomerDao;
 import com.centit.im.dao.WebImMessageDao;
-import com.centit.im.dao.WebImReadGroupDao;
+import com.centit.im.dao.WebImGroupMemberDao;
 import com.centit.im.po.*;
 import com.centit.im.service.IntelligentRobot;
 import com.centit.im.service.IntelligentRobotFactory;
@@ -88,7 +88,7 @@ public class WebImSocketImpl implements WebImSocket {
     protected WebImCustomerDao customerDao;
 
     @Resource(name = "webImReadGroupDao")
-    protected WebImReadGroupDao webImReadGroupDao;
+    protected WebImGroupMemberDao webImGroupMemberDao;
 
     @Resource
     protected CustomerPraiseDao customerPraiseDao;
@@ -343,7 +343,7 @@ public class WebImSocketImpl implements WebImSocket {
        /* messageDao.updateGroupReadState(message.getSender(),
                 message.getReceiver(), DatetimeOpt.currentUtilDate());*/
         //修改群发已读消息状态不需要改变消息状态，只需要改变最后推送消息成功的时间
-        webImReadGroupDao.setGroupReadState(message.getSender(),message.getReceiver());
+        webImGroupMemberDao.setGroupReadState(message.getSender(),message.getReceiver());
     }
 
 

@@ -3,8 +3,9 @@ package com.centit.im.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.dao.PageDesc;
 import com.centit.framework.hibernate.service.BaseEntityManagerImpl;
+import com.centit.im.dao.WebImGroupDao;
 import com.centit.im.dao.WebImMessageDao;
-import com.centit.im.dao.WebImReadGroupDao;
+import com.centit.im.dao.WebImGroupMemberDao;
 import com.centit.im.po.WebImMessage;
 import com.centit.im.service.WebImMessageManager;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,11 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
         java.lang.String,WebImMessageDao>
         implements WebImMessageManager {
 
-    @Resource(name = "webImReadGroupDao")
-    private WebImReadGroupDao webImReadGroupDao ;
+    @Resource
+    private WebImGroupMemberDao webImGroupMemberDao;
+
+    @Resource
+    private WebImGroupDao webImGroupDao;
 
     private WebImMessageDao webImMessageDao ;
 
@@ -66,7 +70,7 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
     @Transactional(propagation= Propagation.REQUIRED)
     public List<WebImMessage> listGroupChatMessage(String userCode,
                                                    String unitCode, Date lastReadDate, PageDesc pageDesc){
-        webImReadGroupDao.setGroupReadState(userCode,unitCode);
+        webImGroupMemberDao.setGroupReadState(userCode,unitCode);
 //        setGroupReadState(userCode,unitCode);
 //        webImMessageDao.updateGroupReadState(userCode,unitCode, DatetimeOpt.currentUtilDate());
         return webImMessageDao.listGroupChatMessage(unitCode,lastReadDate,pageDesc);
@@ -113,7 +117,7 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
     @Override
     @Transactional(propagation= Propagation.REQUIRED)
     public void setGroupReadState(String userCode, String unitCode) {
-        webImReadGroupDao.setGroupReadState(userCode,unitCode);
+        webImGroupMemberDao.setGroupReadState(userCode,unitCode);
     }
 
 }

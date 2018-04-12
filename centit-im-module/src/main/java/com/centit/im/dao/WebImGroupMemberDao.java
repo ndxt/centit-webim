@@ -22,10 +22,10 @@ import java.util.Map;
 */
 
 @Repository
-public class WebImReadGroupDao extends BaseDaoImpl<WebImGroupMember,WebImGroupMemberId>
+public class WebImGroupMemberDao extends BaseDaoImpl<WebImGroupMember,WebImGroupMemberId>
 	{
 
-	public static final Log log = LogFactory.getLog(WebImReadGroupDao.class);
+	public static final Log log = LogFactory.getLog(WebImGroupMemberDao.class);
 	
 	@Override
 	public Map<String, String> getFilterField() {
