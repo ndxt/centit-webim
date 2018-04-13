@@ -67,7 +67,7 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
                                               Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
         String sql = "select f.MSG_ID, f.OS_ID, f.MSG_TYPE, f.SENDER, f.RECEIVER, " +
-                   "f.SEND_TIME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
+                   "f.SEND_TIME, f.SENDER_NAME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
                 "WHERE 1=1 AND f.SEND_TIME <= ? " +
                 "AND (f.SENDER = ? AND f.RECEIVER = ?) OR (f.SENDER = ? AND f.RECEIVER = ?) " +
                 "ORDER BY f.SEND_TIME DESC ";
@@ -82,7 +82,7 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
                                                  Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
         String sql = "select f.MSG_ID, f.OS_ID, f.MSG_TYPE, f.SENDER, f.RECEIVER, " +
-                   "f.SEND_TIME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
+                   "f.SEND_TIME, f.SENDER_NAME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
                 "WHERE 1=1 AND f.SEND_TIME <= ? AND ( f.RECEIVER = ?  OR f.SENDER = ?) " +
                 "ORDER BY f.SEND_TIME DESC";
         return DatabaseOptUtils.listObjectsBySqlAsJson(this,  sql,
@@ -96,7 +96,7 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
                                                    Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
         String sql = "selectf.MSG_ID, f.OS_ID, f.MSG_TYPE, f.SENDER, f.RECEIVER, " +
-                   "f.SEND_TIME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
+                   "f.SEND_TIME, f.SENDER_NAME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
                 "WHERE f.SEND_TIME <= ? AND f.RECEIVER = ? AND f.MSG_TYPE = 'G' " +
                 "ORDER BY f.SEND_TIME DESC";
         return  DatabaseOptUtils.listObjectsBySqlAsJson(this,  sql,
@@ -148,8 +148,9 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
     }
 
     public JSONArray statUnreadWithLastMsg(String receiver){
-        String sql = "select v.SENDER, v.RECEIVER, v.UNREAD_SUM, v.SEND_TIME," +
-                "v.MSG_ID, v.MSG_TYPE, v.MSG_STATE, v.CONTENT from  F_V_LAST_UNREAD_CHAT_MSG v where  v.RECEIVER= ? ";
+        String sql = "select v.SENDER, v.RECEIVER, v.UNREAD_SUM, v.SEND_TIME, V.SENDER_NAME," +
+                "v.MSG_ID, v.MSG_TYPE, v.MSG_STATE, v.CONTENT, v.CONTENT_TYPE " +
+                "from  F_V_LAST_UNREAD_CHAT_MSG v where  v.RECEIVER= ? ";
         JSONArray jsonArray = DatabaseOptUtils.listObjectsBySqlAsJson(
                 this,sql,
                 new String[]{"sender","receiver","unreadSum","sendTime",
@@ -161,8 +162,9 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
 
 
     public  JSONArray statGroupUnreadWithLastMsg(String userCode){
-        String sql = "select v.USER_CODE, v.UNIT_CODE, v.UNREAD_SUM, v.SEND_TIME," +
-                "v.MSG_ID, v.MSG_TYPE, v.MSG_STATE, v.CONTENT from  F_V_LAST_UNREAD_GROUP_MSG v where  v.USER_CODE= ? ";
+        String sql = "select v.USER_CODE, v.UNIT_CODE, v.UNREAD_SUM, v.SEND_TIME, V.SENDER_NAME," +
+                "v.MSG_ID, v.MSG_TYPE, v.MSG_STATE, v.CONTENT, v.CONTENT_TYPE " +
+                "from  F_V_LAST_UNREAD_GROUP_MSG v where  v.USER_CODE= ? ";
         JSONArray jsonArray = DatabaseOptUtils.listObjectsBySqlAsJson(
                 this,sql,
                 new String[]{"userCode","unitCode","unreadSum","sendTime",
