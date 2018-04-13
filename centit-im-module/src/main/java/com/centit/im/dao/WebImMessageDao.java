@@ -66,10 +66,11 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
     public JSONArray listChatMessage(String sender,String receiver,
                                               Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
-        String sql = "FROM WebImMessage f " +
-                "WHERE 1=1 AND f.sendTime <= ? " +
-                "AND (f.sender = ? AND f.receiver = ?) OR (f.sender = ? AND f.receiver = ?) " +
-                "ORDER BY f.sendTime DESC ";
+        String sql = "select f.MSG_ID, f.OS_ID, f.MSG_TYPE, f.SENDER, f.RECEIVER, " +
+                   "f.SEND_TIME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
+                "WHERE 1=1 AND f.SEND_TIME <= ? " +
+                "AND (f.SENDER = ? AND f.RECEIVER = ?) OR (f.SENDER = ? AND f.RECEIVER = ?) " +
+                "ORDER BY f.SEND_TIME DESC ";
         return DatabaseOptUtils.listObjectsBySqlAsJson(this,  sql,
                 new Object[]{lrd,sender,receiver,receiver,sender}, pageDesc);
     }
@@ -80,9 +81,10 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
     public JSONArray listAllChatMessage(String receiver,
                                                  Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
-        String sql = "FROM WebImMessage f " +
-                "WHERE 1=1 AND f.sendTime <= ? AND ( f.receiver = ?  OR f.sender = ?) " +
-                "ORDER BY f.sendTime DESC";
+        String sql = "select f.MSG_ID, f.OS_ID, f.MSG_TYPE, f.SENDER, f.RECEIVER, " +
+                   "f.SEND_TIME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
+                "WHERE 1=1 AND f.SEND_TIME <= ? AND ( f.RECEIVER = ?  OR f.SENDER = ?) " +
+                "ORDER BY f.SEND_TIME DESC";
         return DatabaseOptUtils.listObjectsBySqlAsJson(this,  sql,
                 new Object[]{lrd,receiver,receiver}, pageDesc);
     }
@@ -93,26 +95,27 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
     public JSONArray  listGroupChatMessage(String unitCode,
                                                    Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
-        String sql = "FROM WebImMessage f " +
-                "WHERE f.sendTime <= ? AND f.receiver = ? AND f.msgType = 'G' " +
-                "ORDER BY f.sendTime DESC";
+        String sql = "selectf.MSG_ID, f.OS_ID, f.MSG_TYPE, f.SENDER, f.RECEIVER, " +
+                   "f.SEND_TIME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
+                "WHERE f.SEND_TIME <= ? AND f.RECEIVER = ? AND f.MSG_TYPE = 'G' " +
+                "ORDER BY f.SEND_TIME DESC";
         return  DatabaseOptUtils.listObjectsBySqlAsJson(this,  sql,
                 new Object[]{lrd,unitCode}, pageDesc);
     }
 
     @Transactional(propagation= Propagation.MANDATORY)
     public int updateReadState(String sender,String receiver){
-        String sql = "UPDATE WebImMessage f " +
-                "SET f.msgState='C' " +
-                "WHERE f.msgState='U' AND f.receiver=? AND f.sender=?";
+        String sql = "UPDATE F_WEB_IM_MESSAGE f " +
+                "SET f.MSG_STATE='C' " +
+                "WHERE f.MSG_STATE='U' AND f.RECEIVER=? AND f.SENDER=?";
         return DatabaseOptUtils.doExecuteSql( this, sql, new Object[] {receiver,sender});
     }
 
     @Transactional(propagation= Propagation.MANDATORY)
     public int updateReadState(String receiver){
-        String sql = "UPDATE WebImMessage f " +
-                "SET f.msgState='C' " +
-                "WHERE f.msgState='U' AND f.receiver=? ";
+        String sql = "UPDATE F_WEB_IM_MESSAGE f " +
+                "SET f.MSG_STATE='C' " +
+                "WHERE f.MSG_STATE='U' AND f.RECEIVER=? ";
         return DatabaseOptUtils.doExecuteSql( this, sql, new Object[] {receiver});
     }
 
