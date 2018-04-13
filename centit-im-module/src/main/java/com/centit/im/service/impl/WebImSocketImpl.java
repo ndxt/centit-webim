@@ -87,7 +87,7 @@ public class WebImSocketImpl implements WebImSocket {
     @Resource
     protected WebImCustomerDao customerDao;
 
-    @Resource(name = "webImReadGroupDao")
+    @Resource
     protected WebImGroupMemberDao webImGroupMemberDao;
 
     @Resource

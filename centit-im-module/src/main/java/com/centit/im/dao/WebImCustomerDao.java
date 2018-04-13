@@ -62,7 +62,7 @@ public class WebImCustomerDao extends BaseDaoImpl<WebImCustomer,String>
 
 	public List<WebImCustomer> listCustomerServiceByOptId(String optId) {
 		return this.listObjectsByFilter(
-				"where (userType = 'S' or userType = 'P') and serviceOpts like ? ",
+				"where (USER_TYPE = 'S' or USER_TYPE = 'P') and SERVICE_OPTS like ? ",
 				new Object[]{"%"+optId+"%"});
 	}
 
