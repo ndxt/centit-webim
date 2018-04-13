@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
-import com.centit.framework.core.dao.PageDesc;
+import com.centit.support.database.utils.PageDesc;
 import com.centit.im.po.WebImMessage;
 import com.centit.im.service.WebImMessageManager;
 import com.centit.im.service.WebImSocket;
