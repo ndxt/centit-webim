@@ -1,3 +1,6 @@
+-- mysql -h 192.168.131.6 -u webim -p webim
+use webim;
+
 DROP TABLE IF EXISTS F_WEB_IM_CUSTOMER;
 DROP TABLE IF EXISTS F_WEB_IM_MESSAGE;
 DROP TABLE IF EXISTS F_WEB_IM_GROUP_MEMBER;
@@ -26,6 +29,7 @@ CREATE TABLE F_WEB_IM_MESSAGE
    OS_ID                varchar(20) NOT NULL,
    MSG_TYPE             CHAR NOT NULL COMMENT 'C chat  G Group',
    SENDER               VARCHAR(32) NOT NULL,
+   SENDER_NAME          varchar(100),
    RECEIVER             VARCHAR(32) NOT NULL,
    SEND_TIME            TIME,
    MSG_STATE            CHAR COMMENT 'U 未读 C  已读',
@@ -39,7 +43,7 @@ CREATE TABLE F_WEB_IM_GROUP_MEMBER
    OS_ID                varchar(20) NOT NULL,
    USER_CODE            varchar(32) NOT NULL,
    UNIT_CODE            varchar(32) NOT NULL,
-   LAST_PUST_TIME       DATE NOT NULL,
+   LAST_PUSH_TIME       DATE NOT NULL,
    PRIMARY KEY (USER_CODE, UNIT_CODE)
 );
 ALTER TABLE F_WEB_IM_GROUP_MEMBER COMMENT '用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息';

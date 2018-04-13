@@ -27,6 +27,7 @@ CREATE TABLE F_WEB_IM_MESSAGE
    OS_ID                varchar2(20) NOT NULL,
    MSG_TYPE             CHAR NOT NULL ,
    SENDER               varchar2(32) NOT NULL,
+   SENDER_NAME          varchar2(100),
    RECEIVER             varchar2(32) NOT NULL,
    SEND_TIME            date,
    MSG_STATE            CHAR ,
@@ -40,7 +41,7 @@ CREATE TABLE F_WEB_IM_GROUP_MEMBER
    OS_ID                varchar2(20) NOT NULL,
    USER_CODE            varchar2(32) NOT NULL,
    UNIT_CODE            varchar2(32) NOT NULL,
-   LAST_PUST_TIME       DATE NOT NULL,
+   LAST_PUSH_TIME       DATE NOT NULL,
    PRIMARY KEY (USER_CODE, UNIT_CODE)
 );
 COMMENT on TABLE F_WEB_IM_GROUP_MEMBER is  '用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息';

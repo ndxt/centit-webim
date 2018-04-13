@@ -3,7 +3,6 @@ create table F_QUESTION_AND_ANSWER
   question_id VARCHAR(48) not null primary key comment 'uuid',
   os_id VARCHAR(32),
   opt_Id VARCHAR(32),
-  question_id VARCHAR(100) not null primary key comment 'uuid',
   key_words VARCHAR(1000) comment '主题词 多个主题词用空格分开',
   question_title VARCHAR(1000) comment '问题',
   question_url   VARCHAR(1000) comment '问题',

@@ -294,7 +294,9 @@ public class WebImSocketImpl implements WebImSocket {
         //如果还是没有分配的客服则随机分配
         if(service==null){ // 随机分配
             //分配默认值
-            service =  customerDao.getObjectById(custServiceCode);
+            if(StringUtils.isNotBlank(custServiceCode)) {
+                service = customerDao.getObjectById(custServiceCode);
+            }
             if(service!=null)
                 service.setUserState( checkUserState(service.getUserCode()) );
 

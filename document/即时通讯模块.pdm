@@ -2270,11 +2270,11 @@ group by [{95C7FC04-F7D1-4AE5-8CF1-FB4CE148471B}=SENDER], [{90BF3FD4-4C1E-4741-B
 <a:Modifier>codefan</a:Modifier>
 <a:View.SQLQuery>select b.USER_CODE,a.RECEIVER as UNITCODE , count(1) as UNREAD_SUM 
 from F_WEB_IM_MESSAGE a join F_WEB_IM_GROUP_MEMBER b on(a.RECEIVER = b.UNIT_CODE)
-where a.MSG_TYPE = &#39;G&#39; and a.send_time &gt; LAST_PUST_TIME 
+where a.MSG_TYPE = &#39;G&#39; and a.send_time &gt; LAST_PUSH_TIME
 group by  b.USER_CODE, a.RECEIVER</a:View.SQLQuery>
 <a:TaggedSQLQuery>select b.USER_CODE,a.RECEIVER as UNITCODE , count(1) as UNREAD_SUM 
 from F_WEB_IM_MESSAGE a join F_WEB_IM_GROUP_MEMBER b on(a.RECEIVER = b.UNIT_CODE)
-where a.MSG_TYPE = &#39;G&#39; and a.send_time &gt; LAST_PUST_TIME 
+where a.MSG_TYPE = &#39;G&#39; and a.send_time &gt; LAST_PUSH_TIME
 group by  b.USER_CODE, a.RECEIVER</a:TaggedSQLQuery>
 <a:UserDefinedSQL>1</a:UserDefinedSQL>
 <c:Columns>
