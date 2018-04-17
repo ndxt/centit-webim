@@ -63,6 +63,13 @@ public interface WebImUserManager {
      */
     List<? extends IUnitInfo> listAllUnit();
 
+
+    /**
+     * 返回下级机构
+     * @param parentUnitCode 上级机构代码， '0' 返回顶层机构
+     * @return
+     */
+    List<? extends IUnitInfo> listSubUnit(String parentUnitCode);
     /**
      * 返回用户的组（群、机构）
      * @param userCode

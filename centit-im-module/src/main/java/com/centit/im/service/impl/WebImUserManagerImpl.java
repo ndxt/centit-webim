@@ -1,5 +1,6 @@
 package com.centit.im.service.impl;
 
+import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
@@ -12,6 +13,7 @@ import com.centit.im.service.WebImSocket;
 import com.centit.im.service.WebImUserManager;
 import com.centit.im.socketio.ImMessage;
 import com.centit.support.algorithm.DatetimeOpt;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -178,6 +180,29 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Transactional
     public List<? extends IUnitInfo> listAllUnit() {
         return platformEnvironment.listAllUnits();
+    }
+
+    /**
+     * 返回下级机构
+     * @param parentUnitCode 上级机构代码， '0' 返回顶层机构
+     * @return
+     */
+    @Override
+    @Transactional
+    public List<? extends IUnitInfo> listSubUnit(String parentUnitCode){
+        List<? extends IUnitInfo> allUnits = platformEnvironment.listAllUnits();
+        List<IUnitInfo> units = new ArrayList<>();
+        for (IUnitInfo uc : allUnits) {
+            //获取顶层机构
+            if (StringUtils.isBlank(parentUnitCode) || "0".equals(parentUnitCode)){
+                if(StringUtils.isBlank(uc.getParentUnit()) || "0".equals(uc.getParentUnit())) {
+                    units.add(uc);
+                }
+            }else if(parentUnitCode.equals(uc.getParentUnit())) {
+                units.add(uc);
+            }
+        }
+        return units;
     }
 
     @Override

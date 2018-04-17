@@ -3,9 +3,11 @@ package com.centit.im.controller;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.model.basedata.IUnitInfo;
-import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImCustomer;
+import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.service.WebImUserManager;
+import com.centit.support.algorithm.ListOpt;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by codefan on 17-5-26.
@@ -64,6 +64,30 @@ public class WebImUserController extends BaseController {
         JsonResultUtils.writeSingleDataJson(allCusts,response);
     }
 
+    @RequestMapping(value = "/allUnit",
+            method = RequestMethod.GET)
+    public void listAllUnits(HttpServletResponse response) {
+        List<? extends IUnitInfo> allUnits = webImUserManager.listAllUnit();
+        ListOpt.sortAsTree(allUnits,
+                ( p,  c) -> StringUtils.equals(p.getUnitCode(),c.getParentUnit()) );
+        JsonResultUtils.writeSingleDataJson(
+                allUnits,response);
+    }
+
+    /**
+     * 获取下层机构
+     * @param parentUnitCode
+     * @param response
+     */
+    @RequestMapping(value = "/subUnit/{parentUnitCode}",
+            method = RequestMethod.GET)
+    public void listSubUnits(@PathVariable String parentUnitCode,
+                             HttpServletResponse response) {
+        List<? extends IUnitInfo> allUnits = webImUserManager.listSubUnit(parentUnitCode);
+        Collections.sort(allUnits, Comparator.comparing(IUnitInfo::getUnitOrder));
+        JsonResultUtils.writeSingleDataJson(
+                allUnits,response);
+    }
     /**
      * 返回联系人信息
      * @param response
