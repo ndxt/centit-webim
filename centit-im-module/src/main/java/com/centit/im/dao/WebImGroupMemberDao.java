@@ -40,6 +40,8 @@ public class WebImGroupMemberDao extends BaseDaoImpl<WebImGroupMember,WebImGroup
 
 			filterField.put("lastPustTime" , CodeBook.EQUAL_HQL_ID);
 
+			filterField.put("groupId" , CodeBook.EQUAL_HQL_ID);
+
 		}
 		return filterField;
 	}

@@ -1,19 +1,23 @@
 package com.centit.im.service.impl;
 
 import com.centit.framework.components.CodeRepositoryUtil;
+import com.alibaba.fastjson.JSONArray;
+import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.IUserUnit;
 import com.centit.im.dao.FriendMemoDao;
 import com.centit.im.dao.WebImCustomerDao;
-import com.centit.im.po.WebImFriendMemo;
-import com.centit.im.po.WebImCustomer;
+import com.centit.im.dao.WebImGroupDao;
+import com.centit.im.dao.WebImGroupMemberDao;
+import com.centit.im.po.*;
 import com.centit.im.service.WebImSocket;
 import com.centit.im.service.WebImUserManager;
 import com.centit.im.socketio.ImMessage;
 import com.centit.support.algorithm.DatetimeOpt;
 import org.apache.commons.lang3.StringUtils;
+import com.centit.support.algorithm.UuidOpt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +41,12 @@ public class WebImUserManagerImpl implements WebImUserManager {
 
     @Resource
     protected FriendMemoDao friendMemoDao;
+
+    @Resource
+    protected WebImGroupDao webImGroupDao;
+
+    @Resource
+    protected WebImGroupMemberDao webImGroupMemberDao;
     /**
      * 返回联系人信息
      */
@@ -239,5 +249,105 @@ public class WebImUserManagerImpl implements WebImUserManager {
     public void saveUserFriendMemo(WebImFriendMemo memo){
         friendMemoDao.saveNewObject(memo);
     }
+
+    /**
+     * 创建群
+     * @param userCode
+     * @param webImGroup
+     */
+    @Override
+    @Transactional
+    public void saveGroup(String userCode, WebImGroup webImGroup,WebImGroupMember webImGroupMember) {
+        webImGroup.setGroupId(UuidOpt.getUuidAsString32());
+        webImGroup.setCreator(userCode);
+        webImGroup.setCreateTime(DatetimeOpt.currentUtilDate());
+        webImGroupMember.setGroupId(webImGroup.getGroupId());
+        webImGroupMember.setUserCode(userCode);
+        webImGroupMember.setGroupMemo(webImGroup.getGroupName());
+        webImGroupMember.setJoinTime(DatetimeOpt.currentUtilDate());
+        webImGroupMember.setLastPushTime(DatetimeOpt.currentUtilDate());
+        webImGroupDao.saveNewObject(webImGroup);
+        webImGroupMemberDao.saveNewObject(webImGroupMember);
+    }
+
+    /**
+     * 加入群
+     * @param userCode
+     * @param groupId
+     */
+    @Override
+    @Transactional
+    public void addGroup(String userCode, String groupId,WebImGroupMember webImGroupMember) {
+        WebImGroup dbWebImGroup = webImGroupDao.getObjectById(groupId);
+        webImGroupMember.setGroupMemo(dbWebImGroup.getGroupName());
+        webImGroupMember.setUserCode(userCode);
+        webImGroupMember.setGroupId(groupId);
+        webImGroupMember.setJoinTime(DatetimeOpt.currentUtilDate());
+        webImGroupMember.setLastPushTime(DatetimeOpt.currentUtilDate());
+        webImGroupMemberDao.saveNewObject(webImGroupMember);
+    }
+
+    /**
+     * 获取群成员信息
+     * @param groupId
+     * @return
+     */
+    @Override
+    public List<WebImGroupMember> listGroupMember(String groupId){
+        return webImGroupMemberDao.listObjectsByProperty("groupId",groupId);
+    }
+
+    /**
+     * 修改个人在群中的信息
+     * @param webImGroupMember
+     */
+    @Override
+    public void updateGroupMember(WebImGroupMember webImGroupMember){
+        WebImGroupMember dbWebImGroupMember = webImGroupMemberDao.getObjectById(new WebImGroupMemberId(webImGroupMember.getUserCode(),webImGroupMember.getGroupId()));
+        dbWebImGroupMember.copy(webImGroupMember);
+        webImGroupMemberDao.updateObject(dbWebImGroupMember);
+    }
+
+    /**
+     * 修改群信息
+     * @param groupId
+     * @param webImGroup
+     */
+    @Override
+    public void updateGroup(String groupId,WebImGroup webImGroup){
+        webImGroupDao.updateObject(webImGroup);
+    }
+
+    /**
+     * 退出群
+     * @param userCode
+     * @param groupId
+     */
+    @Override
+    public void quitGroup(String userCode,String groupId){
+        webImGroupMemberDao.deleteObjectById(new WebImGroupMemberId(userCode,groupId));
+    }
+
+    /**
+     * 解散群
+     * @param userCode
+     * @param groupId
+     */
+    @Override
+    public void dissolveGroup(String userCode,String groupId){
+        WebImGroup dbWebImGroup = webImGroupDao.getObjectById(groupId);
+        if (dbWebImGroup.getCreator().equals(userCode)){
+            webImGroupDao.deleteObjectById(groupId);
+        }
+        HashMap<String,Object> map = new HashMap();
+        map.put("groupId",groupId);
+        webImGroupMemberDao.deleteObjectsByProperties(map);
+    }
+
+    @Override
+    public WebImGroup getWebImGroup(String groupId){
+       return webImGroupDao.getObjectById(groupId);
+    }
+
 }
 

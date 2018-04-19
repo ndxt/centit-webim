@@ -24,7 +24,7 @@ public class WebImGroupMemberId implements java.io.Serializable {
 	/**
 	 * 组代码 null 
 	 */
-	@Column(name = "GROUP_ID")
+	@Column(name = "UNIT_CODE")
 	@NotBlank(message = "字段不能为空")
 	private String groupId;
 

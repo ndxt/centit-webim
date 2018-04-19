@@ -3,6 +3,8 @@ package com.centit.im.service;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImCustomer;
+import com.centit.im.po.WebImGroup;
+import com.centit.im.po.WebImGroupMember;
 
 import java.util.Date;
 import java.util.List;
@@ -90,4 +92,61 @@ public interface WebImUserManager {
      * @param memo
      */
     void saveUserFriendMemo(WebImFriendMemo memo);
+
+    /**
+     * 创建群
+     * @param userCode
+     * @param webImGroup
+     */
+    void saveGroup(String userCode,WebImGroup webImGroup,WebImGroupMember webImGroupMember);
+
+    /**
+     * 申请加入群
+     * @param userCode
+     * @param groupId
+     */
+    void addGroup(String userCode, String groupId,WebImGroupMember webImGroupMember);
+
+//    /**
+//     * 拉进群
+//     * @param userCode
+//     * @param groupId
+//     */
+//    void inviteGroup(String userCode, String groupId);
+
+    /**
+     * 获取群成员信息
+     * @param groupId
+     * @return
+     */
+    List<WebImGroupMember> listGroupMember(String groupId);
+
+    /**
+     * 修改个人在群中的信息
+     * @param webImGroupMember
+     */
+    void updateGroupMember(WebImGroupMember webImGroupMember);
+
+    /**
+     * 修改群信息
+     * @param groupId
+     * @param webImGroup
+     */
+    void updateGroup(String groupId,WebImGroup webImGroup);
+
+    /**
+     * 退出群
+     * @param userCode
+     * @param groupId
+     */
+    void quitGroup(String userCode,String groupId);
+
+    /**
+     * 解散群
+     * @param userCode
+     * @param groupId
+     */
+    void dissolveGroup(String userCode,String groupId);
+
+    WebImGroup getWebImGroup(String groupId);
 }

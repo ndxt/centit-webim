@@ -95,7 +95,7 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
     public JSONArray  listGroupChatMessage(String unitCode,
                                                    Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
-        String sql = "selectf.MSG_ID, f.OS_ID, f.MSG_TYPE, f.SENDER, f.RECEIVER, " +
+        String sql = "select f.MSG_ID, f.OS_ID, f.MSG_TYPE, f.SENDER, f.RECEIVER, " +
                    "f.SEND_TIME, f.SENDER_NAME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
                 "WHERE f.SEND_TIME <= ? AND f.RECEIVER = ? AND f.MSG_TYPE = 'G' " +
                 "ORDER BY f.SEND_TIME DESC";
