@@ -153,8 +153,8 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
                 "from  F_V_LAST_UNREAD_CHAT_MSG v where  v.RECEIVER= ? ";
         JSONArray jsonArray = DatabaseOptUtils.listObjectsBySqlAsJson(
                 this,sql,
-                new String[]{"sender","receiver","unreadSum","sendTime",
-                        "msgId","msgType","msgState","content"},
+                new String[]{"sender","receiver","unreadSum","sendTime","senderName",
+                        "msgId","msgType","msgState","content","contentType"},
                 new Object[] {receiver});
 
         return jsonArray;
