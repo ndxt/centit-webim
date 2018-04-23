@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.util.Date;
-
+//import java.sql.Timestamp;
 
 /**
  * create by scaffold 2017-05-23 

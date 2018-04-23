@@ -177,13 +177,23 @@ public class WebImController extends BaseController {
 
     //设置信息状态
     @RequestMapping(value = "/setReadState/{receiver}/{sender}", method = RequestMethod.POST)
-    public void setMessageState(
+    public void setReadState(
             @PathVariable String receiver,@PathVariable String sender,
             HttpServletResponse response) {
         int ret = webImMessageManager.setReadState(receiver,sender);
         JsonResultUtils.writeSingleDataJson(ret, response);
     }
 
+
+
+    //设置信息状态
+    @RequestMapping(value = "/setGroupReadState/{receiver}/{unitCode}", method = RequestMethod.POST)
+    public void setGroupReadState(
+            @PathVariable String receiver,@PathVariable String unitCode,
+            HttpServletResponse response) {
+        webImMessageManager.setGroupReadState(receiver,unitCode);
+        JsonResultUtils.writeSuccessJson(response);
+    }
 
     //发送消息，给第三方使用
     @RequestMapping(value = "/sendMessage/{receiver}/{sender}", method = RequestMethod.POST)

@@ -77,6 +77,11 @@ public class ImMessage implements  java.io.Serializable {
     public static final String CONTENT_FIELD_FILE = "file";
 
     /**
+     * 消息ID
+     */
+    private String msgId;
+
+    /**
      * 消息内容，可能式富文本，
      */
     private Map<String,Object> content;
@@ -136,6 +141,14 @@ public class ImMessage implements  java.io.Serializable {
         result = 31 * result + getReceiver().hashCode();
         result = 31 * result + getSendTime().hashCode();
         return result;
+    }
+
+    public String getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(String msgId) {
+        this.msgId = msgId;
     }
 
     public String getType() {

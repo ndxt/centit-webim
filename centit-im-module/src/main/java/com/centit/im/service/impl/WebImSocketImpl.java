@@ -435,7 +435,6 @@ public class WebImSocketImpl implements WebImSocket {
         }
     }
 
-
     private void changeCustomerService(Session session, ImMessage message) {
         String serviceUserCode = message.fetchContentString("service");
         WebImCustomer service = getOnlineServiceByUserCode(serviceUserCode);
@@ -679,6 +678,8 @@ public class WebImSocketImpl implements WebImSocket {
         message.getContent().put("contentType",message.getContentType());
         webMessage.copy(message);
         webMessage.setMsgId(UuidOpt.getUuidAsString32());
+        //给push消息添加msgId
+        message.setMsgId(webMessage.getMsgId());
         webMessage.setMsgType("C");
         webMessage.setMsgState("U");
         Session session = getSessionByUserCode(userCode);
