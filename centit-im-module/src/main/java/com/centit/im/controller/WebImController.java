@@ -184,8 +184,6 @@ public class WebImController extends BaseController {
         JsonResultUtils.writeSingleDataJson(ret, response);
     }
 
-
-
     //设置信息状态
     @RequestMapping(value = "/setGroupReadState/{receiver}/{unitCode}", method = RequestMethod.POST)
     public void setGroupReadState(
