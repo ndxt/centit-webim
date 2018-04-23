@@ -31,7 +31,7 @@ CREATE TABLE F_WEB_IM_MESSAGE
    SENDER               VARCHAR(32) NOT NULL,
    SENDER_NAME          varchar(100),
    RECEIVER             VARCHAR(32) NOT NULL,
-   SEND_TIME            TIME,
+   SEND_TIME            DATETIME,
    MSG_STATE            CHAR COMMENT 'U 未读 C  已读',
    CONTENT_TYPE         VARCHAR(20),
    CONTENT              VARCHAR(1000),
@@ -43,7 +43,7 @@ CREATE TABLE F_WEB_IM_GROUP_MEMBER
    OS_ID                varchar(20) NOT NULL,
    USER_CODE            varchar(32) NOT NULL,
    UNIT_CODE            varchar(32) NOT NULL,
-   LAST_PUSH_TIME       DATE NOT NULL,
+   LAST_PUSH_TIME       DATETIME NOT NULL,
    PRIMARY KEY (USER_CODE, UNIT_CODE)
 );
 ALTER TABLE F_WEB_IM_GROUP_MEMBER COMMENT '用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息';
@@ -63,7 +63,7 @@ CREATE TABLE F_WEB_IM_FRIEND_MEMO (
    USER_CODE   varchar(32) NOT NULL,
    FRIEND_CODE varchar(32) NOT NULL,
    OS_ID       varchar(20) NOT NULL,
-   LAST_UPDATE_TIME date NOT NULL,
+   LAST_UPDATE_TIME DATETIME NOT NULL,
    FRIEND_ALIAS   varchar(100),
    FRIEND_MEMO    varchar(1000),
    PRIMARY KEY (USER_CODE,FRIEND_CODE)

@@ -8,7 +8,7 @@ create table F_QUESTION_AND_ANSWER
   question_url   VARCHAR(1000) comment '问题',
   question_answer      TEXT comment '回答',
   creator     VARCHAR(100) comment '创建人',
-  create_time  DATE comment '创建时间',
-  last_update_time  DATE comment '更新时间',
+  create_time  DATETIME comment '创建时间',
+  last_update_time  DATETIME comment '更新时间',
   delete_sign   CHAR(1) comment '是否删除 T/F'
 );
