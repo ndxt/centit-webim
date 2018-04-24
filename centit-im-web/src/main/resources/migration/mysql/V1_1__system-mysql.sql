@@ -31,7 +31,7 @@ CREATE TABLE F_WEB_IM_MESSAGE
    SENDER               VARCHAR(32) NOT NULL,
    SENDER_NAME          varchar(100),
    RECEIVER             VARCHAR(32) NOT NULL,
-   SEND_TIME            TIME,
+   SEND_TIME            DATETIME,
    MSG_STATE            CHAR COMMENT 'U 未读 C  已读',
    CONTENT_TYPE         VARCHAR(20),
    CONTENT              VARCHAR(1000),
