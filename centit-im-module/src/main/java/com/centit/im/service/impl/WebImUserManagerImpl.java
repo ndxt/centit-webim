@@ -271,6 +271,29 @@ public class WebImUserManagerImpl implements WebImUserManager {
     }
 
     /**
+     * 创建群
+     * @param userCode
+     * @param webImGroup
+     */
+    @Override
+    @Transactional
+    public WebImGroup saveGroup(String userCode, WebImGroup webImGroup,WebImGroupMember[] webImGroupMembers) {
+        webImGroup.setGroupId(UuidOpt.getUuidAsString32());
+        webImGroup.setCreator(userCode);
+        webImGroup.setCreateTime(DatetimeOpt.currentUtilDate());
+        webImGroupDao.saveNewObject(webImGroup);
+        for (WebImGroupMember webImGroupMember : webImGroupMembers){
+            webImGroupMember.setGroupId(webImGroup.getGroupId());
+            webImGroupMember.setUserCode(userCode);
+            webImGroupMember.setGroupMemo(webImGroup.getGroupName());
+            webImGroupMember.setJoinTime(DatetimeOpt.currentUtilDate());
+            webImGroupMember.setLastPushTime(DatetimeOpt.currentUtilDate());
+            webImGroupMemberDao.saveNewObject(webImGroupMember);
+        }
+        return webImGroup;
+    }
+
+    /**
      * 加入群
      * @param userCode
      * @param groupId
