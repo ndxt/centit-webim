@@ -305,19 +305,12 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public String createGroupWithMembers(WebImGroup webImGroup, String[] members){
-        String groupId = webImGroup.getGroupId();
-        if(StringUtils.isBlank(groupId)){
-            groupId = UuidOpt.getUuidAsString32();
-            webImGroup.setGroupId(groupId);
-        }
-        webImGroupDao.saveNewObject(webImGroup);
-        String creator = webImGroup.getCreator();
-        if(StringUtils.isBlank(creator)) {
-            saveMemberToGroup(groupId,creator );
-        }
+        String groupId = createGroup(webImGroup);
 
-        for (String memberCode : members){
-            saveMemberToGroup(groupId,memberCode );
+        if(members!=null) {
+            for (String memberCode : members) {
+                saveMemberToGroup(groupId, memberCode);
+            }
         }
         return groupId;
     }
@@ -329,6 +322,10 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public void updateGroupInfo(WebImGroup webImGroup) {
+        if(webImGroup == null){
+            return;
+        }
+
         WebImGroup dbWebImGroup = webImGroupDao.getObjectById(webImGroup.getGroupId());
         if(dbWebImGroup==null){
             return;
@@ -408,7 +405,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
      */
     @Override
     @Transactional
-    public void dissolveGroup(String userCode,String groupId){
+    public void dissolveGroup(String groupId, String userCode){
         WebImGroup dbWebImGroup = webImGroupDao.getObjectById(groupId);
         if (dbWebImGroup.getCreator().equals(userCode)){
             webImGroupDao.deleteObjectById(groupId);

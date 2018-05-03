@@ -1,6 +1,8 @@
 package com.centit.im.po;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.centit.support.algorithm.DatetimeOpt;
 import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;
 import org.hibernate.validator.constraints.Length;
@@ -169,6 +171,14 @@ public class WebImGroup implements java.io.Serializable {
 		return this;
 	}
 
+    public static WebImGroup createFromJsonString(String jsonStr){
+        JSONObject jsonObject = JSON.parseObject(jsonStr);
+        if(jsonObject==null){
+            return null;
+        }
+        return createFromJson(jsonObject);
+    }
+
 	public static WebImGroup createFromJson(JSONObject jsonObject){
 		WebImGroup imGroup = new WebImGroup();
 		imGroup.setGroupId(jsonObject.getString("groupId"));
@@ -177,7 +187,7 @@ public class WebImGroup implements java.io.Serializable {
 		imGroup.setGroupName(jsonObject.getString("groupName"));
 		imGroup.setGroupNotice(jsonObject.getString("groupNotice"));
 		imGroup.setCreator(jsonObject.getString("creater"));
-		imGroup.setCreateTime(jsonObject.getDate("createTime"));
+		imGroup.setCreateTime(DatetimeOpt.castObjectToDate(jsonObject.get("createTime")));
 		return imGroup;
 	}
 }

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
-import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.im.po.WebImCustomer;
@@ -13,11 +12,13 @@ import com.centit.im.po.WebImGroup;
 import com.centit.im.po.WebImGroupMember;
 import com.centit.im.service.WebImUserManager;
 import com.centit.support.algorithm.ListOpt;
-import com.centit.support.database.utils.PageDesc;
-import org.apache.commons.lang3.StringEscapeUtils;
+import com.centit.support.algorithm.StringBaseOpt;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -175,157 +176,142 @@ public class WebImUserController extends BaseController {
 
     /**
      * 创建群 接收用户数组
-     * @param userCode
      * @param response
      */
-    @RequestMapping(value = "/creategroup/{userCode}", method = RequestMethod.POST)
+    @RequestMapping(value = "/creategroup", method = RequestMethod.POST)
     public void cresteGroup(
-            @PathVariable String userCode,String group,String member,
+            @RequestBody String groupJson,
+            HttpServletRequest request,
             HttpServletResponse response) {
-        WebImGroup webImGroup = new WebImGroup().stingToObject(StringEscapeUtils.unescapeHtml4(group));
-        WebImGroupMember[] webImGroupMembers = new WebImGroupMember().stringToArray(StringEscapeUtils.unescapeHtml4(member));
-        WebImGroup dbWebImGroup = webImUserManager.saveGroup(userCode,webImGroup,webImGroupMembers);
-        JsonResultUtils.writeSingleDataJson(dbWebImGroup, response);
+        JSONObject jsonObject = JSON.parseObject(groupJson);
+        WebImGroup webImGroup = WebImGroup.createFromJson(jsonObject);
+        String currentUserCode = this.getLoginUserCode(request);
+        if(StringUtils.isNotBlank(currentUserCode)) {
+            webImGroup.setCreator(currentUserCode);
+        }
+
+        Object members = jsonObject.get("members");
+        String groupId = webImUserManager
+                .createGroupWithMembers(webImGroup,
+                        ListOpt.listToArray(StringBaseOpt.objectToStringList(members)));
+        webImGroup.setGroupId(groupId);
+        JsonResultUtils.writeSingleDataJson(webImGroup, response);
     }
 
     /**
-     * 申请加入群
-     * @param userCode
-     * @param groupId
+     * 修改群基本信息
      * @param response
      */
-    @RequestMapping(value = "/addgroup/{userCode}/{groupId}", method = RequestMethod.PUT)
-    public void addGroup(
-            @PathVariable String userCode,
-            @PathVariable String groupId,
-            @RequestBody WebImGroupMember webImGroupMember,
+    @RequestMapping(value = "/updategroup", method = RequestMethod.PUT)
+    public void updateGroupInfo(
+            @RequestBody String groupJson,
             HttpServletResponse response) {
-        WebImGroup dbWebImGroup = webImUserManager.getWebImGroup(groupId);
-        if (dbWebImGroup == null){
-            JsonResultUtils.writeErrorMessageJson("群不存在",response);
-            return;
-        }
-        if (dbWebImGroup.getGroupType().equals("U")){
-            JsonResultUtils.writeErrorMessageJson("机构群不可自行加入",response);
-            return;
-        }
-        webImUserManager.addGroup(userCode,groupId,webImGroupMember);
+
+        WebImGroup webImGroup = WebImGroup.createFromJsonString(groupJson);
+
+        webImUserManager.updateGroupInfo(webImGroup);
         JsonResultUtils.writeSuccessJson(response);
     }
 
     /**
-     * 邀请加入群
-     * @param userCode
+     * 申请加入群
+     * @param memberCode
      * @param groupId
      * @param response
      */
-    @RequestMapping(value = "/invitegroup/{userCode}/{groupId}", method = RequestMethod.PUT)
-    public void inviteGroup(
-            @PathVariable String userCode,
+    @RequestMapping(value = "/addgroupmember/{groupId}/{memberCode}", method = RequestMethod.PUT)
+    public void addGroupMember(
             @PathVariable String groupId,
-            @RequestBody WebImGroupMember webImGroupMember,
+            @PathVariable String memberCode,
             HttpServletResponse response) {
-        WebImGroup dbWebImGroup = webImUserManager.getWebImGroup(groupId);
-        if (dbWebImGroup == null){
-            JsonResultUtils.writeErrorMessageJson("群不存在",response);
-            return;
-        }
-        webImUserManager.addGroup(userCode,groupId,webImGroupMember);
+
+        webImUserManager.addGroupMember(groupId,memberCode);
+        JsonResultUtils.writeSuccessJson(response);
+    }
+
+    /**
+     * 更新所有群成员
+     * @param groupId
+     * @param response
+     */
+    @RequestMapping(value = "/updategroupmembers/{groupId}", method = RequestMethod.PUT)
+    public void updateGroupMembers(
+            @PathVariable String groupId,
+            @RequestBody String membersJsonStr,
+            HttpServletResponse response) {
+        JSONArray ja = JSON.parseArray(membersJsonStr);
+        webImUserManager.updateGroupMembers(groupId,ListOpt.listToArray(StringBaseOpt.objectToStringList(ja)));
         JsonResultUtils.writeSuccessJson(response);
     }
 
     /**
      * 获取群成员信息
      * @param groupId
-     * @param pageDesc
      * @param response
      */
     @RequestMapping(value = "/listgroupmember/{groupId}", method = RequestMethod.GET)
-    public void inviteGroup(
-            @PathVariable String groupId,PageDesc pageDesc,
+    public void listGroupMembers(
+            @PathVariable String groupId,
             HttpServletResponse response) {
-        WebImGroup dbWebImGroup = webImUserManager.getWebImGroup(groupId);
-        if (dbWebImGroup == null){
-            JsonResultUtils.writeErrorMessageJson("群不存在",response);
-            return;
-        }
-        ResponseMapData resData = new ResponseMapData();
-        resData.addResponseData(OBJLIST, webImUserManager.listGroupMember(groupId));
-        resData.addResponseData(PAGE_DESC, pageDesc);
-        JsonResultUtils.writeResponseDataAsJson(resData, response);
+
+        JsonResultUtils.writeSingleDataJson(
+                webImUserManager.listGroupMembers(groupId),response );
     }
 
+    /**
+     * 获取群基本信息
+     * @param groupId
+     * @param response
+     */
+    @RequestMapping(value = "/getgroupInfo/{groupId}", method = RequestMethod.GET)
+    public void getGroupInfo(
+            @PathVariable String groupId,
+            HttpServletResponse response) {
+
+        JsonResultUtils.writeSingleDataJson(
+                webImUserManager.getGroupInfo(groupId),response );
+    }
     /**
      * 修改群成员信息
-     * @param webImGroupMember
+     * @param memberInfoJson
      * @param response
      */
-    @RequestMapping(value = "/updategroupmember", method = RequestMethod.PUT)
+    @RequestMapping(value = "/updatememberinfo", method = RequestMethod.PUT)
     public void updateGroupMember(
-            @RequestBody WebImGroupMember webImGroupMember,
+            @RequestBody String memberInfoJson,
             HttpServletResponse response) {
-        webImUserManager.updateGroupMember(webImGroupMember);
-        JsonResultUtils.writeSuccessJson(response);
-    }
 
-
-    /**
-     * 修改群信息
-     * @param groupId
-     * @param webImGroup
-     * @param response
-     */
-    @RequestMapping(value = "/updategroup/{groupId}", method = RequestMethod.PUT)
-    public void updategGroup(
-            @PathVariable String groupId,
-            @RequestBody WebImGroup webImGroup,
-            HttpServletResponse response) {
-        WebImGroup dbWebImGroup = webImUserManager.getWebImGroup(groupId);
-        if (dbWebImGroup == null){
-            JsonResultUtils.writeErrorMessageJson("群不存在",response);
-            return;
-        }
-        dbWebImGroup.copy(webImGroup);
-        webImUserManager.updateGroup(groupId,dbWebImGroup);
+        webImUserManager.updateGroupMemberInfo(
+                WebImGroupMember.createFromJson(JSON.parseObject(memberInfoJson)));
         JsonResultUtils.writeSuccessJson(response);
     }
 
     /**
      * 退出群
-     * @param userCode
+     * @param memberCode
      * @param groupId
      * @param response
      */
-    @RequestMapping(value = "/quitgroup/{userCode}/{groupId}", method = RequestMethod.PUT)
-    public void quitGroup(
-            @PathVariable String userCode,
+    @RequestMapping(value = "/quitgroup/{groupId}/{memberCode}", method = RequestMethod.PUT)
+    public void removeGroupMember(
             @PathVariable String groupId,
+            @PathVariable String memberCode,
             HttpServletResponse response) {
-        webImUserManager.quitGroup(userCode,groupId);
+        webImUserManager.removeGroupMember(groupId,memberCode);
         JsonResultUtils.writeSuccessJson(response);
     }
 
     /**
      * 解散群
-     * @param userCode
      * @param groupId
      * @param response
      */
-    @RequestMapping(value = "/dissolvegroup/{userCode}/{groupId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/dissolvegroup/{groupId}", method = RequestMethod.PUT)
     public void dissolveGroup(
-            @PathVariable String userCode,
             @PathVariable String groupId,
+            HttpServletRequest request,
             HttpServletResponse response) {
-        WebImGroup webImGroup = webImUserManager.getWebImGroup(groupId);
-        if (webImGroup == null){
-            JsonResultUtils.writeErrorMessageJson("群不存在",response);
-            return;
-        }
-        if (webImGroup.getGroupType().equals("U")){
-            JsonResultUtils.writeErrorMessageJson("机构群不允许解散",response);
-            return;
-        }
-        webImUserManager.dissolveGroup(userCode,groupId);
+        webImUserManager.dissolveGroup(groupId, this.getLoginUserCode(request));
         JsonResultUtils.writeSuccessJson(response);
     }
 
