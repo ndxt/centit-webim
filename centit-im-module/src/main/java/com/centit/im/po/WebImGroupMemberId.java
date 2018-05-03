@@ -32,7 +32,7 @@ public class WebImGroupMemberId implements java.io.Serializable {
 	public WebImGroupMemberId() {
 	}
 
-	public WebImGroupMemberId(String userCode, String groupId) {
+	public WebImGroupMemberId( String groupId, String userCode) {
 		this.userCode = userCode;
 		this.groupId = groupId;
 	}

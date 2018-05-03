@@ -58,9 +58,7 @@ public class WebImGroupMember implements java.io.Serializable {
 	public WebImGroupMember(WebImGroupMemberId id
 			
 	, Date  lastPushTime) {
-		this.cid = id; 
-			
-	
+		this.cid = id;
 		this.lastPushTime= lastPushTime;
 	}
 

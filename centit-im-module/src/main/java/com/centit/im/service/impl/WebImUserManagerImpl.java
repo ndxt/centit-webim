@@ -1,8 +1,5 @@
 package com.centit.im.service.impl;
 
-import com.centit.framework.components.CodeRepositoryUtil;
-import com.alibaba.fastjson.JSONArray;
-import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
@@ -16,8 +13,10 @@ import com.centit.im.service.WebImSocket;
 import com.centit.im.service.WebImUserManager;
 import com.centit.im.socketio.ImMessage;
 import com.centit.support.algorithm.DatetimeOpt;
-import org.apache.commons.lang3.StringUtils;
+import com.centit.support.algorithm.ListOpt;
 import com.centit.support.algorithm.UuidOpt;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +83,12 @@ public class WebImUserManagerImpl implements WebImUserManager {
         }else*/
         if(customer == null){
             user.setCreator("U0000000");
+            if(StringUtils.isBlank(user.getUserName())) {
+                IUserInfo userInfo = platformEnvironment.getUserInfoByUserCode(user.getUserCode());
+                if (userInfo != null) {
+                    user.setUserName(userInfo.getUserName());
+                }
+            }
             user.setCreateTime(DatetimeOpt.currentUtilDate());
             user.setLastActiveDate(DatetimeOpt.currentUtilDate());
             customerDao.saveNewObject(user);
@@ -250,64 +255,86 @@ public class WebImUserManagerImpl implements WebImUserManager {
         friendMemoDao.saveNewObject(memo);
     }
 
+    private void saveMemberToGroup(String groupId,String memberCode){
+        WebImGroupMember member =webImGroupMemberDao.getObjectById(new WebImGroupMemberId(groupId, memberCode));
+        if(member!=null){
+            return;
+        }
+        member = new WebImGroupMember(new WebImGroupMemberId(groupId, memberCode), DatetimeOpt.currentUtilDate());
+        member.setJoinTime(DatetimeOpt.currentUtilDate());
+        webImGroupMemberDao.saveNewObject(member);
+
+        WebImCustomer customer = customerDao.getObjectById(memberCode);
+         if(customer == null) {
+             customer = new WebImCustomer();
+             customer.setCreator("U0000000");
+             IUserInfo userInfo = platformEnvironment.getUserInfoByUserCode(memberCode);
+             if (userInfo != null){
+                 customer.setUserName(userInfo.getUserName());
+             }
+             customer.setCreateTime(DatetimeOpt.currentUtilDate());
+             customer.setLastActiveDate(DatetimeOpt.currentUtilDate());
+             customerDao.saveNewObject(customer);
+        }
+    }
     /**
      * 创建群
-     * @param userCode
      * @param webImGroup
      */
     @Override
     @Transactional
-    public void saveGroup(String userCode, WebImGroup webImGroup,WebImGroupMember webImGroupMember) {
-        webImGroup.setGroupId(UuidOpt.getUuidAsString32());
-        webImGroup.setCreator(userCode);
-        webImGroup.setCreateTime(DatetimeOpt.currentUtilDate());
-        webImGroupMember.setGroupId(webImGroup.getGroupId());
-        webImGroupMember.setUserCode(userCode);
-        webImGroupMember.setGroupMemo(webImGroup.getGroupName());
-        webImGroupMember.setJoinTime(DatetimeOpt.currentUtilDate());
-        webImGroupMember.setLastPushTime(DatetimeOpt.currentUtilDate());
+    public String createGroup(WebImGroup webImGroup) {
+        String groupId = webImGroup.getGroupId();
+        if(StringUtils.isBlank(groupId)){
+            groupId = UuidOpt.getUuidAsString32();
+            webImGroup.setGroupId(groupId);
+        }
         webImGroupDao.saveNewObject(webImGroup);
-        webImGroupMemberDao.saveNewObject(webImGroupMember);
+        String creator = webImGroup.getCreator();
+        if(StringUtils.isBlank(creator)) {
+            saveMemberToGroup(groupId,creator );
+        }
+        return groupId;
     }
 
     /**
      * 创建群
-     * @param userCode
+     * @param members
      * @param webImGroup
      */
     @Override
     @Transactional
-    public WebImGroup saveGroup(String userCode, WebImGroup webImGroup,WebImGroupMember[] webImGroupMembers) {
-        webImGroup.setGroupId(UuidOpt.getUuidAsString32());
-        webImGroup.setCreator(userCode);
-        webImGroup.setCreateTime(DatetimeOpt.currentUtilDate());
-        webImGroupDao.saveNewObject(webImGroup);
-        for (WebImGroupMember webImGroupMember : webImGroupMembers){
-            webImGroupMember.setGroupId(webImGroup.getGroupId());
-            webImGroupMember.setUserCode(userCode);
-            webImGroupMember.setGroupMemo(webImGroup.getGroupName());
-            webImGroupMember.setJoinTime(DatetimeOpt.currentUtilDate());
-            webImGroupMember.setLastPushTime(DatetimeOpt.currentUtilDate());
-            webImGroupMemberDao.saveNewObject(webImGroupMember);
+    public String createGroupWithMembers(WebImGroup webImGroup, String[] members){
+        String groupId = webImGroup.getGroupId();
+        if(StringUtils.isBlank(groupId)){
+            groupId = UuidOpt.getUuidAsString32();
+            webImGroup.setGroupId(groupId);
         }
-        return webImGroup;
+        webImGroupDao.saveNewObject(webImGroup);
+        String creator = webImGroup.getCreator();
+        if(StringUtils.isBlank(creator)) {
+            saveMemberToGroup(groupId,creator );
+        }
+
+        for (String memberCode : members){
+            saveMemberToGroup(groupId,memberCode );
+        }
+        return groupId;
     }
 
     /**
      * 加入群
-     * @param userCode
-     * @param groupId
+     * @param webImGroup
      */
     @Override
     @Transactional
-    public void addGroup(String userCode, String groupId,WebImGroupMember webImGroupMember) {
-        WebImGroup dbWebImGroup = webImGroupDao.getObjectById(groupId);
-        webImGroupMember.setGroupMemo(dbWebImGroup.getGroupName());
-        webImGroupMember.setUserCode(userCode);
-        webImGroupMember.setGroupId(groupId);
-        webImGroupMember.setJoinTime(DatetimeOpt.currentUtilDate());
-        webImGroupMember.setLastPushTime(DatetimeOpt.currentUtilDate());
-        webImGroupMemberDao.saveNewObject(webImGroupMember);
+    public void updateGroupInfo(WebImGroup webImGroup) {
+        WebImGroup dbWebImGroup = webImGroupDao.getObjectById(webImGroup.getGroupId());
+        if(dbWebImGroup==null){
+            return;
+        }
+        dbWebImGroup.copyNotNullProperty(webImGroup);
+        webImGroupDao.updateObject(dbWebImGroup);
     }
 
     /**
@@ -316,7 +343,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
      * @return
      */
     @Override
-    public List<WebImGroupMember> listGroupMember(String groupId){
+    public List<WebImGroupMember> listGroupMembers(String groupId){
         return webImGroupMemberDao.listObjectsByProperty("groupId",groupId);
     }
 
@@ -325,30 +352,53 @@ public class WebImUserManagerImpl implements WebImUserManager {
      * @param webImGroupMember
      */
     @Override
-    public void updateGroupMember(WebImGroupMember webImGroupMember){
-        WebImGroupMember dbWebImGroupMember = webImGroupMemberDao.getObjectById(new WebImGroupMemberId(webImGroupMember.getUserCode(),webImGroupMember.getGroupId()));
-        dbWebImGroupMember.copy(webImGroupMember);
+    @Transactional
+    public void updateGroupMemberInfo(WebImGroupMember webImGroupMember){
+        WebImGroupMember dbWebImGroupMember = webImGroupMemberDao.getObjectById(webImGroupMember.getCid());
+        dbWebImGroupMember.copyNotNullProperty(webImGroupMember);
         webImGroupMemberDao.updateObject(dbWebImGroupMember);
     }
 
     /**
      * 修改群信息
      * @param groupId
-     * @param webImGroup
+     * @param memberCode
      */
     @Override
-    public void updateGroup(String groupId,WebImGroup webImGroup){
-        webImGroupDao.updateObject(webImGroup);
+    @Transactional
+    public void addGroupMember(String groupId,String memberCode){
+        saveMemberToGroup(groupId,memberCode);
     }
 
+    @Override
+    @Transactional
+    public void updateGroupMembers(String groupId, String[] members){
+        if(members==null || members.length<1){
+            return;
+        }
+
+        List<String> memberList = ListOpt.arrayToList(members);
+        List<WebImGroupMember> dbMembers = webImGroupMemberDao.listObjectsByProperty("groupId",groupId);
+        if(dbMembers!=null && dbMembers.size()>0){
+            for( WebImGroupMember member : dbMembers){
+                if(! memberList.contains(member.getUserCode())){
+                    webImGroupMemberDao.deleteObjectById(member.getCid());
+                }
+            }
+        }
+        for (String memberCode : members){
+            saveMemberToGroup(groupId,memberCode );
+        }
+    }
     /**
      * 退出群
      * @param userCode
      * @param groupId
      */
     @Override
-    public void quitGroup(String userCode,String groupId){
-        webImGroupMemberDao.deleteObjectById(new WebImGroupMemberId(userCode,groupId));
+    @Transactional
+    public void removeGroupMember(String groupId,String userCode){
+        webImGroupMemberDao.deleteObjectById(new WebImGroupMemberId(groupId, userCode));
     }
 
     /**
@@ -357,6 +407,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
      * @param groupId
      */
     @Override
+    @Transactional
     public void dissolveGroup(String userCode,String groupId){
         WebImGroup dbWebImGroup = webImGroupDao.getObjectById(groupId);
         if (dbWebImGroup.getCreator().equals(userCode)){
@@ -368,7 +419,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     }
 
     @Override
-    public WebImGroup getWebImGroup(String groupId){
+    public WebImGroup getGroupInfo(String groupId){
        return webImGroupDao.getObjectById(groupId);
     }
 

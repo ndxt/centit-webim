@@ -95,59 +95,58 @@ public interface WebImUserManager {
 
     /**
      * 创建群
-     * @param userCode
      * @param webImGroup
+     * @return groupId
      */
-    void saveGroup(String userCode,WebImGroup webImGroup,WebImGroupMember webImGroupMember);
+    String createGroup(WebImGroup webImGroup);
 
     /**
      * 创建群
-     * @param userCode
+     * @param members
+     * @param webImGroup
+     * @return groupId
+     */
+    String createGroupWithMembers(WebImGroup webImGroup, String[] members);
+
+    /**
+     * 更新群所有用户
+     * @param members
+     * @return groupId
+     */
+    void updateGroupMembers(String groupId, String[] members);
+    /**
+     * 修改群信息
      * @param webImGroup
      */
-    WebImGroup saveGroup(String userCode,WebImGroup webImGroup,WebImGroupMember[] webImGroupMember);
-
+    void updateGroupInfo(WebImGroup webImGroup);
 
     /**
      * 申请加入群
-     * @param userCode
+     * @param memberCode 加入群的人代码
      * @param groupId
      */
-    void addGroup(String userCode, String groupId,WebImGroupMember webImGroupMember);
+    void addGroupMember(String groupId,String memberCode);
 
-//    /**
-//     * 拉进群
-//     * @param userCode
-//     * @param groupId
-//     */
-//    void inviteGroup(String userCode, String groupId);
+    /**
+     * 退出群
+     * @param memberCode
+     * @param groupId
+     */
+    void removeGroupMember(String groupId, String memberCode);
 
     /**
      * 获取群成员信息
      * @param groupId
      * @return
      */
-    List<WebImGroupMember> listGroupMember(String groupId);
+    List<WebImGroupMember> listGroupMembers(String groupId);
 
     /**
      * 修改个人在群中的信息
      * @param webImGroupMember
      */
-    void updateGroupMember(WebImGroupMember webImGroupMember);
+    void updateGroupMemberInfo(WebImGroupMember webImGroupMember);
 
-    /**
-     * 修改群信息
-     * @param groupId
-     * @param webImGroup
-     */
-    void updateGroup(String groupId,WebImGroup webImGroup);
-
-    /**
-     * 退出群
-     * @param userCode
-     * @param groupId
-     */
-    void quitGroup(String userCode,String groupId);
 
     /**
      * 解散群
@@ -156,5 +155,5 @@ public interface WebImUserManager {
      */
     void dissolveGroup(String userCode,String groupId);
 
-    WebImGroup getWebImGroup(String groupId);
+    WebImGroup getGroupInfo(String groupId);
 }

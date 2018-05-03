@@ -47,12 +47,12 @@ public class WebImGroupMemberDao extends BaseDaoImpl<WebImGroupMember,WebImGroup
 	}
 
 	public void setGroupReadState(String userCode,String unitCode){
-		WebImGroupMember dbWebImReadGroup = this.getObjectById(new WebImGroupMemberId(userCode,unitCode));
+		WebImGroupMember dbWebImReadGroup = this.getObjectById(new WebImGroupMemberId(unitCode, userCode));
 		if (dbWebImReadGroup == null){
 			WebImGroupMember webImReadGroup = new WebImGroupMember();
 			webImReadGroup.setOsId(ImMessage.DEFAULT_OSID);
 			webImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());
-			webImReadGroup.setCid(new WebImGroupMemberId(userCode,unitCode));
+			webImReadGroup.setCid(new WebImGroupMemberId(unitCode, userCode));
 			this.saveNewObject(webImReadGroup);
 		}else {
 			dbWebImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());

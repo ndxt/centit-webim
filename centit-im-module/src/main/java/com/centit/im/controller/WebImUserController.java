@@ -1,5 +1,7 @@
 package com.centit.im.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -169,17 +172,17 @@ public class WebImUserController extends BaseController {
 
     /**
      * 创建群
-     * @param userCode
-     * @param webImGroup
+     * @param jsonGroup
      * @param response
      */
-    @RequestMapping(value = "/creatgroup/{userCode}", method = RequestMethod.POST)
-    public void crestGroup(
-            @PathVariable String userCode,
-            @RequestBody WebImGroup webImGroup,
-            @RequestBody WebImGroupMember webImGroupMember,
-            HttpServletResponse response) {
-        webImUserManager.saveGroup(userCode,webImGroup,webImGroupMember);
+    @RequestMapping(value = "/createGroup", method = RequestMethod.POST)
+    public void createGroup(
+            @RequestBody String jsonGroup,
+            HttpServletResponse response, HttpServletRequest request) {
+        JSONObject jsonObject = JSON.parseObject(jsonGroup);
+        WebImGroup imGroup = WebImGroup.createFromJson(jsonObject);
+        imGroup.setCreator( this.getLoginUserCode(request));
+        webImUserManager.saveGroup(imGroup);
         JsonResultUtils.writeSuccessJson(response);
     }
 
@@ -189,8 +192,8 @@ public class WebImUserController extends BaseController {
      * @param webImGroup
      * @param response
      */
-    @RequestMapping(value = "/creategroup/{userCode}", method = RequestMethod.POST)
-    public void cresteGroup(
+    @RequestMapping(value = "/updateGroup", method = RequestMethod.POST)
+    public void updateGroup(
             @PathVariable String userCode,
             @RequestBody WebImGroup webImGroup,
             @RequestParam(value = "webImGroupMembers[]") WebImGroupMember[] webImGroupMembers,
