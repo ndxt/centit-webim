@@ -1,19 +1,15 @@
 package com.centit.im.po;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.centit.support.algorithm.DatetimeOpt;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
-
-
-import javax.validation.constraints.NotNull;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
-import com.centit.support.algorithm.DatetimeOpt;
-import org.hibernate.validator.constraints.NotBlank;
 
 
 /**
