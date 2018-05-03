@@ -101,6 +101,14 @@ public interface WebImUserManager {
     void saveGroup(String userCode,WebImGroup webImGroup,WebImGroupMember webImGroupMember);
 
     /**
+     * 创建群
+     * @param userCode
+     * @param webImGroup
+     */
+    WebImGroup saveGroup(String userCode,WebImGroup webImGroup,WebImGroupMember[] webImGroupMember);
+
+
+    /**
      * 申请加入群
      * @param userCode
      * @param groupId

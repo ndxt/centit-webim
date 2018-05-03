@@ -13,10 +13,7 @@ import com.centit.support.algorithm.ListOpt;
 import org.apache.commons.lang3.StringUtils;
 import com.centit.support.database.utils.PageDesc;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -184,6 +181,22 @@ public class WebImUserController extends BaseController {
             HttpServletResponse response) {
         webImUserManager.saveGroup(userCode,webImGroup,webImGroupMember);
         JsonResultUtils.writeSuccessJson(response);
+    }
+
+    /**
+     * 创建群 接收用户数组
+     * @param userCode
+     * @param webImGroup
+     * @param response
+     */
+    @RequestMapping(value = "/creategroup/{userCode}", method = RequestMethod.POST)
+    public void cresteGroup(
+            @PathVariable String userCode,
+            @RequestBody WebImGroup webImGroup,
+            @RequestParam(value = "webImGroupMembers[]") WebImGroupMember[] webImGroupMembers,
+            HttpServletResponse response) {
+        WebImGroup dbWebImGroup = webImUserManager.saveGroup(userCode,webImGroup,webImGroupMembers);
+        JsonResultUtils.writeSingleDataJson(dbWebImGroup, response);
     }
 
     /**
