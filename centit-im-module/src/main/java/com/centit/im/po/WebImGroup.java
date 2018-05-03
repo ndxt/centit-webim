@@ -186,7 +186,7 @@ public class WebImGroup implements java.io.Serializable {
 		imGroup.setGroupType(jsonObject.getString("groupType"));
 		imGroup.setGroupName(jsonObject.getString("groupName"));
 		imGroup.setGroupNotice(jsonObject.getString("groupNotice"));
-		imGroup.setCreator(jsonObject.getString("creater"));
+		imGroup.setCreator(jsonObject.getString("creator"));
 		imGroup.setCreateTime(DatetimeOpt.castObjectToDate(jsonObject.get("createTime")));
 		return imGroup;
 	}

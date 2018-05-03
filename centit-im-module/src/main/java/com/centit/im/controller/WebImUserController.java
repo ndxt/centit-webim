@@ -189,6 +189,7 @@ public class WebImUserController extends BaseController {
         if(StringUtils.isNotBlank(currentUserCode)) {
             webImGroup.setCreator(currentUserCode);
         }
+        webImGroup.setGroupType("G");
 
         Object members = jsonObject.get("members");
         String groupId = webImUserManager
