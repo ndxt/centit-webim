@@ -32,32 +32,27 @@
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>framework-core-web</artifactId>
-            <version>${centit.framework.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-ip-app-config</artifactId>
-            <version>${centit.ip.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>framework-config</artifactId>
-            <version>${centit.framework.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-persistence-jdbc-config</artifactId>
-            <version>${centit.persistence.version}</version>
         </dependency>
 
         <!-- server runtime library -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet-api.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -74,6 +69,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
