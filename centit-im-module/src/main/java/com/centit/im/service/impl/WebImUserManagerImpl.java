@@ -284,7 +284,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
         webImGroupDao.saveNewObject(webImGroup);
         for (WebImGroupMember webImGroupMember : webImGroupMembers){
             webImGroupMember.setGroupId(webImGroup.getGroupId());
-            webImGroupMember.setUserCode(userCode);
+            webImGroupMember.setUserCode(webImGroupMember.getUserCode());
             webImGroupMember.setGroupMemo(webImGroup.getGroupName());
             webImGroupMember.setJoinTime(DatetimeOpt.currentUtilDate());
             webImGroupMember.setLastPushTime(DatetimeOpt.currentUtilDate());

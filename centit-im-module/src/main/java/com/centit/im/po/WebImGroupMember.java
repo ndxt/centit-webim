@@ -1,11 +1,17 @@
 package com.centit.im.po;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 
 
 import javax.validation.constraints.NotNull;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPObject;
+import com.centit.support.algorithm.DatetimeOpt;
 import org.hibernate.validator.constraints.NotBlank;
 
 
@@ -182,4 +188,31 @@ public class WebImGroupMember implements java.io.Serializable {
 
 		return this;
 	}
+
+	public WebImGroupMember[] stringToArray(String str){
+		JSONArray ja = JSONArray.parseArray(str);
+		WebImGroupMember[] wig = new WebImGroupMember[ja.size()];
+		for (int i=0;i<ja.size();i++){
+			JSONObject jo = ja.getJSONObject(i);
+			WebImGroupMember webImGroupMember = new WebImGroupMember();
+			if (jo.get("osId") != null)
+				webImGroupMember.setOsId(jo.get("osId").toString());
+			if (jo.get("groupId")!= null)
+				webImGroupMember.setGroupId(jo.get("groupId").toString());
+			if (jo.get("userCode") != null)
+				webImGroupMember.setUserCode(jo.get("userCode").toString());
+			if (jo.get("groupAlias") != null)
+				webImGroupMember.setGroupAlias(jo.get("groupAlias").toString());
+			if (jo.get("groupMemo") != null)
+				webImGroupMember.setGroupMemo(jo.get("groupMemo").toString());
+			if (jo.get("joinTime") != null)
+				webImGroupMember.setJoinTime(DatetimeOpt.castObjectToDate(jo.get("joinTime")));
+			if (jo.get("lastPushTime") != null)
+				webImGroupMember.setLastPushTime(DatetimeOpt.castObjectToDate(jo.get("lastPushTime")));
+			wig[i] = webImGroupMember;
+		}
+		return wig;
+	}
+
+
 }

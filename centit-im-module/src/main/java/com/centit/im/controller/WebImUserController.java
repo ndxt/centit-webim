@@ -1,5 +1,8 @@
 package com.centit.im.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
@@ -10,12 +13,14 @@ import com.centit.im.po.WebImGroup;
 import com.centit.im.po.WebImGroupMember;
 import com.centit.im.service.WebImUserManager;
 import com.centit.support.algorithm.ListOpt;
-import org.apache.commons.lang3.StringUtils;
 import com.centit.support.database.utils.PageDesc;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -167,34 +172,18 @@ public class WebImUserController extends BaseController {
         JsonResultUtils.writeSingleDataJson(useCode, response);
     }
 
-    /**
-     * 创建群
-     * @param userCode
-     * @param webImGroup
-     * @param response
-     */
-    @RequestMapping(value = "/creatgroup/{userCode}", method = RequestMethod.POST)
-    public void crestGroup(
-            @PathVariable String userCode,
-            @RequestBody WebImGroup webImGroup,
-            @RequestBody WebImGroupMember webImGroupMember,
-            HttpServletResponse response) {
-        webImUserManager.saveGroup(userCode,webImGroup,webImGroupMember);
-        JsonResultUtils.writeSuccessJson(response);
-    }
 
     /**
      * 创建群 接收用户数组
      * @param userCode
-     * @param webImGroup
      * @param response
      */
     @RequestMapping(value = "/creategroup/{userCode}", method = RequestMethod.POST)
     public void cresteGroup(
-            @PathVariable String userCode,
-            @RequestBody WebImGroup webImGroup,
-            @RequestParam(value = "webImGroupMembers[]") WebImGroupMember[] webImGroupMembers,
+            @PathVariable String userCode,String group,String member,
             HttpServletResponse response) {
+        WebImGroup webImGroup = new WebImGroup().stingToObject(StringEscapeUtils.unescapeHtml4(group));
+        WebImGroupMember[] webImGroupMembers = new WebImGroupMember().stringToArray(StringEscapeUtils.unescapeHtml4(member));
         WebImGroup dbWebImGroup = webImUserManager.saveGroup(userCode,webImGroup,webImGroupMembers);
         JsonResultUtils.writeSingleDataJson(dbWebImGroup, response);
     }

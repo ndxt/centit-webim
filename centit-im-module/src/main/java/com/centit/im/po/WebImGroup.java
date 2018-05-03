@@ -1,5 +1,7 @@
 package com.centit.im.po;
 
+import com.alibaba.fastjson.JSONObject;
+import com.centit.support.algorithm.DatetimeOpt;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -164,6 +166,26 @@ public class WebImGroup implements java.io.Serializable {
 	}
 
 	public WebImGroup clearProperties(){
+		return this;
+	}
+
+
+	public WebImGroup stingToObject(String str){
+		JSONObject jo = JSONObject.parseObject(str);
+		if (jo.get("osId") != null)
+			this.setOsId(jo.get("osId").toString());
+		if (jo.get("groupId") != null)
+			this.setGroupId(jo.get("groupId").toString());
+		if (jo.get("creator") != null)
+			this.setCreator(jo.get("creator").toString());
+		if (jo.get("groupName") != null)
+			this.setGroupName(jo.get("groupName").toString());
+		if (jo.get("groupType") != null)
+			this.setGroupType(jo.get("groupType").toString());
+		if (jo.get("groupNotice") != null)
+			this.setGroupNotice(jo.get("groupNotice").toString());
+		if (jo.get("createTime") != null)
+			this.setCreateTime(DatetimeOpt.castObjectToDate(jo.get("createTime")));
 		return this;
 	}
 }
