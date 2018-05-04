@@ -30,13 +30,13 @@ public class WebImGroupMemberDao extends BaseDaoImpl<WebImGroupMember,WebImGroup
 	@Override
 	public Map<String, String> getFilterField() {
 		if( filterField == null){
-			filterField = new HashMap<String, String>();
+			filterField = new HashMap<>();
 
 			filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
 
 			filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("unitCode" , CodeBook.EQUAL_HQL_ID);
+			filterField.put("unitCode" , "UNIT_CODE = :unitCode");
 
 			filterField.put("lastPustTime" , CodeBook.EQUAL_HQL_ID);
 
