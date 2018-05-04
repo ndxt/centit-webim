@@ -312,8 +312,31 @@ public class WebImUserController extends BaseController {
             @PathVariable String groupId,
             HttpServletRequest request,
             HttpServletResponse response) {
-        webImUserManager.dissolveGroup(groupId, this.getLoginUserCode(request));
-        JsonResultUtils.writeSuccessJson(response);
+        int nRres = webImUserManager
+                .dissolveGroup(groupId, this.getLoginUserCode(request), false);
+        if(nRres > 0 ){
+            JsonResultUtils.writeSuccessJson(response);
+        }else{
+            JsonResultUtils.writeMessageJson("群不存在或者您不是群主。",response);
+        }
     }
 
+    /**
+     * 删除群
+     * @param groupId
+     * @param response
+     */
+    @RequestMapping(value = "/deleteGroup/{groupId}", method = RequestMethod.DELETE)
+    public void deleteGroup(
+            @PathVariable String groupId,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        int nRres = webImUserManager
+                .dissolveGroup(groupId, this.getLoginUserCode(request), true);
+        if(nRres > 0 ){
+            JsonResultUtils.writeSuccessJson(response);
+        }else{
+            JsonResultUtils.writeMessageJson("群不存在。",response);
+        }
+    }
 }

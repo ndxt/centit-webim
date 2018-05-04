@@ -153,7 +153,7 @@ public interface WebImUserManager {
      * @param userCode
      * @param groupId
      */
-    void dissolveGroup(String groupId,String userCode);
+    int dissolveGroup(String groupId, String userCode, boolean force);
 
     WebImGroup getGroupInfo(String groupId);
 }

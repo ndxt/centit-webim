@@ -412,14 +412,18 @@ public class WebImUserManagerImpl implements WebImUserManager {
      */
     @Override
     @Transactional
-    public void dissolveGroup(String groupId, String userCode){
+    public int dissolveGroup(String groupId, String userCode, boolean force){
         WebImGroup dbWebImGroup = webImGroupDao.getObjectById(groupId);
-        if (dbWebImGroup.getCreator().equals(userCode)){
+        if (dbWebImGroup !=null &&
+                ( force ||  dbWebImGroup.getCreator().equals(userCode))){
+            HashMap<String,Object> map = new HashMap();
+            map.put("groupId",groupId);
+            webImGroupMemberDao.deleteObjectsByProperties(map);
             webImGroupDao.deleteObjectById(groupId);
+            return 1;
+        }else{
+            return -1;
         }
-        HashMap<String,Object> map = new HashMap();
-        map.put("groupId",groupId);
-        webImGroupMemberDao.deleteObjectsByProperties(map);
     }
 
     @Override
