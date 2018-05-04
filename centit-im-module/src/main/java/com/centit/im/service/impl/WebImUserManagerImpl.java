@@ -263,7 +263,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
         member = new WebImGroupMember(new WebImGroupMemberId(groupId, memberCode), DatetimeOpt.currentUtilDate());
         member.setJoinTime(DatetimeOpt.currentUtilDate());
         member.setOsId("default");
-        webImGroupMemberDao.saveNewObject(member);
+
 
         WebImCustomer customer = customerDao.getObjectById(memberCode);
          if(customer == null) {
@@ -280,6 +280,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
              customer.setLastActiveDate(DatetimeOpt.currentUtilDate());
              customerDao.saveNewObject(customer);
         }
+
+        member.setGroupAlias(customer.getUserName());
+        webImGroupMemberDao.saveNewObject(member);
     }
     /**
      * 创建群
@@ -295,7 +298,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
         }
         webImGroupDao.saveNewObject(webImGroup);
         String creator = webImGroup.getCreator();
-        if(StringUtils.isBlank(creator)) {
+        if(StringUtils.isNotBlank(creator)) {
             saveMemberToGroup(groupId,creator );
         }
         return groupId;

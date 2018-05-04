@@ -5,10 +5,7 @@ import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.IUserUnit;
-import com.centit.im.dao.CustomerPraiseDao;
-import com.centit.im.dao.WebImCustomerDao;
-import com.centit.im.dao.WebImMessageDao;
-import com.centit.im.dao.WebImGroupMemberDao;
+import com.centit.im.dao.*;
 import com.centit.im.po.*;
 import com.centit.im.service.IntelligentRobot;
 import com.centit.im.service.IntelligentRobotFactory;
@@ -88,9 +85,6 @@ public class WebImSocketImpl implements WebImSocket {
     protected WebImCustomerDao customerDao;
 
     @Resource
-    protected WebImGroupMemberDao webImGroupMemberDao;
-
-    @Resource
     protected CustomerPraiseDao customerPraiseDao;
 
     @Resource
@@ -98,6 +92,12 @@ public class WebImSocketImpl implements WebImSocket {
 
     @Resource
     protected IntelligentRobotFactory intelligentRobotFactory;
+
+    @Resource
+    protected WebImGroupDao webImGroupDao;
+
+    @Resource
+    protected WebImGroupMemberDao webImGroupMemberDao;
 
     @Value("${notify.type}")
     protected String noticeType;
@@ -708,11 +708,27 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void sendGroupMessage(String unitCode, ImMessage message) {
-        List<? extends IUserUnit> users =
-                platformEnvironment.listUnitUsers(unitCode);
-        for(IUserUnit user : users){
-            pushMessage(user.getUserCode(), message);
+
+        WebImGroup group = webImGroupDao.getObjectById(unitCode);
+        if(group==null || "U".equals(group.getGroupType())) {
+            List<? extends IUserUnit> users =
+                    platformEnvironment.listUnitUsers(unitCode);
+
+            for (IUserUnit user : users) {
+                if(! StringUtils.equals(message.getSender(),user.getUserCode())) {
+                    pushMessage(user.getUserCode(), message);
+                }
+            }
+        }else if(group!=null) {
+            List<WebImGroupMember> members
+                    = webImGroupMemberDao.listObjectsByProperty("groupId",unitCode);
+            for(WebImGroupMember member : members ){
+                if(! StringUtils.equals(message.getSender(),member.getUserCode())) {
+                    pushMessage(member.getUserCode(), message);
+                }
+            }
         }
+
         message.getContent().put("contentType",message.getContentType());
         WebImMessage webMessage = new WebImMessage();
         webMessage.copy(message);
