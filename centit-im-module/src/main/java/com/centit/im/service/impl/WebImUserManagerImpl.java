@@ -262,7 +262,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
         }
         member = new WebImGroupMember(new WebImGroupMemberId(groupId, memberCode), DatetimeOpt.currentUtilDate());
         member.setJoinTime(DatetimeOpt.currentUtilDate());
-        member.setOsId("default");
+        member.setOsId(ImMessage.DEFAULT_OSID);
 
 
         WebImCustomer customer = customerDao.getObjectById(memberCode);
@@ -275,7 +275,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
              if (userInfo != null){
                  customer.setUserName(userInfo.getUserName());
              }
-             customer.setOsId("default");
+             customer.setOsId(ImMessage.DEFAULT_OSID);
              customer.setCreateTime(DatetimeOpt.currentUtilDate());
              customer.setLastActiveDate(DatetimeOpt.currentUtilDate());
              customerDao.saveNewObject(customer);
