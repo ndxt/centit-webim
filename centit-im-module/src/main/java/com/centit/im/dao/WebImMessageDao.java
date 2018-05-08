@@ -167,8 +167,8 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
                 "from  F_V_LAST_UNREAD_GROUP_MSG v where  v.USER_CODE= ? ";
         JSONArray jsonArray = DatabaseOptUtils.listObjectsBySqlAsJson(
                 this,sql,
-                new String[]{"userCode","unitCode","unreadSum","sendTime",
-                        "msgId","msgType","msgState","content"},
+                new String[]{"userCode","unitCode","unreadSum","sendTime","senderName",
+                        "msgId","msgType","msgState","content","contentType"},
                 new Object[] {userCode});
 
         return jsonArray;

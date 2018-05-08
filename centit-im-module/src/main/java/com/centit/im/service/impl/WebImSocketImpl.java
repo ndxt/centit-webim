@@ -737,6 +737,7 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setMsgState("U");
         webMessage.setSendTime(DatetimeOpt.currentUtilDate());
         messageDao.saveNewObject(webMessage);
+        webImGroupMemberDao.setGroupReadState(message.getSender(),message.getReceiver());
     }
 
     /**
