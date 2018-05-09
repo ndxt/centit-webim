@@ -709,26 +709,6 @@ public class WebImSocketImpl implements WebImSocket {
     @Transactional
     public void sendGroupMessage(String unitCode, ImMessage message) {
 
-        WebImGroup group = webImGroupDao.getObjectById(unitCode);
-        if(group==null || "U".equals(group.getGroupType())) {
-            List<? extends IUserUnit> users =
-                    platformEnvironment.listUnitUsers(unitCode);
-
-            for (IUserUnit user : users) {
-                if(! StringUtils.equals(message.getSender(),user.getUserCode())) {
-                    pushMessage(user.getUserCode(), message);
-                }
-            }
-        }else if(group!=null) {
-            List<WebImGroupMember> members
-                    = webImGroupMemberDao.listObjectsByProperty("groupId",unitCode);
-            for(WebImGroupMember member : members ){
-                if(! StringUtils.equals(message.getSender(),member.getUserCode())) {
-                    pushMessage(member.getUserCode(), message);
-                }
-            }
-        }
-
         message.getContent().put("contentType",message.getContentType());
         WebImMessage webMessage = new WebImMessage();
         webMessage.copy(message);
@@ -737,7 +717,35 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setMsgState("U");
         webMessage.setSendTime(DatetimeOpt.currentUtilDate());
         messageDao.saveNewObject(webMessage);
-        webImGroupMemberDao.setGroupReadState(message.getSender(),message.getReceiver());
+
+        WebImGroup group = webImGroupDao.getObjectById(unitCode);
+        if(group==null || "U".equals(group.getGroupType())) {
+            List<? extends IUserUnit> users =
+                    platformEnvironment.listUnitUsers(unitCode);
+
+            for (IUserUnit user : users) {
+                Session session = getSessionByUserCode(user.getUserCode());
+                if (session != null){
+                    webImGroupMemberDao.setGroupReadState(user.getUserCode(),message.getReceiver());
+                }
+                if(! StringUtils.equals(message.getSender(),user.getUserCode())) {
+                    pushMessage(user.getUserCode(), message);
+                }
+            }
+        }else if(group!=null) {
+            List<WebImGroupMember> members
+                    = webImGroupMemberDao.listObjectsByProperty("groupId",unitCode);
+            for(WebImGroupMember member : members ){
+                Session session = getSessionByUserCode(member.getUserCode());
+                if (session != null){
+                    webImGroupMemberDao.setGroupReadState(member.getUserCode(),message.getReceiver());
+                }
+                if(! StringUtils.equals(message.getSender(),member.getUserCode())) {
+                    pushMessage(member.getUserCode(), message);
+                }
+            }
+        }
+
     }
 
     /**
