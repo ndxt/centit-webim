@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
+import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.im.po.WebImCustomer;
@@ -305,38 +306,47 @@ public class WebImUserController extends BaseController {
     /**
      * 解散群
      * @param groupId
+     * @param userCode
      * @param response
      */
-    @RequestMapping(value = "/dissolvegroup/{groupId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/dissolvegroup/{groupId}/{userCode}", method = RequestMethod.PUT)
     public void dissolveGroup(
             @PathVariable String groupId,
-            HttpServletRequest request,
+            @PathVariable String userCode,
             HttpServletResponse response) {
         int nRres = webImUserManager
-                .dissolveGroup(groupId, this.getLoginUserCode(request), false);
+                .dissolveGroup(groupId, userCode, false);
+        ResponseMapData resData = new ResponseMapData();
+        resData.addResponseData("flag", nRres);
         if(nRres > 0 ){
-            JsonResultUtils.writeSuccessJson(response);
+            JsonResultUtils.writeResponseDataAsJson(resData, response);
         }else{
-            JsonResultUtils.writeMessageJson("群不存在或者您不是群主。",response);
+            resData.addResponseData("message", "群不存在或者您不是群主。");
+            JsonResultUtils.writeResponseDataAsJson(resData, response);
+
         }
     }
 
     /**
      * 删除群
      * @param groupId
+     * @param userCode
      * @param response
      */
-    @RequestMapping(value = "/deleteGroup/{groupId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/deleteGroup/{groupId}/{userCode}", method = RequestMethod.DELETE)
     public void deleteGroup(
             @PathVariable String groupId,
-            HttpServletRequest request,
+            @PathVariable String userCode,
             HttpServletResponse response) {
         int nRres = webImUserManager
-                .dissolveGroup(groupId, this.getLoginUserCode(request), true);
+                .dissolveGroup(groupId, userCode, true);
+        ResponseMapData resData = new ResponseMapData();
+        resData.addResponseData("flag", nRres);
         if(nRres > 0 ){
-            JsonResultUtils.writeSuccessJson(response);
+            JsonResultUtils.writeResponseDataAsJson(resData, response);
         }else{
-            JsonResultUtils.writeMessageJson("群不存在。",response);
+            resData.addResponseData("message", "群不存在。");
+            JsonResultUtils.writeResponseDataAsJson(resData, response);
         }
     }
 }
