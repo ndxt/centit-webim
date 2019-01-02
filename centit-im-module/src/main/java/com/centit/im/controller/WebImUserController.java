@@ -12,7 +12,7 @@ import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImGroup;
 import com.centit.im.po.WebImGroupMember;
 import com.centit.im.service.WebImUserManager;
-import com.centit.support.algorithm.ListOpt;
+import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.StringBaseOpt;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -76,7 +76,7 @@ public class WebImUserController extends BaseController {
             method = RequestMethod.GET)
     public void listAllUnits(HttpServletResponse response) {
         List<? extends IUnitInfo> allUnits = webImUserManager.listAllUnit();
-        ListOpt.sortAsTree(allUnits,
+        CollectionsOpt.sortAsTree(allUnits,
                 ( p,  c) -> StringUtils.equals(p.getUnitCode(),c.getParentUnit()) );
         JsonResultUtils.writeSingleDataJson(
                 allUnits,response);
@@ -195,7 +195,7 @@ public class WebImUserController extends BaseController {
         Object members = jsonObject.get("members");
         String groupId = webImUserManager
                 .createGroupWithMembers(webImGroup,
-                        ListOpt.listToArray(StringBaseOpt.objectToStringList(members)));
+                        CollectionsOpt.listToArray(StringBaseOpt.objectToStringList(members)));
         webImGroup.setGroupId(groupId);
         JsonResultUtils.writeSingleDataJson(webImGroup, response);
     }
@@ -242,7 +242,7 @@ public class WebImUserController extends BaseController {
             @RequestBody String membersJsonStr,
             HttpServletResponse response) {
         JSONArray ja = JSON.parseArray(membersJsonStr);
-        webImUserManager.updateGroupMembers(groupId,ListOpt.listToArray(StringBaseOpt.objectToStringList(ja)));
+        webImUserManager.updateGroupMembers(groupId,CollectionsOpt.listToArray(StringBaseOpt.objectToStringList(ja)));
         JsonResultUtils.writeSuccessJson(response);
     }
 

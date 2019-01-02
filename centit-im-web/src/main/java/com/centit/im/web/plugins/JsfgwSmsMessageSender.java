@@ -3,6 +3,7 @@ package com.centit.im.web.plugins;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.basedata.NoticeMessage;
 import com.centit.support.network.HttpExecutor;
+import com.centit.support.network.HttpExecutorContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class JsfgwSmsMessageSender implements MessageSender{
     private String sendSms(Map<String,Object> fromData ){
         String jsonStr = null;
         try (CloseableHttpClient httpClient = HttpExecutor.createHttpClient()){
-            jsonStr = HttpExecutor.formPost(httpClient,
+            jsonStr = HttpExecutor.formPost(HttpExecutorContext.create(httpClient),
                     this.smsSendUrl,fromData);
         } catch (IOException e) {
             log.error(e.getMessage(),e);

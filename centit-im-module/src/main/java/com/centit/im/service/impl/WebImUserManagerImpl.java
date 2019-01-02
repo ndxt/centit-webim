@@ -1,5 +1,6 @@
 package com.centit.im.service.impl;
 
+import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
@@ -12,10 +13,9 @@ import com.centit.im.po.*;
 import com.centit.im.service.WebImSocket;
 import com.centit.im.service.WebImUserManager;
 import com.centit.im.socketio.ImMessage;
+import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.DatetimeOpt;
-import com.centit.support.algorithm.ListOpt;
 import com.centit.support.algorithm.UuidOpt;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +54,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     public WebImCustomer getUser(String userCode) {
         WebImCustomer cust = customerDao.getObjectById(userCode);
         if (cust == null) {
-            IUserInfo ui = platformEnvironment.getUserInfoByUserCode(userCode);
+            IUserInfo ui = CodeRepositoryUtil.getUserInfoByCode(userCode);
             if (ui != null) {
                 cust = new WebImCustomer(userCode, ui.getUserName());
                 cust.setUserType("U");
@@ -84,7 +84,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
         if(customer == null){
             user.setCreator("U0000000");
             if(StringUtils.isBlank(user.getUserName())) {
-                IUserInfo userInfo = platformEnvironment.getUserInfoByUserCode(user.getUserCode());
+                IUserInfo userInfo = CodeRepositoryUtil.getUserInfoByCode(user.getUserCode());
                 if (userInfo != null) {
                     user.setUserName(userInfo.getUserName());
                 }
@@ -167,7 +167,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
         for(IUserUnit user : users){
             WebImCustomer cust = customerDao.getObjectById(user.getUserCode());
             if(cust==null){
-                IUserInfo ui= platformEnvironment.getUserInfoByUserCode(user.getUserCode());
+                IUserInfo ui= CodeRepositoryUtil.getUserInfoByCode(user.getUserCode());
                 cust = new WebImCustomer(user.getUserCode(),ui.getUserName());
                 cust.setUserType("U");
                 cust.setOsId(ImMessage.DEFAULT_OSID);
@@ -228,7 +228,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
             return null;
         List<IUnitInfo> userUnits = new ArrayList<>(units.size());
         for( IUserUnit unit : units ) {
-            userUnits.add(platformEnvironment.getUnitInfoByUnitCode(unit.getUnitCode()));
+            userUnits.add(CodeRepositoryUtil.getUnitInfoByCode(unit.getUnitCode()));
         }
         return userUnits;
     }
@@ -271,7 +271,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
              customer.setCreator("U0000000");
              customer.setUserCode(memberCode);
              customer.setUserName(memberCode);
-             IUserInfo userInfo = platformEnvironment.getUserInfoByUserCode(memberCode);
+             IUserInfo userInfo = CodeRepositoryUtil.getUserInfoByCode(memberCode);
              if (userInfo != null){
                  customer.setUserName(userInfo.getUserName());
              }
@@ -381,7 +381,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
             return;
         }
 
-        List<String> memberList = ListOpt.arrayToList(members);
+        List<String> memberList = CollectionsOpt.arrayToList(members);
         List<WebImGroupMember> dbMembers = webImGroupMemberDao.listObjectsByProperty("groupId",groupId);
         if(dbMembers!=null && dbMembers.size()>0){
             for( WebImGroupMember member : dbMembers){

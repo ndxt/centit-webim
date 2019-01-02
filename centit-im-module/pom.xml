@@ -56,10 +56,6 @@
 
         <dependency>
             <groupId>com.centit.framework</groupId>
-            <artifactId>framework-adapter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.centit.framework</groupId>
             <artifactId>framework-config</artifactId>
         </dependency>
 

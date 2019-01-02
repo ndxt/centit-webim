@@ -2,11 +2,12 @@ package com.centit.im.client;
 
 import com.centit.framework.appclient.AppSession;
 import com.centit.framework.common.ObjectException;
-import com.centit.framework.common.ResponseJSON;
+import com.centit.framework.appclient.HttpReceiveJSON;
 import com.centit.im.po.FriendMemo;
 import com.centit.im.po.ImMessage;
 import com.centit.im.po.WebImCustomer;
 import com.centit.support.network.HttpExecutor;
+import com.centit.support.network.HttpExecutorContext;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class IMClientImpl implements IMClient {
         appSession = new AppSession(appServerUrl,false,userCode,password);    }
 
     public CloseableHttpClient getHttpClient() throws Exception {
-        return appSession.getHttpClient();
+        return appSession.allocHttpClient();
     }
 
     public void releaseHttpClient(CloseableHttpClient httpClient) {
@@ -54,9 +55,9 @@ public class IMClientImpl implements IMClient {
         }
         try {
             appSession.checkAccessToken(httpClient);
-            String jsonStr = HttpExecutor.jsonPost(httpClient,
+            String jsonStr = HttpExecutor.jsonPost(HttpExecutorContext.create(httpClient),
                     appSession.completeQueryUrl("/webimcust/friend"), memo);
-            ResponseJSON resJson = ResponseJSON.valueOfJson(jsonStr);
+            HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
 
             if (resJson.getCode() != 0) {
                 throw new ObjectException(memo, resJson.getMessage());
@@ -85,9 +86,9 @@ public class IMClientImpl implements IMClient {
         }
         try {
             appSession.checkAccessToken(httpClient);
-            String jsonStr = HttpExecutor.jsonPost(httpClient,
+            String jsonStr = HttpExecutor.jsonPost(HttpExecutorContext.create(httpClient),
                     appSession.completeQueryUrl("/webimcust/register"),user);
-            ResponseJSON resJson = ResponseJSON.valueOfJson(jsonStr);
+            HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
 
             if (resJson.getCode() != 0) {
                 throw new ObjectException(user, resJson.getMessage());
@@ -116,9 +117,9 @@ public class IMClientImpl implements IMClient {
         }
         try {
             appSession.checkAccessToken(httpClient);
-            String jsonStr = HttpExecutor.jsonPost(httpClient,
+            String jsonStr = HttpExecutor.jsonPost(HttpExecutorContext.create(httpClient),
                     appSession.completeQueryUrl("/webimcust/config/"+ cust.getUserCode()),cust);
-            ResponseJSON resJson = ResponseJSON.valueOfJson(jsonStr);
+            HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
 
             if (resJson.getCode() != 0) {
                 throw new ObjectException(cust, resJson.getMessage());
@@ -147,11 +148,11 @@ public class IMClientImpl implements IMClient {
         }
         try {
             appSession.checkAccessToken(httpClient);
-            String jsonStr = HttpExecutor.jsonPost(httpClient,
+            String jsonStr = HttpExecutor.jsonPost(HttpExecutorContext.create(httpClient),
                     appSession.completeQueryUrl(
                         "/webim/sendMessage/"+message.getReceiver() +"/" + message.getSender() ),
                         message);
-            ResponseJSON resJson = ResponseJSON.valueOfJson(jsonStr);
+            HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
 
             if (resJson.getCode() != 0) {
                 throw new ObjectException(message, resJson.getMessage());

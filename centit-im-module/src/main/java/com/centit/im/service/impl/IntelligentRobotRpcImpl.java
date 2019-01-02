@@ -5,6 +5,7 @@ import com.centit.framework.appclient.AppSession;
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.service.IntelligentRobot;
 import com.centit.support.network.HttpExecutor;
+import com.centit.support.network.HttpExecutorContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class IntelligentRobotRpcImpl implements IntelligentRobot {
     }
 
     public CloseableHttpClient getHttpClient() throws Exception {
-        return appSession.getHttpClient();
+        return appSession.allocHttpClient();
     }
 
     public void releaseHttpClient(CloseableHttpClient httpClient) {
@@ -43,7 +44,8 @@ public class IntelligentRobotRpcImpl implements IntelligentRobot {
         CloseableHttpClient httpClient = null;
         try {
             httpClient = getHttpClient();
-            String jsonStr = HttpExecutor.simpleGet(httpClient, appSession.completeQueryUrl("/hello/" + custUserCode));
+            String jsonStr = HttpExecutor.simpleGet(HttpExecutorContext.create(httpClient),
+                    appSession.completeQueryUrl("/hello/" + custUserCode));
             JSONObject jsonObj = JSONObject.parseObject(jsonStr);
             RobotAnswer result = JSONObject.toJavaObject(jsonObj.getJSONObject("data"), RobotAnswer.class);
             releaseHttpClient(httpClient);
@@ -60,7 +62,7 @@ public class IntelligentRobotRpcImpl implements IntelligentRobot {
         CloseableHttpClient httpClient = null;
         try {
             httpClient = getHttpClient();
-            String jsonStr = HttpExecutor.simpleGet(httpClient,
+            String jsonStr = HttpExecutor.simpleGet(HttpExecutorContext.create(httpClient),
                     appSession.completeQueryUrl("/goodbye/"+ custUserCode));
             JSONObject jsonObj = JSONObject.parseObject(jsonStr);
             RobotAnswer result = JSONObject.toJavaObject(jsonObj.getJSONObject("data"), RobotAnswer.class);
@@ -78,7 +80,7 @@ public class IntelligentRobotRpcImpl implements IntelligentRobot {
         CloseableHttpClient httpClient = null;
         try {
             httpClient = getHttpClient();
-            String jsonStr = HttpExecutor.simpleGet(httpClient,
+            String jsonStr = HttpExecutor.simpleGet(HttpExecutorContext.create(httpClient),
                 appSession.completeQueryUrl("/ask/"+ custUserCode+"?question="+
                         URLEncoder.encode(question,"utf-8")+"&userCode"+custUserCode));
             JSONObject jsonObj = JSONObject.parseObject(jsonStr);

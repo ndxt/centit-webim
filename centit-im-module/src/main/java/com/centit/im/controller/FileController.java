@@ -247,7 +247,7 @@ public class FileController extends BaseController {
             JsonResultUtils.writeOriginalJson(json.toString(), response);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
-            JsonResultUtils.writeAjaxErrorMessage(
+            JsonResultUtils.writeHttpErrorMessage(
                     FileServerConstant.ERROR_FILE_PRETREAT,
                     "文件上传成功，但是在保存前：" + e.getMessage(), response);
         }
@@ -318,7 +318,7 @@ public class FileController extends BaseController {
 
         }catch (ObjectException e){
             log.error(e.getMessage(),e);
-            JsonResultUtils.writeAjaxErrorMessage(e.getExceptionCode(),
+            JsonResultUtils.writeHttpErrorMessage(e.getExceptionCode(),
                     e.getMessage(), response);
         }
     }
