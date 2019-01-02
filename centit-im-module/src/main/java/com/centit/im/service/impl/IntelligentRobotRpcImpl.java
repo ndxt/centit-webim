@@ -1,11 +1,9 @@
 package com.centit.im.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.appclient.AppSession;
+import com.centit.framework.appclient.RestfulHttpRequest;
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.service.IntelligentRobot;
-import com.centit.support.network.HttpExecutor;
-import com.centit.support.network.HttpExecutorContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,56 +39,39 @@ public class IntelligentRobotRpcImpl implements IntelligentRobot {
 
     @Override
     public RobotAnswer sayHello(String custUserCode)  {
-        CloseableHttpClient httpClient = null;
-        try {
-            httpClient = getHttpClient();
-            String jsonStr = HttpExecutor.simpleGet(HttpExecutorContext.create(httpClient),
-                    appSession.completeQueryUrl("/hello/" + custUserCode));
-            JSONObject jsonObj = JSONObject.parseObject(jsonStr);
-            RobotAnswer result = JSONObject.toJavaObject(jsonObj.getJSONObject("data"), RobotAnswer.class);
-            releaseHttpClient(httpClient);
+        RobotAnswer result =  RestfulHttpRequest.getResponseObject(appSession,
+                "/hello/" + custUserCode,RobotAnswer.class);
+        if(result != null){
             return result;
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-            releaseHttpClient(httpClient);
+        }else{
             return RobotAnswer.createTestAnswer();
         }
     }
 
     @Override
     public RobotAnswer sayBoodbye(String custUserCode) {
-        CloseableHttpClient httpClient = null;
-        try {
-            httpClient = getHttpClient();
-            String jsonStr = HttpExecutor.simpleGet(HttpExecutorContext.create(httpClient),
-                    appSession.completeQueryUrl("/goodbye/"+ custUserCode));
-            JSONObject jsonObj = JSONObject.parseObject(jsonStr);
-            RobotAnswer result = JSONObject.toJavaObject(jsonObj.getJSONObject("data"), RobotAnswer.class);
-            releaseHttpClient(httpClient);
+        RobotAnswer result =  RestfulHttpRequest.getResponseObject(appSession,
+                "/goodbye/" + custUserCode,RobotAnswer.class);
+        if(result != null){
             return result;
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-            releaseHttpClient(httpClient);
+        }else{
             return RobotAnswer.createTestAnswer();
         }
     }
 
     @Override
     public RobotAnswer askQuestion(String custUserCode, String question) {
-        CloseableHttpClient httpClient = null;
         try {
-            httpClient = getHttpClient();
-            String jsonStr = HttpExecutor.simpleGet(HttpExecutorContext.create(httpClient),
-                appSession.completeQueryUrl("/ask/"+ custUserCode+"?question="+
-                        URLEncoder.encode(question,"utf-8")+"&userCode"+custUserCode));
-            JSONObject jsonObj = JSONObject.parseObject(jsonStr);
-            RobotAnswer result = JSONObject.toJavaObject(jsonObj.getJSONObject("data"), RobotAnswer.class);
-            releaseHttpClient(httpClient);
-            return result;
+            RobotAnswer result =  RestfulHttpRequest.getResponseObject(appSession,
+                    "/ask/" + custUserCode+"?question="+
+                            URLEncoder.encode(question,"utf-8") +"&userCode"+custUserCode,
+                    RobotAnswer.class);
+            if(result != null){
+                return result;
+            }
         }catch (Exception e){
             log.error(e.getMessage(),e);
-            releaseHttpClient(httpClient);
-            return RobotAnswer.createTestAnswer();
         }
+        return RobotAnswer.createTestAnswer();
     }
 }

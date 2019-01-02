@@ -1,19 +1,15 @@
 package com.centit.im.client;
 
 import com.centit.framework.appclient.AppSession;
-import com.centit.framework.common.ObjectException;
 import com.centit.framework.appclient.HttpReceiveJSON;
+import com.centit.framework.appclient.RestfulHttpRequest;
+import com.centit.framework.common.ObjectException;
 import com.centit.im.po.FriendMemo;
 import com.centit.im.po.ImMessage;
 import com.centit.im.po.WebImCustomer;
-import com.centit.support.network.HttpExecutor;
-import com.centit.support.network.HttpExecutorContext;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Created by codefan on 17-4-11.
@@ -46,28 +42,10 @@ public class IMClientImpl implements IMClient {
 
     @Override
     public void setFriendMemo(FriendMemo memo){
-
-        CloseableHttpClient httpClient = null;
-        try {
-            httpClient = getHttpClient();
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-        }
-        try {
-            appSession.checkAccessToken(httpClient);
-            String jsonStr = HttpExecutor.jsonPost(HttpExecutorContext.create(httpClient),
-                    appSession.completeQueryUrl("/webimcust/friend"), memo);
-            HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
-
-            if (resJson.getCode() != 0) {
-                throw new ObjectException(memo, resJson.getMessage());
-            }
-        } catch (ClientProtocolException e) {
-            log.error(e.getMessage(),e);
-        } catch (IOException e) {
-            log.error(e.getMessage(),e);
-        } finally {
-            releaseHttpClient(httpClient);
+        String jsonStr =  RestfulHttpRequest.jsonPost(appSession, "/webimcust/friend", memo);
+        HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
+        if (resJson.getCode() != 0) {
+            throw new ObjectException(memo, resJson.getMessage());
         }
     }
 
@@ -78,27 +56,10 @@ public class IMClientImpl implements IMClient {
      */
     @Override
     public void registerUser(WebImCustomer user){
-        CloseableHttpClient httpClient = null;
-        try {
-            httpClient = getHttpClient();
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-        }
-        try {
-            appSession.checkAccessToken(httpClient);
-            String jsonStr = HttpExecutor.jsonPost(HttpExecutorContext.create(httpClient),
-                    appSession.completeQueryUrl("/webimcust/register"),user);
-            HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
-
-            if (resJson.getCode() != 0) {
-                throw new ObjectException(user, resJson.getMessage());
-            }
-        } catch (ClientProtocolException e) {
-            log.error(e.getMessage(),e);
-        } catch (IOException e) {
-            log.error(e.getMessage(),e);
-        } finally {
-            releaseHttpClient(httpClient);
+        String jsonStr =  RestfulHttpRequest.jsonPost(appSession, "/webimcust/register", user);
+        HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
+        if (resJson.getCode() != 0) {
+            throw new ObjectException(user, resJson.getMessage());
         }
     }
 
@@ -109,27 +70,11 @@ public class IMClientImpl implements IMClient {
      */
     @Override
     public void setUserConfig(WebImCustomer cust){
-        CloseableHttpClient httpClient = null;
-        try {
-            httpClient = getHttpClient();
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-        }
-        try {
-            appSession.checkAccessToken(httpClient);
-            String jsonStr = HttpExecutor.jsonPost(HttpExecutorContext.create(httpClient),
-                    appSession.completeQueryUrl("/webimcust/config/"+ cust.getUserCode()),cust);
-            HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
 
-            if (resJson.getCode() != 0) {
-                throw new ObjectException(cust, resJson.getMessage());
-            }
-        } catch (ClientProtocolException e) {
-            log.error(e.getMessage(),e);
-        } catch (IOException e) {
-            log.error(e.getMessage(),e);
-        } finally {
-            releaseHttpClient(httpClient);
+        String jsonStr =  RestfulHttpRequest.jsonPost(appSession, "/webimcust/config/"+ cust.getUserCode(),cust);
+        HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
+        if (resJson.getCode() != 0) {
+            throw new ObjectException(cust, resJson.getMessage());
         }
     }
 
@@ -140,29 +85,11 @@ public class IMClientImpl implements IMClient {
      */
     @Override
     public void sendMessage(ImMessage message){
-        CloseableHttpClient httpClient = null;
-        try {
-            httpClient = getHttpClient();
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-        }
-        try {
-            appSession.checkAccessToken(httpClient);
-            String jsonStr = HttpExecutor.jsonPost(HttpExecutorContext.create(httpClient),
-                    appSession.completeQueryUrl(
-                        "/webim/sendMessage/"+message.getReceiver() +"/" + message.getSender() ),
-                        message);
-            HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
-
-            if (resJson.getCode() != 0) {
-                throw new ObjectException(message, resJson.getMessage());
-            }
-        } catch (ClientProtocolException e) {
-            log.error(e.getMessage(),e);
-        } catch (IOException e) {
-            log.error(e.getMessage(),e);
-        } finally {
-            releaseHttpClient(httpClient);
+        String jsonStr =  RestfulHttpRequest.jsonPost(appSession,
+                "/webimcust/sendMessage/" + message.getReceiver() +"/" + message.getSender(), message);
+        HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
+        if (resJson.getCode() != 0) {
+            throw new ObjectException(message, resJson.getMessage());
         }
     }
 }
