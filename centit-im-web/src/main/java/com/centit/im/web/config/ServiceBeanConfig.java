@@ -12,6 +12,8 @@ import com.centit.framework.jdbc.config.JdbcConfig;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
+import com.centit.framework.security.model.CentitPasswordEncoder;
+import com.centit.framework.security.model.StandardPasswordEncoderImpl;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
@@ -95,6 +97,11 @@ public class ServiceBeanConfig {
     @Bean
     public InstantiationServiceBeanPostProcessor instantiationServiceBeanPostProcessor() {
         return new InstantiationServiceBeanPostProcessor();
+    }
+
+    @Bean
+    public CentitPasswordEncoder passwordEncoder(){
+        return new StandardPasswordEncoderImpl();
     }
 
 }
