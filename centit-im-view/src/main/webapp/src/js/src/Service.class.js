@@ -42,7 +42,7 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
         queryUsers() {
             let ctx = this.contextPath,
                 id = this.mine.id
-            return fetch(`${ctx }/service/webimcust/cust/${id }?lastServiceDate=1949-10-1`)
+            return fetch(`${ctx }/webim/webimcust/cust/${id }?lastServiceDate=1949-10-1`)
                 .then(res => res.json()
         )
         .
@@ -54,7 +54,7 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
         queryService() {
             let ctx = this.contextPath
 
-            return fetch(`${ctx }/service/webimcust/services`)
+            return fetch(`${ctx }/webim/webimcust/services`)
                 .then(res => res.json()
         )
         .
@@ -91,7 +91,7 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
             var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
             var pageNo = 1;
             $.ajax({
-                url: `${ctx}/service/webim/historyMessage/${receiver}/${sender}`,
+                url: `${ctx}/webim/webim/historyMessage/${receiver}/${sender}`,
                 async: false,
                 dataType: 'json',
                 data: {pageNo: pageNo, lastReadDate: dateStr, pageSize: 100000},
@@ -264,11 +264,11 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
                     ]
                 }
                 , uploadImage: {
-                    url: `${ctx}/service/file/upload` //（返回的数据格式见下文）
+                    url: `${ctx}/webim/file/upload` //（返回的数据格式见下文）
                     //默认post
                 }
                 , uploadFile: {
-                    url: `${ctx}/service/file/upload`  //（返回的数据格式见下文）
+                    url: `${ctx}/webim/file/upload`  //（返回的数据格式见下文）
                     //默认post
                 }
                 , tool: [
@@ -618,7 +618,7 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
             var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
 
             $.ajax({
-                url: `${ctx}/service/webim/statUnread/${userCode}`,
+                url: `${ctx}/webim/webim/statUnread/${userCode}`,
                 dataType: 'json',
                 async: false,
                 // data: {pageNo: pageNo,lastReadDate: dateStr},
@@ -639,7 +639,7 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
             });
             for (let i = 0, length = arr.length; i < length; i++) {
                 $.ajax({
-                    url: `${ctx}/service/webim/historyMessage/${userCode}/${arr[i]}`,//这里也调用了history接口
+                    url: `${ctx}/webim/webim/historyMessage/${userCode}/${arr[i]}`,//这里也调用了history接口
                     dataType: 'json',
                     async: false,
                     data: {pageNo: 1, lastReadDate: dateStr},
@@ -674,7 +674,7 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
         }
 
         mobileHistory(id){
-            var url = ctx + "/service/webim/historyMessage/" + this.mine.userCode + '/' + id;
+            var url = ctx + "/webim/webim/historyMessage/" + this.mine.userCode + '/' + id;
             var receiver = this.mine.id;
             let lastReadDate = new Date();
             lastReadDate.setDate(lastReadDate.getDate() + 1);

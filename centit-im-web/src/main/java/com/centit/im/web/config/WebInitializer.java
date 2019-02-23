@@ -75,10 +75,10 @@ public class WebInitializer implements WebApplicationInitializer {
     private void initializeSpringMvcConfig(ServletContext servletContext) {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.register(NormalSpringMvcConfig.class);
-        Dynamic system  = servletContext.addServlet("service", new DispatcherServlet(context));
-        system.addMapping("/service/*");
-        system.setLoadOnStartup(1);
-        system.setAsyncSupported(true);
+        Dynamic webim  = servletContext.addServlet("webim", new DispatcherServlet(context));
+        webim.addMapping("/webim/*");
+        webim.setLoadOnStartup(1);
+        webim.setAsyncSupported(true);
     }
 
 }

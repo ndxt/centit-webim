@@ -9,6 +9,7 @@ import com.centit.search.service.ESServerConfig;
 import com.centit.search.service.IndexerSearcherFactory;
 import com.centit.search.service.Searcher;
 import com.centit.support.algorithm.StringBaseOpt;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Map;
@@ -52,10 +53,10 @@ public class IntelligentRobotEsImpl implements IntelligentRobot {
             searcher = IndexerSearcherFactory.obtainSearcher(esServerConfig, QuestAndAnswer.class);
         }
 
-        List<Map<String, Object>> questiosns = searcher.search(question,1,maxAnswer);
+        Pair<Long,List<Map<String, Object>>> questiosns = searcher.search(question,1,maxAnswer);
         RobotAnswer answer = new RobotAnswer(question);
         int answerNo =0;
-        for(Map<String, Object> q : questiosns) {
+        for(Map<String, Object> q : questiosns.getRight()) {
             if(answerNo==0) {
                 answer.setMessage("您想问的是不是：\n"
                         + StringBaseOpt.objectToString(q.get("questionTitle")

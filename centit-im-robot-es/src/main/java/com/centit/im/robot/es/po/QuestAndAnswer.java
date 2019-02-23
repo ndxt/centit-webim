@@ -2,6 +2,7 @@ package com.centit.im.robot.es.po;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.centit.search.annotation.ESField;
 import com.centit.search.annotation.ESType;
 import com.centit.search.document.ESDocument;
 
@@ -14,7 +15,7 @@ import java.util.Date;
  * @author codefan
  * @version 0.1
  */
-@ESType(type="F_QUESTION_AND_ANSWER")
+@ESType(type="F_QUESTION_AND_ANSWER", indexName="webim")
 @Entity
 @Table(name="F_QUESTION_AND_ANSWER")
 public class QuestAndAnswer implements ESDocument, Serializable {
@@ -24,7 +25,7 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 问题标识
      */
-    @ESType(type="text")
+    @ESField(type="text")
     @Id
     @Column(name = "QUESTION_ID")
     //@GeneratedValue(generator = "assignedGenerator")
@@ -34,13 +35,13 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 所属系统
      */
-    @ESType(type="text")
+    @ESField(type="text")
     @Column(name = "OS_ID")
     private String osId;
     /**
      * 所属业务
      */
-    @ESType(type="text")
+    @ESField(type="text")
     @Column(name = "OPT_ID")
     private String optId;
 
@@ -53,33 +54,33 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 问题标题
      */
-    @ESType(type="text",index = "analyzed", query = true, highlight = true, analyzer = "ik_smart")
+    @ESField(type="text",index = true, query = true, highlight = true, analyzer = "ik_smart")
     @Column(name = "QUESTION_TITLE")
     private String questionTitle;
 
     /**
      * 关键字
      */
-    @ESType(type="text",index = "analyzed", query = true, revert = false, highlight = true, analyzer = "ik_smart")
+    @ESField(type="text",index = true, query = true, revert = false, highlight = true, analyzer = "ik_smart")
     @Column(name = "KEY_WORDS")
     private String keyWords;
 
     /**
      * 问题标题联url
      */
-    @ESType(type="text", revert = true)
+    @ESField(type="text", revert = true)
     @Column(name = "QUESTION_URL")
     private String questionUrl;
 
     /**
      * 问题回答和内容
      */
-    @ESType(type="text",index = "analyzed", query = true, highlight = true, analyzer = "ik_smart")
+    @ESField(type="text",index = true, query = true, highlight = true, analyzer = "ik_smart")
     @Column(name = "QUESTION_ANSWER")
     private String questionAnswer;
 
 
-    @ESType(type="date")
+    @ESField(type="date")
     @Column(name = "CREATE_TIME")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;

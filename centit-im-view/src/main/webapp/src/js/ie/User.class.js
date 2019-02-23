@@ -55,11 +55,11 @@ define(["IM", "mustache", "jquery.raty"], function (IM, Mustache) {
                         mine: this.mine
                     },
                     uploadImage: {
-                        url: ctx + "/service/file/upload" //（返回的数据格式见下文）
+                        url: ctx + "/webim/file/upload" //（返回的数据格式见下文）
                         //默认post
                     },
                     uploadFile: {
-                        url: ctx + "/service/file/upload" //（返回的数据格式见下文）
+                        url: ctx + "/webim/file/upload" //（返回的数据格式见下文）
                         //默认post
                     },
                     brief: true,
@@ -251,7 +251,7 @@ define(["IM", "mustache", "jquery.raty"], function (IM, Mustache) {
                 var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
 
                 $.ajax({
-                    url: ctx + "/service/webim/allHistoryMessage/" + receiver,
+                    url: ctx + "/webim/webim/allHistoryMessage/" + receiver,
                     dataType: 'json',
                     data: { lastReadDate: dateStr, pageSize: 100000 },
                     success: function success(res) {

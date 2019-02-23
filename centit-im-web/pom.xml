@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>com.centit.product</groupId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
         <artifactId>centit-webim</artifactId>
     </parent>
 
