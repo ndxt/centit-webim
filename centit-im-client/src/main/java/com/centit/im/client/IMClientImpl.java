@@ -29,8 +29,10 @@ public class IMClientImpl implements IMClient {
 //    @Value("${pusherserver.export.url}")
 //    private String appServerExportUrl;
 
-    public void initAppSession(String appServerUrl, String userCode,String password ){
-        appSession = new AppSession(appServerUrl,false,userCode,password);    }
+    public void initAppSession(String appServerUrl, String appLoginUrl, String userCode,String password ){
+        appSession = new AppSession(appServerUrl,false,userCode,password);
+        appSession.setAppLoginUrl(appLoginUrl);
+    }
 
     public CloseableHttpClient getHttpClient() throws Exception {
         return appSession.allocHttpClient();
