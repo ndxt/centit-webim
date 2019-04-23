@@ -2,7 +2,6 @@ package com.centit.im.robot.test;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.centit.framework.common.SysParametersUtils;
 import com.centit.framework.core.dao.ExtendedQueryPool;
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.robot.es.po.QuestAndAnswer;
@@ -45,9 +44,9 @@ public class ImportQuestionToEs {
             IOException, DocumentException {
 
         DataSourceDescription dataSource = new DataSourceDescription();
-        dataSource.setConnUrl(SysParametersUtils.getStringValue("jdbc.url"));
-        dataSource.setUsername(SysParametersUtils.getStringValue("jdbc.user"));
-        dataSource.setPassword(SysParametersUtils.getStringValue("jdbc.password"));
+        dataSource.setConnUrl("jdbc.url");
+        dataSource.setUsername("jdbc.user");
+        dataSource.setPassword("jdbc.password");
 
         ExtendedQueryPool.loadExtendedSqlMap(
                 ImportQuestionToEs.class.getResourceAsStream("/ExtendedSqlMap.xml"),
@@ -55,8 +54,8 @@ public class ImportQuestionToEs {
 
         Connection conn = DbcpConnectPools.getDbcpConnect(dataSource);
 
-        ESServerConfig esServerConfig = IndexerSearcherFactory.loadESServerConfigFormProperties(
-                SysParametersUtils.loadProperties());
+        ESServerConfig esServerConfig = new  ESServerConfig();/*IndexerSearcherFactory.loadESServerConfigFormProperties(
+                SysParametersUtils.loadProperties())*/
 
         Indexer indexer = IndexerSearcherFactory.obtainIndexer(
                 esServerConfig, QuestAndAnswer.class);
