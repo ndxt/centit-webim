@@ -36,3 +36,5 @@ webim:
     base-dir: /D/Projects/RunData/webim_home/upload
   sms:
     send-url: http://218.94.123.217:8998/service/sendMsg
+  notify:
+    type: none

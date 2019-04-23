@@ -99,7 +99,7 @@ public class WebImSocketImpl implements WebImSocket {
     @Resource
     protected WebImGroupMemberDao webImGroupMemberDao;
 
-    @Value("${notify.type}")
+    @Value("${webim.notify.type:none}")
     protected String noticeType;
 
     @Autowired
