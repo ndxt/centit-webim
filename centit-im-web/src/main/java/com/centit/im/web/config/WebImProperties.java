@@ -1,5 +1,6 @@
 package com.centit.im.web.config;
 
+import com.centit.search.service.ESServerConfig;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -11,6 +12,8 @@ public class WebImProperties {
     private SmsConfig sms;
     private RobotConfig robot;
     private FileStoreConfig fileStore;
+
+    private ESServerConfig elasticSearch;
 
     @Data
     public static class SmsConfig{

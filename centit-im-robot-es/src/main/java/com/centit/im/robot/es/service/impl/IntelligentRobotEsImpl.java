@@ -1,6 +1,5 @@
 package com.centit.im.robot.es.service.impl;
 
-import com.centit.framework.common.SysParametersUtils;
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.robot.es.po.QuestAndAnswer;
 import com.centit.im.service.IntelligentRobot;
@@ -45,10 +44,6 @@ public class IntelligentRobotEsImpl implements IntelligentRobot {
 
     @Override
     public RobotAnswer askQuestion(String custUserCode, String question) {
-        if(esServerConfig == null){
-            esServerConfig = IndexerSearcherFactory.loadESServerConfigFormProperties(
-                    SysParametersUtils.loadProperties());
-        }
         if(searcher==null) {
             searcher = IndexerSearcherFactory.obtainSearcher(esServerConfig, QuestAndAnswer.class);
         }
@@ -83,5 +78,9 @@ public class IntelligentRobotEsImpl implements IntelligentRobot {
 
     public void setMaxAnswer(int maxAnswer) {
         this.maxAnswer = maxAnswer;
+    }
+
+    public void setEsServerConfig(ESServerConfig esServerConfig) {
+        this.esServerConfig = esServerConfig;
     }
 }

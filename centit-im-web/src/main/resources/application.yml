@@ -32,6 +32,12 @@ webim:
   robot:
     type: es
     max-answer: 4
+    elastic-search:
+      os-id: FILE_SVR
+      server-host-ip: 192.168.132.110
+      server-host-port: 9300
+      cluster-name: webim-robot
+      min-score: 0.5
   file-store:
     base-dir: /D/Projects/RunData/webim_home/upload
   sms:

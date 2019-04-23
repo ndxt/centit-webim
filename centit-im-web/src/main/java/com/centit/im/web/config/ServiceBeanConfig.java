@@ -47,6 +47,8 @@ public class ServiceBeanConfig {
             IntelligentRobotFactorySingleImpl intelligentRobotFactory
                     = new IntelligentRobotFactorySingleImpl();
             IntelligentRobotEsImpl intelligentRobot = new IntelligentRobotEsImpl();
+            intelligentRobot.setEsServerConfig(webImProperties.getElasticSearch());
+
             intelligentRobot.setMaxAnswer(webImProperties.getRobot().getMaxAnswer());
             intelligentRobotFactory.setIntelligentRobot(intelligentRobot );
             return intelligentRobotFactory;
