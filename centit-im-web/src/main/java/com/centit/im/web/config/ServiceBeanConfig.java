@@ -2,7 +2,6 @@ package com.centit.im.web.config;
 
 import com.centit.fileserver.utils.FileStore;
 import com.centit.fileserver.utils.OsFileStore;
-import com.centit.framework.common.SysParametersUtils;
 import com.centit.framework.components.impl.NotificationCenterImpl;
 import com.centit.framework.components.impl.TextOperationLogWriterImpl;
 import com.centit.framework.ip.service.IntegrationEnvironment;
@@ -16,6 +15,7 @@ import com.centit.im.service.impl.IntelligentRobotFactorySingleImpl;
 import com.centit.im.web.plugins.JsfgwSmsMessageSender;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,15 +24,19 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
+import java.io.File;
+
 @Configuration
 @ComponentScan(basePackages = "com.centit",
         excludeFilters = @ComponentScan.Filter(value = org.springframework.stereotype.Controller.class))
 @EnableConfigurationProperties(WebImProperties.class)
 public class ServiceBeanConfig {
 
+    @Value("${framework.app.home:/}")
+    protected String appHome;
+
     @Autowired
     private WebImProperties webImProperties;
-
 
     @Autowired
     IntegrationEnvironment integrationEnvironment;
@@ -61,7 +65,7 @@ public class ServiceBeanConfig {
 
         String baseHome = webImProperties.getFileStore().getBaseDir();
         if(StringUtils.isBlank(baseHome)) {
-            baseHome = SysParametersUtils.getUploadHome();
+            baseHome = appHome + File.separatorChar + "temp";
         }
 
         return new OsFileStore(baseHome);
