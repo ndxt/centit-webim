@@ -5,18 +5,39 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.centit.product</groupId>
-        <version>1.1-SNAPSHOT</version>
-        <artifactId>centit-webim</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.3.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <artifactId>centit-im-web</artifactId>
     <name>com.centit.product:centit-im-web</name>
+    <version>1.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <description>即时通讯的demo程序,通过引用im-server的web包，实现机器人的接口，并将这个接口注入到im的服务中。
     实现机器人的接口还有另一个方法就是 引用 im-client包，在其中实现机器人接口服务供 im服务调用</description>
 
+    <properties>
+        <centit.framework.version>4.5.1901</centit.framework.version>
+        <centit.persistence.version>1.2.1901</centit.persistence.version>
+        <centit.commons.version>2.2.1901</centit.commons.version>
+        <centit.ip.version>2.0.1901</centit.ip.version>
+        <centit.ui.version>3.1.1809</centit.ui.version>
+    </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>com.centit.product</groupId>
             <artifactId>centit-im-robot-es</artifactId>
@@ -32,21 +53,53 @@
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>framework-core-web</artifactId>
+            <version>${centit.framework.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
-            <artifactId>centit-ip-app-config</artifactId>
+            <artifactId>centit-ip-app-boot-config</artifactId>
+            <version>${centit.ip.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
-            <artifactId>framework-config</artifactId>
+            <artifactId>centit-persistence-jdbc</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
-            <artifactId>centit-persistence-jdbc-config</artifactId>
+            <artifactId>centit-persistence-extend</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>swagger-bootstrap-ui</artifactId>
+            <version>1.8.2</version>
         </dependency>
 
         <!-- server runtime library -->
@@ -56,22 +109,33 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>biz.paluch.logging</groupId>
             <artifactId>logstash-gelf</artifactId>
             <version>1.11.1</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
+            </plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

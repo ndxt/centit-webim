@@ -1,0 +1,38 @@
+server:
+  port: 10085
+
+spring:
+  application:
+    name: WEBIM
+  datasource:
+    type: org.apache.commons.dbcp2.BasicDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.131.6:3306/webim?useUnicode=true&characterEncoding=utf-8
+    username: webim
+    password: webim
+    dbcp2:
+      max-wait-millis: 10000
+      max-idle: 15
+      initial-size: 10
+      validation-query: SELECT 1
+      connection-properties: characterEncoding=utf8
+
+framework:
+  app:
+    home: /D/Projects/RunData/webim_home
+  ip:
+    enable: false
+    topoptid: WebIm
+    home: http://product.centit.com:8080/product-ip/service
+    auth-enable: false
+    usercode: admin
+    password: 000000
+
+webim:
+  robot:
+    type: es
+    max-answer: 4
+  file-store:
+    base-dir: /D/Projects/RunData/webim_home/upload
+  sms:
+    send-url: http://218.94.123.217:8998/service/sendMsg

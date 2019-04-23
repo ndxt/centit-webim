@@ -15,9 +15,7 @@
     <packaging>jar</packaging>
     <description>即时通讯的客户端，通过http调用服务端的接口，发送即时通讯消息</description>
 
-
     <dependencies>
-
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>framework-adapter</artifactId>

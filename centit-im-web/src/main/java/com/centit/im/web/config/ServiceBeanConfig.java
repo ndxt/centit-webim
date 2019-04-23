@@ -5,49 +5,45 @@ import com.centit.fileserver.utils.OsFileStore;
 import com.centit.framework.common.SysParametersUtils;
 import com.centit.framework.components.impl.NotificationCenterImpl;
 import com.centit.framework.components.impl.TextOperationLogWriterImpl;
-import com.centit.framework.config.SpringSecurityDaoConfig;
-import com.centit.framework.ip.app.config.IPAppSystemBeanConfig;
 import com.centit.framework.ip.service.IntegrationEnvironment;
-import com.centit.framework.jdbc.config.JdbcConfig;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
-import com.centit.framework.security.model.CentitPasswordEncoder;
-import com.centit.framework.security.model.StandardPasswordEncoderImpl;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
 import com.centit.im.service.impl.IntelligentRobotFactorySingleImpl;
 import com.centit.im.web.plugins.JsfgwSmsMessageSender;
-import com.centit.support.algorithm.NumberBaseOpt;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @Configuration
 @ComponentScan(basePackages = "com.centit",
         excludeFilters = @ComponentScan.Filter(value = org.springframework.stereotype.Controller.class))
-@Import({IPAppSystemBeanConfig.class,
-        JdbcConfig.class,
-        SpringSecurityDaoConfig.class})
+@EnableConfigurationProperties(WebImProperties.class)
 public class ServiceBeanConfig {
 
-
     @Autowired
-    private Environment env;
+    private WebImProperties webImProperties;
+
 
     @Autowired
     IntegrationEnvironment integrationEnvironment;
 
     @Bean
     public IntelligentRobotFactory intelligentRobotFactory() {
-        if("es".equals(env.getProperty("webim.robot.type"))){
+        if("es".equals(webImProperties.getRobot().getType())){
             IntelligentRobotFactorySingleImpl intelligentRobotFactory
                     = new IntelligentRobotFactorySingleImpl();
             IntelligentRobotEsImpl intelligentRobot = new IntelligentRobotEsImpl();
-            intelligentRobot.setMaxAnswer( NumberBaseOpt.parseInteger(
-                            env.getProperty("question.robot.answer.maxsize"), 4));
+            intelligentRobot.setMaxAnswer(webImProperties.getRobot().getMaxAnswer());
             intelligentRobotFactory.setIntelligentRobot(intelligentRobot );
             return intelligentRobotFactory;
         }else{
@@ -63,7 +59,7 @@ public class ServiceBeanConfig {
     @Bean
     public FileStore fileStore(){
 
-        String baseHome = env.getProperty("os.file.base.dir");
+        String baseHome = webImProperties.getFileStore().getBaseDir();
         if(StringUtils.isBlank(baseHome)) {
             baseHome = SysParametersUtils.getUploadHome();
         }
@@ -90,7 +86,7 @@ public class ServiceBeanConfig {
     @Bean
     public MessageSender smsMessageManager(){
         JsfgwSmsMessageSender smsMessageManager =new JsfgwSmsMessageSender();
-        smsMessageManager.setSmsSendUrl(env.getProperty("sms.send.url"));
+        smsMessageManager.setSmsSendUrl(webImProperties.getSms().getSendUrl());
         return smsMessageManager;
     }
 
@@ -100,8 +96,8 @@ public class ServiceBeanConfig {
     }
 
     @Bean
-    public CentitPasswordEncoder passwordEncoder(){
-        return new StandardPasswordEncoderImpl();
+    public CsrfTokenRepository csrfTokenRepository() {
+        return new HttpSessionCsrfTokenRepository();
     }
 
 }
