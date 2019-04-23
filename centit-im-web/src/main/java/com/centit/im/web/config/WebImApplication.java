@@ -22,7 +22,7 @@ import java.util.List;
  * Created by zou_wy on 2017/3/29.
  */
 @SpringBootApplication
-@ComponentScan(basePackages = "com.centit.im")
+@ComponentScan(basePackages = "com.centit")
 public class WebImApplication extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
     @Autowired
