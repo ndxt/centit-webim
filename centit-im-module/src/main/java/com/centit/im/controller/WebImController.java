@@ -83,7 +83,7 @@ public class WebImController extends BaseController {
             PageDesc pageDesc, Date lastReadDate) {
         JSONArray listObjects = webImMessageManager
                 .listChatMessage(sender, receiver, lastReadDate, pageDesc);
-        return PageQueryResult.createJSONArrayResult(messgeListToJson(listObjects),pageDesc);
+        return PageQueryResult.createJSONArrayResult(messgeListToJson(listObjects), pageDesc);
     }
 
     /**
@@ -159,20 +159,19 @@ public class WebImController extends BaseController {
 
     //获取未读群信息统计数据
     @RequestMapping(value = "/statGroupUnread/{userCode}", method = RequestMethod.GET)
-    public void statGroupUnreadMessage(
-            @PathVariable String userCode,
-            HttpServletResponse response) {
-        Map<String,Integer> unreadSum = webImMessageManager.statGroupUnreadMessage(userCode);
-        JsonResultUtils.writeSingleDataJson(unreadSum, response);
+    @WrapUpResponseBody
+    public Map<String,Integer> statGroupUnreadMessage(
+            @PathVariable String userCode) {
+        return webImMessageManager.statGroupUnreadMessage(userCode);
     }
 
     //获取未读信息统计数据 包括最后一条未读消息
     @RequestMapping(value = "/getUnreadLastMsg/{userCode}", method = RequestMethod.GET)
-    public void statUnreadWithLastMsg(
-            @PathVariable String userCode,
-            HttpServletResponse response) {
+    @WrapUpResponseBody
+    public JSONArray statUnreadWithLastMsg(
+            @PathVariable String userCode) {
         JSONArray unreadSum = webImMessageManager.statUnreadWithLastMsg(userCode);
-        JsonResultUtils.writeSingleDataJson(messgeListToJson(unreadSum), response);
+        return messgeListToJson(unreadSum);
     }
 
     //获取未读群信息统计数据 包括最后一条未读消息
