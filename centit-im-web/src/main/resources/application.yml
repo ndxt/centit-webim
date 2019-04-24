@@ -7,7 +7,7 @@ spring:
   datasource:
     type: org.apache.commons.dbcp2.BasicDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.128.121:3306/webim?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://192.168.128.32:3306/webim?useUnicode=true&characterEncoding=utf-8
     username: webim
     password: webim
     dbcp2:

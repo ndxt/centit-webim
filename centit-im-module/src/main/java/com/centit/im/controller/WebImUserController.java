@@ -14,6 +14,8 @@ import com.centit.im.po.WebImGroupMember;
 import com.centit.im.service.WebImUserManager;
 import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.StringBaseOpt;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +33,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/webimcust")
+@Api(value = "用户管理接口", tags = "用户管理接口")
 public class WebImUserController extends BaseController {
 
     @Resource
@@ -64,6 +67,7 @@ public class WebImUserController extends BaseController {
      * 返回系统所有联系人
      * @param response
      */
+    @ApiOperation(value = "查询用户列表")
     @RequestMapping(value = "/listUser", method = RequestMethod.GET)
     public void listAllUser(
             HttpServletResponse response) {

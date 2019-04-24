@@ -7,12 +7,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
+import com.centit.framework.core.controller.WrapUpResponseBody;
+import com.centit.framework.core.dao.PageQueryResult;
 import com.centit.support.database.utils.PageDesc;
 import com.centit.im.po.WebImMessage;
 import com.centit.im.service.WebImMessageManager;
 import com.centit.im.service.WebImSocket;
 import com.centit.im.socketio.ImMessage;
 import com.centit.im.socketio.ImMessageUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +37,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/webim")
+@Api(value = "即时消息发送接口", tags = "即时消息发送接口")
 public class WebImController extends BaseController {
 
     @Resource
@@ -62,19 +69,21 @@ public class WebImController extends BaseController {
      * @param sender    发送人
      * @param pageDesc  分页信息
      * @param lastReadDate 上次阅读消息的时间
-     * @param response HttpServletResponse
      */
+    @ApiOperation(value = "查询历史消息")
+    @ApiImplicitParams({
+    @ApiImplicitParam(name = "receiver", value = "发送人",
+            required=true, paramType = "path", dataType= "String"),
+            @ApiImplicitParam(name = "sender", value = "接收人",
+                    required=true, paramType = "path", dataType= "String")})
     @RequestMapping(value = "/historyMessage/{receiver}/{sender}", method = RequestMethod.GET)
-    public void listUserHistoryMessage(
+    @WrapUpResponseBody
+    public PageQueryResult listUserHistoryMessage(
             @PathVariable String receiver,@PathVariable String sender,
-            PageDesc pageDesc, Date lastReadDate,
-            HttpServletResponse response) {
+            PageDesc pageDesc, Date lastReadDate) {
         JSONArray listObjects = webImMessageManager
                 .listChatMessage(sender, receiver, lastReadDate, pageDesc);
-        ResponseMapData resData = new ResponseMapData();
-        resData.addResponseData(OBJLIST, messgeListToJson(listObjects));
-        resData.addResponseData(PAGE_DESC, pageDesc);
-        JsonResultUtils.writeResponseDataAsJson(resData, response);
+        return PageQueryResult.createJSONArrayResult(messgeListToJson(listObjects),pageDesc);
     }
 
     /**
