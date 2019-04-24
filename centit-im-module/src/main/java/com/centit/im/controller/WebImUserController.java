@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
+import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
+import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.im.po.WebImCustomer;
 import com.centit.im.po.WebImFriendMemo;
@@ -15,6 +17,8 @@ import com.centit.im.service.WebImUserManager;
 import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.StringBaseOpt;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -42,25 +46,28 @@ public class WebImUserController extends BaseController {
 
     //配置用户信息
     @RequestMapping(value = "/friend", method = RequestMethod.POST)
-    public void setFriendMemo(
-            @RequestBody WebImFriendMemo memo,
-            HttpServletResponse response) {
+    @WrapUpResponseBody
+    public ResponseData setFriendMemo(
+            @RequestBody WebImFriendMemo memo) {
         webImUserManager.saveUserFriendMemo(memo);
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     /**
      * 注册用户 返回 token
      * @param user
-     * @param response
+     *
      */
+    @ApiOperation(value = "注册用户")
+    @ApiImplicitParam(name = "user", value = "用户",
+                    required=true, paramType = "body", dataType= "WebImCustomer")
     @RequestMapping(value = "/register",
            method = RequestMethod.POST)
-    public void registerUser(
-            @RequestBody WebImCustomer user,
-            HttpServletResponse response) {
+    @WrapUpResponseBody
+    public ResponseData registerUser(
+            @RequestBody WebImCustomer user) {
         webImUserManager.registerUser(user);
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     /**
