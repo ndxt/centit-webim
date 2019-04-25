@@ -45,6 +45,7 @@ public class WebImUserController extends BaseController {
 
 
     //配置用户信息
+    @ApiOperation(value = "1配置用户信息")
     @RequestMapping(value = "/friend", method = RequestMethod.POST)
     @WrapUpResponseBody
     public ResponseData setFriendMemo(
@@ -58,9 +59,8 @@ public class WebImUserController extends BaseController {
      * @param user
      *
      */
-    @ApiOperation(value = "注册用户")
-    @ApiImplicitParam(name = "user", value = "用户",
-                    required=true, paramType = "body", dataType= "WebImCustomer")
+    @ApiOperation(value = "2注册用户")
+
     @RequestMapping(value = "/register",
            method = RequestMethod.POST)
     @WrapUpResponseBody
@@ -72,129 +72,130 @@ public class WebImUserController extends BaseController {
 
     /**
      * 返回系统所有联系人
-     * @param response
+     *
      */
-    @ApiOperation(value = "查询用户列表")
+    @ApiOperation(value = "3查询用户列表")
     @RequestMapping(value = "/listUser", method = RequestMethod.GET)
-    public void listAllUser(
-            HttpServletResponse response) {
-        List<WebImCustomer> allCusts =
-                webImUserManager.listAllUser();
-        JsonResultUtils.writeSingleDataJson(allCusts,response);
+    @WrapUpResponseBody
+    public List<WebImCustomer> listAllUser() {
+        return  webImUserManager.listAllUser();
     }
-
+    @ApiOperation(value = "4查询机构列表")
     @RequestMapping(value = "/allUnit",
             method = RequestMethod.GET)
-    public void listAllUnits(HttpServletResponse response) {
+    @WrapUpResponseBody
+    public List<? extends IUnitInfo> listAllUnits() {
         List<? extends IUnitInfo> allUnits = webImUserManager.listAllUnit();
         CollectionsOpt.sortAsTree(allUnits,
                 ( p,  c) -> StringUtils.equals(p.getUnitCode(),c.getParentUnit()) );
-        JsonResultUtils.writeSingleDataJson(
-                allUnits,response);
+        return allUnits;
     }
 
     /**
      * 获取下层机构
      * @param parentUnitCode
-     * @param response
+     *
      */
+    @ApiOperation(value = "5查询下层机构列表")
     @RequestMapping(value = "/subUnit/{parentUnitCode}",
             method = RequestMethod.GET)
-    public void listSubUnits(@PathVariable String parentUnitCode,
-                             HttpServletResponse response) {
+    @WrapUpResponseBody
+    public List<? extends IUnitInfo> listSubUnits(@PathVariable String parentUnitCode) {
         List<? extends IUnitInfo> allUnits = webImUserManager.listSubUnit(parentUnitCode);
         Collections.sort(allUnits, Comparator.comparing(IUnitInfo::getUnitOrder));
-        JsonResultUtils.writeSingleDataJson(
-                allUnits,response);
+        return allUnits;
     }
     /**
      * 返回联系人信息
-     * @param response
+     *
      */
+    @ApiOperation(value = "6查询联系人信息")
     @RequestMapping(value = "/user/{userCode}", method = RequestMethod.GET)
-    public void getUser(@PathVariable String userCode,
-                        HttpServletResponse response) {
-        WebImCustomer cust = webImUserManager.getUser(userCode);
-        JsonResultUtils.writeSingleDataJson(cust,response);
+    @WrapUpResponseBody
+    public WebImCustomer getUser(@PathVariable String userCode) {
+        return webImUserManager.getUser(userCode);
     }
 
     /**
      * 返回客服专家（客服模式）所有服务的对象
      * @param serviceUserCode 客服代码
      * @param lastServiceDate   最后服务时间，如果为null默认为 一个月内服务过的人员
-     * @param response  listServiceCustomer(String serviceUserCode)
+     *
      */
+    @ApiOperation(value = "7查询所有服务的对象")
     @RequestMapping(value = "/cust/{serviceUserCode}", method = RequestMethod.GET)
-    public void listServiceCustomer(@PathVariable String serviceUserCode,
-                                    Date lastServiceDate, HttpServletResponse response) {
-        List<WebImCustomer> allcusts  = webImUserManager
-                .listServiceCustomer(serviceUserCode,lastServiceDate);
-        JsonResultUtils.writeSingleDataJson(allcusts,response);
+    @WrapUpResponseBody
+    public List<WebImCustomer> listServiceCustomer(@PathVariable String serviceUserCode,
+                                    Date lastServiceDate) {
+        return webImUserManager.listServiceCustomer(serviceUserCode,lastServiceDate);
     }
 
     /**
      * 返回所有客服专家（客服模式）
-     * @param response  listServiceCustomer(String serviceUserCode)
+     *
      */
+    @ApiOperation(value = "8查询所有客服专家")
     @RequestMapping(value = "/services", method = RequestMethod.GET)
-    public void listCustomerService(HttpServletResponse response) {
-        List<WebImCustomer> allcusts  = webImUserManager.listCustomerService();
-        JsonResultUtils.writeSingleDataJson(allcusts,response);
+    @WrapUpResponseBody
+    public List<WebImCustomer> listCustomerService() {
+        return webImUserManager.listCustomerService();
     }
 
     /**
      * 返回系统联系状态
-     * @param response
+     *
      */
+    @ApiOperation(value = "9查询系统联系状态")
     @RequestMapping(value = "/listUserState", method = RequestMethod.GET)
-    public void listAllUserState(HttpServletResponse response) {
-        Map<String,String> mapUserState = webImUserManager.listAllUserState();
-        JsonResultUtils.writeSingleDataJson(mapUserState,response);
+    @WrapUpResponseBody
+    public Map<String,String> listAllUserState() {
+        return webImUserManager.listAllUserState();
     }
 
     /**
      * 返回用户的群组（机构）
-     * @param response
+     *
      */
+    @ApiOperation(value = "10查询用户的群组")
     @RequestMapping(value = "/listUserUnit/{userCode}", method = RequestMethod.GET)
-    public void listUserUnit(@PathVariable String userCode,
-                             HttpServletResponse response) {
-        List<IUnitInfo> listUserUnit = webImUserManager.listUserUnit(userCode);
-        JsonResultUtils.writeSingleDataJson(listUserUnit,response);
+    @WrapUpResponseBody
+    public List<IUnitInfo>  listUserUnit(@PathVariable String userCode) {
+        return webImUserManager.listUserUnit(userCode);
 
     }
 
     /**
      * 返回机构中的成员
-     * @param response
+     *
      */
+    @ApiOperation(value = "11查询机构中的成员")
     @RequestMapping(value = "/listUnitUser/{unitCode}", method = RequestMethod.GET)
-    public void listAllUnitUser(@PathVariable String unitCode,
-                                HttpServletResponse response) {
-        List<WebImCustomer> listAllUnitUser = webImUserManager.listAllUnitUser(unitCode);
-        JsonResultUtils.writeSingleDataJson(listAllUnitUser,response);
+    @WrapUpResponseBody
+    public List<WebImCustomer> listAllUnitUser(@PathVariable String unitCode) {
+        return webImUserManager.listAllUnitUser(unitCode);
     }
 
     //配置用户信息
+    @ApiOperation(value = "12配置用户信息")
     @RequestMapping(value = "/config/{userCode}", method = RequestMethod.POST)
-    public void setUserConfig(
+    @WrapUpResponseBody
+    public String  setUserConfig(
             @PathVariable String userCode,
-            @RequestBody WebImCustomer cust,
-            HttpServletResponse response) {
-        String useCode = webImUserManager.configUserInfo(userCode,cust);
-        JsonResultUtils.writeSingleDataJson(useCode, response);
+            @RequestBody WebImCustomer cust) {
+        return webImUserManager.configUserInfo(userCode,cust);
     }
 
 
     /**
      * 创建群 接收用户数组
-     * @param response
+     *
      */
+    @ApiOperation(value = "13创建群及用户数组")
     @RequestMapping(value = "/creategroup", method = RequestMethod.POST)
-    public void cresteGroup(
+    @WrapUpResponseBody
+    public WebImGroup cresteGroup(
             @RequestBody String groupJson,
-            HttpServletRequest request,
-            HttpServletResponse response) {
+            HttpServletRequest request) {
         JSONObject jsonObject = JSON.parseObject(groupJson);
         WebImGroup webImGroup = WebImGroup.createFromJson(jsonObject);
         String currentUserCode = this.getLoginUserCode(request);
@@ -208,132 +209,138 @@ public class WebImUserController extends BaseController {
                 .createGroupWithMembers(webImGroup,
                         CollectionsOpt.listToArray(StringBaseOpt.objectToStringList(members)));
         webImGroup.setGroupId(groupId);
-        JsonResultUtils.writeSingleDataJson(webImGroup, response);
+        return webImGroup;
     }
 
     /**
      * 修改群基本信息
-     * @param response
+     *
      */
+    @ApiOperation(value = "14修改群基本信息")
     @RequestMapping(value = "/updategroup", method = RequestMethod.PUT)
-    public void updateGroupInfo(
-            @RequestBody String groupJson,
-            HttpServletResponse response) {
+    @WrapUpResponseBody
+    public ResponseData updateGroupInfo(
+            @RequestBody String groupJson) {
 
         WebImGroup webImGroup = WebImGroup.createFromJsonString(groupJson);
 
         webImUserManager.updateGroupInfo(webImGroup);
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     /**
      * 申请加入群
      * @param memberCode
      * @param groupId
-     * @param response
+     *
      */
+    @ApiOperation(value = "15申请加入群")
     @RequestMapping(value = "/addgroupmember/{groupId}/{memberCode}", method = RequestMethod.PUT)
-    public void addGroupMember(
+    @WrapUpResponseBody
+    public ResponseData addGroupMember(
             @PathVariable String groupId,
-            @PathVariable String memberCode,
-            HttpServletResponse response) {
+            @PathVariable String memberCode) {
 
         webImUserManager.addGroupMember(groupId,memberCode);
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     /**
      * 更新所有群成员
      * @param groupId
-     * @param response
+     * @param membersJsonStr [["123"],["234"]]
      */
+    @ApiOperation(value = "16更新所有群成员")
     @RequestMapping(value = "/updategroupmembers/{groupId}", method = RequestMethod.PUT)
-    public void updateGroupMembers(
+    @WrapUpResponseBody
+    public ResponseData updateGroupMembers(
             @PathVariable String groupId,
-            @RequestBody String membersJsonStr,
-            HttpServletResponse response) {
+            @RequestBody String membersJsonStr) {
         JSONArray ja = JSON.parseArray(membersJsonStr);
         webImUserManager.updateGroupMembers(groupId,CollectionsOpt.listToArray(StringBaseOpt.objectToStringList(ja)));
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     /**
      * 获取群成员信息
      * @param groupId
-     * @param response
+     *
      */
+    @ApiOperation(value = "17获取群成员信息")
     @RequestMapping(value = "/listgroupmember/{groupId}", method = RequestMethod.GET)
-    public void listGroupMembers(
-            @PathVariable String groupId,
-            HttpServletResponse response) {
+    @WrapUpResponseBody
+    public List<WebImGroupMember> listGroupMembers(
+            @PathVariable String groupId) {
 
-        JsonResultUtils.writeSingleDataJson(
-                webImUserManager.listGroupMembers(groupId),response );
+        return webImUserManager.listGroupMembers(groupId);
     }
 
     /**
      * 获取群基本信息
      * @param groupId
-     * @param response
+     *
      */
+    @ApiOperation(value = "18获取群基本信息")
     @RequestMapping(value = "/getgroupInfo/{groupId}", method = RequestMethod.GET)
-    public void getGroupInfo(
-            @PathVariable String groupId,
-            HttpServletResponse response) {
+    @WrapUpResponseBody
+    public WebImGroup getGroupInfo(
+            @PathVariable String groupId) {
 
-        JsonResultUtils.writeSingleDataJson(
-                webImUserManager.getGroupInfo(groupId),response );
+        return  webImUserManager.getGroupInfo(groupId);
     }
     /**
      * 修改群成员信息
      * @param memberInfoJson
-     * @param response
+     *
      */
+    @ApiOperation(value = "19修改群成员信息")
     @RequestMapping(value = "/updatememberinfo", method = RequestMethod.PUT)
-    public void updateGroupMember(
-            @RequestBody String memberInfoJson,
-            HttpServletResponse response) {
+    @WrapUpResponseBody
+    public ResponseData updateGroupMember(
+            @RequestBody String memberInfoJson) {
 
         webImUserManager.updateGroupMemberInfo(
                 WebImGroupMember.createFromJson(JSON.parseObject(memberInfoJson)));
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     /**
      * 退出群
      * @param memberCode
      * @param groupId
-     * @param response
+     *
      */
+    @ApiOperation(value = "20退出群")
     @RequestMapping(value = "/quitgroup/{groupId}/{memberCode}", method = RequestMethod.PUT)
-    public void removeGroupMember(
+    @WrapUpResponseBody
+    public ResponseData removeGroupMember(
             @PathVariable String groupId,
-            @PathVariable String memberCode,
-            HttpServletResponse response) {
+            @PathVariable String memberCode) {
         webImUserManager.removeGroupMember(groupId,memberCode);
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     /**
      * 解散群
      * @param groupId
      * @param userCode
-     * @param response
+     *
      */
+    @ApiOperation(value = "21解散群")
     @RequestMapping(value = "/dissolvegroup/{groupId}/{userCode}", method = RequestMethod.PUT)
-    public void dissolveGroup(
+    @WrapUpResponseBody
+    public ResponseMapData dissolveGroup(
             @PathVariable String groupId,
-            @PathVariable String userCode,
-            HttpServletResponse response) {
+            @PathVariable String userCode) {
         int nRres = webImUserManager
                 .dissolveGroup(groupId, userCode, false);
         ResponseMapData resData = new ResponseMapData();
         resData.addResponseData("flag", nRres);
         if(nRres > 0 ){
-            JsonResultUtils.writeResponseDataAsJson(resData, response);
+            return resData;
         }else{
             resData.addResponseData("message", "群不存在或者您不是群主。");
-            JsonResultUtils.writeResponseDataAsJson(resData, response);
+            return  resData;
 
         }
     }
@@ -342,22 +349,23 @@ public class WebImUserController extends BaseController {
      * 删除群
      * @param groupId
      * @param userCode
-     * @param response
+     *
      */
+    @ApiOperation(value = "22删除群")
     @RequestMapping(value = "/deleteGroup/{groupId}/{userCode}", method = RequestMethod.DELETE)
-    public void deleteGroup(
+    @WrapUpResponseBody
+    public ResponseMapData deleteGroup(
             @PathVariable String groupId,
-            @PathVariable String userCode,
-            HttpServletResponse response) {
+            @PathVariable String userCode) {
         int nRres = webImUserManager
                 .dissolveGroup(groupId, userCode, true);
         ResponseMapData resData = new ResponseMapData();
         resData.addResponseData("flag", nRres);
         if(nRres > 0 ){
-            JsonResultUtils.writeResponseDataAsJson(resData, response);
+            return resData;
         }else{
             resData.addResponseData("message", "群不存在。");
-            JsonResultUtils.writeResponseDataAsJson(resData, response);
+            return resData;
         }
     }
 }

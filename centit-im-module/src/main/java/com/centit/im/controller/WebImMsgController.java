@@ -90,11 +90,8 @@ public class WebImMsgController extends BaseController {
      *
      */
     @ApiOperation(value = "2获取收到所有信息")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "receiver", value = "接收人",
-                    required=true, paramType = "path", dataType= "String"),
-            @ApiImplicitParam(name = "lastReadDate", value = "上次消息的时间",
-                    required=false, paramType = "path", dataType= "String")})
+    @ApiImplicitParam(name = "lastReadDate", value = "上次消息的时间",
+                    required=false, paramType = "query", dataType= "String")
     @RequestMapping(value = "/allHistoryMessage/{receiver}", method = RequestMethod.GET)
     @WrapUpResponseBody
     public PageQueryResult listAllHistoryMessage(
@@ -137,11 +134,7 @@ public class WebImMsgController extends BaseController {
      *
      */
     @ApiOperation(value = "4获取组群聊历史信息")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userCode", value = "接收人",
-                    required=true, paramType = "path", dataType= "String"),
-            @ApiImplicitParam(name = "unitCode", value = "所在部门",
-                    required=true, paramType = "path", dataType= "String")})
+
     @RequestMapping(value = "/groupHistoryMessage/{userCode}/{unitCode}", method = RequestMethod.GET)
     @WrapUpResponseBody
     public PageQueryResult listUserGroupHistoryMessage(
@@ -155,8 +148,7 @@ public class WebImMsgController extends BaseController {
 
     //获取未读信息统计数据
     @ApiOperation(value = "5获取未读信息统计")
-    @ApiImplicitParam(name = "userCode", value = "接收人",
-            required=true, paramType = "path", dataType= "String")
+
     @RequestMapping(value = "/statUnread/{userCode}", method = RequestMethod.GET)
     @WrapUpResponseBody
     public Map<String,Integer> statUnreadMessage(
@@ -166,8 +158,7 @@ public class WebImMsgController extends BaseController {
 
     //获取未读群信息统计数据
     @ApiOperation(value = "6获取未读群信息统计")
-    @ApiImplicitParam(name = "userCode", value = "接收人",
-            required=true, paramType = "path", dataType= "String")
+
     @RequestMapping(value = "/statGroupUnread/{userCode}", method = RequestMethod.GET)
     @WrapUpResponseBody
     public Map<String,Integer> statGroupUnreadMessage(
@@ -176,34 +167,30 @@ public class WebImMsgController extends BaseController {
     }
 
     //获取未读信息统计数据 包括最后一条未读消息
-    @ApiOperation(value = "7获取包括最后未读信息统计")
-    @ApiImplicitParam(name = "userCode", value = "接收人",
-            required=true, paramType = "path", dataType= "String")
+    @ApiOperation(value = "7获取最后未读信息及统计")
+
     @RequestMapping(value = "/getUnreadLastMsg/{userCode}", method = RequestMethod.GET)
     @WrapUpResponseBody
     public JSONArray statUnreadWithLastMsg(
             @PathVariable String userCode) {
-        return webImMessageManager.statUnreadWithLastMsg(userCode);
+         JSONArray listObjects = webImMessageManager.statUnreadWithLastMsg(userCode);
+        return messgeListToJson(listObjects);
     }
 
     //获取未读群信息统计数据 包括最后一条未读消息
     @ApiOperation(value = "8获取包括最后未读群信息统计")
-    @ApiImplicitParam(name = "userCode", value = "接收人",
-            required=true, paramType = "path", dataType= "String")
+
     @RequestMapping(value = "/getGroupUnreadLastMsg/{userCode}", method = RequestMethod.GET)
     @WrapUpResponseBody
     public JSONArray statGroupUnreadeWithLastMsg(
             @PathVariable String userCode) {
-        return webImMessageManager.statGroupUnreadWithLastMsg(userCode);
+        JSONArray obj = webImMessageManager.statGroupUnreadWithLastMsg(userCode);
+        return messgeListToJson(obj);
     }
 
     //设置信息状态
     @ApiOperation(value = "9设置信息状态")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "receiver", value = "接收人",
-                    required=true, paramType = "path", dataType= "String"),
-            @ApiImplicitParam(name = "sender", value = "发送人",
-                    required=true, paramType = "path", dataType= "String")})
+
     @RequestMapping(value = "/setReadState/{receiver}/{sender}", method = RequestMethod.POST)
     @WrapUpResponseBody
     public int setReadState(
@@ -213,11 +200,7 @@ public class WebImMsgController extends BaseController {
 
     //设置信息状态
     @ApiOperation(value = "10设置群信息状态")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "receiver", value = "接收人",
-                    required=true, paramType = "path", dataType= "String"),
-            @ApiImplicitParam(name = "unitCode", value = "发送人",
-                    required=true, paramType = "path", dataType= "String")})
+
     @RequestMapping(value = "/setGroupReadState/{receiver}/{unitCode}", method = RequestMethod.POST)
     @WrapUpResponseBody
     public ResponseData setGroupReadState(

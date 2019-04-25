@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
+import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
@@ -44,53 +45,60 @@ public class WebImController extends BaseController {
     protected WebImSocket webImSocket;
 
     //发送消息，给第三方使用
+    @ApiOperation(value = "1第三方发送消息")
+
     @RequestMapping(value = "/sendMessage/{receiver}/{sender}", method = RequestMethod.POST)
-    public void sendMessage(
+    @WrapUpResponseBody
+    public ResponseData sendMessage(
             @PathVariable String receiver,@PathVariable String sender,
-            @RequestBody ImMessage message,
-            HttpServletResponse response) {
+            @RequestBody ImMessage message) {
 
         message.setReceiver(receiver);
         message.setSender(sender);
         ImMessageUtils.checkMessage(message);
         webImSocket.sendMessage(receiver,message);
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     //发送群（组、机构）消息，给第三方使用
+    @ApiOperation(value = "2第三方发送群消息")
     @RequestMapping(value = "/sendUnitMessage/{receiver}/{sender}", method = RequestMethod.POST)
-    public void sendGroupMessage(
+    @WrapUpResponseBody
+    public ResponseData sendGroupMessage(
             @PathVariable String receiver,@PathVariable String sender,
-            @RequestBody ImMessage message,
-            HttpServletResponse response) {
+            @RequestBody ImMessage message) {
 
         message.setReceiver(receiver);
         message.setSender(sender);
         ImMessageUtils.checkMessage(message);
         webImSocket.sendGroupMessage(receiver,message);
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     //广播消息，给第三方使用
+    @ApiOperation(value = "3第三方广播消息")
+
     @RequestMapping(value = "/toall/{sender}", method = RequestMethod.POST)
-    public void toallMessage(@PathVariable String sender,
-                             @RequestBody ImMessage message,
-                             HttpServletResponse response) {
+    @WrapUpResponseBody
+    public ResponseData toallMessage(@PathVariable String sender,
+                             @RequestBody ImMessage message) {
         message.setSender(sender);
         ImMessageUtils.checkMessage(message);
         webImSocket.toallMessage(message);
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     //在线广播消息，给第三方使用
+    @ApiOperation(value = "4第三方在线广播消息")
+
     @RequestMapping(value = "/broadcast/{sender}", method = RequestMethod.POST)
-    public void broadcastMessage(@PathVariable String sender,
-                                 @RequestBody ImMessage message,
-                                 HttpServletResponse response) {
+    @WrapUpResponseBody
+    public ResponseData broadcastMessage(@PathVariable String sender,
+                                 @RequestBody ImMessage message) {
         message.setSender(sender);
         ImMessageUtils.checkMessage(message);
         webImSocket.broadcastMessage(message);
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
 }

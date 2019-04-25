@@ -123,10 +123,10 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
         String sql = "select v.SENDER, v.UNREAD_SUM  from  F_V_UNREAD_CHAT_MSG v where  v.RECEIVER= ? ";
         JSONArray jsonArray =
                 DatabaseOptUtils.listObjectsBySqlAsJson(this,sql,
-                        new String[]{"userCode","unreadSum"}, new Object[] {receiver});
+                        new String[]{"senderCode","unreadSum"}, new Object[] {receiver});
         Map<String, Integer> map = new HashMap<>(jsonArray.size() * 2);
         for(Object obj : jsonArray){
-            map.put( StringBaseOpt.objectToString( ((JSONObject)obj).get("unitCode") ),
+            map.put( StringBaseOpt.objectToString( ((JSONObject)obj).get("senderCode") ),
                     NumberBaseOpt.castObjectToInteger(((JSONObject)obj).get("unreadSum") ));
         }
         return map;
@@ -137,7 +137,7 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
         String sql = "select v.UNIT_CODE, v.UNREAD_SUM  from  F_V_UNREAD_GROUP_MSG v where v.USER_CODE = ?";
         JSONArray jsonArray =
                 DatabaseOptUtils.listObjectsBySqlAsJson(this,sql,
-                        new String[]{"userCode","unreadSum"},
+                        new String[]{"unitCode","unreadSum"},
                         new Object[] {userCode});
         Map<String, Integer> map = new HashMap<>(jsonArray.size() * 2);
         for(Object obj : jsonArray){

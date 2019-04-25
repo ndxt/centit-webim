@@ -247,7 +247,7 @@ public class WebImCustomer implements java.io.Serializable {
   
 	if( other.getOsId() != null)
 		this.setOsId(other.getOsId());  
-	if( other.getUserCode() != null)
+	if( other.getUserCode() != null && !other.getUserCode().equals(""))
 		this.setUserCode(other.getUserCode());
   
 		if( other.getUserName() != null)
