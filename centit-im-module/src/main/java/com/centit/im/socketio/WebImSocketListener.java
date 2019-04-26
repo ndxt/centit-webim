@@ -10,19 +10,19 @@ import javax.annotation.Resource;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import org.springframework.web.socket.server.standard.SpringConfigurator;
+
 /**
  * Created by codefan on 17-5-19.
  * @author codefan
  */
-@ServerEndpoint(value="/im/{userCode}" ,configurator = SpringConfigurator.class)
+@ServerEndpoint(value="/im/{userCode}" )
 @Service
 public class WebImSocketListener {
 
     private static Logger logger = LoggerFactory.getLogger(WebImSocketListener.class);
     @Resource
     @Autowired
-    protected WebImSocket webImSocket;
+    protected WebImSocket webImSocket=SpringUtil.getBean(WebImSocket.class);
 
     /**
      * 连接建立成功调用的方法
