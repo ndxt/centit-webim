@@ -15,14 +15,14 @@ import javax.websocket.server.ServerEndpoint;
  * Created by codefan on 17-5-19.
  * @author codefan
  */
-@ServerEndpoint(value="/im/{userCode}" )
+@ServerEndpoint(value="/im/{userCode}" ,configurator = MySpringConfigurator.class)
 @Service
 public class WebImSocketListener {
 
     private static Logger logger = LoggerFactory.getLogger(WebImSocketListener.class);
     @Resource
     @Autowired
-    protected WebImSocket webImSocket=SpringUtil.getBean(WebImSocket.class);
+    protected WebImSocket webImSocket;
 
     /**
      * 连接建立成功调用的方法
