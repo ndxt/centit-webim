@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -20,7 +19,7 @@ import javax.websocket.server.ServerEndpoint;
 public class WebImSocketListener {
 
     private static Logger logger = LoggerFactory.getLogger(WebImSocketListener.class);
-    @Resource
+
     @Autowired
     protected WebImSocket webImSocket;
 
