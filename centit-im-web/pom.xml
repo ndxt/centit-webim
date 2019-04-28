@@ -134,6 +134,12 @@
             <version>1.18.2</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -150,6 +156,23 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                    <user>webim</user>
+                    <password>webim</password>
+                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                    <url>jdbc:mysql://192.168.128.32:3306/webim?serverTimezone=Asia/Shanghai</url>
+                    <locations>
+                        <location>filesystem:src/main/resources/migration/mysql</location>
+                    </locations>
+                </configuration>
+
+            </plugin>
+
+
         </plugins>
     </build>
 

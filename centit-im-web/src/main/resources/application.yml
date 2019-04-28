@@ -17,7 +17,9 @@ spring:
       initial-size: 10
       validation-query: SELECT 1
       connection-properties: characterEncoding=utf8
-
+  flyway:
+          enabled: true
+          locations: classpath:migration/mysql
 framework:
   app:
     home: /D/Projects/RunData/webim_home
@@ -45,3 +47,4 @@ webim:
     send-url: http://218.94.123.217:8998/service/sendMsg
   notify:
     type: none
+
