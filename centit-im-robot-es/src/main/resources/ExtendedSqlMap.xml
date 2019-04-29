@@ -8,11 +8,11 @@
 <sqlMap>
     <!-- xml 中不判断id的唯一性，后面的语句会覆盖前面的，所以一般将通用的语句放在前面，数据库特有的语句放在后面。 -->
     <sql id="QUERY_QUESTION_FOR_IM_ROBOT" >
-        <![CDATA[ select t.id as questionId,
-        t.descriptors as keyWords,
-        t.question as questionTitle,
-        t.answer as questionAnswer
-        from IQAS_LIB t ]]>
+        <![CDATA[ select  question_Id,
+         key_Words,
+         question_Title,
+         question_Answer
+        from f_question_and_answer t ]]>
     </sql>
 
 </sqlMap>

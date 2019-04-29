@@ -2,12 +2,16 @@ package com.centit.im.robot.es.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.JsonResultUtils;
+import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.core.controller.BaseController;
+import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.support.database.utils.PageDesc;
 import com.centit.im.robot.es.po.QuestAndAnswer;
 import com.centit.im.robot.es.service.QuestAndAnswerManager;
 import com.centit.support.algorithm.DatetimeOpt;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +30,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/questAndAnswer")
+@Api(value = "robot", tags = "robot")
 public class QuestAndAnswerController extends BaseController {
 
     @Resource
@@ -33,88 +38,80 @@ public class QuestAndAnswerController extends BaseController {
 
     /** 条件查询
      * @param request  {@link HttpServletRequest}
-     * @param response {@link HttpServletResponse}
+     *
      * @return {data:[]}
      */
-    @RequestMapping(method = RequestMethod.GET)
-    public void list(PageDesc pageDesc, HttpServletRequest request, HttpServletResponse response) {
+    @ApiOperation(value = "1条件查询")
+    @RequestMapping(value = "/listAll",method = RequestMethod.GET)
+    @WrapUpResponseBody
+    public JSONArray list(PageDesc pageDesc, HttpServletRequest request) {
         Map<String, Object> searchColumn = convertSearchColumn(request);
-        JSONArray listObjects = questAndAnswerManager.listObjectsAsJson(searchColumn, pageDesc);
-        ResponseMapData resData = new ResponseMapData();
-        resData.addResponseData(OBJLIST, listObjects);
-        resData.addResponseData(PAGE_DESC, pageDesc);
-        JsonResultUtils.writeResponseDataAsJson(resData, response);
+        return questAndAnswerManager.listObjectsAsJson(searchColumn, pageDesc);
     }
 
 
     /** 查询详情
      * @param questionId  questionId
-     * @param response    {@link HttpServletResponse}
+     *
      * @return {data:{}}
      */
-    @RequestMapping(value = "/{questionId}", method = {RequestMethod.GET})
-    public void getQuestionCatalog(@PathVariable String questionId, HttpServletResponse response) {
-        QuestAndAnswer questAndAnswer = questAndAnswerManager.getObjectById(questionId);
-        JsonResultUtils.writeSingleDataJson(questAndAnswer, response);
+    @ApiOperation(value = "2查询详情")
+    @RequestMapping(value = "/list/{questionId}", method = {RequestMethod.GET})
+    @WrapUpResponseBody
+    public QuestAndAnswer getQuestionCatalog(@PathVariable String questionId) {
+        return questAndAnswerManager.getObjectById(questionId);
     }
 
     /**
      * 新增
      * @return
      */
-    @RequestMapping(method = {RequestMethod.POST})
-    public void createQuestionCatalog(@RequestBody QuestAndAnswer questAndAnswer,
-                                      HttpServletResponse response) throws IOException {
+    @ApiOperation(value = "3新增")
+    @RequestMapping(value="/addQuestion",method = {RequestMethod.POST})
+    @WrapUpResponseBody
+    public ResponseData createQuestionCatalog(@RequestBody QuestAndAnswer questAndAnswer) throws IOException {
         questAndAnswer.setCreateTime(DatetimeOpt.currentUtilDate());
         questAndAnswerManager.saveNewObject(questAndAnswer);
-        JsonResultUtils.writeSuccessJson(response);
+        return ResponseData.makeSuccessResponse();
     }
 
     /**
      * 删除
      * @param questionId  questionId
      */
-    @RequestMapping(value = "/{questionId}", method = {RequestMethod.DELETE})
-    public void deleteQuestionCatalog(@PathVariable String questionId, HttpServletResponse response) {
+    @ApiOperation(value = "4删除")
+    @RequestMapping(value = "/deleteQuestion/{questionId}", method = {RequestMethod.DELETE})
+    @WrapUpResponseBody
+    public ResponseData deleteQuestionCatalog(@PathVariable String questionId) {
         questAndAnswerManager.deleteObjectById(questionId);
-        JsonResultUtils.writeSingleDataJson(questionId,response);
+        return ResponseData.makeSuccessResponse();
     }
 
     /**
      * 标记删除
      * @param questionId  questionId
      */
+    @ApiOperation(value = "5标记删除")
     @RequestMapping(value = "/delete/{questionId}", method = {RequestMethod.DELETE})
-    public void deleteQuestionCatalogSign(@PathVariable String questionId, HttpServletResponse response) {
-        QuestAndAnswer questAndAnswer = questAndAnswerManager.getObjectById(questionId);
-        if (questAndAnswer != null){
-            questAndAnswer.setDeleteSign("T");
-            questAndAnswerManager.mergeObject(questAndAnswer);
-        }else {
-            JsonResultUtils.writeErrorMessageJson("当前对象不存在", response);
-            return;
-        }
-        JsonResultUtils.writeSingleDataJson(questionId,response);
+    @WrapUpResponseBody
+    public ResponseData deleteQuestionCatalogSign(@PathVariable String questionId) {
+        questAndAnswerManager.deleteQuestionCatalogSign(questionId);
+        return ResponseData.makeSuccessResponse();
     }
 
 
     /** 修改
      * @param response    {@link HttpServletResponse}
      */
-    @RequestMapping(value = "/{questionId}", method = {RequestMethod.PUT})
-    public void updateQuestionCatalog(@PathVariable String questionId,
+    @ApiOperation(value = "6修改")
+    @RequestMapping(value = "/updateQuestion", method = {RequestMethod.PUT})
+    @WrapUpResponseBody
+    public ResponseData updateQuestionCatalog(
                                       @RequestBody QuestAndAnswer questAndAnswer,
                                       HttpServletResponse response) throws IOException {
-        QuestAndAnswer dbQuestAndAnswer  =
-                questAndAnswerManager.getObjectById( questionId);
-        if (null != questAndAnswer) {
-            dbQuestAndAnswer.copyNotNullProperty(questAndAnswer);
-            questAndAnswerManager.mergeObject(dbQuestAndAnswer);
-        } else {
-            JsonResultUtils.writeErrorMessageJson("当前对象不存在", response);
-            return;
-        }
-        JsonResultUtils.writeBlankJson(response);
+
+        questAndAnswerManager.updateQuestionCatalog( questAndAnswer);
+        return ResponseData.makeSuccessResponse();
     }
 
 }

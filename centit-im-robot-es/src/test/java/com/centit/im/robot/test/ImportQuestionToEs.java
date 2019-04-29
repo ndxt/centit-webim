@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.core.dao.ExtendedQueryPool;
 import com.centit.im.po.RobotAnswer;
+import com.centit.im.po.RobotAnswerItem;
 import com.centit.im.robot.es.po.QuestAndAnswer;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.search.service.ESServerConfig;
@@ -33,6 +34,11 @@ public class ImportQuestionToEs {
         System.out.println(answer.getMessage());*/
         try {
             importDataToEs();
+            RobotAnswer answer = searchEs("6");
+            for(RobotAnswerItem item : answer.getOptions()){
+                System.out.println(item.getLabel());
+            }
+            System.out.println(answer.getMessage());
             System.out.println("done!");
         } catch (SQLException | IOException| DocumentException e) {
             e.printStackTrace();
@@ -44,13 +50,13 @@ public class ImportQuestionToEs {
             IOException, DocumentException {
 
         DataSourceDescription dataSource = new DataSourceDescription();
-        dataSource.setConnUrl("jdbc.url");
-        dataSource.setUsername("jdbc.user");
-        dataSource.setPassword("jdbc.password");
+        dataSource.setConnUrl("jdbc:mysql://192.168.128.32:3306/webim");
+        dataSource.setUsername("webim");
+        dataSource.setPassword("webim");
 
         ExtendedQueryPool.loadExtendedSqlMap(
                 ImportQuestionToEs.class.getResourceAsStream("/ExtendedSqlMap.xml"),
-                DBType.Oracle);
+                DBType.MySql);
 
         Connection conn = DbcpConnectPools.getDbcpConnect(dataSource);
 
