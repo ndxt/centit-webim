@@ -39,6 +39,10 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>framework-core</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
