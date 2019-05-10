@@ -11,6 +11,8 @@ import com.centit.support.file.FileIOOpt;
 import com.centit.support.file.FileMD5Maker;
 import com.centit.support.file.FileSystemOpt;
 import com.centit.support.file.FileType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,8 +32,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.util.HtmlUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +46,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/file")
-
+@Api(value = "上传文件接口", tags = "上传文件接口")
 public class FileController extends BaseController {
 
     private static  Logger log = LoggerFactory.getLogger(FileController.class);
@@ -262,20 +267,18 @@ public class FileController extends BaseController {
         if (!isMultipart)
             return new ImmutablePair<>(fileName, request.getInputStream());
 
-        MultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+       // MultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+        MultipartResolver resolver = new StandardServletMultipartResolver();
         MultipartHttpServletRequest multiRequest = resolver.resolveMultipart(request);
 //		MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
         Map<String, MultipartFile> map = multiRequest.getFileMap();
         InputStream fis = null;
 
         for (Map.Entry<String, MultipartFile> entry : map.entrySet()) {
-            CommonsMultipartFile cMultipartFile = (CommonsMultipartFile) entry.getValue();
-            FileItem fi = cMultipartFile.getFileItem();
-            if (! fi.isFormField())  {
-                fileName = fi.getName();
-                fis = fi.getInputStream();
+            MultipartFile cMultipartFile = entry.getValue();
+            fileName = cMultipartFile.getResource().getFilename();
+            fis = cMultipartFile.getInputStream();
             }
-        }
         return  new ImmutablePair<>(fileName, fis);
     }
 
@@ -331,6 +334,7 @@ public class FileController extends BaseController {
      */
     @CrossOrigin(origins = "*", allowCredentials = "true", maxAge = 86400, methods = RequestMethod.POST)
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @ApiOperation(value = "1上传文件")
     public void uploadFile(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         request.setCharacterEncoding("utf8");
