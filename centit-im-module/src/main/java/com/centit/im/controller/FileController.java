@@ -241,7 +241,7 @@ public class FileController extends BaseController {
             json.put("success", true);
             json.put("fileId", fileId);*/
             Map<String,String> json1 = new HashMap<>();
-            json1.put("src","service/file/download/"+fileId+"?fileName="+fileName);
+            json1.put("src","file/download/"+fileId+"?fileName="+fileName);
             json1.put("fileId", fileId);
             json1.put("token", fileMd5);
             json1.put("name", fileName);
