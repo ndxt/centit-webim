@@ -17,10 +17,13 @@ spring:
       initial-size: 10
       validation-query: SELECT 1
       connection-properties: characterEncoding=utf8
+  flyway:
+    enabled: true
+    locations: classpath:migration/mysql
 
 framework:
   app:
-    home: /D/Projects/RunData/webim_home
+    home: D:/Projects/RunData/webim_home
   ip:
     enable: false
     topoptid: WebIm
@@ -28,9 +31,7 @@ framework:
     auth-enable: false
     usercode: admin
     password: 000000
-  flyway:
-    enabled: true
-    locations: classpath:migration/mysql
+
 
 webim:
   robot:
@@ -43,7 +44,7 @@ webim:
       cluster-name: webim-robot
       min-score: 0.5
   file-store:
-    base-dir: /D/Projects/RunData/webim_home/upload
+    base-dir: D:/Projects/RunData/webim_home/upload
   sms:
     send-url: http://218.94.123.217:8998/service/sendMsg
   notify:
