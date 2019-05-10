@@ -17,9 +17,7 @@ spring:
       initial-size: 10
       validation-query: SELECT 1
       connection-properties: characterEncoding=utf8
-  flyway:
-          enabled: true
-          locations: classpath:migration/mysql
+
 framework:
   app:
     home: /D/Projects/RunData/webim_home
@@ -30,6 +28,9 @@ framework:
     auth-enable: false
     usercode: admin
     password: 000000
+  flyway:
+    enabled: true
+    locations: classpath:migration/mysql
 
 webim:
   robot:
