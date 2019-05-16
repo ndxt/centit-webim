@@ -330,7 +330,7 @@ define(["jquery","mustache", "layui", "promise", "fetch", "url", "common.unit"],
                     let mode = this.config.mode
                     if (mode === MODE_SERVICE) {
                         // 申请客服
-                        this.sendAsk4ServiceCommand()
+                        // this.sendAsk4ServiceCommand()
                     } else if (mode === MODE_QUESTION) {
                         this.sendAsk4QuestionCommand()
                     }
@@ -365,11 +365,15 @@ define(["jquery","mustache", "layui", "promise", "fetch", "url", "common.unit"],
                     });
                 });
             }
+
+
+            console.log('system data is', data)
             switch (data.type) {
                 case MSG_TYPE_CHAT:
                     this.showChatMessage($.extend({id: data.sender}, data, {content: data.content.msg}))
                     break
                 case MSG_TYPE_SYSTEM:
+
                     this.showSystemMessage($.extend({id: '0'},data, {
                         content: data.content.msg,
                         id: data.content.id,

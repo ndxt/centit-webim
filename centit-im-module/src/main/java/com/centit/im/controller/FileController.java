@@ -258,7 +258,7 @@ public class FileController extends BaseController {
         }
     }
 
-
+//Springboot无法使用CommonsMultipartResolver，换成StandardServletMultipartResolver
     private Pair<String, InputStream> fetchInputStreamFromRequest(HttpServletRequest request) throws IOException {
         String fileName = request.getParameter("name");
         if(StringUtils.isBlank(fileName))
@@ -278,7 +278,7 @@ public class FileController extends BaseController {
             MultipartFile cMultipartFile = entry.getValue();
             fileName = cMultipartFile.getResource().getFilename();
             fis = cMultipartFile.getInputStream();
-            }
+        }
         return  new ImmutablePair<>(fileName, fis);
     }
 

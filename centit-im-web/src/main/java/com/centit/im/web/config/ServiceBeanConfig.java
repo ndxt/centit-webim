@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
+import javax.servlet.MultipartConfigElement;
 import java.io.File;
 
 @Configuration
@@ -40,7 +42,14 @@ public class ServiceBeanConfig {
 
     @Autowired
     IntegrationEnvironment integrationEnvironment;
-
+//    @Bean
+//    public MultipartConfigElement multipartConfigElement() {
+//        MultipartConfigFactory factory = new MultipartConfigFactory();
+//        //文件最大
+//        factory.setMaxFileSize("80MB"); //KB,MB
+//        /// 设置总上传数据总大小
+//        return factory.createMultipartConfig();
+//    }
     @Bean
     public IntelligentRobotFactory intelligentRobotFactory() {
         if("es".equals(webImProperties.getRobot().getType())){

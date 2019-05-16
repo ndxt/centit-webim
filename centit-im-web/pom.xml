@@ -8,7 +8,9 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.1.3.RELEASE</version>
+
         <relativePath/> <!-- lookup parent from repository -->
+
     </parent>
 
     <artifactId>centit-im-web</artifactId>
@@ -30,6 +32,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+
         </dependency>
 
         <dependency>
@@ -144,7 +147,12 @@
             <artifactId>flyway-core</artifactId>
 
         </dependency>
-
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -168,10 +176,10 @@
                 <configuration>
                     <user>webim</user>
                     <password>webim</password>
-                    <driver>com.mysql.cj.jdbc.Driver</driver>
-                    <url>jdbc:mysql://192.168.128.32:3306/webim?serverTimezone=Asia/Shanghai</url>
+                    <driver>org.h2.Driver</driver>
+                    <url>jdbc:h2:D:/h2/webim</url>
                     <locations>
-                        <location>filesystem:src/main/resources/migration/mysql</location>
+                        <location>filesystem:src/main/resources/migration/h2</location>
                     </locations>
                 </configuration>
 

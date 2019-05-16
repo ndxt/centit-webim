@@ -7,8 +7,10 @@ spring:
     name: WEBIM
   datasource:
     type: org.apache.commons.dbcp2.BasicDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.128.32:3306/webim?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/D:/H2/WEBIM
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://192.168.128.32:3306/webim?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: webim
     password: webim
     dbcp2:
@@ -19,8 +21,12 @@ spring:
       connection-properties: characterEncoding=utf8
   flyway:
     enabled: true
-    locations: classpath:migration/mysql
-
+    locations: classpath:migration/h2
+  servlet:
+   multipart:
+    enabled: true
+    max-file-size: 20MB
+    max-request-size: 20MB
 framework:
   app:
     home: D:/Projects/RunData/webim_home

@@ -20,18 +20,35 @@ body .layim-chat-main{height: auto;}
 
 <div id="LAY_page" style="margin: 0 10px;"></div>
 
+<script id="demo" type="text/html">
 
-<textarea title="消息模版" id="LAY_tpl" style="display:none;">
-{{# layui.each(d.data, function(index, item){
-  if(item.system == true){ }}
-  <li class="layim-chat-system"><span>{{ layui.data.content(item.content||"&nbsp") }}</span></li>
-  {{# } else if(item.id == parent.layui.layim.cache().mine.id){ }}
-      <li class="layim-chat-mine"><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite><i>{{ layui.data.date(item.timestamp) }}</i>{{ item.username }}</cite></div><div class="layim-chat-text">{{ layui.data.content(item.content||"&nbsp") }}</div></li>
-  {{# }else{ }}
-    <li><div class="layim-chat-user"><img src="{{ item.avatar }}"><cite>{{ item.username }}<i>{{ layui.data.date(item.timestamp) }}</i></cite></div><div class="layim-chat-text">{{ layui.data.content(item.content||"&nbsp") }}</div></li>
-  {{# }
-}); }}
-</textarea>
+  {{# layui.each(d.data, function(index, item){ }}
+  {{# if(item.mine == true) { }}
+  <li class="layim-chat-mine">
+      <div class="layim-chat-user">
+          <img src="{{ item.avatar }}">
+          <cite>
+              <i>{{ layui.data.date(item.timestamp) }}</i>
+              {{ item.username }}
+          </cite>
+      </div>
+      <div class="layim-chat-text">{{ layui.data.content(item.content.msg) }}</div>
+  </li>
+  {{#  } }}
+  {{# if(item.mine == false){ }}
+  <li class="layim-chat-user" style="width:100%;">
+      <div class="layim-chat-user">
+          <img src="{{ item.avatar }}">
+          <cite>
+              <i>{{ layui.data.date(item.timestamp) }}</i>
+              {{ item.username }}
+          </cite>
+      </div>
+      <div class="layim-chat-text">{{ layui.data.content(item.content.msg) }}</div>
+  </li>
+  {{#  } }}
+  {{# }); }}
+</script>
 
 <!-- 
 上述模版采用了 laytpl 语法，不了解的同学可以去看下文档：http://www.layui.com/doc/modules/laytpl.html
@@ -82,7 +99,7 @@ layui.use(['layim', 'laypage'], function(){
     lastReadDate.setDate(lastReadDate.getDate() + 1);
     var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
     var receiver = cache.mine.id;
-    var url = ctx + "/service/webim/historyMessage/" + receiver + '/' + params.id;
+    var url = ctx + "/webimmsg/historyMessage/" + receiver + '/' + params.id;
     $.ajax({
         url: url,
         dataType: 'json',
@@ -95,7 +112,7 @@ layui.use(['layim', 'laypage'], function(){
             for (var i = 0, length = messageList.length; i < length; i++) {
                 message = messageList[i];
                 console.log(message);
-                message.content = JSON.parse(message.content).msg;
+                message.content = message.content;
                 message.type = 'friend';
                 message.id = message.sender;
                 message.timestamp = message.sendTime;
@@ -114,7 +131,10 @@ layui.use(['layim', 'laypage'], function(){
                 newMessageList.unshift(message);
 
             }
-            var html = laytpl(LAY_tpl.value).render({
+            var tpl = document.getElementById('demo').innerHTML
+            console.log('tpl is', tpl)
+            console.log('newMessageList', newMessageList)
+            var html = laytpl(tpl).render({
                 data: newMessageList
             });
             $('#LAY_view').html(html);

@@ -415,6 +415,7 @@ define(["jquery", "mustache", "layui", "promise", "fetch", "url", "common.unit"]
                 } catch (e) {
                     // console.info(e)
                 }
+                console.log('system dat', data)
                 if (data.contentType == "offline" && this.mine.userType == "S") {
                     layui.use('layer', function () {
                         var layer = layui.layer;
