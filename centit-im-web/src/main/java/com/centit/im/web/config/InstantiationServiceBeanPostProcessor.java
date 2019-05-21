@@ -40,6 +40,10 @@ public class InstantiationServiceBeanPostProcessor implements ApplicationListene
         CodeRepositoryCache.setPlatformEnvironment(platformEnvironment);
 
         SystemTempFileUtils.setTempFileDirectory(appHome+ File.separatorChar + "temp" );
+        File file=new File(SystemTempFileUtils.getTempDirectory());
+        if(!file.exists()){
+            file.mkdirs();
+        }
 
         notificationCenter.registerMessageSender("sms", smsMessageManager);
         OperationLogCenter.registerOperationLogWriter(operationLogWriter);
