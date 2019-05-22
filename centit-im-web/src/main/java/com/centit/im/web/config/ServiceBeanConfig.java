@@ -8,7 +8,9 @@ import com.centit.framework.ip.service.IntegrationEnvironment;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
+import com.centit.im.robot.es.service.QuestAndAnswerManager;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
+import com.centit.im.robot.es.service.impl.QuestAndAnswerManagerImpl;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
 import com.centit.im.service.impl.IntelligentRobotFactorySingleImpl;
@@ -42,6 +44,9 @@ public class ServiceBeanConfig {
 
     @Autowired
     IntegrationEnvironment integrationEnvironment;
+    @Autowired
+    QuestAndAnswerManager questAndAnswerManager;
+
 //    @Bean
 //    public MultipartConfigElement multipartConfigElement() {
 //        MultipartConfigFactory factory = new MultipartConfigFactory();
@@ -60,6 +65,7 @@ public class ServiceBeanConfig {
 
             intelligentRobot.setMaxAnswer(webImProperties.getRobot().getMaxAnswer());
             intelligentRobotFactory.setIntelligentRobot(intelligentRobot );
+            questAndAnswerManager.setEsServerConfig(webImProperties.getElasticSearch());
             return intelligentRobotFactory;
         }else{
             IntelligentRobotFactoryRpcImpl intelligentRobotFactory

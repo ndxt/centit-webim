@@ -113,5 +113,11 @@ public class QuestAndAnswerController extends BaseController {
         questAndAnswerManager.updateQuestionCatalog( questAndAnswer);
         return ResponseData.makeSuccessResponse();
     }
+    @ApiOperation(value = "7es查询")
+    @RequestMapping(value = "/listES/{question}",method = RequestMethod.GET)
+    @WrapUpResponseBody
+    public JSONArray listEs(String squestion,PageDesc pageDesc) {
+        return questAndAnswerManager.listESsAsJson(squestion,pageDesc);
+    }
 
 }

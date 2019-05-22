@@ -15,7 +15,7 @@ import java.util.Date;
  * @author codefan
  * @version 0.1
  */
-@ESType(type="F_QUESTION_AND_ANSWER", indexName="webim")
+@ESType(indexName="webim")
 @Entity
 @Table(name="F_QUESTION_AND_ANSWER")
 public class QuestAndAnswer implements ESDocument, Serializable {
@@ -213,12 +213,6 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     //@JSONField(serialize=false,deserialize=false)
     public String obtainDocumentId() {
         return questionId;
-    }
-
-    @Override
-    //@JSONField(serialize=false,deserialize=false)
-    public String obtainDocumentType() {
-        return ES_DOCUMENT_TYPE;
     }
 
 

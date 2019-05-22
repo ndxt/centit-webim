@@ -7,10 +7,10 @@ spring:
     name: WEBIM
   datasource:
     type: org.apache.commons.dbcp2.BasicDataSource
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/D:/H2/WEBIM
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://192.168.128.32:3306/webim?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:tcp://localhost/D:/H2/WEBIM
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.128.32:3306/webim?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: webim
     password: webim
     dbcp2:
@@ -21,7 +21,7 @@ spring:
       connection-properties: characterEncoding=utf8
   flyway:
     enabled: true
-    locations: classpath:migration/h2
+    locations: classpath:migration/mysql
   servlet:
    multipart:
     enabled: true
@@ -43,12 +43,12 @@ webim:
   robot:
     type: es
     max-answer: 4
-    elastic-search:
-      os-id: WEB_IM_SVR
-      server-host-ip: 192.168.132.110
-      server-host-port: 9300
-      cluster-name: webim-robot
-      min-score: 0.5
+  elastic-search:
+    os-id: WEB_IM_SVR
+    server-host-ip: 127.0.0.1
+    server-host-port: 9200
+    cluster-name: elasticsearch
+    min-score: 0.5
   file-store:
     base-dir: D:/Projects/RunData/webim_home/upload
   sms:

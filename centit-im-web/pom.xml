@@ -46,6 +46,22 @@
             <optional>true</optional>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>7.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-client</artifactId>
+            <version>7.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>7.0.1</version>
+        </dependency>
         <dependency>
             <groupId>com.centit.product</groupId>
             <artifactId>centit-im-robot-es</artifactId>
@@ -176,10 +192,15 @@
                 <configuration>
                     <user>webim</user>
                     <password>webim</password>
-                    <driver>org.h2.Driver</driver>
-                    <url>jdbc:h2:D:/h2/webim</url>
+                    <!--<driver>org.h2.Driver</driver>-->
+                    <!--<url>jdbc:h2:D:/h2/webim</url>-->
+                    <!--<locations>-->
+                        <!--<location>filesystem:src/main/resources/migration/h2</location>-->
+                    <!--</locations>-->
+                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                    <url>jdbc:mysql://192.168.128.32:3306/webim</url>
                     <locations>
-                        <location>filesystem:src/main/resources/migration/h2</location>
+                    <location>filesystem:src/main/resources/migration/mysql</location>
                     </locations>
                 </configuration>
 
