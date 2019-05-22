@@ -33,8 +33,7 @@ public class QuestAndAnswerManagerImpl extends BaseEntityManagerImpl<QuestAndAns
     private Searcher searcher;
     public void setEsServerConfig(ESServerConfig esServerConfig) {
         this.esServerConfig = esServerConfig;
-        this.indexer = IndexerSearcherFactory.obtainIndexer(
-                esServerConfig, QuestAndAnswer.class);
+
     }
 
 
@@ -66,6 +65,9 @@ public class QuestAndAnswerManagerImpl extends BaseEntityManagerImpl<QuestAndAns
 
     public void saveNewObject(QuestAndAnswer questAndAnswer){
         questAndAnswerDao.saveNewObject(questAndAnswer);
+        if (indexer==null){
+            indexer = IndexerSearcherFactory.obtainIndexer(
+                    esServerConfig, QuestAndAnswer.class);}
         if (indexer!=null){
             indexer.saveNewDocument(questAndAnswer);
         }
@@ -75,6 +77,9 @@ public class QuestAndAnswerManagerImpl extends BaseEntityManagerImpl<QuestAndAns
         QuestAndAnswer questAndAnswer=getObjectById(questionId);
         if (questAndAnswer==null) return;
         questAndAnswerDao.deleteObjectById(questionId);
+        if (indexer==null){
+            indexer = IndexerSearcherFactory.obtainIndexer(
+                    esServerConfig, QuestAndAnswer.class);}
         if (indexer!=null){
             indexer.deleteDocument(questAndAnswer);
         }
@@ -85,6 +90,9 @@ public class QuestAndAnswerManagerImpl extends BaseEntityManagerImpl<QuestAndAns
         if (questAndAnswer==null) return;
         questAndAnswer.setDeleteSign("T");
         questAndAnswerDao.mergeObject(questAndAnswer);
+        if (indexer==null){
+            indexer = IndexerSearcherFactory.obtainIndexer(
+                    esServerConfig, QuestAndAnswer.class);}
         if (indexer!=null){
             indexer.deleteDocument(questAndAnswer);
         }
@@ -94,6 +102,9 @@ public class QuestAndAnswerManagerImpl extends BaseEntityManagerImpl<QuestAndAns
         if (dbquestAndAnswer==null) return;
         dbquestAndAnswer.copyNotNullProperty(questAndAnswer);
         questAndAnswerDao.mergeObject(dbquestAndAnswer);
+        if (indexer==null){
+            indexer = IndexerSearcherFactory.obtainIndexer(
+                    esServerConfig, QuestAndAnswer.class);}
         if (indexer!=null){
             indexer.mergeDocument(dbquestAndAnswer);
         }
