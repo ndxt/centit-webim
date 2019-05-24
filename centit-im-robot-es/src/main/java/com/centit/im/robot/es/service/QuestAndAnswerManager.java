@@ -12,6 +12,5 @@ import com.centit.support.database.utils.PageDesc;
 public interface QuestAndAnswerManager extends BaseEntityManager<QuestAndAnswer,String> {
     void deleteQuestionCatalogSign(String questionId);
     void updateQuestionCatalog(QuestAndAnswer questAndAnswer);
-    void setEsServerConfig(ESServerConfig esServerConfig);
-    JSONArray listESsAsJson(String question,PageDesc pageDesc);
+
 }
