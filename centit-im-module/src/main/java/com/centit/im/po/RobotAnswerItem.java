@@ -1,7 +1,5 @@
 package com.centit.im.po;
 
-import java.util.List;
-
 /**
  * Created by codefan on 17-6-19.
  */

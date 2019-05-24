@@ -13,10 +13,10 @@ import java.util.List;
 
 
 /**
- * create by scaffold 2017-05-23 
+ * create by scaffold 2017-05-23
  * @author codefan@sina.com
- 
-  用户组信息查看时间用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息   
+
+  用户组信息查看时间用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息
 */
 @Entity
 @Table(name = "F_WEB_IM_GROUP_MEMBER")
@@ -39,7 +39,7 @@ public class WebImGroupMember implements java.io.Serializable {
 	@Column(name = "GROUP_MEMO")
 	private String groupMemo;
 	/**
-	 * 最后成功推送时间 null 
+	 * 最后成功推送时间 null
 	 */
 	@Column(name = "LAST_PUSH_TIME")
 	@NotNull
@@ -52,14 +52,14 @@ public class WebImGroupMember implements java.io.Serializable {
 	private Date  joinTime;
 
 	// Constructors
-	/** default constructor */
+	/* default constructor */
 	public WebImGroupMember() {
 	}
 
 
-/** full constructor */
+/* full constructor */
 	public WebImGroupMember(WebImGroupMemberId id
-			
+
 	, Date  lastPushTime) {
 		this.cid = id;
 		this.lastPushTime= lastPushTime;
@@ -68,7 +68,7 @@ public class WebImGroupMember implements java.io.Serializable {
 	public WebImGroupMemberId getCid() {
 		return this.cid;
 	}
-	
+
 	public void setCid(WebImGroupMemberId id) {
 		this.cid = id;
 	}
@@ -80,25 +80,25 @@ public class WebImGroupMember implements java.io.Serializable {
 	public void setOsId(String osId) {
 		this.osId = osId;
 	}
-  
+
 	public String getUserCode() {
 		if(this.cid==null)
 			this.cid = new WebImGroupMemberId();
 		return this.cid.getUserCode();
 	}
-	
+
 	public void setUserCode(String userCode) {
 		if(this.cid==null)
 			this.cid = new WebImGroupMemberId();
 		this.cid.setUserCode(userCode);
 	}
-  
+
 	public String getGroupId() {
 		if(this.cid==null)
 			this.cid = new WebImGroupMemberId();
 		return this.cid.getGroupId();
 	}
-	
+
 	public void setGroupId(String unitCode) {
 		if(this.cid==null)
 			this.cid = new WebImGroupMemberId();
@@ -130,11 +130,11 @@ public class WebImGroupMember implements java.io.Serializable {
 	}
 
 	// Property accessors
-  
+
 	public Date getLastPushTime() {
 		return this.lastPushTime;
 	}
-	
+
 	public void setLastPushTime(Date lastPushTime) {
 		this.lastPushTime = lastPushTime;
 	}
@@ -142,9 +142,9 @@ public class WebImGroupMember implements java.io.Serializable {
 
 
 	public WebImGroupMember copy(WebImGroupMember other){
-  
-		this.setOsId(other.getOsId());  
-		this.setUserCode(other.getUserCode());  
+
+		this.setOsId(other.getOsId());
+		this.setUserCode(other.getUserCode());
 		this.setGroupId(other.getGroupId());
 
 		this.setGroupAlias(other.getGroupAlias());
@@ -155,9 +155,9 @@ public class WebImGroupMember implements java.io.Serializable {
 
 		return this;
 	}
-	
+
 	public WebImGroupMember copyNotNullProperty(WebImGroupMember other){
-  
+
 		if( other.getOsId() != null)
 			this.setOsId(other.getOsId());
 		if( other.getUserCode() != null)

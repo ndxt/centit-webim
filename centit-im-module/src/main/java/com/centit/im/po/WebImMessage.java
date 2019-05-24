@@ -10,17 +10,17 @@ import java.util.Date;
 //import java.sql.Timestamp;
 
 /**
- * create by scaffold 2017-05-23 
+ * create by scaffold 2017-05-23
  * @author codefan@sina.com
- 
-  消息记录null   
+
+  消息记录null
 */
 @Entity
 @Table(name = "F_WEB_IM_MESSAGE")
 public class WebImMessage implements java.io.Serializable {
 	private static final long serialVersionUID =  1L;
 	/**
-	 * 消息ID null 
+	 * 消息ID null
 	 */
 	@Id
 	@Column(name = "MSG_ID")
@@ -30,7 +30,7 @@ public class WebImMessage implements java.io.Serializable {
 	private String msgId;
 
 	/**
-	 * 业务系统ID null 
+	 * 业务系统ID null
 	 */
 	@Column(name = "OS_ID")
 	@NotBlank(message = "字段不能为空")
@@ -44,7 +44,7 @@ public class WebImMessage implements java.io.Serializable {
 	@Length(max = 1, message = "字段长度不能大于{max}")
 	private String  msgType;
 	/**
-	 * 发送人员 null 
+	 * 发送人员 null
 	 */
 	@Column(name = "SENDER")
 	@NotBlank(message = "字段不能为空")
@@ -57,20 +57,20 @@ public class WebImMessage implements java.io.Serializable {
 	@Length(max = 100, message = "字段长度不能大于{max}")
 	private String  senderName;
 	/**
-	 * 接收人员（组） null 
+	 * 接收人员（组） null
 	 */
 	@Column(name = "RECEIVER")
 	@NotBlank(message = "字段不能为空")
 	@Length(max = 32, message = "字段长度不能大于{max}")
 	private String  receiver;
 	/**
-	 * 发送时间 null 
+	 * 发送时间 null
 	 */
 	@Column(name = "SEND_TIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date  sendTime;
 	/**
-	 * 状态 U 未读 C  已读 
+	 * 状态 U 未读 C  已读
 	 */
 	@Column(name = "MSG_STATE")
 	@Length(max = 1, message = "字段长度不能大于{max}")
@@ -82,13 +82,13 @@ public class WebImMessage implements java.io.Serializable {
 	@Length(max = 20, message = "内容类型字段长度不能大于{max}")
 	private String  contentType;
 	/**
-	 * 内容 null 
+	 * 内容 null
 	 */
 	@Column(name = "CONTENT")
 	@Length(max = 1000, message = "字段长度不能大于{max}")
 	private String  content;
 
-	/** default constructor */
+	/* default constructor */
 	public WebImMessage() {
 		this.osId= ImMessage.DEFAULT_OSID;
 	}
@@ -104,9 +104,9 @@ public class WebImMessage implements java.io.Serializable {
 		String msgId,String  msgType,String  sender,String  receiver) {
 		this.msgId = msgId;
 		this.osId= ImMessage.DEFAULT_OSID;
-		this.msgType= msgType; 
-		this.sender= sender; 
-		this.receiver= receiver; 		
+		this.msgType= msgType;
+		this.sender= sender;
+		this.receiver= receiver;
 	}
 
 	public WebImMessage(
@@ -122,7 +122,7 @@ public class WebImMessage implements java.io.Serializable {
 		this.senderName= senderName;
 	}
 
-  
+
 	public String getMsgId() {
 		return this.msgId;
 	}
@@ -134,55 +134,55 @@ public class WebImMessage implements java.io.Serializable {
 	public String getOsId() {
 		return this.osId;
 	}
-	
+
 	public void setOsId(String osId) {
 		this.osId = osId;
 	}
-  
+
 	public String getMsgType() {
 		return this.msgType;
 	}
-	
+
 	public void setMsgType(String msgType) {
 		this.msgType = msgType;
 	}
-  
+
 	public String getSender() {
 		return this.sender;
 	}
-	
+
 	public void setSender(String sender) {
 		this.sender = sender;
 	}
-  
+
 	public String getReceiver() {
 		return this.receiver;
 	}
-	
+
 	public void setReceiver(String receiver) {
 		this.receiver = receiver;
 	}
-  
+
 	public Date getSendTime() {
 		return this.sendTime;
 	}
-	
+
 	public void setSendTime(Date sendTime) {
 		this.sendTime = sendTime;
 	}
-  
+
 	public String getMsgState() {
 		return this.msgState;
 	}
-	
+
 	public void setMsgState(String msgState) {
 		this.msgState = msgState;
 	}
-  
+
 	public String getContent() {
 		return this.content;
 	}
-	
+
 	public void setContent(String content) {
 		this.content = content;
 	}
@@ -216,7 +216,7 @@ public class WebImMessage implements java.io.Serializable {
 	}
 
 	public WebImMessage copy(WebImMessage other){
-  
+
 		this.setMsgId(other.getMsgId());
 		this.osId= other.getOsId();
 		this.msgType= other.getMsgType();
@@ -229,12 +229,12 @@ public class WebImMessage implements java.io.Serializable {
 		this.senderName= other.getSenderName();
 		return this;
 	}
-	
+
 	public WebImMessage copyNotNullProperty(WebImMessage other){
-  
+
 	if( other.getMsgId() != null)
 		this.setMsgId(other.getMsgId());
-  
+
 		if( other.getOsId() != null)
 			this.osId= other.getOsId();
 		if( other.getMsgType() != null)
@@ -259,7 +259,7 @@ public class WebImMessage implements java.io.Serializable {
 	}
 
 	public WebImMessage clearProperties(){
-  
+
 		this.osId= null;
 		this.msgType= null;
 		this.sender= null;

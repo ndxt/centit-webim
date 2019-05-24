@@ -23,7 +23,7 @@ public class WebImSocketListener {
     @Autowired
     protected WebImSocket webImSocket;
 
-    /**
+    /*
      * 连接建立成功调用的方法
      */
     @OnOpen
@@ -36,7 +36,7 @@ public class WebImSocketListener {
         }
     }
 
-    /**
+    /*
      * 连接关闭调用的方法
      */
     @OnClose
@@ -49,7 +49,7 @@ public class WebImSocketListener {
         }
     }
 
-    /**
+    /*
      * 收到客户端消息后调用的方法
      */
     @OnMessage
@@ -63,8 +63,7 @@ public class WebImSocketListener {
 
     /**
      * 发生错误时调用
-     *
-     * @param error
+     * @param error Throwable
      */
     @OnError
     public void onError(Throwable error) {

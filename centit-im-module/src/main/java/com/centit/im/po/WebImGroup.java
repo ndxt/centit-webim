@@ -14,10 +14,10 @@ import java.util.Date;
 
 
 /**
- * create by scaffold 2017-05-23 
+ * create by scaffold 2017-05-23
  * @author codefan@sina.com
- 
-  用户组信息查看时间用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息   
+
+  用户组信息查看时间用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息
 */
 @Entity
 @Table(name = "F_WEB_IM_GROUP")
@@ -67,12 +67,12 @@ public class WebImGroup implements java.io.Serializable {
 	private Date  createTime;
 
 	// Constructors
-	/** default constructor */
+	/* default constructor */
 	public WebImGroup() {
 	}
 
 
-/** full constructor */
+/* full constructor */
 	public WebImGroup(String id , Date  createTime) {
 		this.groupId = id;
 		this.createTime= createTime;
