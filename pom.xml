@@ -111,7 +111,6 @@
                 <version>3.1.0</version>
                 <configuration>
                     <force>false</force>
-                    <failOnWarnings>true</failOnWarnings>
                 </configuration>
             </plugin>
 
@@ -183,7 +182,6 @@
                 <version>3.1.0</version>
                 <configuration>
                     <force>false</force>
-                    <failOnWarnings>true</failOnWarnings>
                 </configuration>
                 <executions>
                     <execution>
