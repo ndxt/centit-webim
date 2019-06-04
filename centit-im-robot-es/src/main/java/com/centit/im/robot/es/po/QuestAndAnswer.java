@@ -17,17 +17,14 @@ import java.util.Date;
  */
 @ESType(indexName="webim")
 @Entity
-@Table(name="F_QUESTION_AND_ANSWER")
 public class QuestAndAnswer implements ESDocument, Serializable {
-    public static final String ES_DOCUMENT_TYPE = "F_QUESTION_AND_ANSWER";
     private static final long serialVersionUID =  1L;
 
     /**
      * 问题标识
      */
-    @ESField(type="text")
+    @ESField(type="text",index = true)
     @Id
-    @Column(name = "QUESTION_ID")
     //@GeneratedValue(generator = "assignedGenerator")
     //@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
     private String questionId;
@@ -35,65 +32,52 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 所属系统
      */
-    @ESField(type="text")
-    @Column(name = "OS_ID")
+    @ESField(type="text",index = true)
     private String osId;
     /**
      * 所属业务
      */
-    @ESField(type="text")
-    @Column(name = "OPT_ID")
+    @ESField(type="text",index = true)
     private String optId;
 
-    /**
-     * CHAR(1) comment '是否删除 T/F'
-     */
-    @Column(name = "DELETE_SIGN")
-    private String  deleteSign;
 
     /**
      * 问题标题
      */
     @ESField(type="text",index = true, query = true, highlight = true, analyzer = "ik_smart")
-    @Column(name = "QUESTION_TITLE")
     private String questionTitle;
 
     /**
      * 关键字
      */
     @ESField(type="text",index = true, query = true, revert = false, highlight = true, analyzer = "ik_smart")
-    @Column(name = "KEY_WORDS")
     private String keyWords;
 
     /**
      * 问题标题联url
      */
     @ESField(type="text", revert = true)
-    @Column(name = "QUESTION_URL")
     private String questionUrl;
 
     /**
      * 问题回答和内容
      */
     @ESField(type="text",index = true, query = true, highlight = true, analyzer = "ik_smart")
-    @Column(name = "QUESTION_ANSWER")
     private String questionAnswer;
 
 
-    @ESField(type="date")
-    @Column(name = "CREATE_TIME")
+    @ESField(type="date",index = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
     /**
      * 创建人
      */
-    @Column(name = "CREATOR")
+    @ESField(type="text",index = true)
     private String creator;
     /**
      * 更新时间
      */
-    @Column(name = "LAST_UPDATE_TIME")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdateTime;
 
@@ -177,13 +161,6 @@ public class QuestAndAnswer implements ESDocument, Serializable {
         this.questionId = questionId;
     }
 
-    public String getDeleteSign() {
-        return deleteSign;
-    }
-
-    public void setDeleteSign(String deleteSign) {
-        this.deleteSign = deleteSign;
-    }
 
     public String getKeyWords() {
         return keyWords;
@@ -229,8 +206,6 @@ public class QuestAndAnswer implements ESDocument, Serializable {
             this.osId= other.getOsId();
         if( other.getOptId() != null)
             this.optId= other.getOptId();
-        if( other.getDeleteSign() != null)
-            this.deleteSign= other.getDeleteSign();
         if( other.getCreator() != null)
             this.creator= other.getCreator();
         if( other.getCreateTime() != null)
