@@ -12,18 +12,19 @@ import java.util.Date;
 
 /**
  * Created by codefan on 17-6-1.
+ *
  * @author codefan
  * @version 0.1
  */
-@ESType(indexName="webim")
+@ESType(indexName = "webim")
 @Entity
 public class QuestAndAnswer implements ESDocument, Serializable {
-    private static final long serialVersionUID =  1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 问题标识
      */
-    @ESField(type="text",index = true)
+    @ESField(type = "text", index = true)
     @Id
     //@GeneratedValue(generator = "assignedGenerator")
     //@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
@@ -32,48 +33,48 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 所属系统
      */
-    @ESField(type="text",index = true)
+    @ESField(type = "text", index = true)
     private String osId;
     /**
      * 所属业务
      */
-    @ESField(type="text",index = true)
+    @ESField(type = "text", index = true)
     private String optId;
 
 
     /**
      * 问题标题
      */
-    @ESField(type="text",index = true, query = true, highlight = true, analyzer = "ik_smart")
+    @ESField(type = "text", index = true, query = true, highlight = true, analyzer = "ik_smart")
     private String questionTitle;
 
     /**
      * 关键字
      */
-    @ESField(type="text",index = true, query = true, revert = false, highlight = true, analyzer = "ik_smart")
+    @ESField(type = "text", index = true, query = true, revert = false, highlight = true, analyzer = "ik_smart")
     private String keyWords;
 
     /**
      * 问题标题联url
      */
-    @ESField(type="text", revert = true)
+    @ESField(type = "text", revert = true)
     private String questionUrl;
 
     /**
      * 问题回答和内容
      */
-    @ESField(type="text",index = true, query = true, highlight = true, analyzer = "ik_smart")
+    @ESField(type = "text", index = true, query = true, highlight = true, analyzer = "ik_smart")
     private String questionAnswer;
 
 
-    @ESField(type="date",index = true)
+    @ESField(type = "date", index = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
     /**
      * 创建人
      */
-    @ESField(type="text",index = true)
+    @ESField(type = "text", index = true)
     private String creator;
     /**
      * 更新时间
@@ -96,11 +97,11 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return toJsonString();
     }
 
-    public String toJsonString(){
+    public String toJsonString() {
         return JSON.toJSONString(this);
     }
 
@@ -195,31 +196,31 @@ public class QuestAndAnswer implements ESDocument, Serializable {
 
     @Override
     public JSONObject toJSONObject() {
-        return (JSONObject)JSON.toJSON(this);
+        return (JSONObject) JSON.toJSON(this);
     }
 
-    public QuestAndAnswer copyNotNullProperty(QuestAndAnswer other){
+    public QuestAndAnswer copyNotNullProperty(QuestAndAnswer other) {
 
-        if( other.getQuestionId() != null)
-            this.questionId= other.getQuestionId();
-        if( other.getOsId() != null)
-            this.osId= other.getOsId();
-        if( other.getOptId() != null)
-            this.optId= other.getOptId();
-        if( other.getCreator() != null)
-            this.creator= other.getCreator();
-        if( other.getCreateTime() != null)
-            this.createTime= other.getCreateTime();
-        if( other.getQuestionTitle() != null)
-            this.questionTitle= other.getQuestionTitle();
-        if( other.getKeyWords() != null)
-            this.keyWords= other.getKeyWords();
-        if( other.getQuestionUrl() != null)
-            this.questionUrl= other.getQuestionUrl();
-        if( other.getQuestionAnswer() != null)
-            this.questionAnswer= other.getQuestionAnswer();
-        if( other.getLastUpdateTime() != null)
-            this.lastUpdateTime= other.getLastUpdateTime();
+        if (other.getQuestionId() != null)
+            this.questionId = other.getQuestionId();
+        if (other.getOsId() != null)
+            this.osId = other.getOsId();
+        if (other.getOptId() != null)
+            this.optId = other.getOptId();
+        if (other.getCreator() != null)
+            this.creator = other.getCreator();
+        if (other.getCreateTime() != null)
+            this.createTime = other.getCreateTime();
+        if (other.getQuestionTitle() != null)
+            this.questionTitle = other.getQuestionTitle();
+        if (other.getKeyWords() != null)
+            this.keyWords = other.getKeyWords();
+        if (other.getQuestionUrl() != null)
+            this.questionUrl = other.getQuestionUrl();
+        if (other.getQuestionAnswer() != null)
+            this.questionAnswer = other.getQuestionAnswer();
+        if (other.getLastUpdateTime() != null)
+            this.lastUpdateTime = other.getLastUpdateTime();
         return this;
     }
 

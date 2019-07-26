@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("questAndAnswerManager")
-public class QuestAndAnswerManagerImpl implements QuestAndAnswerManager{
+public class QuestAndAnswerManagerImpl implements QuestAndAnswerManager {
     @Autowired(required = false)
     private ESIndexer esObjectIndexer;
 
@@ -25,7 +25,6 @@ public class QuestAndAnswerManagerImpl implements QuestAndAnswerManager{
             throw new ObjectException(500, "elasticsearch操作失败");
         }
     }
-
 
 
     public void updateQuestionCatalog(QuestAndAnswer questAndAnswer) {
