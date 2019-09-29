@@ -9,16 +9,16 @@ import javax.websocket.server.ServerEndpointConfig;
 
 public class MySpringConfigurator extends ServerEndpointConfig.Configurator implements ApplicationContextAware {
 
-    private static volatile BeanFactory context;
+    private volatile BeanFactory context;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        MySpringConfigurator.context = applicationContext;
+        this.context = applicationContext;
     }
 
     @Override
     public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {
-        return context.getBean(clazz);
+        return this.context.getBean(clazz);
     }
 }
 

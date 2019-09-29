@@ -56,8 +56,8 @@ public class WebImUserController extends BaseController {
 
     /**
      * 注册用户 返回 token
-     * @param user
-     *
+     * @param user 用户信息
+     * @return ResponseData
      */
     @ApiOperation(value = "2注册用户")
 
@@ -72,7 +72,7 @@ public class WebImUserController extends BaseController {
 
     /**
      * 返回系统所有联系人
-     *
+     * @return 所有联系人
      */
     @ApiOperation(value = "3查询用户列表")
     @RequestMapping(value = "/listUser", method = RequestMethod.GET)
@@ -93,8 +93,8 @@ public class WebImUserController extends BaseController {
 
     /**
      * 获取下层机构
-     * @param parentUnitCode
-     *
+     * @param parentUnitCode 父机构代码
+     * @return 下层机构
      */
     @ApiOperation(value = "5查询下层机构列表")
     @RequestMapping(value = "/subUnit/{parentUnitCode}",
@@ -107,7 +107,8 @@ public class WebImUserController extends BaseController {
     }
     /**
      * 返回联系人信息
-     *
+     * @param userCode 用户代码
+     * @return 用户信息
      */
     @ApiOperation(value = "6查询联系人信息")
     @RequestMapping(value = "/user/{userCode}", method = RequestMethod.GET)
@@ -120,7 +121,7 @@ public class WebImUserController extends BaseController {
      * 返回客服专家（客服模式）所有服务的对象
      * @param serviceUserCode 客服代码
      * @param lastServiceDate   最后服务时间，如果为null默认为 一个月内服务过的人员
-     *
+     * @return 所有服务的对象
      */
     @ApiOperation(value = "7查询所有服务的对象")
     @RequestMapping(value = "/cust/{serviceUserCode}", method = RequestMethod.GET)
@@ -131,7 +132,7 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 返回所有客服专家（客服模式）
+     * @return 返回所有客服专家（客服模式）
      *
      */
     @ApiOperation(value = "8查询所有客服专家")
@@ -142,7 +143,7 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 返回系统联系状态
+     * @return 返回系统联系状态
      *
      */
     @ApiOperation(value = "9查询系统联系状态")
@@ -153,8 +154,8 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 返回用户的群组（机构）
-     *
+     * @return 返回用户的群组（机构）
+     * @param userCode 用户代码
      */
     @ApiOperation(value = "10查询用户的群组")
     @RequestMapping(value = "/listUserUnit/{userCode}", method = RequestMethod.GET)
@@ -165,8 +166,8 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 返回机构中的成员
-     *
+     * @return  返回机构中的成员
+     * @param unitCode 机构代码
      */
     @ApiOperation(value = "11查询机构中的成员")
     @RequestMapping(value = "/listUnitUser/{unitCode}", method = RequestMethod.GET)
@@ -187,8 +188,9 @@ public class WebImUserController extends BaseController {
 
 
     /**
-     * 创建群 接收用户数组
-     *
+     * @return 创建群 接收用户数组
+     * @param request  HttpServletRequest
+     * @param groupJson 用户数组
      */
     @ApiOperation(value = "13创建群及用户数组")
     @RequestMapping(value = "/creategroup", method = RequestMethod.POST)
@@ -213,8 +215,8 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 修改群基本信息
-     *
+     *  @return 修改群基本信息
+     *  @param groupJson 用户数组
      */
     @ApiOperation(value = "14修改群基本信息")
     @RequestMapping(value = "/updategroup", method = RequestMethod.PUT)
@@ -229,9 +231,9 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 申请加入群
-     * @param memberCode
-     * @param groupId
+     * @return  申请加入群
+     * @param memberCode 成员代码
+     * @param groupId 组Id
      *
      */
     @ApiOperation(value = "15申请加入群")
@@ -246,8 +248,8 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 更新所有群成员
-     * @param groupId
+     *  @return  更新所有群成员
+     * @param groupId 组Id
      * @param membersJsonStr [["123"],["234"]]
      */
     @ApiOperation(value = "16更新所有群成员")
@@ -262,8 +264,8 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 获取群成员信息
-     * @param groupId
+     * @return 获取群成员信息
+     * @param groupId 组Id
      *
      */
     @ApiOperation(value = "17获取群成员信息")
@@ -276,8 +278,8 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 获取群基本信息
-     * @param groupId
+     * @return 获取群基本信息
+     * @param groupId 组Id
      *
      */
     @ApiOperation(value = "18获取群基本信息")
@@ -289,8 +291,8 @@ public class WebImUserController extends BaseController {
         return  webImUserManager.getGroupInfo(groupId);
     }
     /**
-     * 修改群成员信息
-     * @param memberInfoJson
+     * @return 修改群成员信息
+     * @param memberInfoJson 成员
      *
      */
     @ApiOperation(value = "19修改群成员信息")
@@ -305,9 +307,9 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 退出群
-     * @param memberCode
-     * @param groupId
+     * @return 退出群
+     * @param memberCode 成员代码
+     * @param groupId 组ID
      *
      */
     @ApiOperation(value = "20退出群")
@@ -321,9 +323,9 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 解散群
-     * @param groupId
-     * @param userCode
+     * @return 解散群
+     * @param groupId 组ID
+     * @param userCode 操作用户代码
      *
      */
     @ApiOperation(value = "21解散群")
@@ -346,9 +348,9 @@ public class WebImUserController extends BaseController {
     }
 
     /**
-     * 删除群
-     * @param groupId
-     * @param userCode
+     * @return 删除群
+     * @param groupId 组ID
+     * @param userCode 操作用户代码
      *
      */
     @ApiOperation(value = "22删除群")

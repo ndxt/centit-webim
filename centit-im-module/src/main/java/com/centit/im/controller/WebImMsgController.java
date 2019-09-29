@@ -58,12 +58,13 @@ public class WebImMsgController extends BaseController {
             return null;
         return messgeListToJson((JSONArray)JSON.toJSON(messageList));
     }
-/**
+    /**
      * 获取历史信息
      * @param receiver 接收人（一般为自己或者自己所在的组
      * @param sender    发送人
      * @param pageDesc  分页信息
      * @param lastReadDate 上次阅读消息的时间
+     * @return 分页查询结果
      */
     @ApiOperation(value = "1查询历史消息")
     @ApiImplicitParams({
@@ -87,7 +88,7 @@ public class WebImMsgController extends BaseController {
      * @param receiver 接收人（一般为自己或者自己所在的组
      * @param pageDesc  分页信息
      * @param lastReadDate 上次阅读消息的时间
-     *
+     * @return 分页查询结果
      */
     @ApiOperation(value = "2获取收到所有信息")
     @ApiImplicitParam(name = "lastReadDate", value = "上次消息的时间",
@@ -107,7 +108,7 @@ public class WebImMsgController extends BaseController {
      * @param receiver 一般为用户所在的组
      * @param pageDesc  分页信息
      * @param lastReadDate 上次阅读消息的时间
-     *
+     * @return 分页查询结果
      */
     @ApiOperation(value = "3获取群聊历史信息")
     @ApiImplicitParams({
@@ -131,7 +132,7 @@ public class WebImMsgController extends BaseController {
      * @param unitCode  群 （机构）
      * @param pageDesc  分页信息
      * @param lastReadDate 上次阅读消息的时间
-     *
+     * @return 分页查询结果
      */
     @ApiOperation(value = "4获取组群聊历史信息")
 

@@ -308,7 +308,9 @@ public class WebImSocketImpl implements WebImSocket {
                 keys = onlineCustService.keySet().toArray(keys);
                 String randomKey = keys[random.nextInt(keys.length)];
                 service = getOnlineServiceByUserCode(randomKey);
-                service.setUserState(ImMessage.USER_STATE_ONLINE);
+                if(service!=null) {
+                    service.setUserState(ImMessage.USER_STATE_ONLINE);
+                }
             } else if(service==null){
                 List<WebImCustomer> allService = customerDao.listCustomerService();//("S");
                 if (allService != null && allService.size() > 0) {
@@ -634,6 +636,8 @@ public class WebImSocketImpl implements WebImSocket {
                 break;
             case ImMessage.MSG_TYPE_COMMAND:
                 this.onCommand(session,message);
+                break;
+            default:
                 break;
         }
     }

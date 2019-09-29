@@ -140,7 +140,7 @@ public class FileController extends BaseController {
      * @param fileName 文件的名称包括扩展名，如果这个不为空， 上面的 md5SizeExt 可以没有 .Ext 扩展名
      * @param request HttpServletRequest
      * @param response HttpServletResponse
-     * @throws IOException
+     * @throws IOException 异常
      */
     @RequestMapping(value= "/download/{md5SizeExt}", method=RequestMethod.GET)
     public void downloadUnprotectedFile(@PathVariable("md5SizeExt") String md5SizeExt,
@@ -232,7 +232,7 @@ public class FileController extends BaseController {
 
             String fileId =  fileMd5 +"_"+String.valueOf(size)+"."+
                     FileType.getFileExtName(fileName);
-            String filePath = fs.getFileStoreUrl(fileMd5,size);
+            //String filePath = fs.getFileStoreUrl(fileMd5,size);
             // 返回响应
             JSONObject json = new JSONObject();
             /*json.put("start", size);
