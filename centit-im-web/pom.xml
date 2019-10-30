@@ -8,14 +8,12 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.1.3.RELEASE</version>
-
         <relativePath/> <!-- lookup parent from repository -->
-
     </parent>
 
     <artifactId>centit-im-web</artifactId>
     <name>com.centit.product:centit-im-web</name>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <packaging>war</packaging>
     <description>即时通讯的demo程序,通过引用im-server的web包，实现机器人的接口，并将这个接口注入到im的服务中。
     实现机器人的接口还有另一个方法就是 引用 im-client包，在其中实现机器人接口服务供 im服务调用</description>
@@ -32,7 +30,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-
         </dependency>
 
         <dependency>

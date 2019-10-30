@@ -53,7 +53,7 @@ public class QuestAndAnswerController extends BaseController {
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
     @WrapUpResponseBody
     public JSONArray list(PageDesc pageDesc, HttpServletRequest request) {
-        Map<String, Object> searchColumn = convertSearchColumn(request);
+        Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
         return questAndAnswerManager.listObjectsAsJson(searchColumn, pageDesc);
     }
 

@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.ResponseMapData;
+import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.model.basedata.IUnitInfo;
@@ -200,7 +201,7 @@ public class WebImUserController extends BaseController {
             HttpServletRequest request) {
         JSONObject jsonObject = JSON.parseObject(groupJson);
         WebImGroup webImGroup = WebImGroup.createFromJson(jsonObject);
-        String currentUserCode = this.getLoginUserCode(request);
+        String currentUserCode = WebOptUtils.getCurrentUserCode(request);
         if(StringUtils.isNotBlank(currentUserCode)) {
             webImGroup.setCreator(currentUserCode);
         }
