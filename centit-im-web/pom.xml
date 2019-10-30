@@ -19,11 +19,8 @@
     实现机器人的接口还有另一个方法就是 引用 im-client包，在其中实现机器人接口服务供 im服务调用</description>
 
     <properties>
-        <centit.framework.version>4.5.1901</centit.framework.version>
-        <centit.persistence.version>1.2.1901</centit.persistence.version>
-        <centit.commons.version>2.2.1901</centit.commons.version>
-        <centit.ip.version>2.0.1901</centit.ip.version>
-        <centit.ui.version>3.1.1809</centit.ui.version>
+        <centit.framework.version>4.6-SNAPSHOT</centit.framework.version>
+        <centit.ip.version>2.1-SNAPSHOT</centit.ip.version>
     </properties>
 
     <dependencies>
@@ -43,22 +40,6 @@
             <optional>true</optional>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <version>7.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>elasticsearch-rest-client</artifactId>
-            <version>7.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>elasticsearch-rest-high-level-client</artifactId>
-            <version>7.0.1</version>
-        </dependency>
         <dependency>
             <groupId>com.centit.product</groupId>
             <artifactId>centit-im-robot-es</artifactId>
@@ -89,21 +70,19 @@
         </dependency>
 
         <dependency>
-            <groupId>com.centit.framework</groupId>
-            <artifactId>centit-persistence-jdbc</artifactId>
-            <version>${centit.persistence.version}</version>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>7.0.1</version>
         </dependency>
-
         <dependency>
-            <groupId>com.centit.support</groupId>
-            <artifactId>centit-database-datasource</artifactId>
-            <version>${centit.commons.version}</version>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-client</artifactId>
+            <version>7.0.1</version>
         </dependency>
-
         <dependency>
-            <groupId>com.centit.framework</groupId>
-            <artifactId>centit-persistence-extend</artifactId>
-            <version>${centit.persistence.version}</version>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>7.0.1</version>
         </dependency>
 
         <dependency>
