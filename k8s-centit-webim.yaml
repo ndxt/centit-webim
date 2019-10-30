@@ -5,7 +5,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8080
+    - port: 10085
       nodePort: 10085
   selector:
     app: im
@@ -35,19 +35,7 @@ spec:
       - name: im
         image: 172.29.0.13:8082/im:<BUILD_TAG>
         imagePullPolicy: Always
-        volumeMounts:
-        - name: time-zone
-          mountPath: /etc/localtime
-        - name: tomcat-logs
-          mountPath: /usr/local/tomcat/logs
         ports:
-        - containerPort: 8080
+        - containerPort: 10085
       imagePullSecrets:
       - name: registry-secret
-      volumes:
-      - name: time-zone
-        hostPath:
-          path: /etc/localtime
-      - name: tomcat-logs
-        hostPath:
-          path: /data/tomcat/logs
