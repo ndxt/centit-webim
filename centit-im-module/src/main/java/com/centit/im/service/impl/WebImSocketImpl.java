@@ -659,7 +659,9 @@ public class WebImSocketImpl implements WebImSocket {
     private boolean pushMessage(Session session , ImMessage message) {
         if(session==null)
             return false;
-        session.getAsyncRemote().sendText(message.toString());
+        synchronized (session) {
+            session.getAsyncRemote().sendText(message.toString());
+        }
         return true;
     }
 

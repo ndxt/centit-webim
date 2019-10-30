@@ -11,12 +11,10 @@ import com.centit.framework.model.adapter.OperationLogWriter;
 import com.centit.im.robot.es.po.QuestAndAnswer;
 import com.centit.im.robot.es.service.QuestAndAnswerManager;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
-import com.centit.im.robot.es.service.impl.QuestAndAnswerManagerImpl;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
 import com.centit.im.service.impl.IntelligentRobotFactorySingleImpl;
 import com.centit.im.web.plugins.JsfgwSmsMessageSender;
-import com.centit.search.document.ObjectDocument;
 import com.centit.search.service.ESServerConfig;
 import com.centit.search.service.Impl.ESIndexer;
 import com.centit.search.service.Impl.ESSearcher;
@@ -25,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +30,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
-import javax.servlet.MultipartConfigElement;
 import java.io.File;
 
 @Configuration
