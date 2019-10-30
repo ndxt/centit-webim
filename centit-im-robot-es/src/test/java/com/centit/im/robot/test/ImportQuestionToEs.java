@@ -8,7 +8,6 @@ import com.centit.im.po.RobotAnswerItem;
 import com.centit.im.robot.es.po.QuestAndAnswer;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.search.service.ESServerConfig;
-import com.centit.search.service.Impl.ESIndexer;
 import com.centit.search.service.Indexer;
 import com.centit.search.service.IndexerSearcherFactory;
 import com.centit.support.algorithm.StringBaseOpt;
@@ -17,14 +16,8 @@ import com.centit.support.database.utils.DataSourceDescription;
 import com.centit.support.database.utils.DatabaseAccess;
 import com.centit.support.database.utils.DbcpConnectPools;
 import org.dom4j.DocumentException;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.network.InetAddresses;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
-
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.SQLException;

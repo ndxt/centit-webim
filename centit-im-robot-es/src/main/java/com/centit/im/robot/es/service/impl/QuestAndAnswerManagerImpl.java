@@ -1,15 +1,11 @@
 package com.centit.im.robot.es.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.ObjectException;
 import com.centit.im.robot.es.po.QuestAndAnswer;
 import com.centit.im.robot.es.service.QuestAndAnswerManager;
 import com.centit.search.service.Impl.ESIndexer;
-import com.centit.support.database.utils.PageDesc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service("questAndAnswerManager")
 public class QuestAndAnswerManagerImpl implements QuestAndAnswerManager {

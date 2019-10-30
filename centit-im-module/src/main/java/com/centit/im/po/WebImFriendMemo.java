@@ -1,11 +1,10 @@
 package com.centit.im.po;
 
-import java.util.Date;
-import javax.persistence.*;
-
-
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import java.util.Date;
 
 
 /**

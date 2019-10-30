@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>com.centit.product</groupId>
-            <artifactId>centit-im-client</artifactId>
+            <artifactId>centit-im-module</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -3,7 +3,6 @@ package com.centit.im.socketio;
 import com.alibaba.fastjson.JSON;
 import com.centit.support.algorithm.StringBaseOpt;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

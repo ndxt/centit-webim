@@ -1,8 +1,6 @@
 package com.centit.im.service;
 
 import com.centit.im.po.RobotAnswer;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * Created by codefan on 17-6-20.

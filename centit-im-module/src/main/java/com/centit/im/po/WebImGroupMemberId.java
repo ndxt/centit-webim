@@ -1,6 +1,7 @@
 package com.centit.im.po;
 
 import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 

@@ -6,7 +6,10 @@ import com.centit.search.annotation.ESField;
 import com.centit.search.annotation.ESType;
 import com.centit.search.document.ESDocument;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 

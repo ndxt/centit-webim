@@ -1,8 +1,8 @@
 package com.centit.im.service;
 
 import com.centit.framework.model.basedata.IUnitInfo;
-import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImCustomer;
+import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImGroup;
 import com.centit.im.po.WebImGroupMember;
 
