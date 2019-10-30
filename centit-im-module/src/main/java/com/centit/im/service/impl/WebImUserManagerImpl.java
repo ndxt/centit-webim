@@ -17,10 +17,10 @@ import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.DatetimeOpt;
 import com.centit.support.algorithm.UuidOpt;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -29,22 +29,22 @@ import java.util.*;
 @Service("webImUserManager")
 public class WebImUserManagerImpl implements WebImUserManager {
 
-    @Resource
+    @Autowired
     protected PlatformEnvironment platformEnvironment;
 
-    @Resource
+    @Autowired
     protected WebImSocket webImSocket;
 
-    @Resource
+    @Autowired
     protected WebImCustomerDao customerDao;
 
-    @Resource
+    @Autowired
     protected FriendMemoDao friendMemoDao;
 
-    @Resource
+    @Autowired
     protected WebImGroupDao webImGroupDao;
 
-    @Resource
+    @Autowired
     protected WebImGroupMemberDao webImGroupMemberDao;
     /**
      * 返回联系人信息

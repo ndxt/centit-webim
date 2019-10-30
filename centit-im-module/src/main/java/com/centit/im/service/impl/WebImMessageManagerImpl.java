@@ -8,11 +8,11 @@ import com.centit.im.dao.WebImMessageDao;
 import com.centit.im.po.WebImMessage;
 import com.centit.im.service.WebImMessageManager;
 import com.centit.support.database.utils.PageDesc;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Map;
@@ -25,16 +25,17 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
         java.lang.String,WebImMessageDao>
         implements WebImMessageManager {
 
-    @Resource
+    @Autowired
     private WebImGroupMemberDao webImGroupMemberDao;
 
-    @Resource
+    @Autowired
     private WebImGroupDao webImGroupDao;
 
     private WebImMessageDao webImMessageDao ;
 
     @NotNull
-    @Resource(name = "webImMessageDao")
+    @Autowired
+    //@Qualifier("webImMessageDao")
     public void setWebImMessageDao(WebImMessageDao baseDao)
     {
         this.webImMessageDao = baseDao;

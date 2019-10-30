@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +33,9 @@ import java.util.Map;
 @Api(value = "robot", tags = "robot")
 public class QuestAndAnswerController extends BaseController {
 
-    @Resource
+    @Autowired
     protected QuestAndAnswerManager questAndAnswerManager;
+
     @Autowired(required = false)
     private ESSearcher esObjectSearcher;
 

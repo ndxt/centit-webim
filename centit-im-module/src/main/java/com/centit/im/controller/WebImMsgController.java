@@ -15,12 +15,12 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ import java.util.Map;
 @RequestMapping("/webimmsg")
 public class WebImMsgController extends BaseController {
 
-    @Resource
+    @Autowired
     protected WebImMessageManager webImMessageManager;
     public static JSONArray messgeListToJson(JSONArray messageList){
         if(CollectionUtils.isEmpty(messageList))

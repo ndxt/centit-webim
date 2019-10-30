@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.*;
@@ -78,25 +77,25 @@ public class WebImSocketImpl implements WebImSocket {
         return onlineCustService.get(userCode);
     }
 
-    @Resource
+    @Autowired
     protected WebImMessageDao messageDao;
 
-    @Resource
+    @Autowired
     protected WebImCustomerDao customerDao;
 
-    @Resource
+    @Autowired
     protected CustomerPraiseDao customerPraiseDao;
 
-    @Resource
+    @Autowired
     protected PlatformEnvironment platformEnvironment;
 
-    @Resource
+    @Autowired
     protected IntelligentRobotFactory intelligentRobotFactory;
 
-    @Resource
+    @Autowired
     protected WebImGroupDao webImGroupDao;
 
-    @Resource
+    @Autowired
     protected WebImGroupMemberDao webImGroupMemberDao;
 
     @Value("${webim.notify.type:none}")

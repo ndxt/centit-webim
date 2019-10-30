@@ -9,13 +9,12 @@ import com.centit.im.socketio.ImMessage;
 import com.centit.im.socketio.ImMessageUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.annotation.Resource;
 
 /**
  * Created by codefan on 17-5-20.
@@ -25,7 +24,7 @@ import javax.annotation.Resource;
 @Api(value = "即时消息发送接口", tags = "即时消息发送接口")
 public class WebImController extends BaseController {
 
-    @Resource
+    @Autowired
     protected WebImSocket webImSocket;
 
     //发送消息，给第三方使用

@@ -20,7 +20,7 @@ public class IntelligentRobotFactoryRpcImpl implements IntelligentRobotFactory {
         this.integrationEnvironment = integrationEnvironment;
     }
 
-    //@Resource
+    //@Autowired
     protected IntegrationEnvironment integrationEnvironment;
 
     @Override

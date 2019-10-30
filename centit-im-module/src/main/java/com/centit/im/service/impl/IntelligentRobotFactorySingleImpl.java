@@ -11,7 +11,7 @@ public class IntelligentRobotFactorySingleImpl implements IntelligentRobotFactor
 
 
 
-    //@Resource
+    //@Autowired
     protected IntelligentRobot intelligentRobot;
 
     @Override
