@@ -46,6 +46,7 @@ public class ServiceBeanConfig {
 
     @Autowired
     IntegrationEnvironment integrationEnvironment;
+
     @Autowired
     QuestAndAnswerManager questAndAnswerManager;
 

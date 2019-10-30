@@ -11,6 +11,7 @@ public class WebSocketConfig {
     public ServerEndpointExporter serverEndpointExporter(){
         return new ServerEndpointExporter();
     }
+
     @Bean
     public MySpringConfigurator mySpringConfigurator() {
         return new MySpringConfigurator();

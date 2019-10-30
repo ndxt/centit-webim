@@ -18,7 +18,9 @@ public class MySpringConfigurator extends ServerEndpointConfig.Configurator impl
 
     @Override
     public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {
-        return this.context.getBean(clazz);
+        return /*T object =*/ this.context.getBean(clazz);
+        /*System.out.println(object.getClass().getName());
+        return object;*/
     }
 }
 

@@ -14,8 +14,8 @@ import javax.websocket.server.ServerEndpoint;
  * Created by codefan on 17-5-19.
  * @author codefan
  */
-@ServerEndpoint(value="/im/{userCode}" ,configurator = MySpringConfigurator.class)
 @Service
+@ServerEndpoint(value="/im/{userCode}"/*, configurator = MySpringConfigurator.class*/)
 public class WebImSocketListener {
 
     private static Logger logger = LoggerFactory.getLogger(WebImSocketListener.class);
