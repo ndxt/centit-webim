@@ -3,7 +3,7 @@ package com.centit.im.socketio;
 import com.centit.im.service.WebImSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.*;
@@ -20,23 +20,28 @@ public class WebImSocketListener {
 
     private static Logger logger = LoggerFactory.getLogger(WebImSocketListener.class);
 
-    static ApplicationContext context;
+    //static ApplicationContext context;
+    static WebImSocket webImSocket;
 
-    private WebImSocket webImSocket=null;
-
-    private WebImSocket getWebImSocket(){
-        if(webImSocket == null){
-            webImSocket =  WebImSocketListener.context.getBean("webImSocket", WebImSocket.class);
-        }
-        return webImSocket;
+    @Autowired
+    public void setWebImSocket(WebImSocket webImSocket) {
+        WebImSocketListener.webImSocket = webImSocket;
     }
+    // 这个应该可以不用
+    /*private WebImSocket getWebImSocket(){
+        if(WebImSocketListener.webImSocket == null){
+            WebImSocketListener.webImSocket =
+                    WebImSocketListener.context.getBean("webImSocket", WebImSocket.class);
+        }
+        return WebImSocketListener.webImSocket;
+    }*/
     /*
      * 连接建立成功调用的方法
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("userCode") String userCode) {
         try {
-            getWebImSocket().signInUser(userCode, session);
+            WebImSocketListener.webImSocket.signInUser(userCode, session);
             //logger.debug("User Login : " + userCode + " session :" + session.getId());
         }catch (Exception e){
             logger.error("onOpen",e);
@@ -49,7 +54,7 @@ public class WebImSocketListener {
     @OnClose
     public void onClose(Session session) {
         try {
-            getWebImSocket().signOutUser(session);
+            WebImSocketListener.webImSocket.signOutUser(session);
             //logger.debug("User Logout session :" + session.getId());
         }catch (Exception e){
             logger.error("onClose",e);
@@ -62,7 +67,7 @@ public class WebImSocketListener {
     @OnMessage
     public void onMessage(String message, Session session) {
         try{
-            getWebImSocket().recvMessage(session, message);
+            WebImSocketListener.webImSocket.recvMessage(session, message);
         }catch (Exception e){
             logger.error("onMessage" + message,e);
         }
