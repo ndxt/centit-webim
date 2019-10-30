@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by codefan on 17-5-19.
  */
-@Service
+@Service("webImSocket")
 public class WebImSocketImpl implements WebImSocket {
 
     public static final Log log = LogFactory.getLog(WebImSocketImpl.class);

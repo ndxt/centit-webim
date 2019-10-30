@@ -28,7 +28,6 @@ public class WebImApplication extends WebMvcConfigurerAdapter implements Applica
     @Autowired
     private FastJsonHttpMessageConverter fastJsonHttpMessageConverter;
 
-
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(fastJsonHttpMessageConverter);

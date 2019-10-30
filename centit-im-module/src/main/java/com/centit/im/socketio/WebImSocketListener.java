@@ -3,7 +3,7 @@ package com.centit.im.socketio;
 import com.centit.im.service.WebImSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.*;
@@ -20,16 +20,23 @@ public class WebImSocketListener {
 
     private static Logger logger = LoggerFactory.getLogger(WebImSocketListener.class);
 
-    @Autowired
-    protected WebImSocket webImSocket;
+    static ApplicationContext context;
 
+    private WebImSocket webImSocket=null;
+
+    private WebImSocket getWebImSocket(){
+        if(webImSocket == null){
+            webImSocket =  WebImSocketListener.context.getBean("webImSocket", WebImSocket.class);
+        }
+        return webImSocket;
+    }
     /*
      * 连接建立成功调用的方法
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("userCode") String userCode) {
         try {
-            webImSocket.signInUser(userCode, session);
+            getWebImSocket().signInUser(userCode, session);
             //logger.debug("User Login : " + userCode + " session :" + session.getId());
         }catch (Exception e){
             logger.error("onOpen",e);
@@ -42,7 +49,7 @@ public class WebImSocketListener {
     @OnClose
     public void onClose(Session session) {
         try {
-            webImSocket.signOutUser(session);
+            getWebImSocket().signOutUser(session);
             //logger.debug("User Logout session :" + session.getId());
         }catch (Exception e){
             logger.error("onClose",e);
@@ -55,7 +62,7 @@ public class WebImSocketListener {
     @OnMessage
     public void onMessage(String message, Session session) {
         try{
-            webImSocket.recvMessage(session, message);
+            getWebImSocket().recvMessage(session, message);
         }catch (Exception e){
             logger.error("onMessage" + message,e);
         }
