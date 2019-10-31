@@ -145,7 +145,7 @@ public class WebImUserController extends BaseController {
      *
      */
     @ApiOperation(value = "09查询系统联系状态")
-    @RequestMapping(value = "/listUserState", method = RequestMethod.GET)
+    @RequestMapping(value = "/userState", method = RequestMethod.GET)
     @WrapUpResponseBody
     public Map<String,String> listAllUserState() {
         return webImUserManager.listAllUserState();
