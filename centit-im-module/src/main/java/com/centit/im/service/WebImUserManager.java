@@ -53,7 +53,7 @@ public interface WebImUserManager {
     /**
      * 返回机构中的成员
      */
-    List<WebImCustomer> listAllUnitUser(String unitCode);
+    List<WebImCustomer> listUnitUsers(String unitCode);
 
     /**
      * 返回系统联系状态
@@ -73,11 +73,11 @@ public interface WebImUserManager {
      */
     List<? extends IUnitInfo> listSubUnit(String parentUnitCode);
     /**
-     * 返回用户的组（群、机构）
+     * 返回用户的组（机构）
      * @param userCode
      * @return
      */
-    List<IUnitInfo> listUserUnit(String  userCode);
+    List<IUnitInfo> listUserUnits(String  userCode);
 
     /**
      * 配置用户信息
@@ -92,6 +92,13 @@ public interface WebImUserManager {
      * @param memo
      */
     void saveUserFriendMemo(WebImFriendMemo memo);
+
+    /**
+     * 返回用户的群
+     * @param userCode
+     * @return WebImGroup
+     */
+    List<WebImGroup> listUserGroups(String  userCode);
 
     /**
      * 创建群

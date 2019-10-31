@@ -160,7 +160,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     */
     @Override
     @Transactional
-    public List<WebImCustomer> listAllUnitUser( String unitCode ) {
+    public List<WebImCustomer> listUnitUsers(String unitCode ) {
 
         List<? extends IUserUnit> users = platformEnvironment.listUnitUsers(unitCode);
         List<WebImCustomer> allcusts = new ArrayList<>(users.size());
@@ -222,7 +222,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
 
     @Override
     @Transactional
-    public List<IUnitInfo> listUserUnit(String  userCode) {
+    public List<IUnitInfo> listUserUnits(String  userCode) {
         List<? extends IUserUnit> units = platformEnvironment.listUserUnits(userCode);
         if(units==null || units.size()<1)
             return null;
@@ -283,6 +283,20 @@ public class WebImUserManagerImpl implements WebImUserManager {
 
         member.setGroupAlias(customer.getUserName());
         webImGroupMemberDao.saveNewObject(member);
+    }
+
+    /**
+     * 返回用户的群
+     * @param userCode 用户所在的群
+     * @return WebImGroup
+     */
+    @Override
+    @Transactional
+    public List<WebImGroup> listUserGroups(String  userCode){
+        return webImGroupDao.listObjectsByFilter(
+                "where GROUP_ID in " +
+                        "(select UNIT_CODE from F_WEB_IM_GROUP_MEMBER " +
+                        " where USER_CODE = ?)", new Object[]{userCode});
     }
     /**
      * 创建群
