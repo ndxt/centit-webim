@@ -16,9 +16,9 @@ import java.util.Map;
 
 /**
  * WebImReadGroupDao  Repository.
- * create by scaffold 2017-05-23 
+ * create by scaffold 2017-05-23
  * @author codefan@sina.com
- * 用户组信息查看时间用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息   
+ * 用户组信息查看时间用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息
 */
 
 @Repository
@@ -26,7 +26,7 @@ public class WebImGroupMemberDao extends BaseDaoImpl<WebImGroupMember,WebImGroup
 	{
 
 	public static final Log log = LogFactory.getLog(WebImGroupMemberDao.class);
-	
+
 	@Override
 	public Map<String, String> getFilterField() {
 		if( filterField == null){
@@ -46,13 +46,13 @@ public class WebImGroupMemberDao extends BaseDaoImpl<WebImGroupMember,WebImGroup
 		return filterField;
 	}
 
-	public void setGroupReadState(String userCode,String unitCode){
-		WebImGroupMember dbWebImReadGroup = this.getObjectById(new WebImGroupMemberId(unitCode, userCode));
+	public void setGroupReadState(String userCode, String groupCode/*unitCode*/){
+		WebImGroupMember dbWebImReadGroup = this.getObjectById(new WebImGroupMemberId(groupCode, userCode));
 		if (dbWebImReadGroup == null){
 			WebImGroupMember webImReadGroup = new WebImGroupMember();
 			webImReadGroup.setOsId(ImMessage.DEFAULT_OSID);
 			webImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());
-			webImReadGroup.setCid(new WebImGroupMemberId(unitCode, userCode));
+			webImReadGroup.setCid(new WebImGroupMemberId(groupCode, userCode));
 			this.saveNewObject(webImReadGroup);
 		}else {
 			dbWebImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());

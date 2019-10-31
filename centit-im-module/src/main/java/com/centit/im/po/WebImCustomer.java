@@ -25,8 +25,6 @@ public class WebImCustomer implements java.io.Serializable {
 	 */
 	@Id
 	@Column(name = "USER_CODE")
-	//@GeneratedValue(generator = "assignedGenerator")
-	//@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
 	@NotBlank(message = "字段不能为空")
 	private String userCode;
 	/**

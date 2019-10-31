@@ -19,6 +19,7 @@ import java.util.Date;
 @Table(name = "F_WEB_IM_MESSAGE")
 public class WebImMessage implements java.io.Serializable {
 	private static final long serialVersionUID =  1L;
+
 	/**
 	 * 消息ID null
 	 */
@@ -70,7 +71,7 @@ public class WebImMessage implements java.io.Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date  sendTime;
 	/**
-	 * 状态 U 未读 C  已读
+	 * 状态 U 未读 C 已读
 	 */
 	@Column(name = "MSG_STATE")
 	@Length(max = 1, message = "字段长度不能大于{max}")

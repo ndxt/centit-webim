@@ -245,7 +245,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     public String configUserInfo(String userCode,WebImCustomer cust){
         WebImCustomer dbWebImCustomer = customerDao.getObjectById(userCode);
         dbWebImCustomer.copyNotNullProperty(cust);
-        customerDao.mergeObject(dbWebImCustomer);
+        customerDao.updateObject(dbWebImCustomer);
         return userCode;
     }
 

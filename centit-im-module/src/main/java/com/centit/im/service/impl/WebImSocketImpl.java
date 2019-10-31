@@ -375,12 +375,12 @@ public class WebImSocketImpl implements WebImSocket {
         Session session = getSessionByUserCode(service.getUserCode());
         WebImMessage webMessage = new WebImMessage();
         if(session==null){
-            webMessage.setMsgType("C");
+            webMessage.setMsgType(ImMessage.MSG_TYPE_CHAT/*"C"*/);
             webMessage.setReceiver(service.getUserCode());
             webMessage.setSender(cust.getUserCode());
             webMessage.setSenderName(cust.getUserName());
             JSONObject json = new JSONObject();
-            json.put("msg","你好");
+            json.put(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/,"你好");
             json.put("chatType","service");
             json.put("contentType",ImMessage.CONTENT_TYPE_TEXT);
             json.put("beforeId",beforeChangeService.getUserCode());
@@ -406,12 +406,12 @@ public class WebImSocketImpl implements WebImSocket {
     @Transactional
     public void saveChangeCustomerService(String receiver,WebImCustomer beforeChangeService,WebImCustomer afterChangeService){
         WebImMessage webMessage = new WebImMessage();
-        webMessage.setMsgType("S");
+        webMessage.setMsgType(ImMessage.MSG_TYPE_SYSTEM/*"S"*/);
         webMessage.setReceiver(receiver);
         webMessage.setSender(beforeChangeService.getUserCode());
         webMessage.setSenderName(beforeChangeService.getUserName());
         JSONObject json = new JSONObject();
-        json.put("msg",beforeChangeService.getUserName()+"切换至客服"+afterChangeService.getUserName());
+        json.put(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/,beforeChangeService.getUserName()+"切换至客服"+afterChangeService.getUserName());
         json.put("contentType",ImMessage.CONTENT_TYPE_TEXT);
         webMessage.setContent(json.toString());
             webMessage.setSendTime(DatetimeOpt.currentUtilDate());
@@ -666,9 +666,27 @@ public class WebImSocketImpl implements WebImSocket {
         return pushMessage(session, message);
     }
 
+    private void pushOfflineMessage(String receiver, ImMessage message){
+        Map<String,Object> content = message.getContent();
+        if(StringUtils.isBlank(noticeType)){ // sms
+            notificationCenter.sendMessage(
+                    message.getSender(), receiver,
+                    ImMessage.DEFAULT_OSID/*"WebIM"*/,
+                    "WebIM离线消息",
+                    StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/))
+            );
+        } else {
+            notificationCenter.sendMessageAppointedType(noticeType,
+                    message.getSender(), receiver,
+                    ImMessage.DEFAULT_OSID/*"WebIM"*/,
+                    "WebIM离线消息",
+                    StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/))
+            );
+        }
+    }
+
     /**
      * 发送消息
-     *
      * @param userCode 用户代码
      * @param message 消息
      */
@@ -688,15 +706,8 @@ public class WebImSocketImpl implements WebImSocket {
         if(session!=null) {
             webMessage.setMsgState("C");
             pushMessage(session, message);
-        }else{
-            if(StringUtils.equals("sms",noticeType)){
-                Map<String,Object> content = message.getContent();
-                notificationCenter.sendMessage(
-                        message.getSender(),message.getReceiver(),
-                        "离线消息",
-                        StringBaseOpt.objectToString(content.get("msg")),
-                        "sms");
-            }
+        } else { //是否发送离线消息 这个地方需要有一个设置
+            pushOfflineMessage(message.getReceiver(), message);
         }
         webMessage.setSendTime(DatetimeOpt.currentUtilDate());
         messageDao.saveNewObject(webMessage);
@@ -709,19 +720,25 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setMsgId(UuidOpt.getUuidAsString32());
         webMessage.setMsgType("G");
         webMessage.setMsgState("U");
-        webMessage.setSendTime(DatetimeOpt.currentUtilDate());;
+        webMessage.setSendTime(DatetimeOpt.currentUtilDate());
         return webMessage;
     }
 
     private void sendMemberMsg(String userCode, ImMessage message){
         Session session = getSessionByUserCode(userCode);
-        if (session != null){
-            webImGroupMemberDao.setGroupReadState(userCode,message.getReceiver());
-        }
-        if(! StringUtils.equals(message.getSender(),userCode)) {
-            pushMessage(userCode, message);
+        if (session != null) {
+            webImGroupMemberDao.setGroupReadState(userCode, message.getReceiver());
+            if (!StringUtils.equals(message.getSender(), userCode)) {
+                pushMessage(userCode, message);
+            }
+        } else { //是否发送离线消息 这个地方需要有一个设置
+            //这个判断有点多余
+            if (!StringUtils.equals(message.getSender(), userCode)) {
+                pushOfflineMessage(userCode, message);
+            }
         }
     }
+
     /**
      * 发送小组（群）信息
      * @param unitCode 机构代码
