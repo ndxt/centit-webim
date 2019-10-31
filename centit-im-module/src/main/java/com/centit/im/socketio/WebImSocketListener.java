@@ -23,6 +23,11 @@ public class WebImSocketListener {
     //static ApplicationContext context;
     static WebImSocket webImSocket;
 
+    /**
+     * ServerEndpoint 对象是每个线程都会创建一个，所以这个依赖的bean要设置为静态变量
+     * 否则 后续创建的 WebImSocketListener 这个属性会是null值
+     * @param webImSocket bean
+     */
     @Autowired
     public void setWebImSocket(WebImSocket webImSocket) {
         WebImSocketListener.webImSocket = webImSocket;

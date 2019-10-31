@@ -50,33 +50,6 @@ public class WebImSocketImpl implements WebImSocket {
     private static ConcurrentHashMap<String, WebImCustomer> onlineCustService
             = new ConcurrentHashMap<>();
 
-    private static Session getSessionByUserCode(String userCode){
-        if(userCode == null)
-            return null;
-        return userCodeToSession.get(userCode);
-    }
-
-    private static WebImCustomer getUserBySession(Session session){
-        if(session == null)
-            return null;
-        return sessionToUserCode.get(session);
-    }
-    private static String getUserCodeBySession(Session session){
-        if(session == null)
-            return null;
-        WebImCustomer cust = sessionToUserCode.get(session);
-        if(cust == null)
-            return null;
-        return cust.getUserCode();
-    }
-
-
-    private static WebImCustomer getOnlineServiceByUserCode(String userCode){
-        if(userCode == null)
-            return null;
-        return onlineCustService.get(userCode);
-    }
-
     @Autowired
     protected WebImMessageDao messageDao;
 
@@ -103,6 +76,34 @@ public class WebImSocketImpl implements WebImSocket {
 
     @Autowired
     protected NotificationCenter notificationCenter;
+
+    private static Session getSessionByUserCode(String userCode){
+        if(userCode == null)
+            return null;
+        return userCodeToSession.get(userCode);
+    }
+
+    private static WebImCustomer getUserBySession(Session session){
+        if(session == null)
+            return null;
+        return sessionToUserCode.get(session);
+    }
+
+    private static String getUserCodeBySession(Session session){
+        if(session == null)
+            return null;
+        WebImCustomer cust = sessionToUserCode.get(session);
+        if(cust == null)
+            return null;
+        return cust.getUserCode();
+    }
+
+    private static WebImCustomer getOnlineServiceByUserCode(String userCode){
+        if(userCode == null)
+            return null;
+        return onlineCustService.get(userCode);
+    }
+
     /**
      * 登录
      *
@@ -148,7 +149,6 @@ public class WebImSocketImpl implements WebImSocket {
             signOutUser(user.getUserCode(),session);
     }
 
-
     private void pushCustomerServiceInfo(Session session, String custUserCode, WebImCustomer service){
         pushMessage(session ,new ImMessageBuild().type(ImMessage.MSG_TYPE_COMMAND)
                 .contentType(ImMessage.CONTENT_TYPE_SERVICE)
@@ -164,8 +164,6 @@ public class WebImSocketImpl implements WebImSocket {
                         ("O".equals(service.getUserState())?
                                 " 正在为您服务。":" 为您服务，暂时不在线，请留言。")).build());
     }
-
-
 
     /**
      * 注册匿名用户
@@ -349,7 +347,6 @@ public class WebImSocketImpl implements WebImSocket {
         webImGroupMemberDao.setGroupReadState(message.getSender(),message.getReceiver());
     }
 
-
     private void successChangeCustomerService(Session session, String receiver,
                                               WebImCustomer service ) {
         Session receiverSession = getSessionByUserCode( receiver );
@@ -424,17 +421,17 @@ public class WebImSocketImpl implements WebImSocket {
 
     }
 
-    private void changeOnlineCustomerService(Session session, ImMessage message) {
+    /*private void changeOnlineCustomerService(Session session, ImMessage message) {
         String serviceUserCode = message.fetchContentString("service");
         WebImCustomer service = getOnlineServiceByUserCode(serviceUserCode);
         if(service==null){
             //给发送方 回复 切换客服失败
-            pushMessage(session /*message.getSender()*/,ImMessageUtils
+            pushMessage(session *//*message.getSender()*//*,ImMessageUtils
                     .buildSystemMessage(message.getReceiver(),"切换客服失败，因为您选择的客服不在线。") );
         } else {
             successChangeCustomerService(session, message.getReceiver(), service );
         }
-    }
+    }*/
 
     private void changeCustomerService(Session session, ImMessage message) {
         String serviceUserCode = message.fetchContentString("service");
@@ -605,7 +602,6 @@ public class WebImSocketImpl implements WebImSocket {
     }
     /**
      * 接受消息，并对消息进行处理
-     *
      * @param session 链接上下文
      * @param message 消息
      */
@@ -616,8 +612,9 @@ public class WebImSocketImpl implements WebImSocket {
         switch (message.getType()){
             case ImMessage.MSG_TYPE_CHAT:
             {
-                if(StringUtils.isBlank(message.getReceiver()))
+                if(StringUtils.isBlank(message.getReceiver())) {
                     break;
+                }
                 this.sendMessage(message.getReceiver(), message);
                 break;
             }
@@ -705,6 +702,26 @@ public class WebImSocketImpl implements WebImSocket {
         messageDao.saveNewObject(webMessage);
     }
 
+    private WebImMessage formatGroupMsg(ImMessage message){
+        message.getContent().put("contentType",message.getContentType());
+        WebImMessage webMessage = new WebImMessage();
+        webMessage.copy(message);
+        webMessage.setMsgId(UuidOpt.getUuidAsString32());
+        webMessage.setMsgType("G");
+        webMessage.setMsgState("U");
+        webMessage.setSendTime(DatetimeOpt.currentUtilDate());;
+        return webMessage;
+    }
+
+    private void sendMemberMsg(String userCode, ImMessage message){
+        Session session = getSessionByUserCode(userCode);
+        if (session != null){
+            webImGroupMemberDao.setGroupReadState(userCode,message.getReceiver());
+        }
+        if(! StringUtils.equals(message.getSender(),userCode)) {
+            pushMessage(userCode, message);
+        }
+    }
     /**
      * 发送小组（群）信息
      * @param unitCode 机构代码
@@ -713,14 +730,7 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void sendGroupMessage(String unitCode, ImMessage message) {
-
-        message.getContent().put("contentType",message.getContentType());
-        WebImMessage webMessage = new WebImMessage();
-        webMessage.copy(message);
-        webMessage.setMsgId(UuidOpt.getUuidAsString32());
-        webMessage.setMsgType("G");
-        webMessage.setMsgState("U");
-        webMessage.setSendTime(DatetimeOpt.currentUtilDate());
+        WebImMessage webMessage = formatGroupMsg(message);
         messageDao.saveNewObject(webMessage);
 
         WebImGroup group = webImGroupDao.getObjectById(unitCode);
@@ -729,28 +739,15 @@ public class WebImSocketImpl implements WebImSocket {
                     platformEnvironment.listUnitUsers(unitCode);
 
             for (IUserUnit user : users) {
-                Session session = getSessionByUserCode(user.getUserCode());
-                if (session != null){
-                    webImGroupMemberDao.setGroupReadState(user.getUserCode(),message.getReceiver());
-                }
-                if(! StringUtils.equals(message.getSender(),user.getUserCode())) {
-                    pushMessage(user.getUserCode(), message);
-                }
+                sendMemberMsg(user.getUserCode(), message);
             }
-        }else if(group!=null) {
+        }else /*if(group!=null)*/ {
             List<WebImGroupMember> members
                     = webImGroupMemberDao.listObjectsByProperty("groupId",unitCode);
             for(WebImGroupMember member : members ){
-                Session session = getSessionByUserCode(member.getUserCode());
-                if (session != null){
-                    webImGroupMemberDao.setGroupReadState(member.getUserCode(),message.getReceiver());
-                }
-                if(! StringUtils.equals(message.getSender(),member.getUserCode())) {
-                    pushMessage(member.getUserCode(), message);
-                }
+                sendMemberMsg(member.getUserCode(), message);
             }
         }
-
     }
 
     /**
@@ -760,20 +757,14 @@ public class WebImSocketImpl implements WebImSocket {
      */
     @Override
     @Transactional
-    public void toallMessage( ImMessage message) {
+    public void toallMessage(ImMessage message) {
         List<? extends IUserInfo> users =
                 platformEnvironment.listAllUsers();
         for(IUserInfo user : users){
             pushMessage(user.getUserCode(), message);
         }
-        message.getContent().put("contentType",message.getContentType());
-        WebImMessage webMessage = new WebImMessage();
-        webMessage.copy(message);
-        webMessage.setMsgId(UuidOpt.getUuidAsString32());
-        webMessage.setMsgType("G");
-        webMessage.setMsgState("U");
+        WebImMessage webMessage = formatGroupMsg(message);
         webMessage.setReceiver("all");
-        webMessage.setSendTime(DatetimeOpt.currentUtilDate());
         messageDao.saveNewObject(webMessage);
     }
 
