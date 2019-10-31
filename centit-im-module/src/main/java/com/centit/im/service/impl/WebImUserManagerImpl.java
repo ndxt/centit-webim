@@ -143,7 +143,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
      *  返回客服专家（客服模式）所有服务的对象
      * @param serviceUserCode   客服代码
      * @param lastServiceDate   最后服务时间，如果为null 默认为一个月内交流过的客服
-     * @return
+     * @return WebImCustomer 客户信息
      */
     @Override
     @Transactional
@@ -287,14 +287,14 @@ public class WebImUserManagerImpl implements WebImUserManager {
 
     /**
      * 返回用户的群
-     * @param userCode 用户所在的群
+     * @param userCode 用户所在的群 不包括机构
      * @return WebImGroup
      */
     @Override
     @Transactional
     public List<WebImGroup> listUserGroups(String  userCode){
         return webImGroupDao.listObjectsByFilter(
-                "where GROUP_ID in " +
+                "where GROUP_TYPE <> 'U' and GROUP_ID in " +
                         "(select UNIT_CODE from F_WEB_IM_GROUP_MEMBER " +
                         " where USER_CODE = ?)", new Object[]{userCode});
     }
