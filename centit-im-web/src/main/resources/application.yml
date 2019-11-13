@@ -32,6 +32,7 @@ framework:
     home: /Projects/RunData/webim_home
   ip:
     enable: true
+    system-enable: true
     topoptid: WebIm
     home: http://192.168.134.2:11000/framework/system
     auth-enable: false
