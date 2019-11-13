@@ -213,7 +213,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
                 if(StringUtils.isBlank(uc.getParentUnit()) || "0".equals(uc.getParentUnit())) {
                     units.add(uc);
                 }
-            }else if(parentUnitCode.equals(uc.getParentUnit())) {
+            } else if(parentUnitCode.equals(uc.getParentUnit())) {
                 units.add(uc);
             }
         }

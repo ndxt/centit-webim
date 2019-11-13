@@ -96,6 +96,9 @@ public class WebImUserController extends BaseController {
      * @return 下层机构
      */
     @ApiOperation(value = "05查询下层机构列表")
+    @ApiImplicitParam(
+            name = "parentUnitCode", value = "机构代码；‘0’表示顶层机构",
+            required = true, paramType = "path", dataType = "String")
     @RequestMapping(value = "/subUnit/{parentUnitCode}",
             method = RequestMethod.GET)
     @WrapUpResponseBody

@@ -143,7 +143,6 @@ public class WebImMsgController extends BaseController {
 
     //获取未读信息统计数据
     @ApiOperation(value = "5获取未读信息统计")
-
     @RequestMapping(value = "/statUnread/{userCode}", method = RequestMethod.GET)
     @WrapUpResponseBody
     public Map<String,Integer> statUnreadMessage(
@@ -174,7 +173,6 @@ public class WebImMsgController extends BaseController {
 
     //获取未读群信息统计数据 包括最后一条未读消息
     @ApiOperation(value = "8获取包括最后未读群信息统计")
-
     @RequestMapping(value = "/getGroupUnreadLastMsg/{userCode}", method = RequestMethod.GET)
     @WrapUpResponseBody
     public JSONArray statGroupUnreadeWithLastMsg(
@@ -195,7 +193,6 @@ public class WebImMsgController extends BaseController {
 
     //设置信息状态
     @ApiOperation(value = "10设置群信息状态")
-
     @RequestMapping(value = "/setGroupReadState/{receiver}/{unitCode}", method = RequestMethod.POST)
     @WrapUpResponseBody
     public ResponseData setGroupReadState(
