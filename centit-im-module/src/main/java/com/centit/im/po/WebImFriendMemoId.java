@@ -14,82 +14,82 @@ import javax.persistence.Embeddable;
 //好友别名和备注 的主键
 @Embeddable
 public class WebImFriendMemoId implements java.io.Serializable {
-	private static final long serialVersionUID =  1L;
+    private static final long serialVersionUID =  1L;
 
-	/**
-	 * 用户代码 null
-	 */
-	@Column(name = "USER_CODE")
-	@NotBlank(message = "字段不能为空")
-	private String userCode;
+    /**
+     * 用户代码 null
+     */
+    @Column(name = "USER_CODE")
+    @NotBlank(message = "字段不能为空")
+    private String userCode;
 
-	/**
-	 * 好友代码 null
-	 */
-	@Column(name = "FRIEND_CODE")
-	@NotBlank(message = "字段不能为空")
-	private String friendCode;
+    /**
+     * 好友代码 null
+     */
+    @Column(name = "FRIEND_CODE")
+    @NotBlank(message = "字段不能为空")
+    private String friendCode;
 
-	// Constructors
-	/* default constructor */
-	public WebImFriendMemoId() {
-	}
-	/* full constructor */
-	public WebImFriendMemoId(String userCode, String friendCode) {
+    // Constructors
+    /* default constructor */
+    public WebImFriendMemoId() {
+    }
+    /* full constructor */
+    public WebImFriendMemoId(String userCode, String friendCode) {
 
-		this.userCode = userCode;
-		this.friendCode = friendCode;
-	}
-
-
-	public String getUserCode() {
-		return this.userCode;
-	}
-
-	public void setUserCode(String userCode) {
-		this.userCode = userCode;
-	}
-
-	public String getFriendCode() {
-		return this.friendCode;
-	}
-
-	public void setFriendCode(String friendCode) {
-		this.friendCode = friendCode;
-	}
+        this.userCode = userCode;
+        this.friendCode = friendCode;
+    }
 
 
-	public boolean equals(Object other) {
-		if ((this == other))
-			return true;
-		if ((other == null))
-			return false;
-		if (!(other instanceof WebImFriendMemoId))
-			return false;
+    public String getUserCode() {
+        return this.userCode;
+    }
 
-		WebImFriendMemoId castOther = (WebImFriendMemoId) other;
-		boolean ret;
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
 
-		ret = this.getUserCode() == castOther.getUserCode() ||
-					   (this.getUserCode() != null && castOther.getUserCode() != null
-							   && this.getUserCode().equals(castOther.getUserCode()));
+    public String getFriendCode() {
+        return this.friendCode;
+    }
 
-		ret = ret && ( this.getFriendCode() == castOther.getFriendCode() ||
-					   (this.getFriendCode() != null && castOther.getFriendCode() != null
-							   && this.getFriendCode().equals(castOther.getFriendCode())));
+    public void setFriendCode(String friendCode) {
+        this.friendCode = friendCode;
+    }
 
-		return ret;
-	}
 
-	public int hashCode() {
-		int result = 17;
+    public boolean equals(Object other) {
+        if ((this == other))
+            return true;
+        if ((other == null))
+            return false;
+        if (!(other instanceof WebImFriendMemoId))
+            return false;
 
-		result = 37 * result +
-		 	(this.getUserCode() == null ? 0 :this.getUserCode().hashCode());
+        WebImFriendMemoId castOther = (WebImFriendMemoId) other;
+        boolean ret;
 
-		result = 37 * result +
-		 	(this.getFriendCode() == null ? 0 :this.getFriendCode().hashCode());
+        ret = this.getUserCode() == castOther.getUserCode() ||
+                       (this.getUserCode() != null && castOther.getUserCode() != null
+                               && this.getUserCode().equals(castOther.getUserCode()));
 
-		return result;
-	}
+        ret = ret && ( this.getFriendCode() == castOther.getFriendCode() ||
+                       (this.getFriendCode() != null && castOther.getFriendCode() != null
+                               && this.getFriendCode().equals(castOther.getFriendCode())));
+
+        return ret;
+    }
+
+    public int hashCode() {
+        int result = 17;
+
+        result = 37 * result +
+             (this.getUserCode() == null ? 0 :this.getUserCode().hashCode());
+
+        result = 37 * result +
+             (this.getFriendCode() == null ? 0 :this.getFriendCode().hashCode());
+
+        return result;
+    }
 }

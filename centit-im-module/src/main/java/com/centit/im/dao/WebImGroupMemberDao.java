@@ -23,40 +23,40 @@ import java.util.Map;
 
 @Repository
 public class WebImGroupMemberDao extends BaseDaoImpl<WebImGroupMember,WebImGroupMemberId>
-	{
+    {
 
-	public static final Log log = LogFactory.getLog(WebImGroupMemberDao.class);
+    public static final Log log = LogFactory.getLog(WebImGroupMemberDao.class);
 
-	@Override
-	public Map<String, String> getFilterField() {
-		if( filterField == null){
-			filterField = new HashMap<>();
+    @Override
+    public Map<String, String> getFilterField() {
+        if( filterField == null){
+            filterField = new HashMap<>();
 
-			filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("unitCode" , "UNIT_CODE = :unitCode");
+            filterField.put("unitCode" , "UNIT_CODE = :unitCode");
 
-			filterField.put("lastPustTime" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("lastPustTime" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("groupId" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("groupId" , CodeBook.EQUAL_HQL_ID);
 
-		}
-		return filterField;
-	}
+        }
+        return filterField;
+    }
 
-	public void setGroupReadState(String userCode, String groupCode/*unitCode*/){
-		WebImGroupMember dbWebImReadGroup = this.getObjectById(new WebImGroupMemberId(groupCode, userCode));
-		if (dbWebImReadGroup == null){
-			WebImGroupMember webImReadGroup = new WebImGroupMember();
-			webImReadGroup.setOsId(ImMessage.DEFAULT_OSID);
-			webImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());
-			webImReadGroup.setCid(new WebImGroupMemberId(groupCode, userCode));
-			this.saveNewObject(webImReadGroup);
-		}else {
-			dbWebImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());
-			this.updateObject(dbWebImReadGroup);
-		}
-	}
+    public void setGroupReadState(String userCode, String groupCode/*unitCode*/){
+        WebImGroupMember dbWebImReadGroup = this.getObjectById(new WebImGroupMemberId(groupCode, userCode));
+        if (dbWebImReadGroup == null){
+            WebImGroupMember webImReadGroup = new WebImGroupMember();
+            webImReadGroup.setOsId(ImMessage.DEFAULT_OSID);
+            webImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());
+            webImReadGroup.setCid(new WebImGroupMemberId(groupCode, userCode));
+            this.saveNewObject(webImReadGroup);
+        }else {
+            dbWebImReadGroup.setLastPushTime(DatetimeOpt.currentUtilDate());
+            this.updateObject(dbWebImReadGroup);
+        }
+    }
 }

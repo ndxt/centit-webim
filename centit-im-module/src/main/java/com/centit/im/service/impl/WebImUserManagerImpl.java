@@ -320,8 +320,8 @@ public class WebImUserManagerImpl implements WebImUserManager {
 
     /**
      * 创建群
-     * @param members
-     * @param webImGroup
+     * @param members  群成员
+     * @param webImGroup 群信息
      */
     @Override
     @Transactional
@@ -338,7 +338,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
 
     /**
      * 加入群
-     * @param webImGroup
+     * @param webImGroup 群信息
      */
     @Override
     @Transactional

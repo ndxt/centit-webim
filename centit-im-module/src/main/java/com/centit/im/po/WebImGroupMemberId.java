@@ -13,78 +13,78 @@ import javax.persistence.Embeddable;
 */
 @Embeddable
 public class WebImGroupMemberId implements java.io.Serializable {
-	private static final long serialVersionUID =  1L;
+    private static final long serialVersionUID =  1L;
 
-	/**
-	 * 用户代码 null
-	 */
-	@Column(name = "USER_CODE")
-	@NotBlank(message = "字段不能为空")
-	private String userCode;
+    /**
+     * 用户代码 null
+     */
+    @Column(name = "USER_CODE")
+    @NotBlank(message = "字段不能为空")
+    private String userCode;
 
-	/**
-	 * 组代码 null
-	 */
-	@Column(name = "UNIT_CODE")
-	@NotBlank(message = "字段不能为空")
-	private String groupId;
+    /**
+     * 组代码 null
+     */
+    @Column(name = "UNIT_CODE")
+    @NotBlank(message = "字段不能为空")
+    private String groupId;
 
-	/* default constructor */
-	public WebImGroupMemberId() {
-	}
+    /* default constructor */
+    public WebImGroupMemberId() {
+    }
 
-	public WebImGroupMemberId( String groupId, String userCode) {
-		this.userCode = userCode;
-		this.groupId = groupId;
-	}
+    public WebImGroupMemberId( String groupId, String userCode) {
+        this.userCode = userCode;
+        this.groupId = groupId;
+    }
 
-	public String getUserCode() {
-		return this.userCode;
-	}
+    public String getUserCode() {
+        return this.userCode;
+    }
 
-	public void setUserCode(String userCode) {
-		this.userCode = userCode;
-	}
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
 
-	public String getGroupId() {
-		return this.groupId;
-	}
+    public String getGroupId() {
+        return this.groupId;
+    }
 
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
-	}
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 
-	public boolean equals(Object other) {
-		if ((this == other))
-			return true;
-		if ((other == null))
-			return false;
-		if (!(other instanceof WebImGroupMemberId))
-			return false;
+    public boolean equals(Object other) {
+        if ((this == other))
+            return true;
+        if ((other == null))
+            return false;
+        if (!(other instanceof WebImGroupMemberId))
+            return false;
 
-		WebImGroupMemberId castOther = (WebImGroupMemberId) other;
-		boolean ret ;
+        WebImGroupMemberId castOther = (WebImGroupMemberId) other;
+        boolean ret ;
 
-		ret = this.getUserCode() == castOther.getUserCode() ||
-					   (this.getUserCode() != null && castOther.getUserCode() != null
-							   && this.getUserCode().equals(castOther.getUserCode()));
+        ret = this.getUserCode() == castOther.getUserCode() ||
+                       (this.getUserCode() != null && castOther.getUserCode() != null
+                               && this.getUserCode().equals(castOther.getUserCode()));
 
-		ret = ret && ( this.getGroupId() == castOther.getGroupId() ||
-					   (this.getGroupId() != null && castOther.getGroupId() != null
-							   && this.getGroupId().equals(castOther.getGroupId())));
+        ret = ret && ( this.getGroupId() == castOther.getGroupId() ||
+                       (this.getGroupId() != null && castOther.getGroupId() != null
+                               && this.getGroupId().equals(castOther.getGroupId())));
 
-		return ret;
-	}
+        return ret;
+    }
 
-	public int hashCode() {
-		int result = 17;
+    public int hashCode() {
+        int result = 17;
 
-		result = 37 * result +
-		 	(this.getUserCode() == null ? 0 :this.getUserCode().hashCode());
+        result = 37 * result +
+             (this.getUserCode() == null ? 0 :this.getUserCode().hashCode());
 
-		result = 37 * result +
-		 	(this.getGroupId() == null ? 0 :this.getGroupId().hashCode());
+        result = 37 * result +
+             (this.getGroupId() == null ? 0 :this.getGroupId().hashCode());
 
-		return result;
-	}
+        return result;
+    }
 }

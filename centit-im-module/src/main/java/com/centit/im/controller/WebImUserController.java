@@ -17,6 +17,7 @@ import com.centit.im.service.WebImUserManager;
 import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.StringBaseOpt;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,9 +205,12 @@ public class WebImUserController extends BaseController {
      * @param groupJson 用户数组
      */
     @ApiOperation(value = "14创建群及用户数组")
+    @ApiImplicitParam(
+            name = "groupJson", value = "json格式，群组信息，添加了一个额外的属性“members”为群成员用户代码数值",
+            paramType = "body", dataTypeClass = WebImGroup.class)
     @RequestMapping(value = "/group", method = RequestMethod.POST)
     @WrapUpResponseBody
-    public WebImGroup cresteGroup(
+    public WebImGroup createGroup(
             @RequestBody String groupJson,
             HttpServletRequest request) {
         JSONObject jsonObject = JSON.parseObject(groupJson);

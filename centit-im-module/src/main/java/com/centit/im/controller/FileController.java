@@ -269,7 +269,7 @@ public class FileController extends BaseController {
        // MultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
         MultipartResolver resolver = new StandardServletMultipartResolver();
         MultipartHttpServletRequest multiRequest = resolver.resolveMultipart(request);
-//		MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+//        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
         Map<String, MultipartFile> map = multiRequest.getFileMap();
         InputStream fis = null;
 

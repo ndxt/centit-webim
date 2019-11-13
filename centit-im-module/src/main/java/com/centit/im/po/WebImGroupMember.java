@@ -21,190 +21,190 @@ import java.util.List;
 @Entity
 @Table(name = "F_WEB_IM_GROUP_MEMBER")
 public class WebImGroupMember implements java.io.Serializable {
-	private static final long serialVersionUID =  1L;
+    private static final long serialVersionUID =  1L;
 
-	@EmbeddedId
-	private WebImGroupMemberId cid;
+    @EmbeddedId
+    private WebImGroupMemberId cid;
 
-	/**
-	 * 业务系统ID null
-	 */
-	@Column(name = "OS_ID")
-	@NotBlank(message = "字段不能为空")
-	private String osId;
+    /**
+     * 业务系统ID null
+     */
+    @Column(name = "OS_ID")
+    @NotBlank(message = "字段不能为空")
+    private String osId;
 
-	@Column(name = "GROUP_ALIAS")
-	private String groupAlias;
+    @Column(name = "GROUP_ALIAS")
+    private String groupAlias;
 
-	@Column(name = "GROUP_MEMO")
-	private String groupMemo;
-	/**
-	 * 最后成功推送时间 null
-	 */
-	@Column(name = "LAST_PUSH_TIME")
-	@NotNull
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date  lastPushTime;
+    @Column(name = "GROUP_MEMO")
+    private String groupMemo;
+    /**
+     * 最后成功推送时间 null
+     */
+    @Column(name = "LAST_PUSH_TIME")
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date  lastPushTime;
 
-	@Column(name = "JOIN_TIME")
-	@NotNull
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date  joinTime;
+    @Column(name = "JOIN_TIME")
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date  joinTime;
 
-	// Constructors
-	/* default constructor */
-	public WebImGroupMember() {
-	}
+    // Constructors
+    /* default constructor */
+    public WebImGroupMember() {
+    }
 
 
 /* full constructor */
-	public WebImGroupMember(WebImGroupMemberId id
+    public WebImGroupMember(WebImGroupMemberId id
 
-	, Date  lastPushTime) {
-		this.cid = id;
-		this.lastPushTime= lastPushTime;
-	}
+    , Date  lastPushTime) {
+        this.cid = id;
+        this.lastPushTime= lastPushTime;
+    }
 
-	public WebImGroupMemberId getCid() {
-		return this.cid;
-	}
+    public WebImGroupMemberId getCid() {
+        return this.cid;
+    }
 
-	public void setCid(WebImGroupMemberId id) {
-		this.cid = id;
-	}
+    public void setCid(WebImGroupMemberId id) {
+        this.cid = id;
+    }
 
-	public String getOsId() {
-		return this.osId;
-	}
+    public String getOsId() {
+        return this.osId;
+    }
 
-	public void setOsId(String osId) {
-		this.osId = osId;
-	}
+    public void setOsId(String osId) {
+        this.osId = osId;
+    }
 
-	public String getUserCode() {
-		if(this.cid==null)
-			this.cid = new WebImGroupMemberId();
-		return this.cid.getUserCode();
-	}
+    public String getUserCode() {
+        if(this.cid==null)
+            this.cid = new WebImGroupMemberId();
+        return this.cid.getUserCode();
+    }
 
-	public void setUserCode(String userCode) {
-		if(this.cid==null)
-			this.cid = new WebImGroupMemberId();
-		this.cid.setUserCode(userCode);
-	}
+    public void setUserCode(String userCode) {
+        if(this.cid==null)
+            this.cid = new WebImGroupMemberId();
+        this.cid.setUserCode(userCode);
+    }
 
-	public String getGroupId() {
-		if(this.cid==null)
-			this.cid = new WebImGroupMemberId();
-		return this.cid.getGroupId();
-	}
+    public String getGroupId() {
+        if(this.cid==null)
+            this.cid = new WebImGroupMemberId();
+        return this.cid.getGroupId();
+    }
 
-	public void setGroupId(String unitCode) {
-		if(this.cid==null)
-			this.cid = new WebImGroupMemberId();
-		this.cid.setGroupId(unitCode);
-	}
+    public void setGroupId(String unitCode) {
+        if(this.cid==null)
+            this.cid = new WebImGroupMemberId();
+        this.cid.setGroupId(unitCode);
+    }
 
-	public String getGroupAlias() {
-		return groupAlias;
-	}
+    public String getGroupAlias() {
+        return groupAlias;
+    }
 
-	public void setGroupAlias(String groupAlias) {
-		this.groupAlias = groupAlias;
-	}
+    public void setGroupAlias(String groupAlias) {
+        this.groupAlias = groupAlias;
+    }
 
-	public String getGroupMemo() {
-		return groupMemo;
-	}
+    public String getGroupMemo() {
+        return groupMemo;
+    }
 
-	public void setGroupMemo(String groupMemo) {
-		this.groupMemo = groupMemo;
-	}
+    public void setGroupMemo(String groupMemo) {
+        this.groupMemo = groupMemo;
+    }
 
-	public Date getJoinTime() {
-		return joinTime;
-	}
+    public Date getJoinTime() {
+        return joinTime;
+    }
 
-	public void setJoinTime(Date joinTime) {
-		this.joinTime = joinTime;
-	}
+    public void setJoinTime(Date joinTime) {
+        this.joinTime = joinTime;
+    }
 
-	// Property accessors
+    // Property accessors
 
-	public Date getLastPushTime() {
-		return this.lastPushTime;
-	}
+    public Date getLastPushTime() {
+        return this.lastPushTime;
+    }
 
-	public void setLastPushTime(Date lastPushTime) {
-		this.lastPushTime = lastPushTime;
-	}
+    public void setLastPushTime(Date lastPushTime) {
+        this.lastPushTime = lastPushTime;
+    }
 
 
 
-	public WebImGroupMember copy(WebImGroupMember other){
+    public WebImGroupMember copy(WebImGroupMember other){
 
-		this.setOsId(other.getOsId());
-		this.setUserCode(other.getUserCode());
-		this.setGroupId(other.getGroupId());
+        this.setOsId(other.getOsId());
+        this.setUserCode(other.getUserCode());
+        this.setGroupId(other.getGroupId());
 
-		this.setGroupAlias(other.getGroupAlias());
-		this.setGroupMemo(other.getGroupMemo());
-		this.setJoinTime(other.getJoinTime());
+        this.setGroupAlias(other.getGroupAlias());
+        this.setGroupMemo(other.getGroupMemo());
+        this.setJoinTime(other.getJoinTime());
 
-		this.lastPushTime= other.getLastPushTime();
+        this.lastPushTime= other.getLastPushTime();
 
-		return this;
-	}
+        return this;
+    }
 
-	public WebImGroupMember copyNotNullProperty(WebImGroupMember other){
+    public WebImGroupMember copyNotNullProperty(WebImGroupMember other){
 
-		if( other.getOsId() != null)
-			this.setOsId(other.getOsId());
-		if( other.getUserCode() != null)
-			this.setUserCode(other.getUserCode());
-		if( other.getGroupId() != null)
-			this.setGroupId(other.getGroupId());
-		if( other.getGroupAlias() != null)
-			this.setGroupAlias(other.getGroupAlias());
-		if( other.getGroupMemo() != null)
-			this.setGroupMemo(other.getGroupMemo());
-		if( other.getJoinTime() != null)
-			this.setJoinTime(other.getJoinTime());
+        if( other.getOsId() != null)
+            this.setOsId(other.getOsId());
+        if( other.getUserCode() != null)
+            this.setUserCode(other.getUserCode());
+        if( other.getGroupId() != null)
+            this.setGroupId(other.getGroupId());
+        if( other.getGroupAlias() != null)
+            this.setGroupAlias(other.getGroupAlias());
+        if( other.getGroupMemo() != null)
+            this.setGroupMemo(other.getGroupMemo());
+        if( other.getJoinTime() != null)
+            this.setJoinTime(other.getJoinTime());
 
-		if( other.getLastPushTime() != null)
-			this.lastPushTime= other.getLastPushTime();
+        if( other.getLastPushTime() != null)
+            this.lastPushTime= other.getLastPushTime();
 
-		return this;
-	}
+        return this;
+    }
 
-	public WebImGroupMember clearProperties(){
-		this.lastPushTime= null;
-		return this;
-	}
+    public WebImGroupMember clearProperties(){
+        this.lastPushTime= null;
+        return this;
+    }
 
-	public static WebImGroupMember createFromJson(JSONObject jo){
+    public static WebImGroupMember createFromJson(JSONObject jo){
 
-		WebImGroupMember webImGroupMember = new WebImGroupMember();
-		webImGroupMember.setOsId(jo.getString("osId"));
-		webImGroupMember.setGroupId(jo.getString("groupId"));
-		webImGroupMember.setUserCode(jo.getString("userCode"));
-		webImGroupMember.setGroupAlias(jo.getString("groupAlias"));
-		webImGroupMember.setGroupMemo(jo.getString("groupMemo"));
-		webImGroupMember.setJoinTime(DatetimeOpt.castObjectToDate(jo.get("joinTime")));
-		webImGroupMember.setLastPushTime(DatetimeOpt.castObjectToDate(jo.get("lastPushTime")));
+        WebImGroupMember webImGroupMember = new WebImGroupMember();
+        webImGroupMember.setOsId(jo.getString("osId"));
+        webImGroupMember.setGroupId(jo.getString("groupId"));
+        webImGroupMember.setUserCode(jo.getString("userCode"));
+        webImGroupMember.setGroupAlias(jo.getString("groupAlias"));
+        webImGroupMember.setGroupMemo(jo.getString("groupMemo"));
+        webImGroupMember.setJoinTime(DatetimeOpt.castObjectToDate(jo.get("joinTime")));
+        webImGroupMember.setLastPushTime(DatetimeOpt.castObjectToDate(jo.get("lastPushTime")));
 
-		return webImGroupMember;
-	}
+        return webImGroupMember;
+    }
 
-	public static List<WebImGroupMember> createFromJsonArray(JSONArray ja){
-		if(ja == null || ja.size()<1 ) {
-			return null;
-		}
-		List<WebImGroupMember> members = new ArrayList<>(ja.size());
-		for(Object obj : ja){
-			members.add(createFromJson( (JSONObject) obj ));
-		}
-		return members;
-	}
+    public static List<WebImGroupMember> createFromJsonArray(JSONArray ja){
+        if(ja == null || ja.size()<1 ) {
+            return null;
+        }
+        List<WebImGroupMember> members = new ArrayList<>(ja.size());
+        for(Object obj : ja){
+            members.add(createFromJson( (JSONObject) obj ));
+        }
+        return members;
+    }
 
 }

@@ -32,32 +32,32 @@ import java.util.Map;
 public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
 {
 
-	public static final Log log = LogFactory.getLog(WebImMessageDao.class);
+    public static final Log log = LogFactory.getLog(WebImMessageDao.class);
 
-	@Override
-	public Map<String, String> getFilterField() {
-		if( filterField == null){
-			filterField = new HashMap<String, String>();
+    @Override
+    public Map<String, String> getFilterField() {
+        if( filterField == null){
+            filterField = new HashMap<String, String>();
 
-			filterField.put("msgId" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("msgId" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("msgType" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("msgType" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("sender" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("sender" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("receiver" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("receiver" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("sendTime" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("sendTime" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("msgState" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("msgState" , CodeBook.EQUAL_HQL_ID);
 
-			filterField.put("content" , CodeBook.EQUAL_HQL_ID);
+            filterField.put("content" , CodeBook.EQUAL_HQL_ID);
 
-		}
-		return filterField;
-	}
+        }
+        return filterField;
+    }
 
     /*
      * TODO 重构这个sql语句，把这个语句 更改为 sql语句
