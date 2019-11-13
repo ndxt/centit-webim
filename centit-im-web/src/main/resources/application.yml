@@ -31,9 +31,9 @@ framework:
   app:
     home: /Projects/RunData/webim_home
   ip:
-    enable: false
+    enable: true
     topoptid: WebIm
-    home: http://product.centit.com:8080/product-ip/service
+    home: http://192.168.134.2:11000/framework/system
     auth-enable: false
     usercode: admin
     password: 000000
