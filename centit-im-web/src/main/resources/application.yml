@@ -39,7 +39,6 @@ framework:
     usercode: admin
     password: 000000
 
-
 webim:
   robot:
     type: es

@@ -1,8 +1,8 @@
 package com.centit.im.client;
 
-import com.centit.im.po.FriendMemo;
+import com.centit.im.dto.FriendMemo;
+import com.centit.im.dto.WebImCustomer;
 import com.centit.im.po.ImMessage;
-import com.centit.im.po.WebImCustomer;
 
 /**
  * Created by codefan on 17-4-11.

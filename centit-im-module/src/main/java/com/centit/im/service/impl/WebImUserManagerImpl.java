@@ -12,7 +12,6 @@ import com.centit.im.dao.WebImGroupMemberDao;
 import com.centit.im.po.*;
 import com.centit.im.service.WebImSocket;
 import com.centit.im.service.WebImUserManager;
-import com.centit.im.socketio.ImMessage;
 import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.DatetimeOpt;
 import com.centit.support.algorithm.UuidOpt;

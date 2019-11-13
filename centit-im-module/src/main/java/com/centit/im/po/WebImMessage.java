@@ -1,7 +1,6 @@
 package com.centit.im.po;
 
 import com.alibaba.fastjson.JSON;
-import com.centit.im.socketio.ImMessage;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 

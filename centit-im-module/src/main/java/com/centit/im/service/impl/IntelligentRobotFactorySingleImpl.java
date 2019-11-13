@@ -9,8 +9,6 @@ import com.centit.im.service.IntelligentRobotFactory;
 //@Service("intelligentRobotFactory")
 public class IntelligentRobotFactorySingleImpl implements IntelligentRobotFactory {
 
-
-
     //@Autowired
     protected IntelligentRobot intelligentRobot;
 

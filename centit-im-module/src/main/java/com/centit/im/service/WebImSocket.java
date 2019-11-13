@@ -2,7 +2,7 @@ package com.centit.im.service;
 
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.IUserUnit;
-import com.centit.im.socketio.ImMessage;
+import com.centit.im.po.ImMessage;
 
 import javax.websocket.Session;
 import java.util.List;

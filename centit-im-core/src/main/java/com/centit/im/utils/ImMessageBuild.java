@@ -1,5 +1,6 @@
-package com.centit.im.socketio;
+package com.centit.im.utils;
 
+import com.centit.im.po.ImMessage;
 import com.centit.support.algorithm.DatetimeOpt;
 
 import java.util.Date;

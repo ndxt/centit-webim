@@ -1,9 +1,9 @@
 package com.centit.im.robot.es.service.impl;
 
+import com.centit.im.po.ImMessage;
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.robot.es.po.QuestAndAnswer;
 import com.centit.im.service.IntelligentRobot;
-import com.centit.im.socketio.ImMessage;
 import com.centit.search.service.ESServerConfig;
 import com.centit.search.service.IndexerSearcherFactory;
 import com.centit.search.service.Searcher;
@@ -38,7 +38,7 @@ public class IntelligentRobotEsImpl implements IntelligentRobot {
     }
 
     @Override
-    public RobotAnswer sayBoodbye(String custUserCode) {
+    public RobotAnswer sayGoodbye(String custUserCode) {
         return new RobotAnswer("再见");
     }
 

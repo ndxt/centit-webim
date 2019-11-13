@@ -13,5 +13,10 @@
     <name>com.centit.product:centit-im-core</name>
     <packaging>jar</packaging>
     <description>即时通讯的公共类</description>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.centit.support</groupId>
+            <artifactId>centit-utils</artifactId>
+        </dependency>
+    </dependencies>
 </project>

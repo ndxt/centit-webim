@@ -49,7 +49,7 @@ public class IntelligentRobotRpcImpl implements IntelligentRobot {
     }
 
     @Override
-    public RobotAnswer sayBoodbye(String custUserCode) {
+    public RobotAnswer sayGoodbye(String custUserCode) {
         RobotAnswer result =  RestfulHttpRequest.getResponseObject(appSession,
                 "/goodbye/" + custUserCode,RobotAnswer.class);
         if(result != null){

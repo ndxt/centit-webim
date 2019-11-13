@@ -1,21 +1,22 @@
-package com.centit.im.service.Impl;
+package com.centit.im.service.impl;
 
 import com.centit.im.po.RobotAnswer;
-import com.centit.im.service.AskRobot;
-import org.springframework.stereotype.Service;
+import com.centit.im.service.IntelligentRobot;
 
 /**
- * Created by codefan on 17-6-20.
+ * Created by codefan on 17-6-19.
  */
-@Service("askRobot")
-public class AskRobotImpl implements AskRobot{
+//@Service("intelligentRobot")
+public class IntelligentRobotDummyImpl implements IntelligentRobot {
+
+
     @Override
     public RobotAnswer sayHello(String custUserCode) {
         return RobotAnswer.createTestAnswer();
     }
 
     @Override
-    public RobotAnswer sayBoodbye(String custUserCode) {
+    public RobotAnswer sayGoodbye(String custUserCode) {
         return RobotAnswer.createTestAnswer();
     }
 

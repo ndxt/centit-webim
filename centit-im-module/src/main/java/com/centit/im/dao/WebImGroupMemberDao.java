@@ -2,9 +2,9 @@ package com.centit.im.dao;
 
 import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
+import com.centit.im.po.ImMessage;
 import com.centit.im.po.WebImGroupMember;
 import com.centit.im.po.WebImGroupMemberId;
-import com.centit.im.socketio.ImMessage;
 import com.centit.support.algorithm.DatetimeOpt;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

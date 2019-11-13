@@ -1,4 +1,4 @@
-package com.centit.im.po;
+package com.centit.im.dto;
 
 import java.util.Date;
 

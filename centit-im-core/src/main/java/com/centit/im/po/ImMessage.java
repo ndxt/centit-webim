@@ -15,7 +15,6 @@ public class ImMessage implements  java.io.Serializable {
 
     public static final String DEFAULT_OSID="WebIM";
 
-
     public static final String USER_STATE_ONLINE = "O";
     public static final String USER_STATE_OFFLINE = "F";
 
@@ -28,7 +27,7 @@ public class ImMessage implements  java.io.Serializable {
     public static final String MSG_TYPE_TOALL = "A";
 
     /**
-     * chat 聊天
+     * chat 一对一聊天
      * group    群聊
      * toall 群发所有人
      * system 系统通知
@@ -40,17 +39,21 @@ public class ImMessage implements  java.io.Serializable {
     public static final String CONTENT_TYPE_TEXT = "text";
     public static final String CONTENT_TYPE_FILE = "file";
     public static final String CONTENT_TYPE_IMAGE = "image";
-
+    public static final String CONTENT_TYPE_VOICE = "voice";
+    public static final String CONTENT_TYPE_VIDEO = "video";
 
     public static final String CONTENT_TYPE_REGISTER = "register";
     public static final String CONTENT_TYPE_READ = "read";
     public static final String CONTENT_TYPE_READGROUP = "readGroup";
     public static final String CONTENT_TYPE_SERVICE = "service";
     public static final String CONTENT_TYPE_OFFLINE = "offline";
+    public static final String CONTENT_TYPE_RECONNECT = "reconnect";
     public static final String CONTENT_TYPE_ASKFORSERVICE = "askForService";
     public static final String CONTENT_TYPE_ASKROBOT = "askRobot";
     public static final String CONTENT_TYPE_NOTICE = "notice";
+    public static final String CONTENT_TYPE_PUSH_FORM = "pushForm";
     public static final String CONTENT_TYPE_FORM = "form";
+
     /**
      -- 对应 chat group toall --
      * text
@@ -60,6 +63,7 @@ public class ImMessage implements  java.io.Serializable {
      * state 状态变更 比如离线
      -- 对应 command --
      * form 表单
+     * pushForm 推送表单
      * register 匿名用户注册
      * read 查看信息，读取状态
      * readgroup 查看组信息,设置（查看）读取时间
@@ -70,12 +74,16 @@ public class ImMessage implements  java.io.Serializable {
 
     public static final String CONTENT_FIELD_MESSAGE = "msg";
     public static final String CONTENT_FIELD_FILE = "file";
-    public static final String CONTENT_FIELD_IMAGE = "image";
+
+    /**
+     * 消息ID
+     */
+    private String msgId;
+
     /**
      * 消息内容，可能式富文本，
      */
     private Map<String,Object> content;
-
     /**
      * 发送方
      */
@@ -93,8 +101,7 @@ public class ImMessage implements  java.io.Serializable {
      */
     private String senderName;/*from*/
     /**
-     * JSON IM前端的JSON格式
-     * @return 发送时间
+     * @return JSON IM前端的JSON格式
      */
     public  long getLongSendTime(){
         if(sendTime==null)
@@ -132,6 +139,14 @@ public class ImMessage implements  java.io.Serializable {
         result = 31 * result + getReceiver().hashCode();
         result = 31 * result + getSendTime().hashCode();
         return result;
+    }
+
+    public String getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(String msgId) {
+        this.msgId = msgId;
     }
 
     public String getType() {

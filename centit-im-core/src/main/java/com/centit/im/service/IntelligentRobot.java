@@ -9,7 +9,7 @@ public interface IntelligentRobot {
 
     RobotAnswer sayHello(String custUserCode);
 
-    RobotAnswer sayBoodbye(String custUserCode);
+    RobotAnswer sayGoodbye(String custUserCode);
 
     RobotAnswer askQuestion(String custUserCode, String question);
 }
