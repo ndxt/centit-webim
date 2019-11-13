@@ -17,7 +17,7 @@
 
         <dependency>
             <groupId>com.centit.product</groupId>
-            <artifactId>centit-im-module</artifactId>
+            <artifactId>centit-im-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -25,6 +25,19 @@
             <groupId>com.centit.support</groupId>
             <artifactId>centit-es-client</artifactId>
             <version>${centit.search.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>framework-core</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>centit-persistence-extend</artifactId>
+             <optional>true</optional>
         </dependency>
 
         <dependency>

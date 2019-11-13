@@ -41,7 +41,6 @@ public class QuestAndAnswerController extends BaseController {
 
     /**
      * 新增
-     *
      * @return
      */
     @ApiOperation(value = "3新增")
@@ -50,13 +49,11 @@ public class QuestAndAnswerController extends BaseController {
     public ResponseData createQuestionCatalog(@RequestBody QuestAndAnswer questAndAnswer) throws IOException {
         questAndAnswer.setCreateTime(DatetimeOpt.currentUtilDate());
         questAndAnswerManager.saveNewObject(questAndAnswer);
-
         return ResponseData.makeSuccessResponse();
     }
 
     /**
      * 删除
-     *
      * @param questionId questionId
      */
     @ApiOperation(value = "4删除")
@@ -69,7 +66,6 @@ public class QuestAndAnswerController extends BaseController {
 
     /**
      * 修改
-     *
      */
     @ApiOperation(value = "6修改")
     @RequestMapping(value = "/updateQuestion", method = {RequestMethod.PUT})
@@ -87,6 +83,7 @@ public class QuestAndAnswerController extends BaseController {
         pageDesc.setTotalRows(NumberBaseOpt.castObjectToInteger(res.getLeft()));
         return PageQueryResult.createResult(res.getRight(), pageDesc);
     }
+
     @ApiOperation(value = "8es查询")
     @RequestMapping(value = "/listESall/{queryWord}", method = RequestMethod.GET)
     @WrapUpResponseBody
