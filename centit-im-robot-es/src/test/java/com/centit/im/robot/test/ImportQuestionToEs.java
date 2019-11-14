@@ -18,7 +18,6 @@ import com.centit.support.database.utils.DbcpConnectPools;
 import org.dom4j.DocumentException;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -26,10 +25,7 @@ import java.sql.SQLException;
  * Created by codefan on 2017/9/26.
  */
 public class ImportQuestionToEs {
-
-    public static void main(String [] arg)throws UnknownHostException
-
-    {
+    public static void main(String [] arg) {
         /*RobotAnswer answer = searchEs("发电项目");
         for(RobotAnswerItem item : answer.getOptions()){
             System.out.println(item.getLabel());
