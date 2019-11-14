@@ -301,7 +301,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     public String createGroup(WebImGroup webImGroup) {
         String groupId = webImGroup.getGroupId();
         if(StringUtils.isBlank(groupId)){
-            groupId = UuidOpt.getUuidAsString32();
+            groupId = UuidOpt.getUuidAsString22();
             webImGroup.setGroupId(groupId);
         }
         webImGroupDao.saveNewObject(webImGroup);

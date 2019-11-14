@@ -386,7 +386,7 @@ public class WebImSocketImpl implements WebImSocket {
             webMessage.setContent(json.toString());
             webMessage.setSendTime(DatetimeOpt.currentUtilDate());
             webMessage.setMsgState("U");
-            webMessage.setMsgId(UuidOpt.getUuidAsString32());
+            webMessage.setMsgId(UuidOpt.getUuidAsString22());
         }
         messageDao.saveNewObject(webMessage);
         notificationCenter.sendMessage(
@@ -415,7 +415,7 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setContent(json.toString());
             webMessage.setSendTime(DatetimeOpt.currentUtilDate());
         webMessage.setMsgState("C");
-        webMessage.setMsgId(UuidOpt.getUuidAsString32());
+        webMessage.setMsgId(UuidOpt.getUuidAsString22());
         messageDao.saveNewObject(webMessage);
 
     }
@@ -474,7 +474,7 @@ public class WebImSocketImpl implements WebImSocket {
         switch(fromType) {
             case "praise":
                 WebImCustomerPraise praise = new WebImCustomerPraise();
-                praise.setPraiseId(UuidOpt.getUuidAsString32());
+                praise.setPraiseId(UuidOpt.getUuidAsString22());
                 praise.setCustomerCode(message.getSender());
                 praise.setUserCode(message.getReceiver());
                 praise.setServiceScore(NumberBaseOpt.parseInteger(message.fetchContentString("score"),0));
@@ -552,7 +552,7 @@ public class WebImSocketImpl implements WebImSocket {
             }
         }
         webMessage.setContent( sbContent.toString() );
-        webMessage.setMsgId(UuidOpt.getUuidAsString32());
+        webMessage.setMsgId(UuidOpt.getUuidAsString22());
         webMessage.setMsgType("C");
         webMessage.setMsgState("C");
         webMessage.setSendTime(DatetimeOpt.currentUtilDate());
@@ -585,7 +585,7 @@ public class WebImSocketImpl implements WebImSocket {
             WebImMessage webMessage = new WebImMessage();
             message.getContent().put("contentType",message.getContentType());
             webMessage.copy(message);
-            webMessage.setMsgId(UuidOpt.getUuidAsString32());
+            webMessage.setMsgId(UuidOpt.getUuidAsString22());
             webMessage.setMsgType("C");
             webMessage.setMsgState("C");
             webMessage.setReceiver("robot");
@@ -696,7 +696,7 @@ public class WebImSocketImpl implements WebImSocket {
         WebImMessage webMessage = new WebImMessage();
         message.getContent().put("contentType",message.getContentType());
         webMessage.copy(message);
-        webMessage.setMsgId(UuidOpt.getUuidAsString32());
+        webMessage.setMsgId(UuidOpt.getUuidAsString22());
         //给push消息添加msgId
         message.setMsgId(webMessage.getMsgId());
         webMessage.setMsgType("C");
@@ -716,7 +716,7 @@ public class WebImSocketImpl implements WebImSocket {
         message.getContent().put("contentType",message.getContentType());
         WebImMessage webMessage = new WebImMessage();
         webMessage.copy(message);
-        webMessage.setMsgId(UuidOpt.getUuidAsString32());
+        webMessage.setMsgId(UuidOpt.getUuidAsString22());
         webMessage.setMsgType("G");
         webMessage.setMsgState("U");
         webMessage.setSendTime(DatetimeOpt.currentUtilDate());

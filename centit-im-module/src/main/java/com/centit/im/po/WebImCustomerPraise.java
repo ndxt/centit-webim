@@ -27,8 +27,7 @@ public class WebImCustomerPraise implements java.io.Serializable {
      */
     @Id
     @Column(name = "PRAISE_ID")
-    //@GeneratedValue(generator = "assignedGenerator")
-    //@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
+    @ValueGenerator(strategy = GeneratorType.UUID22)
     private String praiseId;
 
     /**

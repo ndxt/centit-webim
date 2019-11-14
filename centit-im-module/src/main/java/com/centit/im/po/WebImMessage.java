@@ -26,9 +26,7 @@ public class WebImMessage implements java.io.Serializable {
      */
     @Id
     @Column(name = "MSG_ID")
-    //@GeneratedValue(generator = "assignedGenerator")
-    //@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
-    //UuidOpt.getUuidAsString32()
+    @ValueGenerator(strategy = GeneratorType.UUID22)
     private String msgId;
 
     /**

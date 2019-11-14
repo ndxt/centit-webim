@@ -28,10 +28,8 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 问题标识
      */
-    @ESField(type = "text", index = true)
     @Id
-    //@GeneratedValue(generator = "assignedGenerator")
-    //@GenericGenerator(name = "assignedGenerator", strategy = "assigned")
+    @ESField(type = "text", index = true)
     private String questionId;
 
     /**

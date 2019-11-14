@@ -30,6 +30,7 @@ public class WebImCustomer implements java.io.Serializable {
     @Id
     @Column(name = "USER_CODE")
     @NotBlank(message = "字段不能为空")
+    @ValueGenerator(strategy = GeneratorType.UUID)
     private String userCode;
     /**
      * 业务系统ID null
@@ -116,32 +117,5 @@ public class WebImCustomer implements java.io.Serializable {
             return "F";
         return userState;
     }
-/*
-    public WebImCustomer copyNotNullProperty(WebImCustomer other){
-        if( other.getOsId() != null)
-            this.setOsId(other.getOsId());
-        if( other.getUserCode() != null && !other.getUserCode().equals(""))
-            this.setUserCode(other.getUserCode());
-
-        if( other.getUserName() != null)
-            this.userName= other.getUserName();
-        if( other.getCustomerService() != null)
-            this.customerService= other.getCustomerService();
-        if( other.getCreator() != null)
-            this.creator= other.getCreator();
-        if( other.getCreateTime() != null)
-            this.createTime= other.getCreateTime();
-        if( other.getUserType() != null)
-            this.userType= other.getUserType();
-        if( other.getHeadSculpture() != null)
-            this.headSculpture= other.getHeadSculpture();
-        if( other.getLastActiveDate() != null)
-            this.lastActiveDate= other.getLastActiveDate();
-        if( other.getServiceOpts() != null)
-            this.serviceOpts= other.getServiceOpts();
-
-        return this;
-    }*/
-
 
 }

@@ -27,7 +27,6 @@ public class WebImGroup implements java.io.Serializable {
 
     @Id
     @Column(name = "GROUP_ID")
-    //@GeneratedValue(generator = "assignedGenerator")
     @ValueGenerator(strategy = GeneratorType.UUID22)
     @NotBlank(message = "字段不能为空")
     private String groupId;
