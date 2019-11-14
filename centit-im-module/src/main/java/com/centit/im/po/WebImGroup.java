@@ -10,7 +10,6 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 
@@ -44,7 +43,6 @@ public class WebImGroup implements java.io.Serializable {
      * 'U  unit机构群不能删除，不能退出  G Group 普通群',
      */
     @Column(name = "GROUP_TYPE")
-    @NotNull
     @Length(max = 1, message = "字段长度不能大于{max}")
     private String groupType;
 
@@ -63,7 +61,6 @@ public class WebImGroup implements java.io.Serializable {
      * 最后成功推送时间 null
      */
     @Column(name = "CREATE_TIME")
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @ValueGenerator(strategy = GeneratorType.FUNCTION, value = "today")
     private Date  createTime;
@@ -72,45 +69,6 @@ public class WebImGroup implements java.io.Serializable {
     /* default constructor */
     public WebImGroup() {
     }
-
-/* full constructor */
-    public WebImGroup(String id , Date  createTime) {
-        this.groupId = id;
-        this.createTime= createTime;
-    }
-
-    public WebImGroup copy(WebImGroup other){
-
-        this.setOsId(other.getOsId());
-        this.setGroupId(other.getGroupId());
-        this.setCreator(other.getCreator());
-        this.setGroupName(other.getGroupName());
-        this.setGroupType(other.getGroupType());
-        this.setGroupNotice(other.getGroupNotice());
-        this.setCreateTime(other.getCreateTime());
-        return this;
-    }
-
-    public WebImGroup copyNotNullProperty(WebImGroup other){
-
-        if(other.getOsId() != null)
-            this.setOsId(other.getOsId());
-        if(other.getGroupId() != null)
-            this.setGroupId(other.getGroupId());
-        if(other.getCreator() != null)
-            this.setCreator(other.getCreator());
-        if(other.getGroupName() != null)
-            this.setGroupName(other.getGroupName());
-        if(other.getGroupType() != null)
-            this.setGroupType(other.getGroupType());
-        if(other.getGroupNotice() != null)
-            this.setGroupNotice(other.getGroupNotice());
-        if(other.getCreateTime() != null)
-            this.setCreateTime(other.getCreateTime());
-
-        return this;
-    }
-
 
     public static WebImGroup createFromJsonString(String jsonStr){
         JSONObject jsonObject = JSON.parseObject(jsonStr);

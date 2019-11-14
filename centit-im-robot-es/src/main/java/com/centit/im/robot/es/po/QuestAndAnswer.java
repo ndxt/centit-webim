@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.centit.search.annotation.ESField;
 import com.centit.search.annotation.ESType;
 import com.centit.search.document.ESDocument;
+import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,8 +19,9 @@ import java.util.Date;
  * @author codefan
  * @version 0.1
  */
-@ESType(indexName = "webim")
+@Data
 @Entity
+@ESType(indexName = "webim")
 public class QuestAndAnswer implements ESDocument, Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -107,87 +109,6 @@ public class QuestAndAnswer implements ESDocument, Serializable {
         return JSON.toJSONString(this);
     }
 
-    public String getOsId() {
-        return osId;
-    }
-
-    public void setOsId(String osId) {
-        this.osId = osId;
-    }
-
-    public String getOptId() {
-        return optId;
-    }
-
-    public void setOptId(String optId) {
-        this.optId = optId;
-    }
-
-
-    public String getQuestionTitle() {
-        return questionTitle;
-    }
-
-    public void setQuestionTitle(String questionTitle) {
-        this.questionTitle = questionTitle;
-    }
-
-    public String getQuestionUrl() {
-        return questionUrl;
-    }
-
-    public void setQuestionUrl(String questionUrl) {
-        this.questionUrl = questionUrl;
-    }
-
-    public String getQuestionAnswer() {
-        return questionAnswer;
-    }
-
-    public void setQuestionAnswer(String questionAnswer) {
-        this.questionAnswer = questionAnswer;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getQuestionId() {
-        return questionId;
-    }
-
-    public void setQuestionId(String questionId) {
-        this.questionId = questionId;
-    }
-
-
-    public String getKeyWords() {
-        return keyWords;
-    }
-
-    public void setKeyWords(String keyWords) {
-        this.keyWords = keyWords;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
-    }
-
-    public Date getLastUpdateTime() {
-        return lastUpdateTime;
-    }
-
-    public void setLastUpdateTime(Date lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
-    }
 
     @Override
     //@JSONField(serialize=false,deserialize=false)
@@ -199,31 +120,6 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     @Override
     public JSONObject toJSONObject() {
         return (JSONObject) JSON.toJSON(this);
-    }
-
-    public QuestAndAnswer copyNotNullProperty(QuestAndAnswer other) {
-
-        if (other.getQuestionId() != null)
-            this.questionId = other.getQuestionId();
-        if (other.getOsId() != null)
-            this.osId = other.getOsId();
-        if (other.getOptId() != null)
-            this.optId = other.getOptId();
-        if (other.getCreator() != null)
-            this.creator = other.getCreator();
-        if (other.getCreateTime() != null)
-            this.createTime = other.getCreateTime();
-        if (other.getQuestionTitle() != null)
-            this.questionTitle = other.getQuestionTitle();
-        if (other.getKeyWords() != null)
-            this.keyWords = other.getKeyWords();
-        if (other.getQuestionUrl() != null)
-            this.questionUrl = other.getQuestionUrl();
-        if (other.getQuestionAnswer() != null)
-            this.questionAnswer = other.getQuestionAnswer();
-        if (other.getLastUpdateTime() != null)
-            this.lastUpdateTime = other.getLastUpdateTime();
-        return this;
     }
 
 }

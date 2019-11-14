@@ -2,6 +2,7 @@ package com.centit.im.po;
 
 import com.alibaba.fastjson.JSON;
 import com.centit.support.algorithm.StringBaseOpt;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Map;
 /**
  * Created by codefan on 17-5-20.
  */
+@Data
 public class ImMessage implements  java.io.Serializable {
     private static final long serialVersionUID =  1L;
 
@@ -141,70 +143,11 @@ public class ImMessage implements  java.io.Serializable {
         return result;
     }
 
-    public String getMsgId() {
-        return msgId;
-    }
-
-    public void setMsgId(String msgId) {
-        this.msgId = msgId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
 
     public Map<String,Object> getContent() {
         if(content==null)
             content = new HashMap<>(8);
         return content;
-    }
-
-    public void setContent(Map<String,Object> content) {
-        this.content = content;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    public Date getSendTime() {
-        return sendTime;
-    }
-
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
-    }
-
-    public String getSenderName() {
-        return senderName;
-    }
-
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
     }
 
     public String fetchContentString(String key){

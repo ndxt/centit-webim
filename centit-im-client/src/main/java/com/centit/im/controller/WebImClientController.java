@@ -1,6 +1,6 @@
 package com.centit.im.controller;
 
-
+import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.service.IntelligentRobot;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/askrobot")
 @Api(value = "robot2", tags = "robot2")
-public class WebImClientController{
+public class WebImClientController extends BaseController {
 
     @Autowired
     protected IntelligentRobot robot;

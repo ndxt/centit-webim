@@ -1,5 +1,8 @@
 package com.centit.im.po;
 
+import com.centit.support.database.orm.GeneratorType;
+import com.centit.support.database.orm.ValueGenerator;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -15,6 +18,7 @@ import java.util.Date;
 
 用户的ID为 各个系统的用户ID ，或者由前端根据 前端的硬件属性生产一个唯一的编号
 */
+@Data
 @Entity
 @Table(name = "F_WEB_IM_CUSTOMER")
 public class WebImCustomer implements java.io.Serializable {
@@ -72,7 +76,7 @@ public class WebImCustomer implements java.io.Serializable {
      */
     @Column(name = "LAST_ACTIVE_DATE")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date  lastActiveDate;
+    private Date lastActiveDate;
     /**
      * 创建人员 null
      */
@@ -84,6 +88,7 @@ public class WebImCustomer implements java.io.Serializable {
      */
     @Column(name = "CREATE_TIME")
     @Temporal(TemporalType.TIMESTAMP)
+    @ValueGenerator(strategy = GeneratorType.FUNCTION, value = "today()")
     private Date  createTime;
 
     /**
@@ -99,114 +104,8 @@ public class WebImCustomer implements java.io.Serializable {
     }
     /* minimal constructor */
     public WebImCustomer(String userCode,String  userName) {
-
         this.userCode = userCode;
         this.userName= userName;
-    }
-
-   /* full constructor */
-    public WebImCustomer(String userCode, String osId,String  userType, String  userName,String  headSculpture,
-                         String  customerService,Date  lastActiveDate,String  creator,Date  createTime) {
-        this.userCode = userCode;
-        this.osId = osId;
-        this.userType = userType;
-        this.userName= userName;
-        this.headSculpture = headSculpture;
-        this.customerService= customerService;
-        this.lastActiveDate = lastActiveDate;
-        this.creator= creator;
-        this.createTime= createTime;
-    }
-
-
-    public String getOsId() {
-        return this.osId;
-    }
-
-    public void setOsId(String osId) {
-        this.osId = osId;
-    }
-
-    public String getUserCode() {
-        return this.userCode;
-    }
-
-    public void setUserCode(String userCode) {
-        this.userCode = userCode;
-    }
-
-
-
-    // Property accessors
-
-    public String getUserName() {
-        return this.userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getCustomerService() {
-        return this.customerService;
-    }
-
-    public void setCustomerService(String customerService) {
-        this.customerService = customerService;
-    }
-
-    public String getCreator() {
-        return this.creator;
-    }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
-    }
-    /**用户类别
-     * C 客户， U 一般用户 ，S 客服 ，P 外部专家
-     * @return 用户类别
-     */
-    public String getUserType() {
-        return userType;
-    }
-    /**用户类别
-     * C 客户， U 一般用户 ，S 客服 ，P 外部专家
-     * @param userType 用户类别
-     */
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public String getHeadSculpture() {
-        return headSculpture;
-    }
-
-    public void setHeadSculpture(String headSculpture) {
-        this.headSculpture = headSculpture;
-    }
-
-    public Date getLastActiveDate() {
-        return lastActiveDate;
-    }
-
-    public void setLastActiveDate(Date lastActiveDate) {
-        this.lastActiveDate = lastActiveDate;
-    }
-
-    public Date getCreateTime() {
-        return this.createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getServiceOpts() {
-        return serviceOpts;
-    }
-
-    public void setServiceOpts(String serviceOpts) {
-        this.serviceOpts = serviceOpts;
     }
 
     /**
@@ -217,36 +116,12 @@ public class WebImCustomer implements java.io.Serializable {
             return "F";
         return userState;
     }
-    /**
-     * @param userState  O online F offline
-     */
-    public void setUserState(String userState) {
-        this.userState = userState;
-    }
-
-
-    public WebImCustomer copy(WebImCustomer other){
-
-        this.setOsId(other.getOsId());
-        this.setUserCode(other.getUserCode());
-
-        this.userName= other.getUserName();
-        this.customerService= other.getCustomerService();
-        this.creator= other.getCreator();
-        this.createTime= other.getCreateTime();
-        this.userType= other.getUserType();
-        this.headSculpture= other.getHeadSculpture();
-        this.lastActiveDate= other.getLastActiveDate();
-        this.serviceOpts = other.getServiceOpts();
-        return this;
-    }
-
+/*
     public WebImCustomer copyNotNullProperty(WebImCustomer other){
-
-    if( other.getOsId() != null)
-        this.setOsId(other.getOsId());
-    if( other.getUserCode() != null && !other.getUserCode().equals(""))
-        this.setUserCode(other.getUserCode());
+        if( other.getOsId() != null)
+            this.setOsId(other.getOsId());
+        if( other.getUserCode() != null && !other.getUserCode().equals(""))
+            this.setUserCode(other.getUserCode());
 
         if( other.getUserName() != null)
             this.userName= other.getUserName();
@@ -266,18 +141,7 @@ public class WebImCustomer implements java.io.Serializable {
             this.serviceOpts= other.getServiceOpts();
 
         return this;
-    }
+    }*/
 
-    public WebImCustomer clearProperties(){
 
-        this.userName= null;
-        this.customerService= null;
-        this.creator= null;
-        this.createTime= null;
-        this.userType= null;
-        this.headSculpture= null;
-        this.lastActiveDate= null;
-        this.serviceOpts = null;
-        return this;
-    }
 }

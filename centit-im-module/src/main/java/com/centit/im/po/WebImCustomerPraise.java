@@ -1,5 +1,8 @@
 package com.centit.im.po;
 
+import com.centit.support.database.orm.GeneratorType;
+import com.centit.support.database.orm.ValueGenerator;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -13,6 +16,7 @@ import java.util.Date;
 
   客服评价null
 */
+@Data
 @Entity
 @Table(name = "F_WEB_IM_CUSTOMER_PRAISE")
 public class WebImCustomerPraise implements java.io.Serializable {
@@ -64,146 +68,12 @@ public class WebImCustomerPraise implements java.io.Serializable {
      */
     @Column(name = "CREATE_TIME")
     @Temporal(TemporalType.TIMESTAMP)
+    @ValueGenerator(strategy = GeneratorType.FUNCTION, value = "today()")
     private Date  createTime;
 
     // Constructors
     /* default constructor */
     public WebImCustomerPraise() {
     }
-    /* minimal constructor */
-    public WebImCustomerPraise(
-        String praiseId
-        ,String  osId,String  customerCode,int  serviceScore) {
 
-
-        this.praiseId = praiseId;
-
-        this.osId= osId;
-        this.customerCode= customerCode;
-        this.serviceScore= serviceScore;
-    }
-
-   /* full constructor */
-    public WebImCustomerPraise(
-     String praiseId
-    ,String  osId,String  userCode,String  customerCode,String  serviceSummary,int  serviceScore,Date  createTime) {
-
-
-        this.praiseId = praiseId;
-
-        this.osId= osId;
-        this.userCode= userCode;
-        this.customerCode= customerCode;
-        this.serviceSummary= serviceSummary;
-        this.serviceScore= serviceScore;
-        this.createTime= createTime;
-    }
-
-
-
-    public String getPraiseId() {
-        return this.praiseId;
-    }
-
-    public void setPraiseId(String praiseId) {
-        this.praiseId = praiseId;
-    }
-    // Property accessors
-
-    public String getOsId() {
-        return this.osId;
-    }
-
-    public void setOsId(String osId) {
-        this.osId = osId;
-    }
-
-    public String getUserCode() {
-        return this.userCode;
-    }
-
-    public void setUserCode(String userCode) {
-        this.userCode = userCode;
-    }
-
-    public String getCustomerCode() {
-        return this.customerCode;
-    }
-
-    public void setCustomerCode(String customerCode) {
-        this.customerCode = customerCode;
-    }
-
-    public String getServiceSummary() {
-        return this.serviceSummary;
-    }
-
-    public void setServiceSummary(String serviceSummary) {
-        this.serviceSummary = serviceSummary;
-    }
-
-    public int getServiceScore() {
-        return this.serviceScore;
-    }
-
-    public void setServiceScore(int serviceScore) {
-        this.serviceScore = serviceScore;
-    }
-
-    public Date getCreateTime() {
-        return this.createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-
-
-    public WebImCustomerPraise copy(WebImCustomerPraise other){
-
-        this.setPraiseId(other.getPraiseId());
-
-        this.osId= other.getOsId();
-        this.userCode= other.getUserCode();
-        this.customerCode= other.getCustomerCode();
-        this.serviceSummary= other.getServiceSummary();
-        this.serviceScore= other.getServiceScore();
-        this.createTime= other.getCreateTime();
-
-        return this;
-    }
-
-    public WebImCustomerPraise copyNotNullProperty(WebImCustomerPraise other){
-
-    if( other.getPraiseId() != null)
-        this.setPraiseId(other.getPraiseId());
-
-        if( other.getOsId() != null)
-            this.osId= other.getOsId();
-        if( other.getUserCode() != null)
-            this.userCode= other.getUserCode();
-        if( other.getCustomerCode() != null)
-            this.customerCode= other.getCustomerCode();
-        if( other.getServiceSummary() != null)
-            this.serviceSummary= other.getServiceSummary();
-        if( other.getServiceScore() != -1)
-            this.serviceScore= other.getServiceScore();
-        if( other.getCreateTime() != null)
-            this.createTime= other.getCreateTime();
-
-        return this;
-    }
-
-    public WebImCustomerPraise clearProperties(){
-
-        this.osId= null;
-        this.userCode= null;
-        this.customerCode= null;
-        this.serviceSummary= null;
-        this.serviceScore= -1;
-        this.createTime= null;
-
-        return this;
-    }
 }

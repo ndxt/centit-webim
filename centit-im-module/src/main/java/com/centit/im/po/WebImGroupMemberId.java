@@ -1,5 +1,6 @@
 package com.centit.im.po;
 
+import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.Embeddable;
  * @author codefan@sina.com
  * 用户组信息查看时间用来记录 组信息 成功推送到给这个用户的时间，这个时间之后的信息 都是这个用户 关于该组的未读信息
 */
+@Data
 @Embeddable
 public class WebImGroupMemberId implements java.io.Serializable {
     private static final long serialVersionUID =  1L;
@@ -35,22 +37,6 @@ public class WebImGroupMemberId implements java.io.Serializable {
 
     public WebImGroupMemberId( String groupId, String userCode) {
         this.userCode = userCode;
-        this.groupId = groupId;
-    }
-
-    public String getUserCode() {
-        return this.userCode;
-    }
-
-    public void setUserCode(String userCode) {
-        this.userCode = userCode;
-    }
-
-    public String getGroupId() {
-        return this.groupId;
-    }
-
-    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 

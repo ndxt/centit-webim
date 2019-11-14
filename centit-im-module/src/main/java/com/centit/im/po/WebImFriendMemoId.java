@@ -1,5 +1,6 @@
 package com.centit.im.po;
 
+import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.Embeddable;
  * 好友别名和备注用于为好友（同事）重命名 和 填写备注信息
 */
 //好友别名和备注 的主键
+@Data
 @Embeddable
 public class WebImFriendMemoId implements java.io.Serializable {
     private static final long serialVersionUID =  1L;
@@ -40,24 +42,6 @@ public class WebImFriendMemoId implements java.io.Serializable {
         this.userCode = userCode;
         this.friendCode = friendCode;
     }
-
-
-    public String getUserCode() {
-        return this.userCode;
-    }
-
-    public void setUserCode(String userCode) {
-        this.userCode = userCode;
-    }
-
-    public String getFriendCode() {
-        return this.friendCode;
-    }
-
-    public void setFriendCode(String friendCode) {
-        this.friendCode = friendCode;
-    }
-
 
     public boolean equals(Object other) {
         if ((this == other))

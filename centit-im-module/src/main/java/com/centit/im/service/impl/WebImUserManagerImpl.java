@@ -76,10 +76,6 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     public int registerUser(WebImCustomer user) {
         WebImCustomer customer = customerDao.getObjectById(user.getUserCode());
-        /*{
-            cust.copyNotNullProperty(user);
-            customerDao.updateObject(cust);
-        }else*/
         if(customer == null){
             user.setCreator("U0000000");
             if(StringUtils.isBlank(user.getUserName())) {
@@ -242,9 +238,8 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public String configUserInfo(String userCode,WebImCustomer cust){
-        WebImCustomer dbWebImCustomer = customerDao.getObjectById(userCode);
-        dbWebImCustomer.copyNotNullProperty(cust);
-        customerDao.updateObject(dbWebImCustomer);
+        cust.setUserCode(userCode);
+        customerDao.updateObject(cust);
         return userCode;
     }
 
@@ -345,13 +340,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
         if(webImGroup == null){
             return;
         }
-
-        WebImGroup dbWebImGroup = webImGroupDao.getObjectById(webImGroup.getGroupId());
-        if(dbWebImGroup==null){
-            return;
-        }
-        dbWebImGroup.copyNotNullProperty(webImGroup);
-        webImGroupDao.updateObject(dbWebImGroup);
+        webImGroupDao.updateObject(webImGroup);
     }
 
     /**
@@ -371,9 +360,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public void updateGroupMemberInfo(WebImGroupMember webImGroupMember){
-        WebImGroupMember dbWebImGroupMember = webImGroupMemberDao.getObjectById(webImGroupMember.getCid());
-        dbWebImGroupMember.copyNotNullProperty(webImGroupMember);
-        webImGroupMemberDao.updateObject(dbWebImGroupMember);
+        webImGroupMemberDao.updateObject(webImGroupMember);
     }
 
     /**
