@@ -11,7 +11,7 @@ import java.util.Date;
 
 用户的ID为 各个系统的用户ID ，或者由前端根据 前端的硬件属性生产一个唯一的编号
 */
-public class WebImCustomer implements java.io.Serializable {
+public class ImCustomer implements java.io.Serializable {
     private static final long serialVersionUID =  1L;
 
     /**
@@ -64,7 +64,7 @@ public class WebImCustomer implements java.io.Serializable {
      */
     private String userState;
 
-    public WebImCustomer() {
+    public ImCustomer() {
     }
 
     /**
@@ -72,14 +72,14 @@ public class WebImCustomer implements java.io.Serializable {
      * @param userCode 用户编号
      * @param userName 用户名
      */
-    public WebImCustomer(String userCode,String  userName) {
+    public ImCustomer(String userCode, String  userName) {
 
         this.userCode = userCode;
         this.userName= userName;
     }
 
-    public WebImCustomer(String userCode, String osId,String  userType, String  userName,String  headSculpture,
-                         String  customerService,Date  lastActiveDate,String  creator,Date  createTime) {
+    public ImCustomer(String userCode, String osId, String  userType, String  userName, String  headSculpture,
+                      String  customerService, Date  lastActiveDate, String  creator, Date  createTime) {
         this.userCode = userCode;
         this.osId = osId;
         this.userType = userType;
@@ -196,7 +196,7 @@ public class WebImCustomer implements java.io.Serializable {
     }
 
 
-    public WebImCustomer copy(WebImCustomer other){
+    public ImCustomer copy(ImCustomer other){
 
         this.setOsId(other.getOsId());
         this.setUserCode(other.getUserCode());
@@ -212,7 +212,7 @@ public class WebImCustomer implements java.io.Serializable {
         return this;
     }
 
-    public WebImCustomer copyNotNullProperty(WebImCustomer other){
+    public ImCustomer copyNotNullProperty(ImCustomer other){
 
     if( other.getOsId() != null)
         this.setOsId(other.getOsId());
@@ -239,7 +239,7 @@ public class WebImCustomer implements java.io.Serializable {
         return this;
     }
 
-    public WebImCustomer clearProperties(){
+    public ImCustomer clearProperties(){
 
         this.userName= null;
         this.customerService= null;

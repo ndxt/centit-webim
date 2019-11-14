@@ -5,7 +5,7 @@ import com.centit.framework.appclient.HttpReceiveJSON;
 import com.centit.framework.appclient.RestfulHttpRequest;
 import com.centit.framework.common.ObjectException;
 import com.centit.im.dto.FriendMemo;
-import com.centit.im.dto.WebImCustomer;
+import com.centit.im.dto.ImCustomer;
 import com.centit.im.po.ImMessage;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class IMClientImpl implements IMClient {
      * @param user WebImCustomer对象
      */
     @Override
-    public void registerUser(WebImCustomer user){
+    public void registerUser(ImCustomer user){
         String jsonStr =  RestfulHttpRequest.jsonPost(appSession, "/webimcust/register", user);
         HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);
         if (resJson.getCode() != 0) {
@@ -71,7 +71,7 @@ public class IMClientImpl implements IMClient {
      * @param cust WebImCustomer对象
      */
     @Override
-    public void setUserConfig(WebImCustomer cust){
+    public void setUserConfig(ImCustomer cust){
 
         String jsonStr =  RestfulHttpRequest.jsonPost(appSession, "/webimcust/config/"+ cust.getUserCode(),cust);
         HttpReceiveJSON resJson = HttpReceiveJSON.valueOfJson(jsonStr);

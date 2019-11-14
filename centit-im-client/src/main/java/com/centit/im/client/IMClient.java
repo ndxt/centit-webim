@@ -1,7 +1,7 @@
 package com.centit.im.client;
 
 import com.centit.im.dto.FriendMemo;
-import com.centit.im.dto.WebImCustomer;
+import com.centit.im.dto.ImCustomer;
 import com.centit.im.po.ImMessage;
 
 /**
@@ -16,14 +16,14 @@ public interface IMClient {
      * @param user WebImCustomer对象
      * @throws Exception 异常
      */
-    void registerUser(WebImCustomer user);
+    void registerUser(ImCustomer user);
 
     /**
      * 设置用户
      * @param cust WebImCustomer对象
      * @throws Exception 异常
      */
-    void setUserConfig(WebImCustomer cust);
+    void setUserConfig(ImCustomer cust);
 
     /**
      * 发送消息
