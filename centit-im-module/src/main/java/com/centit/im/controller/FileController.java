@@ -155,21 +155,22 @@ public class FileController extends BaseController {
             fileName = urips[n-1];
         }
 
+        Pair<String, Long> md5Size = fetchMd5andSize(md5SizeExt);
+        String filePath = fileStore.getFileStoreUrl(md5Size.getLeft(), md5Size.getRight());
+        InputStream inputStream = fileStore.loadFileStream(filePath);
+        downFileRange(request,  response,
+                inputStream, md5Size.getRight(),
+                fileName);
+    }
 
+    public static Pair<String, Long> fetchMd5andSize(String md5SizeExt) {
         String fileMd5 =  md5SizeExt.substring(0,32);
         int pos = md5SizeExt.indexOf('.');
         //String extName = md5SizeExt.substring(pos);
         long fileSize = pos<0? NumberBaseOpt.parseLong(md5SizeExt.substring(33),0l)
                 : NumberBaseOpt.parseLong(md5SizeExt.substring(33,pos),0l);
-
-        String filePath = fileStore.getFileStoreUrl(fileMd5, fileSize);
-        InputStream inputStream = fileStore.loadFileStream(filePath);
-        downFileRange(request,  response,
-                inputStream, fileSize,
-                fileName);
+        return Pair.of(fileMd5, fileSize);
     }
-
-
     /**
      * 判断文件是否存在，如果文件已经存在可以实现秒传
      *

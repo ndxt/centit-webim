@@ -3,10 +3,12 @@ package com.centit.im.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.centit.fileserver.common.FileStore;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.core.controller.BaseController;
+import com.centit.framework.core.controller.WrapUpContentType;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.im.po.WebImCustomer;
@@ -16,10 +18,12 @@ import com.centit.im.po.WebImGroupMember;
 import com.centit.im.service.WebImUserManager;
 import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.StringBaseOpt;
+import com.centit.support.image.ImageOpt;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +31,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -41,6 +49,8 @@ public class WebImUserController extends BaseController {
     @Autowired
     protected WebImUserManager webImUserManager;
 
+    @Autowired
+    protected FileStore fileStore;
 
     //配置用户信息
     @ApiOperation(value = "01配置用户信息")
@@ -389,5 +399,26 @@ public class WebImUserController extends BaseController {
             resData.addResponseData("message", "群不存在。");
             return resData;
         }
+    }
+
+    @ApiOperation(value = "24 获取用户头像")
+    @RequestMapping(value = "/sculpture/{userCode}", method = RequestMethod.GET)
+    @WrapUpResponseBody(contentType = WrapUpContentType.IMAGE)
+    public RenderedImage getHeadSculpture(@PathVariable String userCode) {
+        String headFileId = null;
+        WebImCustomer user = webImUserManager.getUser(userCode);
+        if(user != null){
+            headFileId = user.getHeadSculpture();
+        }
+        if(StringUtils.length(headFileId) > 35){
+            Pair<String, Long> md5Size = FileController.fetchMd5andSize(headFileId);
+            String filePath = fileStore.getFileStoreUrl(md5Size.getLeft(), md5Size.getRight());
+            try(InputStream inputStream = fileStore.loadFileStream(filePath)) {
+                return ImageIO.read(inputStream);
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+            }
+        }
+        return ImageOpt.createIdIcon(userCode, 64, 8);
     }
 }

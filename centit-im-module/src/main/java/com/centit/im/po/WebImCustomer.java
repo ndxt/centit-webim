@@ -44,7 +44,7 @@ public class WebImCustomer implements java.io.Serializable {
      */
     @Column(name = "USER_TYPE")
     @Length(max = 1, message = "字段长度不能大于{max}")
-    private String  userType;
+    private String userType;
 
     /**
      * 用户名称 null
@@ -52,26 +52,26 @@ public class WebImCustomer implements java.io.Serializable {
     @Column(name = "USER_NAME")
     @NotBlank(message = "字段不能为空")
     @Length(max = 100, message = "字段长度不能大于{max}")
-    private String  userName;
+    private String userName;
     /**
      * 用户头像
      */
     @Column(name = "HEAD_SCULPTURE")
     @Length(max = 200, message = "字段长度不能大于{max}")
-    private String  headSculpture;
+    private String headSculpture;
 
     /**
      * 最后服务的客户 null
      */
     @Column(name = "SERVICE_OPTS")
     @Length(max = 1000, message = "字段长度不能大于{max}")
-    private String  serviceOpts;
+    private String serviceOpts;
     /**
      * 最后服务的客户 null
      */
     @Column(name = "CUSTOMER_SERVICE")
     @Length(max = 32, message = "字段长度不能大于{max}")
-    private String  customerService;
+    private String customerService;
     /**
      * 最後活躍的時間
      */
@@ -83,7 +83,7 @@ public class WebImCustomer implements java.io.Serializable {
      */
     @Column(name = "CREATOR")
     @Length(max = 32, message = "字段长度不能大于{max}")
-    private String  creator;
+    private String creator;
     /**
      * 创建时间 null
      */
