@@ -404,7 +404,7 @@ public class WebImUserController extends BaseController {
     @ApiOperation(value = "24 获取用户头像")
     @RequestMapping(value = "/sculpture/{userCode}", method = RequestMethod.GET)
     @WrapUpResponseBody(contentType = WrapUpContentType.IMAGE)
-    public RenderedImage getHeadSculpture(@PathVariable String userCode) {
+    public RenderedImage getHeadSculpture(@PathVariable String userCode, Integer size, Integer point) {
         String headFileId = null;
         WebImCustomer user = webImUserManager.getUser(userCode);
         if(user != null){
@@ -419,6 +419,13 @@ public class WebImUserController extends BaseController {
                 logger.error(e.getMessage());
             }
         }
-        return ImageOpt.createIdIcon(userCode, 64, 8);
+        if(size == null){
+            size = 64;
+        }
+
+        if(point == null){
+            point = 8;
+        }
+        return ImageOpt.createIdIcon(userCode, size, point);
     }
 }
