@@ -33,12 +33,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
-import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +55,7 @@ public class FileController extends BaseController {
     @Autowired
     protected FileStore fileStore;
 
-    private static String encodeFilename(String paramName) {
+    /*private static String encodeFilename(String paramName) {
         String downloadChineseFileName = "";
         try {
             downloadChineseFileName = new String(
@@ -62,7 +64,7 @@ public class FileController extends BaseController {
             log.error(e.getMessage(),e);
         }
         return downloadChineseFileName;
-    }
+    }*/
 
     /**
      *
@@ -182,8 +184,7 @@ public class FileController extends BaseController {
     @CrossOrigin(origins = "*", allowCredentials = "true", maxAge = 86400,
             allowedHeaders = "*", methods = RequestMethod.GET)
     @RequestMapping(value = "/exists", method = RequestMethod.GET)
-    public void checkFileExists(String token, long size, HttpServletResponse response)
-            throws IOException {
+    public void checkFileExists(String token, long size, HttpServletResponse response) {
         JsonResultUtils.writeOriginalObject(fileStore.checkFile(token, size), response);
     }
 
@@ -208,7 +209,7 @@ public class FileController extends BaseController {
         // 如果文件已经存在则完成秒传，无需再传
         if (fileStore.checkFile(token, size)) {//如果文件已经存在 系统实现秒传
             //添加完成 后 相关的处理  类似与 uploadRange
-            completedStoreFile(fileStore, token, size, fileInfo.getLeft(), response);
+            completedStoreFile(token, size, fileInfo.getLeft(), response);
             tempFileSize = size;
         } else {
             //检查临时目录中的文件大小，返回文件的其实点
@@ -221,12 +222,10 @@ public class FileController extends BaseController {
                 UploadDownloadUtils.makeRangeUploadJson(tempFileSize).toJSONString(), response);
     }
 
-
     /*
      * 保存文件
      */
-
-    private void completedStoreFile(FileStore fs, String fileMd5, long size,
+    private void completedStoreFile(String fileMd5, long size,
                                     String fileName, HttpServletResponse response) {
         try {
 
@@ -302,7 +301,7 @@ public class FileController extends BaseController {
         String tempFilePath = SystemTempFileUtils.getTempFilePath(token, size);
 
         if (fileStore.checkFile(token, size)) {// 如果文件已经存在则完成秒传，无需再传。
-            completedStoreFile(fileStore, token, size, fileInfo.getLeft(), response);
+            completedStoreFile(token, size, fileInfo.getLeft(), response);
             return;
         }
 
@@ -310,7 +309,7 @@ public class FileController extends BaseController {
             long uploadSize = UploadDownloadUtils.uploadRange(tempFilePath, fileInfo.getRight(), token, size, request);
             if(uploadSize==0){
                 fileStore.saveFile(tempFilePath, token, size);
-                completedStoreFile(fileStore, token, size, fileInfo.getLeft(), response);
+                completedStoreFile(token, size, fileInfo.getLeft(), response);
                 FileSystemOpt.deleteFile(tempFilePath);
                 return;
             }else if( uploadSize>0){
@@ -345,7 +344,7 @@ public class FileController extends BaseController {
             String fileMd5 = FileMD5Maker.makeFileMD5(new File(tempFilePath));
 
             fileStore.saveFile(tempFilePath);
-            completedStoreFile(fileStore, fileMd5, fileSize, fileInfo.getLeft(), response);
+            completedStoreFile(fileMd5, fileSize, fileInfo.getLeft(), response);
             FileSystemOpt.deleteFile(tempFilePath);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
