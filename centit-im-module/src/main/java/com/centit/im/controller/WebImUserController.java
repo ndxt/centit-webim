@@ -420,11 +420,11 @@ public class WebImUserController extends BaseController {
             }
         }
         if(size == null){
-            size = 64;
+            size = 60;
         }
 
         if(point == null){
-            point = 8;
+            point = 12;
         }
         return ImageOpt.createIdIcon(userCode, size, point);
     }
