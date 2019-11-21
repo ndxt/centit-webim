@@ -412,8 +412,7 @@ public class WebImUserController extends BaseController {
         }
         if(StringUtils.length(headFileId) > 35){
             Pair<String, Long> md5Size = FileController.fetchMd5andSize(headFileId);
-            String filePath = fileStore.getFileStoreUrl(md5Size.getLeft(), md5Size.getRight());
-            try(InputStream inputStream = fileStore.loadFileStream(filePath)) {
+            try(InputStream inputStream = fileStore.loadFileStream(md5Size.getLeft(), md5Size.getRight())) {
                 return ImageIO.read(inputStream);
             } catch (IOException e) {
                 logger.error(e.getMessage());

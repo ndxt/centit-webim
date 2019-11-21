@@ -158,8 +158,7 @@ public class FileController extends BaseController {
         }
 
         Pair<String, Long> md5Size = fetchMd5andSize(md5SizeExt);
-        String filePath = fileStore.getFileStoreUrl(md5Size.getLeft(), md5Size.getRight());
-        InputStream inputStream = fileStore.loadFileStream(filePath);
+        InputStream inputStream = fileStore.loadFileStream(md5Size.getLeft(), md5Size.getRight());
         downFileRange(request,  response,
                 inputStream, md5Size.getRight(),
                 fileName);
