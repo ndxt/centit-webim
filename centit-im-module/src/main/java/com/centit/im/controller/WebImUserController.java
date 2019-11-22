@@ -427,4 +427,19 @@ public class WebImUserController extends BaseController {
         }
         return ImageOpt.createIdIcon(userCode, size, point);
     }
+
+    /**
+     * 返回所有服务过用户的 客服专家（客服模式）
+     * @param custCode 用户代码
+     * @param lastServiceDate  最后服务时间，如果为null默认为 一个月内服务过的人员
+     * @return 所有服务的对象
+     */
+    @ApiOperation(value = "25查询和用户交流过的所有客服")
+    @RequestMapping(value = "/services/{custCode}", method = RequestMethod.GET)
+    @WrapUpResponseBody
+    public List<WebImCustomer> listCustomerService(@PathVariable String custCode,
+                                                   Date lastServiceDate) {
+        return webImUserManager.listCustomerService(custCode, lastServiceDate);
+    }
+
 }

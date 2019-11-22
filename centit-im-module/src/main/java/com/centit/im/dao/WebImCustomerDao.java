@@ -66,18 +66,35 @@ public class WebImCustomerDao extends BaseDaoImpl<WebImCustomer,String>
                 new Object[]{"%"+optId+"%"});
     }
 
+
     public List<WebImCustomer> listServiceCustomer(String serviceUserCode, Date lastServiceDate) {
         Date lsd = lastServiceDate==null? DatetimeOpt.addMonths(
-                    DatetimeOpt.currentUtilDate(),-1) :lastServiceDate;
+                DatetimeOpt.currentUtilDate(),-1) :lastServiceDate;
         String sql = "select b.USER_CODE,b.OS_ID,b.USER_TYPE,b.USER_NAME,b.HEAD_SCULPTURE,b.CUSTOMER_SERVICE," +
                 " b.LAST_ACTIVE_DATE,b.CREATOR,b.Service_Opts,b.CREATE_TIME " +
                 " from f_web_im_customer b " +
                 " where exists ( SELECT * FROM f_web_im_message f" +
-                "       where (f.SENDER = b.USER_CODE and f.RECEIVER= :serviceCode ) or" +
-                     " (f.SENDER= :serviceCode and f.RECEIVER = b.USER_CODE) ) " +
-                " and  b.LAST_ACTIVE_DATE >= :serviceDate " +
+                "       where ((f.SENDER = b.USER_CODE and f.RECEIVER= :serviceCode ) or" +
+                " (f.SENDER= :serviceCode and f.RECEIVER = b.USER_CODE)) and f.SEND_TIME >= :serviceDate) " +
+                " and b.USER_TYPE = 'C' " + // 客户
                 " ORDER BY b.LAST_ACTIVE_DATE ";
         return this.listObjectsBySql(sql, QueryUtils.createSqlParamsMap(
                 "serviceCode",serviceUserCode,"serviceDate",lsd));
     }
-}
+
+    public List<WebImCustomer> listCustomerService(String custCode, Date lastServiceDate) {
+        Date lsd = lastServiceDate==null? DatetimeOpt.addMonths(
+                DatetimeOpt.currentUtilDate(),-1) :lastServiceDate;
+        String sql = "select b.USER_CODE,b.OS_ID,b.USER_TYPE,b.USER_NAME,b.HEAD_SCULPTURE,b.CUSTOMER_SERVICE," +
+                " b.LAST_ACTIVE_DATE,b.CREATOR,b.Service_Opts,b.CREATE_TIME " +
+                " from f_web_im_customer b " +
+                " where exists ( SELECT * FROM f_web_im_message f" +
+                "       where ((f.SENDER = b.USER_CODE and f.RECEIVER= :custCode ) or" +
+                " (f.SENDER= :custCode and f.RECEIVER = b.USER_CODE)) and f.SEND_TIME >= :serviceDate) " +
+                " and ( b.USER_TYPE = 'S' or b.USER_TYPE = 'P' ) " + // 客服 或者 专家
+                " ORDER BY b.LAST_ACTIVE_DATE ";
+        return this.listObjectsBySql(sql, QueryUtils.createSqlParamsMap(
+                "custCode", custCode,"serviceDate",lsd));
+    }
+
+    }

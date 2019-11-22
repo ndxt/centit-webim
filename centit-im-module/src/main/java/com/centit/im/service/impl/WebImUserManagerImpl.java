@@ -151,6 +151,23 @@ public class WebImUserManagerImpl implements WebImUserManager {
     }
 
     /**
+     * 返回所有服务过用户的 客服专家（客服模式）
+     * @param custCode 用户代码
+     * @param lastServiceDate   最后服务时间，如果为null 默认为一个月内交流过的客服
+     * @return
+     */
+    @Override
+    @Transactional
+    public List<WebImCustomer> listCustomerService(String custCode, Date lastServiceDate){
+        List<WebImCustomer> allcusts = customerDao.listCustomerService(custCode, lastServiceDate);
+        for(WebImCustomer cust : allcusts) {
+            cust.setUserState(webImSocket.checkUserState(cust.getUserCode()));
+        }
+        return allcusts;
+    }
+
+
+    /**
     * 返回机构中的成员
     */
     @Override

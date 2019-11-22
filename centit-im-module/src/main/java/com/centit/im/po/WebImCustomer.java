@@ -40,7 +40,7 @@ public class WebImCustomer implements java.io.Serializable {
     private String osId;
 
     /**用户类别
-     * C 客户， U 一般用户 ，S 客服 ，P 外部专家
+     * C 客户， U 一般用户 ，S 客服， P 外部专家
      */
     @Column(name = "USER_TYPE")
     @Length(max = 1, message = "字段长度不能大于{max}")
