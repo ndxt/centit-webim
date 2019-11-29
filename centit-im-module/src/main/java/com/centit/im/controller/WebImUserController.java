@@ -120,7 +120,8 @@ public class WebImUserController extends BaseController {
         if(allUnits==null || allUnits.isEmpty()){
             return allUnits;
         }
-        Collections.sort(allUnits, Comparator.comparing(IUnitInfo::getUnitOrder));
+        //IUnitInfo::getUnitOrder 这个可能为null所以如果排序这个排序方法要重写
+        //Collections.sort(allUnits, Comparator.comparing(IUnitInfo::getUnitOrder));
         return allUnits;
     }
     /**
