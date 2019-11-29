@@ -95,6 +95,9 @@ public class WebImUserController extends BaseController {
     @WrapUpResponseBody
     public List<? extends IUnitInfo> listAllUnits() {
         List<? extends IUnitInfo> allUnits = webImUserManager.listAllUnit();
+        if(allUnits==null || allUnits.isEmpty()){
+            return allUnits;
+        }
         CollectionsOpt.sortAsTree(allUnits,
                 ( p,  c) -> StringUtils.equals(p.getUnitCode(),c.getParentUnit()) );
         return allUnits;
@@ -114,6 +117,9 @@ public class WebImUserController extends BaseController {
     @WrapUpResponseBody
     public List<? extends IUnitInfo> listSubUnits(@PathVariable String parentUnitCode) {
         List<? extends IUnitInfo> allUnits = webImUserManager.listSubUnit(parentUnitCode);
+        if(allUnits==null || allUnits.isEmpty()){
+            return allUnits;
+        }
         Collections.sort(allUnits, Comparator.comparing(IUnitInfo::getUnitOrder));
         return allUnits;
     }
