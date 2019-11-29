@@ -39,9 +39,9 @@ framework:
     usercode: admin
     password: 000000
   jdbcplatform:
-    url:
-    username:
-    password:
+    url: jdbc:oracle:thin:@192.168.137.95:1521:orcl
+    username: framework
+    password: framework
 webim:
   robot:
     type: es
