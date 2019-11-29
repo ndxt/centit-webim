@@ -72,7 +72,7 @@
 
     <sql id="LIST_ALL_UNITINFO">
         <![CDATA[
-            select UNIT_CODE as groupId, PARENT_UNIT as parentUnit, UNIT_TYPE as unitType, IS_VALID as isValid,
+            select UNIT_CODE as group_Id, PARENT_UNIT as parentUnit, UNIT_TYPE as unitType, IS_VALID as isValid,
                 UNIT_NAME as unitName, ENGLISH_NAME as englishName, UNIT_SHORT_NAME as unitShortName, UNIT_WORD as unitWord,
                 UNIT_TAG as unitTag, UNIT_DESC as unitDesc, ADDRBOOK_ID as addrbookId, UNIT_ORDER as unitOrder,
                 UNIT_GRADE as unitGrade, DEP_NO as depNo, UNIT_PATH as unitPath, UNIT_MANAGER as unitManager,
@@ -104,6 +104,21 @@
                 DATA_TAG as dataTag, DATA_VALUE as dataValue, DATA_STYLE as dataStyle, DATA_ORDER as dataOrder,
                 DATA_DESC as dataDesc, CREATE_DATE as createDate, LAST_MODIFY_DATE as lastModifyDate
             from F_DATADICTIONARY
+        ]]>
+    </sql>
+
+    <sql id="LIST_ALL_OS">
+        <![CDATA[
+            select OS_ID, OS_NAME, OS_URL, OAUTH_PASSWORD
+            from F_OS_INFO
+        ]]>
+    </sql>
+
+    <sql id="LIST_ALL_DATABASE">
+        <![CDATA[
+            select DATABASE_CODE, OS_ID, DATABASE_NAME,
+                DATABASE_URL, USERNAME, PASSWORD, DATABASE_DESC
+            from F_DATABASE_INFO
         ]]>
     </sql>
 

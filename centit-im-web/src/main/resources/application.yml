@@ -38,7 +38,10 @@ framework:
     auth-enable: false
     usercode: admin
     password: 000000
-
+  jdbcplatform:
+    url:
+    username:
+    password:
 webim:
   robot:
     type: es
