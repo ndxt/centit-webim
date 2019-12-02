@@ -17,6 +17,7 @@ import com.centit.im.po.WebImGroup;
 import com.centit.im.po.WebImGroupMember;
 import com.centit.im.service.WebImUserManager;
 import com.centit.support.algorithm.CollectionsOpt;
+import com.centit.support.algorithm.GeneralAlgorithm;
 import com.centit.support.algorithm.StringBaseOpt;
 import com.centit.support.image.ImageOpt;
 import io.swagger.annotations.Api;
@@ -98,8 +99,8 @@ public class WebImUserController extends BaseController {
         if(allUnits==null || allUnits.isEmpty()){
             return allUnits;
         }
-        CollectionsOpt.sortAsTree(allUnits,
-                ( p,  c) -> StringUtils.equals(p.getUnitCode(),c.getParentUnit()) );
+        CollectionsOpt.sortAsTree(allUnits, IUnitInfo::getUnitCode, IUnitInfo::getParentUnit);
+                //( p,  c) -> StringUtils.equals(p.getUnitCode(),c.getParentUnit()) );
         return allUnits;
     }
 
@@ -121,7 +122,8 @@ public class WebImUserController extends BaseController {
             return allUnits;
         }
         //IUnitInfo::getUnitOrder 这个可能为null所以如果排序这个排序方法要重写
-        //Collections.sort(allUnits, Comparator.comparing(IUnitInfo::getUnitOrder));
+        Collections.sort(allUnits,
+                GeneralAlgorithm.comparing(IUnitInfo::getUnitOrder, false));
         return allUnits;
     }
     /**
