@@ -1,7 +1,6 @@
 package com.centit.im.service.impl;
 
 import com.centit.framework.components.CodeRepositoryUtil;
-import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.IUserUnit;
@@ -15,6 +14,8 @@ import com.centit.im.service.WebImUserManager;
 import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.DatetimeOpt;
 import com.centit.support.algorithm.UuidOpt;
+import com.centit.support.database.utils.PageDesc;
+import com.centit.support.database.utils.QueryUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,8 @@ import java.util.*;
 @Service("webImUserManager")
 public class WebImUserManagerImpl implements WebImUserManager {
 
-    @Autowired
-    protected PlatformEnvironment platformEnvironment;
+    /*@Autowired
+    protected PlatformEnvironment platformEnvironment;*/
 
     @Autowired
     protected WebImSocket webImSocket;
@@ -97,8 +98,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<WebImCustomer> listAllUser() {
-
-        List<? extends IUserInfo> users = platformEnvironment.listAllUsers();
+        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers();
         if (users == null || users.size() < 1)
             return new ArrayList<>();
         List<WebImCustomer> custs = customerDao.listObjects();
@@ -115,7 +115,6 @@ public class WebImUserManagerImpl implements WebImUserManager {
                 cust.setOsId(ImMessage.DEFAULT_OSID);
             }
             cust.setUserState(webImSocket.checkUserState(cust.getUserCode()));
-
             allcusts.add(cust);
         }
         return allcusts;
@@ -166,6 +165,13 @@ public class WebImUserManagerImpl implements WebImUserManager {
         return allcusts;
     }
 
+    private WebImCustomer fetchCustomerInfo(String userCode){
+        IUserInfo ui= CodeRepositoryUtil.getUserInfoByCode(userCode);
+        WebImCustomer cust = new WebImCustomer(userCode,ui.getUserName());
+        cust.setUserType("U");
+        cust.setOsId(ImMessage.DEFAULT_OSID);
+        return cust;
+    }
 
     /**
     * 返回机构中的成员
@@ -173,16 +179,12 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<WebImCustomer> listUnitUsers(String unitCode ) {
-
-        List<? extends IUserUnit> users = platformEnvironment.listUnitUsers(unitCode);
+        List<? extends IUserUnit> users = CodeRepositoryUtil.listUnitUsers(unitCode);
         List<WebImCustomer> allcusts = new ArrayList<>(users.size());
         for(IUserUnit user : users){
             WebImCustomer cust = customerDao.getObjectById(user.getUserCode());
             if(cust==null){
-                IUserInfo ui= CodeRepositoryUtil.getUserInfoByCode(user.getUserCode());
-                cust = new WebImCustomer(user.getUserCode(),ui.getUserName());
-                cust.setUserType("U");
-                cust.setOsId(ImMessage.DEFAULT_OSID);
+                cust = fetchCustomerInfo(user.getUserCode());
             }
             cust.setUserState(webImSocket.checkUserState(cust.getUserCode()));
             allcusts.add(cust);
@@ -191,12 +193,50 @@ public class WebImUserManagerImpl implements WebImUserManager {
     }
 
     /**
+     * 查询人员
+     */
+    @Override
+    @Transactional
+    public List<WebImCustomer> queryUsers(String name, PageDesc pageDesc){
+        List<WebImCustomer> result = customerDao.listObjects(
+                CollectionsOpt.createHashMap("userName", name), pageDesc);
+        if(result!=null && result.size()>0){
+            return result;
+        }
+
+        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers();
+        if (users == null || users.size() < 1)
+            return new ArrayList<>();
+        List<WebImCustomer> allcusts = new ArrayList<>(pageDesc.getPageSize());
+        int nMatchCount = 0;
+        int startRow = pageDesc.getRowStart();
+        int endRow = pageDesc.getRowEnd();
+        for(IUserInfo user : users){
+            if(StringUtils.contains(user.getUserName(), name)){
+                WebImCustomer cust = customerDao.getObjectById(user.getUserCode());
+                if(cust == null) {
+                    nMatchCount++;
+                    if (nMatchCount > startRow) {
+                        cust = fetchCustomerInfo(user.getUserCode());
+                        cust.setUserState(ImMessage.USER_STATE_OFFLINE);
+                        allcusts.add(cust);
+                    }
+                    if(nMatchCount>=endRow){
+                        break;
+                    }
+                }
+            }
+        }
+        pageDesc.setTotalRows(nMatchCount>=endRow? nMatchCount + pageDesc.getPageSize() :  nMatchCount);
+        return allcusts;
+    }
+    /**
      * 返回系统联系状态
      */
     @Override
     @Transactional
     public Map<String, String> listAllUserState() {
-        List<? extends IUserInfo> users = platformEnvironment.listAllUsers();
+        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers();
         return webImSocket.checkUsersState(users);
     }
 
@@ -206,7 +246,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<? extends IUnitInfo> listAllUnit() {
-        return platformEnvironment.listAllUnits();
+        return CodeRepositoryUtil.listAllUnits();
     }
 
     /**
@@ -217,7 +257,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<? extends IUnitInfo> listSubUnit(String parentUnitCode){
-        List<? extends IUnitInfo> allUnits = platformEnvironment.listAllUnits();
+        List<? extends IUnitInfo> allUnits = CodeRepositoryUtil.listAllUnits();
         List<IUnitInfo> units = new ArrayList<>();
         for (IUnitInfo uc : allUnits) {
             //获取顶层机构
@@ -235,7 +275,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<IUnitInfo> listUserUnits(String  userCode) {
-        List<? extends IUserUnit> units = platformEnvironment.listUserUnits(userCode);
+        List<? extends IUserUnit> units = CodeRepositoryUtil.listUserUnits(userCode);
         if(units==null || units.size()<1)
             return null;
         List<IUnitInfo> userUnits = new ArrayList<>(units.size());
@@ -308,6 +348,23 @@ public class WebImUserManagerImpl implements WebImUserManager {
                 "where GROUP_TYPE <> 'U' and GROUP_ID in " +
                         "(select UNIT_CODE from F_WEB_IM_GROUP_MEMBER " +
                         " where USER_CODE = ?)", new Object[]{userCode});
+    }
+
+    @Override
+    @Transactional
+    public List<WebImGroup> queryUserGroups(String userCode, String groupName){
+        return webImGroupDao.listObjectsByFilter(
+                "where GROUP_TYPE <> 'U' and GROUP_NAME like ? " +
+                        " and GROUP_ID in " +
+                        "(select UNIT_CODE from F_WEB_IM_GROUP_MEMBER " +
+                        " where USER_CODE = ?) " ,
+                new Object[]{QueryUtils.getMatchString(groupName), userCode});
+    }
+
+    @Override
+    @Transactional
+    public List<WebImGroup> queryGroups(Map<String, Object> params, PageDesc pageDesc){
+        return webImGroupDao.listObjects(params, pageDesc);
     }
     /**
      * 创建群

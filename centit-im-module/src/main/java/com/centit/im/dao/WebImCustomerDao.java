@@ -33,19 +33,12 @@ public class WebImCustomerDao extends BaseDaoImpl<WebImCustomer,String>
     @Override
     public Map<String, String> getFilterField() {
         if( filterField == null){
-            filterField = new HashMap<String, String>();
-
+            filterField = new HashMap<>();
             filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
-
             filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
-
-
-            filterField.put("userName" , CodeBook.EQUAL_HQL_ID);
-
+            filterField.put("userName" , CodeBook.LIKE_HQL_ID);
             filterField.put("customerService" , CodeBook.EQUAL_HQL_ID);
-
             filterField.put("creator" , CodeBook.EQUAL_HQL_ID);
-
             filterField.put("createTime" , CodeBook.EQUAL_HQL_ID);
 
         }

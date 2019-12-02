@@ -31,6 +31,7 @@ public class WebImGroupDao extends BaseDaoImpl<WebImGroup,String>
             filterField.put("groupId" , CodeBook.EQUAL_HQL_ID);
             filterField.put("groupName" , CodeBook.LIKE_HQL_ID);
             filterField.put("groupNotice" , CodeBook.LIKE_HQL_ID);
+            filterField.put("(like)name", "(GROUP_NAME like :name or GROUP_NOTICE like :name)");
         }
         return filterField;
     }

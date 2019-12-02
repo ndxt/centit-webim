@@ -10,6 +10,7 @@ import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpContentType;
 import com.centit.framework.core.controller.WrapUpResponseBody;
+import com.centit.framework.core.dao.PageQueryResult;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.im.po.WebImCustomer;
 import com.centit.im.po.WebImFriendMemo;
@@ -19,6 +20,7 @@ import com.centit.im.service.WebImUserManager;
 import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.GeneralAlgorithm;
 import com.centit.support.algorithm.StringBaseOpt;
+import com.centit.support.database.utils.PageDesc;
 import com.centit.support.image.ImageOpt;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -88,6 +90,14 @@ public class WebImUserController extends BaseController {
     @WrapUpResponseBody
     public List<WebImCustomer> listAllUser() {
         return  webImUserManager.listAllUser();
+    }
+
+    @ApiOperation(value = "26根据姓名查询用户列表")
+    @RequestMapping(value = "/queryUser", method = RequestMethod.GET)
+    @WrapUpResponseBody
+    public PageQueryResult<WebImCustomer> queryUser(String name, PageDesc pageDesc) {
+        List<WebImCustomer> customers = webImUserManager.queryUsers(name, pageDesc);
+        return PageQueryResult.createResult(customers, pageDesc);
     }
 
     @ApiOperation(value = "04查询机构列表")
@@ -162,7 +172,19 @@ public class WebImUserController extends BaseController {
     public List<WebImCustomer> listCustomerService() {
         return webImUserManager.listCustomerService();
     }
-
+    /**
+     * 返回所有服务过用户的 客服专家（客服模式）
+     * @param custCode 用户代码
+     * @param lastServiceDate  最后服务时间，如果为null默认为 一个月内服务过的人员
+     * @return 所有服务的对象
+     */
+    @ApiOperation(value = "25查询和用户交流过的所有客服")
+    @RequestMapping(value = "/services/{custCode}", method = RequestMethod.GET)
+    @WrapUpResponseBody
+    public List<WebImCustomer> listCustomerService(@PathVariable String custCode,
+                                                   Date lastServiceDate) {
+        return webImUserManager.listCustomerService(custCode, lastServiceDate);
+    }
     /**
      * @return 返回系统联系状态
      *
@@ -218,7 +240,22 @@ public class WebImUserController extends BaseController {
     @WrapUpResponseBody
     public List<WebImGroup> listUserGroups(@PathVariable String userCode) {
         return webImUserManager.listUserGroups(userCode);
+    }
 
+    @ApiOperation(value = "27根据群名查询用户所在群列表")
+    @RequestMapping(value = "/queryUserGroups/{userCode}", method = RequestMethod.GET)
+    @WrapUpResponseBody
+    public List<WebImGroup> queryUserGroup(@PathVariable String userCode, String name) {
+        return webImUserManager.queryUserGroups(userCode, name);
+    }
+
+    @ApiOperation(value = "28根据群名群列表")
+    @RequestMapping(value = "/queryGroups", method = RequestMethod.GET)
+    @WrapUpResponseBody
+    public PageQueryResult<WebImGroup> queryGroup(HttpServletRequest request, PageDesc pageDesc) {
+        Map<String, Object> params = collectRequestParameters(request);
+        List<WebImGroup> objs = webImUserManager.queryGroups(params, pageDesc);
+        return PageQueryResult.createResult(objs, pageDesc);
     }
 
     /**
@@ -437,18 +474,6 @@ public class WebImUserController extends BaseController {
         return ImageOpt.createIdIcon(userCode, size, point);
     }
 
-    /**
-     * 返回所有服务过用户的 客服专家（客服模式）
-     * @param custCode 用户代码
-     * @param lastServiceDate  最后服务时间，如果为null默认为 一个月内服务过的人员
-     * @return 所有服务的对象
-     */
-    @ApiOperation(value = "25查询和用户交流过的所有客服")
-    @RequestMapping(value = "/services/{custCode}", method = RequestMethod.GET)
-    @WrapUpResponseBody
-    public List<WebImCustomer> listCustomerService(@PathVariable String custCode,
-                                                   Date lastServiceDate) {
-        return webImUserManager.listCustomerService(custCode, lastServiceDate);
-    }
+
 
 }

@@ -5,6 +5,7 @@ import com.centit.im.po.WebImCustomer;
 import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImGroup;
 import com.centit.im.po.WebImGroupMember;
+import com.centit.support.database.utils.PageDesc;
 
 import java.util.Date;
 import java.util.List;
@@ -64,6 +65,12 @@ public interface WebImUserManager {
      */
     List<WebImCustomer> listUnitUsers(String unitCode);
 
+
+    /**
+     * 查询人员
+     */
+    List<WebImCustomer> queryUsers(String name, PageDesc pageDesc);
+
     /**
      * 返回系统联系状态
      */
@@ -94,7 +101,7 @@ public interface WebImUserManager {
      * @param cust
      * @return
      */
-    String configUserInfo(String userCode,WebImCustomer cust);
+    String configUserInfo(String userCode, WebImCustomer cust);
 
     /**
      * 设置用户 朋友的备注信息
@@ -109,6 +116,16 @@ public interface WebImUserManager {
      */
     List<WebImGroup> listUserGroups(String  userCode);
 
+    /**
+     * 返回用户的群
+     * @param userCode 用户代码
+     * @param groupName 群名称
+     * @return WebImGroup
+     */
+    List<WebImGroup> queryUserGroups(String userCode, String groupName);
+
+
+    List<WebImGroup> queryGroups(Map<String, Object> params, PageDesc pageDesc);
     /**
      * 创建群
      * @param webImGroup
