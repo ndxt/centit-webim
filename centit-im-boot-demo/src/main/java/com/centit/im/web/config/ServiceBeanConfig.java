@@ -12,10 +12,11 @@ import com.centit.im.robot.es.po.QuestAndAnswer;
 import com.centit.im.robot.es.service.QuestAndAnswerManager;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.im.service.IntelligentRobotFactory;
+import com.centit.im.service.WebImSocket;
 import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
 import com.centit.im.service.impl.IntelligentRobotFactorySingleImpl;
+import com.centit.im.socketio.WebImSocketListener;
 import com.centit.im.web.plugins.JsfgwSmsMessageSender;
-import com.centit.search.service.ESServerConfig;
 import com.centit.search.service.Impl.ESIndexer;
 import com.centit.search.service.Impl.ESSearcher;
 import com.centit.search.service.IndexerSearcherFactory;
@@ -50,14 +51,16 @@ public class ServiceBeanConfig {
     @Autowired
     QuestAndAnswerManager questAndAnswerManager;
 
-//    @Bean
-//    public MultipartConfigElement multipartConfigElement() {
-//        MultipartConfigFactory factory = new MultipartConfigFactory();
-//        //文件最大
-//        factory.setMaxFileSize("80MB"); //KB,MB
-//        /// 设置总上传数据总大小
-//        return factory.createMultipartConfig();
-//    }
+    @Autowired
+    WebImSocket webImSocket;
+
+    @Bean
+    public WebImSocketListener webImSocketListener(){
+        WebImSocketListener webImSocketListener = new WebImSocketListener();
+        webImSocketListener.setWebImSocket(webImSocket);
+        return webImSocketListener;
+    }
+
     @Bean
     public IntelligentRobotFactory intelligentRobotFactory() {
         if("es".equals(webImProperties.getRobot().getType())){
@@ -78,22 +81,19 @@ public class ServiceBeanConfig {
             return intelligentRobotFactory;
         }
     }
-@Bean
-public ESServerConfig esServerConfig(){
-    return webImProperties.getElasticSearch();
-}
 
     @Bean(name = "esObjectIndexer")
-    public ESIndexer esObjectIndexer(@Autowired ESServerConfig esServerConfig){
+    public ESIndexer esObjectIndexer(){
         return IndexerSearcherFactory.obtainIndexer(
-                esServerConfig, QuestAndAnswer.class);
+                webImProperties.getElasticSearch(), QuestAndAnswer.class);
     }
 
     @Bean(name = "esObjectSearcher")
-    public ESSearcher esObjectSearcher(@Autowired ESServerConfig esServerConfig){
+    public ESSearcher esObjectSearcher(){
         return IndexerSearcherFactory.obtainSearcher(
-                esServerConfig, QuestAndAnswer.class);
+                webImProperties.getElasticSearch(), QuestAndAnswer.class);
     }
+
     @Bean
     public FileStore fileStore(){
 

@@ -11,8 +11,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <artifactId>centit-im-web</artifactId>
-    <name>com.centit.product:centit-im-web</name>
+    <artifactId>centit-im-boot-demo</artifactId>
+    <name>com.centit.product:centit-im-boot-demo</name>
     <version>1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>即时通讯的demo程序,通过引用im-server的web包，实现机器人的接口，并将这个接口注入到im的服务中。

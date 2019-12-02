@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>centit-webim</artifactId>
+        <groupId>com.centit.product</groupId>
+        <version>1.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>centit-im-web-demo</artifactId>
+    <name>com.centit.product:centit-im-web-demo</name>
+    <version>1.2-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <description>即时通讯的demo程序,通过引用im-server的web包，实现机器人的接口，并将这个接口注入到im的服务中。
+    实现机器人的接口还有另一个方法就是 引用 im-client包，在其中实现机器人接口服务供 im服务调用</description>
+
+    <properties>
+        <centit.framework.version>4.6-SNAPSHOT</centit.framework.version>
+        <centit.ip.version>2.1-SNAPSHOT</centit.ip.version>
+        <centit.commons.version>2.3-SNAPSHOT</centit.commons.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.centit.product</groupId>
+            <artifactId>centit-im-robot-es</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.product</groupId>
+            <artifactId>centit-im-view</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.product</groupId>
+            <artifactId>centit-im-module</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>centit-persistence-jdbc-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.support</groupId>
+            <artifactId>centit-database-datasource</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>framework-core-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>framework-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>centit-ip-app-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <scope>runtime</scope>
+            <version>11.2.0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>swagger-bootstrap-ui</artifactId>
+            <version>1.8.2</version>
+        </dependency>
+
+        <!-- server runtime library -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>biz.paluch.logging</groupId>
+            <artifactId>logstash-gelf</artifactId>
+            <version>1.11.1</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                    <user>webim</user>
+                    <password>webim</password>
+                    <!--<driver>org.h2.Driver</driver>-->
+                    <!--<url>jdbc:h2:D:/h2/webim</url>-->
+                    <!--<locations>-->
+                        <!--<location>filesystem:src/main/resources/migration/h2</location>-->
+                    <!--</locations>-->
+                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                    <url>jdbc:mysql://192.168.128.32:3306/webim</url>
+                    <locations>
+                    <location>filesystem:src/main/resources/migration/mysql</location>
+                    </locations>
+                </configuration>
+
+            </plugin>
+
+
+        </plugins>
+    </build>
+
+</project>

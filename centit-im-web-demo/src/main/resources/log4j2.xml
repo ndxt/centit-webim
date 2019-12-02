@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <Configuration status="off" monitorInterval="1800">
+
+    <properties>
+        <!--<property name="LOG_HOME">/logs/sample</property>-->
+        <property name="LOG_HOME">D:/Projects/RunData/webim_home/logs</property>
+         <property name="FILE_NAME">mylog</property>
+    </properties>
+
+    <Appenders>
+         <Console name="Console" target="SYSTEM_OUT">
+             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+         </Console>
+        <RollingRandomAccessFile name="running-log"
+            fileName="${LOG_HOME}/${FILE_NAME}.log" filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd}-%i.log.gz">
+             <PatternLayout
+                 pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+             <Policies>
+                 <TimeBasedTriggeringPolicy />
+                 <SizeBasedTriggeringPolicy size="10 MB" />
+             </Policies>
+             <DefaultRolloverStrategy max="20" />
+        </RollingRandomAccessFile>
+        
+        <Gelf name="logstash-gelf" host="udp:192.168.134.10" port="12201" version="1.1" ignoreExceptions="true">
+            <Field name="timestamp" pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}" />
+            <Field name="logger" pattern="%logger" />
+            <Field name="level" pattern="%level" />
+            <Field name="simpleClassName" pattern="%C{1}" />
+            <Field name="className" pattern="%C" />
+            <Field name="server" pattern="%host" />
+        </Gelf>
+    </Appenders>
+
+     <Loggers>
+         <Root level="error">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="running-log" />
+            <AppenderRef ref="logstash-gelf" />
+        </Root>
+     </Loggers>
+</Configuration>

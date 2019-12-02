@@ -4,7 +4,6 @@ import com.centit.im.service.WebImSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
@@ -14,7 +13,8 @@ import javax.websocket.server.ServerEndpoint;
  * Created by codefan on 17-5-19.
  * @author codefan
  */
-@Service
+//@Service 这个在 spring boot中是必须的，在web的war包中不需要，
+// 所以去掉然后在spring boot的配置类中添加这个bean的创建方法
 @ServerEndpoint(value="/im/{userCode}"/*, configurator = MySpringConfigurator.class*/)
 public class WebImSocketListener {
 
