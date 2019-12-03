@@ -76,17 +76,17 @@
             <version>${centit.framework.version}</version>
         </dependency>
 
-        <!--<dependency>
+        <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-ip-app-boot-config</artifactId>
             <version>${centit.ip.version}</version>
-        </dependency>-->
-
-        <dependency>
-            <groupId>com.centit.framework</groupId>
-            <artifactId>centit-ip-app-boot-jdbc-config</artifactId>
-            <version>${centit.ip.version}</version>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>com.centit.framework</groupId>-->
+            <!--<artifactId>centit-ip-app-boot-jdbc-config</artifactId>-->
+            <!--<version>${centit.ip.version}</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>mysql</groupId>
