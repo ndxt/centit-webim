@@ -7,7 +7,6 @@ import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,14 +27,15 @@ public class WebImGroup implements java.io.Serializable {
     @Id
     @Column(name = "GROUP_ID")
     @ValueGenerator(strategy = GeneratorType.UUID22)
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
     private String groupId;
 
     /**
      * 业务系统ID null
      */
     @Column(name = "OS_ID")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
+    @ValueGenerator(strategy = GeneratorType.CONSTANT, value = ImMessage.DEFAULT_OSID)
     private String osId;
 
     /**
