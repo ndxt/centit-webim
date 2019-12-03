@@ -4,7 +4,6 @@ import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -29,14 +28,15 @@ public class WebImCustomer implements java.io.Serializable {
      */
     @Id
     @Column(name = "USER_CODE")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
     @ValueGenerator(strategy = GeneratorType.UUID)
     private String userCode;
     /**
      * 业务系统ID null
      */
     @Column(name = "OS_ID")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
+    @ValueGenerator(strategy = GeneratorType.CONSTANT, value = ImMessage.DEFAULT_OSID)
     private String osId;
 
     /**用户类别
@@ -50,7 +50,7 @@ public class WebImCustomer implements java.io.Serializable {
      * 用户名称 null
      */
     @Column(name = "USER_NAME")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
     @Length(max = 100, message = "字段长度不能大于{max}")
     private String userName;
     /**

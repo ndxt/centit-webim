@@ -5,7 +5,6 @@ import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -33,21 +32,22 @@ public class WebImMessage implements java.io.Serializable {
      * 业务系统ID null
      */
     @Column(name = "OS_ID")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
     @Length(max = 20, message = "字段长度不能大于{max}")
+    @ValueGenerator(strategy = GeneratorType.CONSTANT, value = ImMessage.DEFAULT_OSID)
     private String  osId;
     /**
      * 消息类别 C chat  G Group  S 系统信息，比如文字
      */
     @Column(name = "MSG_TYPE")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
     @Length(max = 1, message = "字段长度不能大于{max}")
     private String  msgType;
     /**
      * 发送人员 null
      */
     @Column(name = "SENDER")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
     @Length(max = 32, message = "字段长度不能大于{max}")
     private String  sender;
     /**
@@ -60,7 +60,7 @@ public class WebImMessage implements java.io.Serializable {
      * 接收人员（组） null
      */
     @Column(name = "RECEIVER")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
     @Length(max = 32, message = "字段长度不能大于{max}")
     private String  receiver;
     /**

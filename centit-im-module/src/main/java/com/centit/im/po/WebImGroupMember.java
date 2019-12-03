@@ -7,7 +7,6 @@ import com.centit.support.database.orm.GeneratorCondition;
 import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;
 import lombok.Data;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -34,7 +33,8 @@ public class WebImGroupMember implements java.io.Serializable {
      * 业务系统ID null
      */
     @Column(name = "OS_ID")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
+    @ValueGenerator(strategy = GeneratorType.CONSTANT, value = ImMessage.DEFAULT_OSID)
     private String osId;
 
     @Column(name = "GROUP_ALIAS")

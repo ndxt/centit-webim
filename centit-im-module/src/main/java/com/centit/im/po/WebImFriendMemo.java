@@ -5,7 +5,6 @@ import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -30,8 +29,9 @@ public class WebImFriendMemo implements java.io.Serializable {
      * 业务系统ID null
      */
     @Column(name = "OS_ID")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
     @Length(max = 20, message = "字段长度不能大于{max}")
+    @ValueGenerator(strategy = GeneratorType.CONSTANT, value = ImMessage.DEFAULT_OSID)
     private String  osId;
     /**
      * 最后更改时间 null

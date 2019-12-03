@@ -1,7 +1,6 @@
 package com.centit.im.po;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -21,14 +20,14 @@ public class WebImGroupMemberId implements java.io.Serializable {
      * 用户代码 null
      */
     @Column(name = "USER_CODE")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
     private String userCode;
 
     /**
      * 组代码 null
      */
     @Column(name = "UNIT_CODE")
-    @NotBlank(message = "字段不能为空")
+    //@NotBlank(message = "字段不能为空")
     private String groupId;
 
     /* default constructor */
