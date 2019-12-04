@@ -167,6 +167,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
 
     private WebImCustomer fetchCustomerInfo(String userCode){
         IUserInfo ui= CodeRepositoryUtil.getUserInfoByCode(userCode);
+        if(ui==null){ //数据库数据不一致会导致这个情况
+            return null;
+        }
         WebImCustomer cust = new WebImCustomer(userCode,ui.getUserName());
         cust.setUserType("U");
         cust.setOsId(ImMessage.DEFAULT_OSID);
@@ -186,8 +189,10 @@ public class WebImUserManagerImpl implements WebImUserManager {
             if(cust==null){
                 cust = fetchCustomerInfo(user.getUserCode());
             }
-            cust.setUserState(webImSocket.checkUserState(cust.getUserCode()));
-            allcusts.add(cust);
+            if(cust!=null) {
+                cust.setUserState(webImSocket.checkUserState(cust.getUserCode()));
+                allcusts.add(cust);
+            }
         }
         return allcusts;
     }
@@ -203,7 +208,6 @@ public class WebImUserManagerImpl implements WebImUserManager {
         if(result!=null && result.size()>0){
             return result;
         }
-
         List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers();
         if (users == null || users.size() < 1)
             return new ArrayList<>();
@@ -217,7 +221,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
                 if(cust == null) {
                     nMatchCount++;
                     if (nMatchCount > startRow) {
-                        cust = fetchCustomerInfo(user.getUserCode());
+                        cust = new WebImCustomer(user.getUserCode(), user.getUserName());
+                        cust.setUserType("U");
+                        cust.setOsId(ImMessage.DEFAULT_OSID);
                         cust.setUserState(ImMessage.USER_STATE_OFFLINE);
                         allcusts.add(cust);
                     }
@@ -230,6 +236,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
         pageDesc.setTotalRows(nMatchCount>=endRow? nMatchCount + pageDesc.getPageSize() :  nMatchCount);
         return allcusts;
     }
+
     /**
      * 返回系统联系状态
      */
@@ -280,7 +287,10 @@ public class WebImUserManagerImpl implements WebImUserManager {
             return null;
         List<IUnitInfo> userUnits = new ArrayList<>(units.size());
         for( IUserUnit unit : units ) {
-            userUnits.add(CodeRepositoryUtil.getUnitInfoByCode(unit.getUnitCode()));
+            IUnitInfo unitInfo = CodeRepositoryUtil.getUnitInfoByCode(unit.getUnitCode());
+            if(unitInfo!=null) {
+                userUnits.add(unitInfo);
+            }
         }
         return userUnits;
     }
