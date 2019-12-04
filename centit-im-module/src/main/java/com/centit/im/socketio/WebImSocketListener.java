@@ -21,7 +21,7 @@ public class WebImSocketListener {
     private static Logger logger = LoggerFactory.getLogger(WebImSocketListener.class);
 
     //static ApplicationContext context;
-    static WebImSocket webImSocket;
+    public static WebImSocket webImSocket;
 
     /**
      * ServerEndpoint 对象是每个线程都会创建一个，所以这个依赖的bean要设置为静态变量

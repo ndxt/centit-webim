@@ -1,6 +1,6 @@
 package com.centit.im.robot.es.service.impl;
 
-import com.centit.framework.common.ObjectException;
+import com.centit.support.common.ObjectException;
 import com.centit.im.robot.es.po.QuestAndAnswer;
 import com.centit.im.robot.es.service.QuestAndAnswerManager;
 import com.centit.search.service.Impl.ESIndexer;

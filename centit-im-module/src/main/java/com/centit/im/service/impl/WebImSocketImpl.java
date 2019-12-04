@@ -70,7 +70,7 @@ public class WebImSocketImpl implements WebImSocket {
     @Autowired
     protected WebImGroupMemberDao webImGroupMemberDao;
 
-    @Value("${webim.notify.type:none}")
+    @Value("${webim.notify.type:}") //none 不推送
     protected String noticeType;
 
     @Autowired
@@ -667,14 +667,14 @@ public class WebImSocketImpl implements WebImSocket {
 
     private void pushOfflineMessage(String receiver, ImMessage message){
         Map<String,Object> content = message.getContent();
-        if(StringUtils.isBlank(noticeType)){ // sms
+        if(StringUtils.isBlank(noticeType)){ // 空 使用默认推送
             notificationCenter.sendMessage(
                     message.getSender(), receiver,
                     ImMessage.DEFAULT_OSID/*"WebIM"*/,
                     "WebIM离线消息",
                     StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/))
             );
-        } else {
+        } else if(!"none".equals(noticeType)) { //"none" 不推动
             notificationCenter.sendMessageAppointedType(noticeType,
                     message.getSender(), receiver,
                     ImMessage.DEFAULT_OSID/*"WebIM"*/,

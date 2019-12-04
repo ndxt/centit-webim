@@ -7,6 +7,8 @@ import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
 import com.centit.framework.model.adapter.PlatformEnvironment;
+import com.centit.im.service.WebImSocket;
+import com.centit.im.socketio.WebImSocketListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
@@ -32,6 +34,9 @@ public class InstantiationServiceBeanPostProcessor implements ApplicationListene
     @Autowired
     private PlatformEnvironment platformEnvironment;
 
+    @Autowired
+    protected WebImSocket webImSocket;
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event){
         CodeRepositoryCache.setPlatformEnvironment(platformEnvironment);
@@ -41,7 +46,7 @@ public class InstantiationServiceBeanPostProcessor implements ApplicationListene
         if(!file.exists()){
             file.mkdirs();
         }
-
+        WebImSocketListener.webImSocket = webImSocket;
         OperationLogCenter.registerOperationLogWriter(operationLogWriter);
     }
 

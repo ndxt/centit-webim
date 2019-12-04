@@ -3,7 +3,7 @@ package com.centit.im.client;
 import com.centit.framework.appclient.AppSession;
 import com.centit.framework.appclient.HttpReceiveJSON;
 import com.centit.framework.appclient.RestfulHttpRequest;
-import com.centit.framework.common.ObjectException;
+import com.centit.support.common.ObjectException;
 import com.centit.im.dto.FriendMemo;
 import com.centit.im.dto.ImCustomer;
 import com.centit.im.po.ImMessage;
