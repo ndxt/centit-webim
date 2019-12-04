@@ -109,6 +109,9 @@ public class ServiceBeanConfig {
     public NotificationCenter notificationCenter() {
         NotificationCenterImpl notificationCenter = new NotificationCenterImpl();
         notificationCenter.initDummyMsgSenders();
+        JsfgwSmsMessageSender smsMessageManager =new JsfgwSmsMessageSender();
+        smsMessageManager.setSmsSendUrl(webImProperties.getSms().getSendUrl());
+        notificationCenter.registerMessageSender("sms", smsMessageManager);
         //notificationCenter.registerMessageSender("innerMsg",innerMessageManager);
         return notificationCenter;
     }
@@ -119,13 +122,6 @@ public class ServiceBeanConfig {
         TextOperationLogWriterImpl operationLog =  new TextOperationLogWriterImpl();
         operationLog.init();
         return operationLog;
-    }
-
-    @Bean
-    public MessageSender smsMessageManager(){
-        JsfgwSmsMessageSender smsMessageManager =new JsfgwSmsMessageSender();
-        smsMessageManager.setSmsSendUrl(webImProperties.getSms().getSendUrl());
-        return smsMessageManager;
     }
 
     @Bean

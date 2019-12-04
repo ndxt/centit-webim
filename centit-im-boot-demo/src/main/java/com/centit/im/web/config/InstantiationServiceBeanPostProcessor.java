@@ -29,8 +29,6 @@ public class InstantiationServiceBeanPostProcessor implements ApplicationListene
     @Autowired
     private OperationLogWriter operationLogWriter;
 
-    @Autowired
-    private MessageSender smsMessageManager;
 
     @Autowired
     private PlatformEnvironment platformEnvironment;
@@ -44,8 +42,6 @@ public class InstantiationServiceBeanPostProcessor implements ApplicationListene
         if(!file.exists()){
             file.mkdirs();
         }
-
-        notificationCenter.registerMessageSender("sms", smsMessageManager);
         OperationLogCenter.registerOperationLogWriter(operationLogWriter);
     }
 
