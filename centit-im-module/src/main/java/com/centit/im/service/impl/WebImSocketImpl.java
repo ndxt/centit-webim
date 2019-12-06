@@ -1,6 +1,7 @@
 package com.centit.im.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUserInfo;
@@ -665,20 +666,20 @@ public class WebImSocketImpl implements WebImSocket {
         return pushMessage(session, message);
     }
 
-    private void pushOfflineMessage(String receiver, ImMessage message){
+    private void pushOfflineMessage(String receiver, String title, ImMessage message){
         Map<String,Object> content = message.getContent();
         if(StringUtils.isBlank(noticeType)){ // 空 使用默认推送
             notificationCenter.sendMessage(
                     message.getSender(), receiver,
                     ImMessage.DEFAULT_OSID/*"WebIM"*/,
-                    "WebIM离线消息",
+                    title,
                     StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/))
             );
         } else if(!"none".equals(noticeType)) { //"none" 不推动
             notificationCenter.sendMessageAppointedType(noticeType,
                     message.getSender(), receiver,
                     ImMessage.DEFAULT_OSID/*"WebIM"*/,
-                    "WebIM离线消息",
+                    title,
                     StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/))
             );
         }
@@ -692,7 +693,6 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void sendMessage(String userCode, ImMessage message) {
-
         WebImMessage webMessage = new WebImMessage();
         message.getContent().put("contentType",message.getContentType());
         webMessage.copy(message);
@@ -706,7 +706,16 @@ public class WebImSocketImpl implements WebImSocket {
             webMessage.setMsgState("C");
             pushMessage(session, message);
         } else { //是否发送离线消息 这个地方需要有一个设置
-            pushOfflineMessage(message.getReceiver(), message);
+            WebImCustomer cust = customerDao.getObjectById(userCode);
+            String userName;
+            if(cust !=null){
+                userName = cust.getUserName();
+            } else {
+                userName = CodeRepositoryUtil.getUserName(userCode);
+            }
+            pushOfflineMessage(message.getReceiver(),
+                    userName+ " 给您发送了一条消息",
+                    message);
         }
         webMessage.setSendTime(DatetimeOpt.currentUtilDate());
         messageDao.saveNewObject(webMessage);
@@ -723,7 +732,7 @@ public class WebImSocketImpl implements WebImSocket {
         return webMessage;
     }
 
-    private void sendMemberMsg(String userCode, ImMessage message){
+    private void sendMemberMsg(String userCode, String title, ImMessage message){
         Session session = getSessionByUserCode(userCode);
         if (session != null) {
             webImGroupMemberDao.setGroupReadState(userCode, message.getReceiver());
@@ -733,7 +742,7 @@ public class WebImSocketImpl implements WebImSocket {
         } else { //是否发送离线消息 这个地方需要有一个设置
             //这个判断有点多余
             if (!StringUtils.equals(message.getSender(), userCode)) {
-                pushOfflineMessage(userCode, message);
+                pushOfflineMessage(userCode, title, message);
             }
         }
     }
@@ -748,20 +757,32 @@ public class WebImSocketImpl implements WebImSocket {
     public void sendGroupMessage(String unitCode, ImMessage message) {
         WebImMessage webMessage = formatGroupMsg(message);
         messageDao.saveNewObject(webMessage);
+        WebImCustomer cust = customerDao.getObjectById(message.getSender());
+        String userName;
+        if(cust !=null){
+            userName = cust.getUserName();
+        } else {
+            userName = CodeRepositoryUtil.getUserName(message.getSender());
+        }
+
 
         WebImGroup group = webImGroupDao.getObjectById(unitCode);
         if(group==null || "U".equals(group.getGroupType())) {
             List<? extends IUserUnit> users =
                     platformEnvironment.listUnitUsers(unitCode);
-
+            String groupName = group == null? CodeRepositoryUtil.getUnitName(unitCode)
+                    : group.getGroupName();
+            String title = userName + " 在部门群 "+ groupName+ " 中发送了一条消息";
             for (IUserUnit user : users) {
-                sendMemberMsg(user.getUserCode(), message);
+                sendMemberMsg(user.getUserCode(), title, message);
             }
         }else /*if(group!=null)*/ {
+            String title = userName + " 在群 "+ group.getGroupName()+ " 中发送了一条消息";
+
             List<WebImGroupMember> members
                     = webImGroupMemberDao.listObjectsByProperty("groupId",unitCode);
             for(WebImGroupMember member : members ){
-                sendMemberMsg(member.getUserCode(), message);
+                sendMemberMsg(member.getUserCode(), title, message);
             }
         }
     }
