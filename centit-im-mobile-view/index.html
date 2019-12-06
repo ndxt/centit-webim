@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+
+<title>IM 移动版</title>
+
+<link rel="stylesheet" href="./src/css/layui.mobile.css">
+<script src="./mustache.min.js"></script>
+
+<script src="./src/layui.js"></script>
+<script src="./hammer.js"></script>
+</head>
+<body>
+<script src="./index.js"></script>
+<script>
+    
+</script>
+</body>
+</html>
+<style>
+.member_select {
+    background: #fff;
+}
+.mine-input {
+    height: 40px;
+    font-size:20px;
+}
+.static_bottom_btn {
+ position: fixed;
+ bottom: 0;
+ z-index: 999;
+ background: #3988E5;
+ color: white;
+ font-size: 16px;
+ text-align: center;
+ height: 36px;
+ line-height: 36px;
+ width: 100%;
+}
+.member-list {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 86px;
+    bottom: 36px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.custom-group {
+    width: 58%;
+    display: inline-block;
+}
+.delete_group_btn {
+    background: rgb(231, 67, 67);
+    color: rgb(231, 67, 67) !important;
+}
+.delete-group-member {
+    margin-top: 13px;
+    margin-right: 4%;
+    float:right;
+    width: 50px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    color: white;
+    text-align: center;
+    background: rgb(209, 75, 75);
+    border-radius: 8px;
+}
+.add-member {
+    bottom: 41px;
+}
+.search-input {
+    height: 28px;
+    font-size: 16px;
+    margin-top: 4px;
+    background: #f0f0f0;
+    width: 80%;
+    float: left;
+    border: none;
+}
+.search-icon {
+    width: 22px;
+    margin-top: 6px;
+    margin-left: 16px;
+    margin-right: 12px;
+    float: left;
+}
+.search-list {
+    padding-top: 6px;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+.input-container {
+    margin-top: 6px;
+    background: #f0f0f0;
+    height:32px;
+    width: 96%;
+    margin: 0 auto;
+    line-height: 28px;
+    border-radius: 10px;
+}
+.avatar-container {
+    height:43px;
+    width: 58px;
+    border: 1px solid #fff;
+    position: absolute;
+    left: 0px;
+    top: 8px;
+    height: 43px;
+}
+.avatar-container img {
+    margin-left: 10px;
+    width: 30px !important;
+    height: 30px !important;
+    position: static !important;
+}
+.search-list .username {
+    color: #000;
+    font-size: 15px;
+    margin-top: 10px !important;
+}
+.member-list li {
+    padding-right: 0px !important;
+    border-bottom: 1px solid #f5f5f5 !important;
+}
+.member-checkbox {
+    position: relative;
+    bottom: 20px;
+    right: 8px;
+    float: right;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid #E6E6E6;
+}
+.member-checkbox img {
+    position: absolute !important;
+    left: -1px !important;
+    top: -1px !important;
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 100%
+}
+.btn-container {
+    display: flex;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    border-top: 1px solid #f5f5f5;
+}
+.btn-container .static_bottom_btn {
+    position: static !important;
+    background: #fff;
+    color: #000;
+    font-size: 14px;
+    flex: 1;
+    
+}
+.btn-container .static_bottom_btn:first-child {
+    border-right: 1px solid #f5f5f5;
+}
+.unit-user-list {
+    top: 51px;
+    bottom: 0px;
+}
+.unit-user-list .custom-group {
+    width: 100%;
+}
+.layim-null {
+    height: 20px;
+    line-height: 20px;
+    padding: 10px 0;
+    font-size: 17px;
+    color: #999;
+    text-align: center;
+    cursor: default;
+    font-size: 14px;
+}
+.search-list-container {
+    width: 100%;
+    height: auto;
+}
+</style>
