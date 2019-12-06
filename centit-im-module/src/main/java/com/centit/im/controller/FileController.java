@@ -7,10 +7,9 @@ import com.centit.fileserver.utils.FileServerConstant;
 import com.centit.fileserver.utils.SystemTempFileUtils;
 import com.centit.fileserver.utils.UploadDownloadUtils;
 import com.centit.framework.common.JsonResultUtils;
-import com.centit.support.common.ObjectException;
-import com.centit.framework.common.ResponseData;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.support.algorithm.NumberBaseOpt;
+import com.centit.support.common.ObjectException;
 import com.centit.support.file.FileIOOpt;
 import com.centit.support.file.FileMD5Maker;
 import com.centit.support.file.FileSystemOpt;
@@ -203,24 +202,20 @@ public class FileController extends BaseController {
             throws IOException {
         //FileRangeInfo fr = new FileRangeInfo(token,size);
         Pair<String, InputStream> fileInfo = fetchInputStreamFromRequest(request);
-
-        long tempFileSize = 0;
         // 如果文件已经存在则完成秒传，无需再传
         if (fileStore.checkFile(token, size)) {//如果文件已经存在 系统实现秒传
             //添加完成 后 相关的处理  类似与 uploadRange
             completedStoreFile(token, size, fileInfo.getLeft(), response);
-            tempFileSize = size;
         } else {
             //检查临时目录中的文件大小，返回文件的其实点
             //String tempFilePath = FileUploadUtils.getTempFilePath(token, size);
-            tempFileSize = SystemTempFileUtils.checkTempFileSize(
+            long tempFileSize = SystemTempFileUtils.checkTempFileSize(
                     SystemTempFileUtils.getTempFilePath(token, size));
+            JsonResultUtils.writeOriginalJson(
+                    UploadDownloadUtils.makeRangeUploadJson(tempFileSize, token,
+                            token + "_" + size).toJSONString(), response);
         }
-
-        JsonResultUtils.writeOriginalJson(
-                UploadDownloadUtils.makeRangeUploadJson(tempFileSize).toJSONString(), response);
     }
-
     /*
      * 保存文件
      */
@@ -230,26 +225,18 @@ public class FileController extends BaseController {
 
             String fileId =  fileMd5 +"_"+String.valueOf(size)+"."+
                     FileType.getFileExtName(fileName);
-            //String filePath = fs.getFileStoreUrl(fileMd5,size);
             // 返回响应
-            JSONObject json = new JSONObject();
-            /*json.put("start", size);
-            json.put("name", fileName);
-            json.put("token", fileMd5);
-            json.put("success", true);
-            json.put("fileId", fileId);*/
             Map<String,String> json1 = new HashMap<>();
-            json1.put("src","file/download/"+fileId+"?fileName="+fileName);
+            json1.put("src","service/file/download/"+fileId+"?fileName="+fileName);
             json1.put("fileId", fileId);
-            json1.put("token", fileMd5);
-            json1.put("name", fileName);
-            json.put(ResponseData.RES_CODE_FILED, 0);
-            json.put(ResponseData.RES_MSG_FILED, "上传成功");
-            json.put(ResponseData.RES_DATA_FILED, json1);
+            json1.put("fileMd5", fileMd5);
+            json1.put("fileSize", String.valueOf(size));
+            json1.put("fileName", fileName);
 
+            JSONObject json = UploadDownloadUtils.makeRangeUploadCompleteJson(size, json1);
             JsonResultUtils.writeOriginalJson(json.toString(), response);
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             JsonResultUtils.writeHttpErrorMessage(
                     FileServerConstant.ERROR_FILE_PRETREAT,
                     "文件上传成功，但是在保存前：" + e.getMessage(), response);
@@ -314,7 +301,7 @@ public class FileController extends BaseController {
             }else if( uploadSize>0){
 
                 JsonResultUtils.writeOriginalJson(UploadDownloadUtils.
-                        makeRangeUploadJson(uploadSize).toJSONString(), response);
+                        makeRangeUploadJson(uploadSize,token, token+"_"+size).toJSONString(), response);
             }
 
         }catch (ObjectException e){
