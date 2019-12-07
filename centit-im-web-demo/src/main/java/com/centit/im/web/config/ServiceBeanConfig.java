@@ -2,6 +2,7 @@ package com.centit.im.web.config;
 
 import com.centit.fileserver.common.FileStore;
 import com.centit.fileserver.utils.OsFileStore;
+import com.centit.framework.common.SysParametersUtils;
 import com.centit.framework.components.impl.NotificationCenterImpl;
 import com.centit.framework.components.impl.TextOperationLogWriterImpl;
 import com.centit.framework.config.SpringSecurityCasConfig;
@@ -23,6 +24,7 @@ import com.centit.search.service.Impl.ESIndexer;
 import com.centit.search.service.Impl.ESSearcher;
 import com.centit.search.service.IndexerSearcherFactory;
 import com.centit.support.algorithm.NumberBaseOpt;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.*;
@@ -109,8 +111,11 @@ public class ServiceBeanConfig implements EnvironmentAware {
 
     @Bean
     public FileStore fileStore(){
-        String appHome = this.env.getProperty("framework.app.home","/");
-        return new OsFileStore(appHome+"/files");
+        String baseHome = env.getProperty("os.file.base.dir");
+        if(StringUtils.isBlank(baseHome)) {
+            baseHome = SysParametersUtils.getUploadHome();
+        }
+        return new OsFileStore(baseHome);
     }
 
     @Bean
