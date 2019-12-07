@@ -49,9 +49,6 @@ public class ServiceBeanConfig {
     IntegrationEnvironment integrationEnvironment;
 
     @Autowired
-    QuestAndAnswerManager questAndAnswerManager;
-
-    @Autowired
     WebImSocket webImSocket;
 
     @Bean

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service("questAndAnswerManager")
 public class QuestAndAnswerManagerImpl implements QuestAndAnswerManager {
+
     @Autowired(required = false)
     private ESIndexer esObjectIndexer;
 

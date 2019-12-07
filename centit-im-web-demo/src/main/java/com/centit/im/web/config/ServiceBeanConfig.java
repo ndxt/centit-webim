@@ -62,9 +62,6 @@ public class ServiceBeanConfig implements EnvironmentAware {
     @Autowired
     IntegrationEnvironment integrationEnvironment;
 
-    @Autowired
-    QuestAndAnswerManager questAndAnswerManager;
-
     @Bean
     public ESServerConfig esServerConfig(){
         ESServerConfig config = new ESServerConfig();
