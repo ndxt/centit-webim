@@ -3,8 +3,8 @@ package com.centit.im.dao;
 import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.im.po.WebImCustomer;
+import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.DatetimeOpt;
-import com.centit.support.database.utils.QueryUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
@@ -71,7 +71,7 @@ public class WebImCustomerDao extends BaseDaoImpl<WebImCustomer,String>
                 " (f.SENDER= :serviceCode and f.RECEIVER = b.USER_CODE)) and f.SEND_TIME >= :serviceDate) " +
                 " and b.USER_TYPE = 'C' " + // 客户
                 " ORDER BY b.LAST_ACTIVE_DATE ";
-        return this.listObjectsBySql(sql, QueryUtils.createSqlParamsMap(
+        return this.listObjectsBySql(sql, CollectionsOpt.createHashMap(
                 "serviceCode",serviceUserCode,"serviceDate",lsd));
     }
 
@@ -86,7 +86,7 @@ public class WebImCustomerDao extends BaseDaoImpl<WebImCustomer,String>
                 " (f.SENDER= :custCode and f.RECEIVER = b.USER_CODE)) and f.SEND_TIME >= :serviceDate) " +
                 " and ( b.USER_TYPE = 'S' or b.USER_TYPE = 'P' ) " + // 客服 或者 专家
                 " ORDER BY b.LAST_ACTIVE_DATE ";
-        return this.listObjectsBySql(sql, QueryUtils.createSqlParamsMap(
+        return this.listObjectsBySql(sql, CollectionsOpt.createHashMap(
                 "custCode", custCode,"serviceDate",lsd));
     }
 

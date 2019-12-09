@@ -13,6 +13,8 @@ public class FileUpAndDownController extends FileController {
 
     @Override
     protected void fileUploadCompleteOpt(String fileMd5, long size, JSONObject retJson) {
-
+        /*Map<String, Object> fileInfo = (Map<String, Object>)retJson.get(ResponseData.RES_DATA_FILED);
+        String src = (String)fileInfo.get("src");
+        fileInfo.put("src" ,"./"+src);*/
     }
 }
