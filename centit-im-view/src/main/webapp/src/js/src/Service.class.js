@@ -44,10 +44,7 @@ define(["src/js/ie/IM.class","mustache"],function (IM,Mustache) {
                 id = this.mine.id
             return fetch(`${ctx }/webim/webimcust/cust/${id }?lastServiceDate=1949-10-1`)
                 .then(res => res.json()
-        )
-        .
-            then(res => res.data
-        )
+        ).then(res => res.data)
         }
 
 

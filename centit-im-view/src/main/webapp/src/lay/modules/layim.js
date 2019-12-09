@@ -19,7 +19,8 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
   
   //回调
   var call = {};
-  
+
+  var PREFIX_URL = '/im/'
   //对外API
   var LAYIM = function(){
     this.v = v;
@@ -1703,9 +1704,9 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
           if(res.code == 0){
             res.data = res.data || {};
             if(type === 'images'){
-              focusInsert(thatChat.textarea[0], 'img['+ (res.data.src||'') +']');
+              focusInsert(thatChat.textarea[0], 'img[' + PREFIX_URL + (res.data.src||'') +']');
             } else if(type === 'file'){
-              focusInsert(thatChat.textarea[0], 'file('+ (res.data.src||'') +')['+ (res.data.name||'下载文件') +']');
+              focusInsert(thatChat.textarea[0], 'file('  + PREFIX_URL + (res.data.src||'') +')['+ (res.data.name||'下载文件') +']');
             }
             sendMessage();
           } else {
