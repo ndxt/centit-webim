@@ -25,11 +25,11 @@ spring:
   servlet:
    multipart:
     enabled: true
-    max-file-size: 20MB
-    max-request-size: 20MB
+    max-file-size: 256MB
+    max-request-size: 320MB
 framework:
   app:
-    home: /Projects/RunData/webim_home
+    home: /D/Projects/RunData/webim_home
   ip:
     enable: true
     system-enable: true
@@ -53,7 +53,7 @@ webim:
     cluster-name: elasticsearch
     min-score: 0.5
   file-store:
-    base-dir: /Projects/RunData/webim_home/upload
+    base-dir: /D/Projects/RunData/webim_home/upload
   sms:
     send-url: http://218.94.123.217:8998/service/sendMsg
   notify:
