@@ -60,6 +60,19 @@ let model = 'CREATE_MODE'
 let chatList = function () {
 
 }
+
+// async upload(file) {
+//   const upload = new Uploader(file, this.params, this.uploadCompleteCb);
+//   const uploads = this.$refs.Upload.fileList;
+
+//   uploads.unshift(upload);
+//   this.uploads = uploads;
+//   await upload.start();
+
+//   this.$nextTick(() => {
+//     this.$root.$emit("reload");
+//   });
+// }
 //想办法改变其加载方式
 layui.config({
     version: true
@@ -241,6 +254,40 @@ function getUnitUser(unitId) {
  return users
 }
 
+function getHistoryChat(receiver, sender) {
+  let histroyChat = []
+  $.ajax({
+    type: "GET",
+    //后面优化可以改为true
+    async: false,
+    url: `/im/webimmsg/historyMessage/${receiver}/${sender}`,
+    dataType: "json",
+    contentType: "application/json",
+    data: {
+
+    },
+    success: (data)=>{
+      
+      histroyChat = data.data.objList
+      
+    }
+ })
+ return histroyChat
+}
+
+
+function getCustomFriendList(unitId) {
+  let units = searchSubUnit(unitId)
+  return units.map((item) => {
+    return {
+      "groupname": item.unitName
+            ,"id": item.unitCode
+            ,"avatar": BASE_AVATAR_URL + item.unitCode
+            ,"list": []
+    }
+  })
+}
+
 function getMineFriendList(id) {
     // 目前写死friend，后面会根据id获取的部门名找到部门id等其他信息
     let friendGroup = []
@@ -262,28 +309,6 @@ function getMineFriendList(id) {
         }
       }
    })
-   
-  //  for(let i = 0; i < friendGroup.length; i++) {
-  //    let tempFriendList = friendGroup[i].list
-  //   $.ajax({
-  //     type: "GET",
-  //     //TODO后面优化可以改为true
-  //     async: false,
-  //     url: `/im/webimcust/unitUsers/${friendGroup[i].id}`,
-  //     dataType: "json",
-  //     success: function(data){
-  //       for(let i = 0; i < data.data.length; i++) {
-          
-  //         tempFriendList.push($.extend({
-  //           "avatar": BASE_AVATAR_URL + data.data[i].userCode,
-  //           "sign": "",
-  //           username: data.data[i].userName,
-  //           id: data.data[i].userCode
-  //         }, data.data[i]))
-  //       }
-  //     }
-  //  })
-  //  }
    
      
      return friendGroup
@@ -317,7 +342,8 @@ class User {
         //这里需要同步执行
         this.im = layim
         this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-        this.friend = getMineFriendList(this.mine.id)
+        // this.friend = getMineFriendList(this.mine.id)
+        this.friend =  getCustomFriendList(145)
         // this.createGroup()
         this.afterInit()
     }
@@ -527,6 +553,7 @@ class User {
                     },
                     success: (data)=>{
                       let list = data.data.objList
+                      
                       let data1 = {
                         users: list,
                         classFn: function() {
@@ -608,6 +635,7 @@ class User {
                     this.createGroupMemberPanel(unitId)
                   }
                 })
+                
                 layim.panel({
                   title: '选择群组' //标题
                   ,tpl:Mustache.render(`
@@ -1513,8 +1541,13 @@ class User {
             
          });
         });
+//监听自定义工具栏code点击
+        // layim.on('tool(code)', (insert, send, obj) => { //事件中的tool为固定字符，而code则为过滤器，对应的是工具别名（alias）
+        //   let receiver = obj.data.id
+        //   let sender = this.mine.id
+        //   let chat = getHistoryChat(receiver, sender)
 
-
+        // }); 
         //监听点击“新的朋友”
     layim.on('newFriend', function(){
     layim.panel({
@@ -1590,6 +1623,7 @@ layim.on('newFriend', function(){
 
       //监听返回
     layim.on('back', function(e){
+      
       //如果你只是弹出一个会话界面（不显示主面板），那么可通过监听返回，跳转到上一页面，如：history.back();
     });
 
@@ -1599,15 +1633,35 @@ layim.on('newFriend', function(){
     layim.on('sendMessage', this.onSendMessage.bind(this));
 
     //监听查看更多记录
-    layim.on('chatlog', function(data, ul){
-      console.log(data);
+    layim.on('chatlog', (data, ul) => {
+      console.log(data)
+      let mineId = this.mine.id
+      let receiver = data.id
+      let chatLog  = getHistoryChat(receiver, mineId).reverse()
+      
+      let tpl = '<div class="layim-chat-main" style="bottom:0px !important"><ul>'
+      for(let i = 0; i < chatLog.length; i++) {
+        let className = ""
+        let thisLog = chatLog[i]
+        let sender = chatLog.sender
+        if(thisLog.sender == mineId) {
+          className = "layim-chat-mine"
+        }
+        let content = layim.content(thisLog.content.msg)
+        tpl += `<li class="layim-chat-li ${className}">
+        <div class="layim-chat-user">
+        <img src="${BASE_AVATAR_URL}${sender}" alt="${sender}">
+        <cite>${thisLog.senderName}</cite>
+        </div>
+        <div class="layim-chat-text">${content}</div>
+        </li>`
+      }
+      tpl += '</ul></div>'
       layim.panel({
         title: '与 '+ data.name +' 的聊天记录' //标题
-        ,tpl: '<div style="padding: 10px;">这里是模版，{{d.data.test}}</div>' //模版
-        ,data: { //数据
-          test: 'Hello'
-        }
+        ,tpl: tpl,
       });
+     
     });
     
     //模拟"更多"有新动态

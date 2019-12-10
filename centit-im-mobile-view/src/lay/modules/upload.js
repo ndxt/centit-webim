@@ -181,7 +181,7 @@ layui.define('layer' , function(exports){
     ,elemFile = that.elemFile[0]
     
     //高级浏览器处理方式，支持跨域
-    ,ajaxSend = function(){
+    ,ajaxSend = function(isPass){
       var successful = 0, aborted = 0
       ,items = files || that.files || that.chooseFiles || elemFile.files
       ,allDone = function(){ //多文件全部上传完毕的回调
@@ -193,16 +193,67 @@ layui.define('layer' , function(exports){
           });
         }
       };
+      
+      if(!isPass) {
+        for(let key in items) {
+          const upload = new FormView.default(items[key], {}, function(res){
+            if(res.signal === "secondpass") {
+              layui.each(items, function(index, file){
+                var formData = new FormData();
+                
+                formData.append(options.field, file);
+                // custom code
+                
+                //追加额外的参数
+                layui.each(options.data, function(key, value){
+                  value = typeof value === 'function' ? value() : value;
+                  formData.append(key, value);
+                });
+                
+                
+                //提交文件
+                $.ajax({
+                  url: options.url
+                  ,type: 'post'
+                  ,data: formData
+                  ,contentType: false 
+                  ,processData: false
+                  ,dataType: 'json'
+                  ,headers: options.headers || {}
+                  ,success: function(res){
+                    successful++;
+                    done(index, res);
+                    allDone();
+                  }
+                  ,error: function(){
+                    aborted++;
+                    that.msg('请求上传接口出现异常');
+                    error(index);
+                    allDone();
+                  }
+                });
+              });
+            }
+            
+          })
+          upload.start()
+          return
+        }
+      }
+      
+      
       layui.each(items, function(index, file){
         var formData = new FormData();
         
         formData.append(options.field, file);
+        // custom code
         
         //追加额外的参数
         layui.each(options.data, function(key, value){
           value = typeof value === 'function' ? value() : value;
           formData.append(key, value);
         });
+        
         
         //提交文件
         $.ajax({

@@ -1696,6 +1696,8 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
       }
       ,thatChat = thisChat(), conf = cache.base[api[type]] || {};
       
+
+
       layui.upload.render({
         url: conf.url || ''
         ,method: conf.type
