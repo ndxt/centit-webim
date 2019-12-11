@@ -2,9 +2,11 @@ package com.centit.im.client;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.centit.framework.common.ResponseData;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.basedata.NoticeMessage;
 import com.centit.im.po.ImMessage;
+import com.centit.im.utils.ImMessageBuild;
 import com.centit.support.algorithm.DatetimeOpt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +23,6 @@ public class MessageSenderIMImpl implements MessageSender {
     public void setImClient(IMClient imClient) {
         this.imClient = imClient;
     }
-
-
-
     /**
      * 发送内部系统消息
      *
@@ -33,21 +32,21 @@ public class MessageSenderIMImpl implements MessageSender {
      * @return "OK" 表示成功，其他的为错误信息
      */
     @Override
-    public String sendMessage(String sender, String receiver, NoticeMessage message) {
-        ImMessage iMmessage = new ImMessage ();
-        iMmessage.setSender(sender);
-        iMmessage.setReceiver(receiver);
-        iMmessage.setSenderName(sender);
-        iMmessage.setSendTime(DatetimeOpt.currentUtilDate());
-        iMmessage.setContent((JSONObject)JSON.toJSON(message));
-        iMmessage.setType(ImMessage.MSG_TYPE_SYSTEM);
-        iMmessage.setContentType(ImMessage.CONTENT_TYPE_TEXT);
+    public ResponseData sendMessage(String sender, String receiver, NoticeMessage message) {
         try {
-            imClient.sendMessage(iMmessage);
-            return "OK";
+            imClient.sendMessage(
+                    ImMessageBuild.create()
+                        .sender(sender).receiver(receiver)
+                        .senderName(sender)
+                        .sendTime(DatetimeOpt.currentUtilDate())
+                        .type(ImMessage.MSG_TYPE_SYSTEM)
+                        .contentType(ImMessage.CONTENT_TYPE_TEXT)
+                        .content((JSONObject)JSON.toJSON(message))
+                        .build());
+            return ResponseData.makeSuccessResponse();
         }catch (Exception e){
             log.error(e.getMessage(),e);
-            return e.getMessage();
+            return ResponseData.makeErrorMessage(e.getMessage());
         }
     }
 }

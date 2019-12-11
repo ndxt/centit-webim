@@ -29,6 +29,7 @@ public class WebImProperties {
     @Data
     public static class FileStoreConfig{
         private String baseDir;
+        private String multipartResolver;
     }
 
 }

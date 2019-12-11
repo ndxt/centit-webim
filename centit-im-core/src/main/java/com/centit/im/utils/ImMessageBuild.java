@@ -17,6 +17,10 @@ public class ImMessageBuild {
         msg.setSendTime(DatetimeOpt.currentUtilDate());
     }
 
+    public static ImMessageBuild create(){
+        return new ImMessageBuild();
+    }
+
     public ImMessageBuild type(String msgType){
         msg.setType(msgType);
         return this;

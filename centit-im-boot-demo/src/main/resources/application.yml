@@ -54,6 +54,7 @@ webim:
     min-score: 0.5
   file-store:
     base-dir: /D/Projects/RunData/webim_home/upload
+    multipart-resolver: standard
   sms:
     send-url: http://218.94.123.217:8998/service/sendMsg
   notify:
