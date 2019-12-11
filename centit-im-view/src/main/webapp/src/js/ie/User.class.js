@@ -55,11 +55,11 @@ define(["IM", "mustache", "jquery.raty"], function (IM, Mustache) {
                         mine: this.mine
                     },
                     uploadImage: {
-                        url: ctx + "/file/upload" //（返回的数据格式见下文）
+                        url: ctx + "/im/file/upload" //（返回的数据格式见下文）
                         //默认post
                     },
                     uploadFile: {
-                        url: ctx + "/file/upload" //（返回的数据格式见下文）
+                        url: ctx + "/im/file/upload" //（返回的数据格式见下文）
                         //默认post
                     },
                     brief: true,
