@@ -53,12 +53,18 @@ const UPLOADIMAGE_URL = `/im/service/file/upload`
 const UPLOADFILE_URL = `/im/service/file/upload`
 
 const USER_AVATAR = "http://tp2.sinaimg.cn/2211874245/180/40050524279/0"
+
+let historyChatPageParam = {
+  pageNo: 1,
+  pageSize: 20,
+
+}
 let USER_LIST = []
 let member_id_list = []
 let member_name_list = []
 let model = 'CREATE_MODE'
 let chatList = function () {
-
+  
 }
 
 // async upload(file) {
@@ -255,7 +261,7 @@ function getUnitUser(unitId) {
 }
 
 function getHistoryChat(receiver, sender) {
-  let histroyChat = []
+  let chatInfo = {}
   $.ajax({
     type: "GET",
     //后面优化可以改为true
@@ -263,16 +269,14 @@ function getHistoryChat(receiver, sender) {
     url: `/im/webimmsg/historyMessage/${receiver}/${sender}`,
     dataType: "json",
     contentType: "application/json",
-    data: {
-
-    },
-    success: (data)=>{
+    data: historyChatPageParam,
+    success: (data) => {
       
-      histroyChat = data.data.objList
+      chatInfo = data.data
       
     }
  })
- return histroyChat
+ return chatInfo
 }
 
 
@@ -1637,9 +1641,29 @@ layim.on('newFriend', function(){
       console.log(data)
       let mineId = this.mine.id
       let receiver = data.id
-      let chatLog  = getHistoryChat(receiver, mineId).reverse()
+      let chatLogInfo  = getHistoryChat(receiver, mineId)
+      let chatLog = chatLogInfo.objList.reverse()
+      //根据返回的页数信息，修改
       
-      let tpl = '<div class="layim-chat-main" style="bottom:0px !important"><ul>'
+      let tpl = `<div class="layim-chat-main" style="bottom:0px !important">
+      <ul id="chatlog-container">`
+      let currentPageInfo = chatLogInfo.pageDesc
+      let currentNum = currentPageInfo.pageNo * currentPageInfo.pageSize
+      
+      if(currentNum < currentPageInfo.totalRows ) {
+        historyChatPageParam.pageNo += 1
+        tpl += `<li id="moreChatList" class="layim-chat-system"><span>查看更多聊天记录</span></li>`
+      } else {
+        $("#moreChatList").remove()
+      }
+
+      $('body').off("click", '#moreChatList')
+      $('body').on("click", '#moreChatList', () => {
+       let chatLogInfo  = getHistoryChat(receiver, mineId)
+       let currentPageInfo = chatLogInfo.pageDesc
+       let chatLog = chatLogInfo.objList.reverse()
+      let currentNum = currentPageInfo.pageNo * currentPageInfo.pageSize
+      
       for(let i = 0; i < chatLog.length; i++) {
         let className = ""
         let thisLog = chatLog[i]
@@ -1648,6 +1672,35 @@ layim.on('newFriend', function(){
           className = "layim-chat-mine"
         }
         let content = layim.content(thisLog.content.msg)
+      
+       $("#chatlog-container").prepend(`<li class="layim-chat-li ${className}">
+        <div class="layim-chat-user">
+        <img src="${BASE_AVATAR_URL}${sender}" alt="${sender}">
+        <cite>${thisLog.senderName}</cite>
+        </div>
+        <div class="layim-chat-text">${content}</div>
+        </li>`)
+        $("#chatlog-container").prepend(`<li class="layim-chat-system"><span>${thisLog.sendTime}</span></li>`) 
+      }
+
+      if(currentNum < currentPageInfo.totalRows ) {
+        historyChatPageParam.pageNo += 1
+        $("#moreChatList").remove()
+        $("#chatlog-container").prepend(`<li id="moreChatList" class="layim-chat-system"><span>查看更多聊天记录</span></li>`)
+      } else {
+        $("#moreChatList").remove()
+      }
+      })
+
+      for(let i = 0; i < chatLog.length; i++) {
+        let className = ""
+        let thisLog = chatLog[i]
+        let sender = chatLog.sender
+        if(thisLog.sender == mineId) {
+          className = "layim-chat-mine"
+        }
+        let content = layim.content(thisLog.content.msg)
+        tpl += `<li class="layim-chat-system"><span>${thisLog.sendTime}</span></li>`
         tpl += `<li class="layim-chat-li ${className}">
         <div class="layim-chat-user">
         <img src="${BASE_AVATAR_URL}${sender}" alt="${sender}">
