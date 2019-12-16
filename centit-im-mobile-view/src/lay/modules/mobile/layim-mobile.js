@@ -15,6 +15,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   var layer = layui['layer-mobile'];
   var device = layui.device();
   
+  var USER_AVATAR = "../../../images/userdefalt.png"
   var SHOW = 'layui-show', THIS = 'layim-this', MAX_ITEM = 20;
 
   //回调
@@ -179,8 +180,16 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
       options.item = options.item || 'd.sortHistory';
     }
     
+    
     return ['{{# var length = 0; layui.each('+ options.item +', function(i, data){ length++; }}'
-      ,'<li layim-event="chat" data-type="'+ options.type +'" data-index="'+ (options.index ? '{{'+ options.index +'}}' : (options.type === 'history' ? '{{data.type}}' : options.type) +'{{data.id}}') +'" class="layim-'+ (options.type === 'history' ? '{{data.type}}' : options.type) +'{{data.id}} {{ data.status === "offline" ? "layim-list-gray" : "" }}"><div><img class="layim-img" data-src="{{data.avatar}}"></div><span>{{ data.username||data.groupname||data.name||"佚名" }}</span><p>{{ data.remark||data.sign||"" }}</p><span class="layim-msg-status">new</span></li>'
+      ,'<li layim-event="chat" data-type="'+ options.type +'" data-index="'+ (options.index ? '{{'+ options.index +'}}' : (options.type === 'history' ? '{{data.type}}' : options.type) +'{{data.id}}') +'" class="layim-'+ (options.type === 'history' ? '{{data.type}}' : options.type) +'{{data.id}} {{ data.status === "offline" ? "layim-list-gray" : "" }}">'
+      ,'{{# var type = data.type || data.realType; var name = data.username; if(type === "friend"){ }}'
+      ,'<div><span class="avatar-friend-tpl">{{ data.username||data.groupname||data.name||"佚名" }}</span></div>'
+      , '{{# }else if(type === "group" || type === "unit"){ }}'
+      ,'<div><span class="avatar-group-tpl">群</span></div>'
+      , '{{# }}}'
+      
+      ,'<span>{{ data.username||data.groupname||data.name||"佚名" }}</span><p>{{ data.remark||data.sign||"" }}</p><span class="layim-msg-status">new</span></li>'
     ,'{{# }); if(length === 0){ }}'
       ,'<li class="layim-null">'+ (nodata[options.type] || "暂无数据") +'</li>'
     ,'{{# } }}'].join('');
@@ -230,13 +239,14 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
                   ,'<img class="search-icon" src="./src/images/search.png"/>'
                   ,'<input class="search-input" placeholder="搜索人员" id="query-member"/>'
                   ,'</div>'
+                  ,'<div class="cut-line"></div>'
                   ,'<div class="search-list-container">'
                   ,'</div>'
       ,'<ul class="layim-list-friend">'
       
         ,'{{# layui.each(d.friend, function(index, item){ var groupname = item.groupname; var id = item.id; var spread = d.local["spread"+index]; }}'
         ,'<li>'
-          ,'<h5 class="im-unit" data-groupname="{{ groupname }}" data-id="{{ id }}"  lay-type="{{ spread }}"><i class="layui-icon">&#xe602;</i><span>{{ item.groupname||"未命名分组"+index }}</span></h5>'
+          ,'<h5 class="im-unit" data-groupname="{{ groupname }}" data-id="{{ id }}"  lay-type="{{ spread }}"><span class="im-unit-name">{{ item.groupname||"未命名分组"+index }}</span><span class="right-icon">＞</span></h5>'
           // ,'<li class="layim-null">暂无联系人</li>'
           // ,'<ul class="layui-layim-list {{# if(spread === "true"){ }}'
           // ,' layui-show'
@@ -950,7 +960,9 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
         }
       }
         data.name = data.name || data.username || data.groupname 
-      
+      if(data.name.length > 10) {
+        data.name = data.username = data.name.slice(0, 12) + '...'
+      }
       if(type !== 'history'){
         data.type = type;
       }
@@ -961,10 +973,6 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
     //展开联系人分组
     ,spread: function(othis){
       //改为懒加载
-      $(othis[0]).parent().find(".layim-img").each((index, item) => {
-        var imgSrc = $(item).data('src')
-        $(item).attr('src', imgSrc)
-      })
       var type = othis.attr('lay-type');
       var spread = type === 'true' ? 'false' : 'true';
       var local = layui.data('layim-mobile')[cache.mine.id] || {};

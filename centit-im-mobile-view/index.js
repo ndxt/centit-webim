@@ -46,13 +46,14 @@ const CONTENT_TYPE_NOTICE = "notice";
 const CONTENT_TYPE_FORM = "form";
 const CONTENT_TYPE_PUSH_FORM = "pushForm";
 const CONTENT_TYPE_OVER = "over";
-const BASE_AVATAR_URL = "http://localhost:8080/im/webimcust/sculpture/"
 
 
 const UPLOADIMAGE_URL = `/im/service/file/upload`
 const UPLOADFILE_URL = `/im/service/file/upload`
 
-const USER_AVATAR = "http://tp2.sinaimg.cn/2211874245/180/40050524279/0"
+const USER_AVATAR = "./src/images/userdefalt.png"
+
+const SELECT_UNIT_CRUMB = ['南大先腾']
 
 let historyChatPageParam = {
   pageNo: 1,
@@ -113,15 +114,17 @@ let TOTAL_UNIT_NAME = ''
     }
     
     layim.panel({
-      title: `选择群成员(${TOTAL_UNIT_NAME})` //标题
+      title: `选择群成员` //标题
       ,tpl:Mustache.render(`
       <div class="search-list">
+      <div class="crumb-container"></div>
+      <div class="cut-line"></div>
       <ul class="member-list unit-user-list layui-layim-list  layui-show">
       {{#users}}
       <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
       <div>
       <div class="avatar-container">
-      <img src="${BASE_AVATAR_URL}{{userCode}}">
+      <img src="${USER_AVATAR}">
       </div>
       </div>
       <span class="username">
@@ -137,29 +140,62 @@ let TOTAL_UNIT_NAME = ''
       </div>
       ` , data1),
    });
-   TOTAL_UNIT_NAME = ''
+   createCrumb()
   }
 
-  function addSubunitList(subunits) {
+  function createCrumb() {
+    let crumb = SELECT_UNIT_CRUMB.slice(SELECT_UNIT_CRUMB.length -2, SELECT_UNIT_CRUMB.length)
+    let tpl = ''
+    for(let i = 0; i < crumb.length - 1; i++) {
+           tpl += `<span class="non-last-crumb">${crumb[i]}</span>`
+           tpl += `<span>></span>`
+         }
+         tpl += `<span class="last-crumb">${crumb[crumb.length - 1]}</span>`
+        $(".crumb-container").html(tpl)
+  }
+
+  function addSubunitList(subunits, id) {
+    let userList = getUnitUser(id)
     let data1 = {
-      units: subunits
+      units: subunits,
+      users: userList
     }
+    
     layim.panel({
-      title: `选择群组(${TOTAL_UNIT_NAME})` //标题
+      title: `选择群组` //标题
       ,tpl:Mustache.render(`
       <div class="search-list">
-      <ul class="layui-layim-list  layui-show layim-list-friend">
+      <div class="crumb-container"></div>
+      <div class="cut-line"></div>
+      <ul class="layui-layim-list layim-tab-content layui-show layim-list-friend">
       {{#units}}
-      <li data-groupname="{{unitName}}" style="padding-left:0px;" data-id="{{unitCode}}" data-type="group" data-index="0" class="im-unit">
-      <h5 data-id="{{unitCode}}" lay-type="false"><i class="layui-icon"></i><span>{{unitName}}</span></h5>
-      <p></p><span class="layim-msg-status">new</span>
+      <li data-groupname="{{unitName}}" style="padding-left:0px;border:none;" data-id="{{unitCode}}" data-type="group" data-index="0" class="im-unit">
+      
+      <h5 style="width:94%;" data-id="{{unitCode}}" lay-type="false">
+      <span class="im-unit-name">{{ unitName}}</span>
+      <span class="right-icon">＞</span>
+      </h5>
       </li>
       {{/units}}
+      <div class="cut-line"></div>
+      {{#users}}
+      <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
+      <div>
+      <div class="avatar-container">
+      <img src="${USER_AVATAR}">
+      </div>
+      </div>
+      <span class="username">
+      {{userName}}</span>
+      <p></p><span class="layim-msg-status">new</span>
+      </li>
+      {{/users}}
       </ul>
+      
       </div>
       ` , data1),
    });
-
+   createCrumb()
   }
 
   function searchSubUnit(id) {
@@ -212,7 +248,7 @@ function getMineUnit(id) {
                 "groupname": data.data[i].unitName
                 ,"id": data.data[i].unitCode
                 ,realType: "unit"
-                ,"avatar": BASE_AVATAR_URL + data.data[i].unitName
+                ,"avatar": USER_AVATAR
               }
             }
           }
@@ -237,7 +273,7 @@ function getUserGroups(id) {
               "groupname": data.data[i].groupName
               ,"id": data.data[i].groupId
               ,realType: 'group'
-              ,"avatar": BASE_AVATAR_URL + data.data[i].groupId
+              ,"avatar": USER_AVATAR
             }
           }
         }
@@ -286,7 +322,7 @@ function getCustomFriendList(unitId) {
     return {
       "groupname": item.unitName
             ,"id": item.unitCode
-            ,"avatar": BASE_AVATAR_URL + item.unitCode
+            ,"avatar": USER_AVATAR
             ,"list": []
     }
   })
@@ -307,7 +343,7 @@ function getMineFriendList(id) {
           friendGroup[i] = {
             "groupname": data.data[i].unitName
             ,"id": data.data[i].unitCode
-            ,"avatar": BASE_AVATAR_URL + data.data[i].unitCode
+            ,"avatar": USER_AVATAR
             ,"list": []
           }
         }
@@ -334,12 +370,19 @@ const TEST_USER2 = {
   "userType": "U"
   }
 
+  const TEST_USER3 = {
+    "osId": "WebIM",
+    "userCode": "6278",
+    "userName": "谢绍水",
+    "userState": "F",
+    "userType": "U"
+    }
 class User {
     constructor() {
-        let USER1 = TEST_USER2
+        let USER1 = TEST_USER1
         this.closeHandler
         this.mine = $.extend(
-          {"avatar": BASE_AVATAR_URL + USER1.userCode,
+          {"avatar": USER_AVATAR,
           "sign": "",
           "username": USER1.userName,
            id: USER1.userCode}, USER1)
@@ -347,7 +390,7 @@ class User {
         this.im = layim
         this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
         // this.friend = getMineFriendList(this.mine.id)
-        this.friend =  getCustomFriendList(145)
+        this.friend =  getCustomFriendList(1)
         // this.createGroup()
         this.afterInit()
     }
@@ -356,12 +399,12 @@ class User {
       layim.chat({
         name: user.name //名称
         ,type: 'friend' //聊天类型
-        ,avatar: BASE_AVATAR_URL + user.id //头像
+        ,avatar: USER_AVATAR //头像
         ,id: user.userId //定义唯一的id方便你处理信息
       });
     }
 
-    createSelectList2(subUnits, customClassName) {
+    createSelectList2(subUnits, customClassName, groupId) {
       let className = 'select_member_btn'
       
       if(customClassName) {
@@ -369,9 +412,30 @@ class User {
       }
       let allFriendList = subUnits
                 
-                
+      let list = getUnitUser(groupId)
                 let data1 = {
-                 groups: allFriendList
+                 groups: allFriendList,
+                 users: list,
+                 classFn: function() {
+                   
+                   if(member_id_list.indexOf(this.userCode) > -1) {
+                     return 'member_select'
+                   } else {
+                     return ''
+                   }
+                 },
+                 crumb: SELECT_UNIT_CRUMB,
+                 hasMembers: function() {
+                   return !list.length
+                 },
+                 imgSrc: function() {
+                   
+                   if(member_id_list.indexOf(this.userCode) > -1) {
+                     return './src/images/selected.png'
+                   } else {
+                     return ''
+                   }
+                 }
                 }
                 
                 $("body").off("mouseup", ".selectMember")
@@ -437,12 +501,14 @@ class User {
                 $("body").off("mouseup", ".selectGroup")
                 $("body").on("mouseup", ".selectGroup", (e) => {
                   let unitId = $(e.currentTarget).data('id')
+                  let unitName = $(e.currentTarget).data('name')
                   let subunits = searchSubUnit(unitId)
+                  SELECT_UNIT_CRUMB.push(unitName)
                   if(subunits.length !== 0) {
                     if(model === "ADD_MODE") {
-                      this.createSelectList2(subunits, 'add-group-member')
+                      this.createSelectList2(subunits, 'add-group-member', unitId)
                     } else {
-                      this.createSelectList2(subunits)
+                      this.createSelectList2(subunits, false, unitId)
                     }
                     
                   } else {
@@ -457,24 +523,39 @@ class User {
                   <img class="search-icon" src="./src/images/search.png"/>
                   <input class="search-input" placeholder="搜索" id="query-member"/>
                   </div>
+                  <div class="crumb-container"></div>
+                  <div class="cut-line"></div>
                   <ul class="member-list layui-layim-list  layui-show">
                   {{#groups}}
-                  <li data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup">
-                  <div>
-                  <div class="avatar-container">
-                  <img src="${BASE_AVATAR_URL}{{unitCode}}">
-                  </div>
-                  </div>
-                  <span class="username">
-                  {{unitName}}</span>
-                  <p></p><span class="layim-msg-status">new</span>
+                  <li style="padding-left:25px;" data-name="{{unitName}}" data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup">
+                  <h5 style="display:block">
+                  <span>{{ unitName }}</span>
+                  <span class="right-icon">＞</span>
+                  </h5>
                   </li>
                   {{/groups}}
+                  <div class="cut-line"></div>
+                  {{#users}}
+            <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
+            <div>
+            <div class="avatar-container">
+            <img src="${USER_AVATAR}">
+            </div>
+            </div>
+            <span class="username">
+            {{userName}}</span>
+            <p></p><span class="layim-msg-status">new</span>
+            <span class="member-checkbox">
+            <img src="{{imgSrc}}"/>
+            </span>
+            </li>
+            {{/users}}
                   </ul>
                   <div class="static_bottom_btn ${className}">确认</div>
                   </div>
                   ` , data1),
                });
+               createCrumb()
   
                 
     }
@@ -587,7 +668,7 @@ class User {
                         <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
             <div>
             <div class="avatar-container">
-            <img src="${BASE_AVATAR_URL}{{userCode}}">
+            <img src="${USER_AVATAR}">
             </div>
             </div>
             <span class="username">
@@ -628,12 +709,14 @@ class User {
                 $("body").off("mouseup", ".selectGroup")
                 $("body").on("mouseup", ".selectGroup", (e) => {
                   let unitId = $(e.currentTarget).data('id')
+                  let unitName = $(e.currentTarget).data('name')
+                  SELECT_UNIT_CRUMB.push(unitName)
                   let subunits = searchSubUnit(unitId)
                   if(subunits.length !== 0) {
                     if(model === "ADD_MODE") {
-                      this.createSelectList2(subunits, 'add-group-member')
+                      this.createSelectList2(subunits, 'add-group-member', unitId)
                     } else {
-                      this.createSelectList2(subunits)
+                      this.createSelectList2(subunits, false, unitId)
                     }
                   } else {
                     this.createGroupMemberPanel(unitId)
@@ -648,18 +731,15 @@ class User {
                   <img class="search-icon" src="./src/images/search.png"/>
                   <input class="search-input" placeholder="搜索" id="search-group"/>
                   </div>
-                  <div class=""></div>
+                  <div class="crumb-container"></div>
+                  <div class="cut-line"></div>
                   <ul class="member-list layui-layim-list  layui-show">
                   {{#groups}}
-                  <li data-id="{{id}}" data-type="group" data-index="0" class="layim-friend{{id}} selectGroup">
-                  <div>
-                  <div class="avatar-container">
-                  <img src="{{avatar}}">
-                  </div>
-                  </div>
-                  <span class="username">
-                  {{groupname}}</span>
-                  <p></p><span class="layim-msg-status">new</span>
+                  <li style="padding-left:25px;" data-name="{{groupname}}" data-id="{{id}}" data-type="group" data-index="0" class="layim-friend{{id}} selectGroup">
+                  <h5 style="display:block">
+                  <span>{{ groupname }}</span>
+                  <span class="right-icon">＞</span>
+                  </h5>
                   </li>
                   {{/groups}}
                   <ul id="add-memeber-search-list">
@@ -670,6 +750,7 @@ class User {
                   </div>
                   ` , data2),
                });
+               createCrumb()
   
                 
     }
@@ -690,6 +771,7 @@ class User {
             return ''
           }
         },
+        crumb: SELECT_UNIT_CRUMB,
         hasMembers: function() {
           return !list.length
         },
@@ -710,12 +792,14 @@ class User {
             <img class="search-icon" src="./src/images/search.png"/>
             <input class="search-input" placeholder="搜索" id="search-member"/>
             </div>
+            <div class="crumb-container"></div>
+            <div class="cut-line"></div>
             <ul class="member-list layui-layim-list  layui-show">
             {{#users}}
             <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
             <div>
             <div class="avatar-container">
-            <img src="${BASE_AVATAR_URL}{{userCode}}">
+            <img src="${USER_AVATAR}">
             </div>
             </div>
             <span class="username">
@@ -734,7 +818,7 @@ class User {
             </div>
             ` , data1),
          });
-
+         createCrumb()
       
     }
 
@@ -934,6 +1018,14 @@ class User {
         success: (data)=>{
           this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
           this.createUserPanel()
+
+          layim.chat({
+            name: data.data.groupName //名称
+            ,type: 'group' //聊天类型
+            ,avatar: USER_AVATAR //头像
+            ,id: this.mine.id//定义唯一的id方便你处理信息
+          });
+          
           // this.onEventListener()
         }
      })
@@ -958,11 +1050,11 @@ class User {
         showChatMessage({id, userType, content, timestamp, senderName, system = false}) {
           
           if(system) {
-            layer.open({
-              title: '系统通知'
-              ,
-              content: Mustache.render(content)
-          });
+          //   layer.open({
+          //     title: '系统通知'
+          //     ,
+          //     content: Mustache.render(content)
+          // });
           } else {
             this.im.getMessage({
               type: userType,
@@ -972,7 +1064,7 @@ class User {
               id: id,
               content,
               timestamp: timestamp || _getTimestamp(),
-              avatar: BASE_AVATAR_URL + id
+              avatar: USER_AVATAR
           })
           }
          
@@ -1032,11 +1124,11 @@ class User {
         }
         
         //扩展聊天面板工具栏
-        ,tool: [{
-          alias: 'code'
-          ,title: '代码'
-          ,iconUnicode: '&#xe64e;'
-        }]
+        // ,tool: [{
+        //   alias: 'code'
+        //   ,title: '代码'
+        //   ,iconUnicode: '&#xe64e;'
+        // }]
         
         //扩展更多列表
         // ,moreList: [{
@@ -1207,6 +1299,15 @@ class User {
 
     onEventListener() {
 
+
+      $("body").off("mouseup", ".crumb-container")
+      $("body").on("mouseup", ".crumb-container", (e) => {
+        
+      let currentPanelBackBtn = $(e.currentTarget).parent().parent().parent().find("[layim-event=back]")[0]
+        
+      layim.emit(currentPanelBackBtn)
+      })
+
       $("body").off("input",  "#query-member")
       $("body").on("input", "#query-member", (e) => {
         let search_text = $("#query-member").val()
@@ -1241,12 +1342,14 @@ class User {
             $(".search-list-container").html(
               Mustache.render(`
       <div class="search-list">
+      <div class="crumb-container"></div>
+      <div class="cut-line"></div>
       <ul style="position: static;" class="member-list unit-user-list layui-layim-list  layui-show">
       {{#users}}
       <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
       <div>
       <div class="avatar-container">
-      <img src="${BASE_AVATAR_URL}{{userCode}}">
+      <img src="${USER_AVATAR}">
       </div>
       </div>
       <span class="username">
@@ -1268,14 +1371,13 @@ class User {
       $("body").off("click", ".im-unit")
       $("body").on("click", ".im-unit", (e) => {
         let id = $(e.currentTarget).data('id')
+        let groupName = $(e.currentTarget).data('groupname')
         let subunits = searchSubUnit(id)
-        let unitName = $(e.currentTarget).data('groupname')
-        TOTAL_UNIT_NAME += '→' + unitName
+        SELECT_UNIT_CRUMB.push(groupName)
         if(subunits.length === 0) {
           addFriendList(id, e.currentTarget)
         } else {
-          
-          addSubunitList(subunits)
+          addSubunitList(subunits, id)
         }
       })
       //查看聊天信息
@@ -1481,7 +1583,7 @@ class User {
             for(let i = 0; i < data.data.length; i++) {
               
               tempFriendList.push($.extend({
-                "avatar": BASE_AVATAR_URL + data.data[i].userCode,
+                "avatar": USER_AVATAR,
                 "sign": "",
                 username: data.data[i][key],
                 userName: data.data[i][key],
@@ -1517,6 +1619,7 @@ class User {
             <img class="search-icon" src="./src/images/search.png"/>
             <input class="search-input" placeholder="搜索" id="search-delete-member"/>
             </div>
+            <div class="cut-line"></div>
             <ul class="group-member-list member-list layui-layim-list  layui-show">
             {{#users}}
             <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
@@ -1534,14 +1637,14 @@ class User {
             </ul>
               <div class="btn-container">
               <div class="static_bottom_btn add-member">添加新成员</div>
-              <div class="static_bottom_btn change-group">修改群信息</div>
+              
             <div class="static_bottom_btn delete_group_btn">删除该群</div>
               </div>
             
             </div>
             ` , data1),
             
-            
+            // <div class="static_bottom_btn change-group">修改群信息</div>
             
          });
         });
@@ -1627,7 +1730,10 @@ layim.on('newFriend', function(){
 
       //监听返回
     layim.on('back', function(e){
-      
+      if(SELECT_UNIT_CRUMB.length > 1) {
+        SELECT_UNIT_CRUMB.pop()
+      }
+      createCrumb()
       //如果你只是弹出一个会话界面（不显示主面板），那么可通过监听返回，跳转到上一页面，如：history.back();
     });
 
@@ -1675,7 +1781,7 @@ layim.on('newFriend', function(){
       
        $("#chatlog-container").prepend(`<li class="layim-chat-li ${className}">
         <div class="layim-chat-user">
-        <img src="${BASE_AVATAR_URL}${sender}" alt="${sender}">
+        <img src="${USER_AVATAR}" alt="${sender}">
         <cite>${thisLog.senderName}</cite>
         </div>
         <div class="layim-chat-text">${content}</div>
@@ -1703,7 +1809,7 @@ layim.on('newFriend', function(){
         tpl += `<li class="layim-chat-system"><span>${thisLog.sendTime}</span></li>`
         tpl += `<li class="layim-chat-li ${className}">
         <div class="layim-chat-user">
-        <img src="${BASE_AVATAR_URL}${sender}" alt="${sender}">
+        <img src="${USER_AVATAR}" alt="${sender}">
         <cite>${thisLog.senderName}</cite>
         </div>
         <div class="layim-chat-text">${content}</div>
@@ -1765,19 +1871,20 @@ layim.on('newFriend', function(){
     chatList = function () {
       let user = new User()
       
-      var midTab = $("#LAY_layimNewList").parent()[0]
+      // var midTab = $("#LAY_layimNewList").parent()[0]
      
-      if(true) {
-        layim.emit(midTab)
-      }
-
+      // if(true) {
+      //   layim.emit(midTab)
+      // }
+      // if(true) {
+      //   layim.emit($("[layim-event=newGroup]")[0])
+      // }
       $("body").on("click", '[layim-event=chat]', function(e){
-        console.log(e)
       })
       // layim.chat({
       //   name: 111 //名称
       //   ,type: 'friend' //聊天类型
-      //   ,avatar: BASE_AVATAR_URL + 1 //头像
+      //   ,avatar: USER_AVATAR + 1 //头像
       //   ,id: 1//定义唯一的id方便你处理信息
       // });
     }
