@@ -1,5 +1,6 @@
 package com.centit.im.web.plugins;
 
+import com.centit.framework.common.ResponseData;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.basedata.NoticeMessage;
 import com.centit.support.network.HttpExecutor;
@@ -46,7 +47,7 @@ public class JsfgwSmsMessageSender implements MessageSender{
      * @return "OK" 表示成功，其他的为错误信息
      */
     @Override
-    public String sendMessage(String sender, String receiver, NoticeMessage message) {
+    public ResponseData sendMessage(String sender, String receiver, NoticeMessage message) {
         Map<String,Object> fromData = new HashMap<>(15);
         fromData.put("sender",sender);
         fromData.put("receiver",receiver);
@@ -56,6 +57,7 @@ public class JsfgwSmsMessageSender implements MessageSender{
         fromData.put("optMethod",message.getOptMethod());
         fromData.put("optTag",message.getOptTag());
 
-        return sendSms(fromData);
+        /*String resStr =*/sendSms(fromData);
+        return ResponseData.successResponse;
     }
 }
