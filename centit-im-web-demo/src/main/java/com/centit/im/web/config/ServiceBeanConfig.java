@@ -14,7 +14,6 @@ import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
 import com.centit.framework.security.model.StandardPasswordEncoderImpl;
 import com.centit.im.robot.es.po.QuestAndAnswer;
-import com.centit.im.robot.es.service.QuestAndAnswerManager;
 import com.centit.im.robot.es.service.impl.IntelligentRobotEsImpl;
 import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.impl.IntelligentRobotFactoryRpcImpl;
@@ -111,7 +110,7 @@ public class ServiceBeanConfig implements EnvironmentAware {
 
     @Bean
     public FileStore fileStore(){
-        String baseHome = env.getProperty("os.file.base.dir");
+        String baseHome = env.getProperty("webim.file-store.base-dir");//"os.file.base.dir"
         if(StringUtils.isBlank(baseHome)) {
             baseHome = SysParametersUtils.getUploadHome();
         }
