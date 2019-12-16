@@ -18,7 +18,7 @@ import java.io.InputStream;
 @RequestMapping("/file")
 @Api(value = "上传文件接口", tags = "上传文件接口")
 public class FileUpAndDownController extends FileController {
-    @Value("${webim.fileStore.multipart-resolver:common}") //none 不推送 standard for spring boot
+    @Value("${webim.file-store.multipart-resolver:common}") //none 不推送 standard for spring boot
     protected String resolverType;
 
     @Override
