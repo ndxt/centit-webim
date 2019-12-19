@@ -6,6 +6,7 @@ import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.IUserUnit;
+import com.centit.framework.model.basedata.NoticeMessage;
 import com.centit.im.dao.*;
 import com.centit.im.po.*;
 import com.centit.im.service.IntelligentRobot;
@@ -350,9 +351,9 @@ public class WebImSocketImpl implements WebImSocket {
     private void successChangeCustomerService(Session session, String receiver,
                                               WebImCustomer service ) {
         Session receiverSession = getSessionByUserCode( receiver );
-        if(receiverSession!=null)
-            pushCustomerServiceInfo(receiverSession ,receiver, service);
-
+        if(receiverSession != null) {
+            pushCustomerServiceInfo(receiverSession, receiver, service);
+        }
         WebImCustomer cust = customerDao.getObjectById(receiver);
         if(cust!=null){
             cust.setCustomerService(service.getUserCode());
@@ -390,11 +391,6 @@ public class WebImSocketImpl implements WebImSocket {
             webMessage.setMsgId(UuidOpt.getUuidAsString22());
         }
         messageDao.saveNewObject(webMessage);
-        notificationCenter.sendMessage(
-                cust.getUserCode(),service.getUserCode(),
-                "客服转接",
-                "你好",
-                "sms");
     }
 
     /**
@@ -447,11 +443,6 @@ public class WebImSocketImpl implements WebImSocket {
                     .buildSystemMessage(message.getReceiver(),"切换客服失败，没有这个客服。") );
         } else {
             successChangeCustomerService(session, message.getReceiver(), service );
-            notificationCenter.sendMessage(
-                    message.getSender(),message.getReceiver(),
-                    "客服转接",
-                    "有客户在线咨询转接给您",
-                    "sms");
         }
     }
 
@@ -671,16 +662,16 @@ public class WebImSocketImpl implements WebImSocket {
         if(StringUtils.isBlank(noticeType)){ // 空 使用默认推送
             notificationCenter.sendMessage(
                     message.getSender(), receiver,
-                    ImMessage.DEFAULT_OSID/*"WebIM"*/,
-                    title,
-                    StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/))
+                    NoticeMessage.create().operation(ImMessage.DEFAULT_OSID/*"WebIM"*/)
+                    .subject(title)
+                    .content(StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/)))
             );
         } else if(!"none".equals(noticeType)) { //"none" 不推动
             notificationCenter.sendMessageAppointedType(noticeType,
                     message.getSender(), receiver,
-                    ImMessage.DEFAULT_OSID/*"WebIM"*/,
-                    title,
-                    StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/))
+                    NoticeMessage.create().operation(ImMessage.DEFAULT_OSID/*"WebIM"*/)
+                            .subject(title)
+                            .content(StringBaseOpt.objectToString(content.get(ImMessage.CONTENT_FIELD_MESSAGE/*"msg"*/)))
             );
         }
     }
