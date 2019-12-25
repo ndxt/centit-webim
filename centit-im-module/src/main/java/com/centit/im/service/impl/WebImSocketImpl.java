@@ -756,7 +756,6 @@ public class WebImSocketImpl implements WebImSocket {
             userName = CodeRepositoryUtil.getUserName(message.getSender());
         }
 
-
         WebImGroup group = webImGroupDao.getObjectById(unitCode);
         if(group==null || "U".equals(group.getGroupType())) {
             List<? extends IUserUnit> users =
@@ -769,7 +768,6 @@ public class WebImSocketImpl implements WebImSocket {
             }
         }else /*if(group!=null)*/ {
             String title = userName + " 在群 "+ group.getGroupName()+ " 中发送了一条消息";
-
             List<WebImGroupMember> members
                     = webImGroupMemberDao.listObjectsByProperty("groupId",unitCode);
             for(WebImGroupMember member : members ){
