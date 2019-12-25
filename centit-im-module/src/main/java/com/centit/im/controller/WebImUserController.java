@@ -330,6 +330,7 @@ public class WebImUserController extends BaseController {
         webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
                 .type(ImMessage.MSG_TYPE_SYSTEM)
                 .sender("system")
+                .receiver(groupId)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                 .message("用户:"+ userDesc +"加入群聊！")
                 .build());
@@ -363,7 +364,6 @@ public class WebImUserController extends BaseController {
     @WrapUpResponseBody
     public ResponseData updateGroupMember(
             @RequestBody String memberInfoJson) {
-
         webImUserManager.updateGroupMemberInfo(
                 WebImGroupMember.createFromJson(JSON.parseObject(memberInfoJson)));
         return ResponseData.makeSuccessResponse();
@@ -416,6 +416,7 @@ public class WebImUserController extends BaseController {
         webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
                 .type(ImMessage.MSG_TYPE_SYSTEM)
                 .sender("system")
+                .receiver(groupId)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                 .message("用户:"+ userDesc +"已退出了群聊！")
                 .build());
@@ -425,6 +426,7 @@ public class WebImUserController extends BaseController {
         webImSocket.sendMessage(memberCode,ImMessageBuild.create()
                 .type(ImMessage.MSG_TYPE_COMMAND)
                 .sender("system")
+                .receiver(memberCode)
                 .contentType(ImMessage.CONTENT_TYPE_QUIT_GROUP)
                 .message("您已退出了群"+groupDesc+"！")
                 .build());
