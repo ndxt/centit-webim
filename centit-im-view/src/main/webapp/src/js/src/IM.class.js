@@ -5,6 +5,7 @@
 
  */
 define(["jquery","mustache", "layui", "promise", "fetch", "url", "common.unit"],function ($,Mustache) {
+    window.API_PREFIX = ''
     class IM {
         constructor(im, mine, config) {
             this.im = im
@@ -15,7 +16,7 @@ define(["jquery","mustache", "layui", "promise", "fetch", "url", "common.unit"],
 
             // 路径
             this.contextPath = _getContextPath()
-
+            console.log("ContextPath is", this.contextPath)
             // 获取当前用户信息
             this.getMineInfo()
 

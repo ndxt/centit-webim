@@ -1119,7 +1119,7 @@ queryUnreadMsg() {
          * @param timestamp
          */
         showChatMessage({id, userType = "friend", content, timestamp, senderName, system = false}) {
-          
+          debugger
           if(system) {
           //   layer.open({
           //     title: '系统通知'
@@ -1393,6 +1393,7 @@ queryUnreadMsg() {
           $(".layim-list-friend").hide()
           $(".search-list-container").show()
         }
+        
         $.ajax({
           type: "GET",
           //后面优化可以改为true
@@ -1671,6 +1672,7 @@ queryUnreadMsg() {
           let memberIndex = allMemberId.indexOf(String(userCode))
           if(memberIndex >= -1) {
             allMemberId.splice(memberIndex, 1)
+            tempFriendList.splice(memberIndex, 1)
           }
           $.ajax({
             type: "PUT",
@@ -1682,7 +1684,8 @@ queryUnreadMsg() {
             data: JSON.stringify(allMemberId),
             success: function(data){
               if(data.message === "OK") {
-                $(`[data-id=${userCode}]`).css("display", "none")
+                $(`[data-id=${userCode}].custom-group`).remove()
+                $(`[data-id=${userCode}].delete-group-member`).remove()
               } else {
                 layer.open({
                   title:"提示",
@@ -1691,6 +1694,35 @@ queryUnreadMsg() {
               }
             }
          })
+         
+         if(allMemberId.length === 0) {
+          $.ajax({
+            type: "DELETE",
+            //后面优化可以改为true
+            async: false,
+            url: `/im/webimcust/deleteGroup/${GROUP_ID}/${this.mine.id}`,
+            dataType: "json",
+            success: (data) =>{
+              if(data.data.flag == 1) {
+                
+                // layer.open({
+                //   title:"提示",
+                //   content: "<div>删除成功</div>"
+                // })
+                this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
+                this.createUserPanel()
+                // this.onEventListener()
+                // layer.close(index)
+              } else {
+                layer.open({
+                  title:"提示",
+                  content: `<div>删除失败,${data.data.message}</div>`
+                })
+              }
+              
+            }
+         })
+         }
         })
         
         let url = "unitUsers"
