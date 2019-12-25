@@ -196,7 +196,7 @@ layui.define('layer' , function(exports){
       
       if(!isPass) {
         for(let key in items) {
-          const upload = new FormView.default(items[key], {}, function(res){
+          const upload = new FormView.default(items[key], {}, (res) =>{
             if(res.signal === "secondpass") {
               layui.each(items, function(index, file){
                 var formData = new FormData();
@@ -233,6 +233,10 @@ layui.define('layer' , function(exports){
                   }
                 });
               });
+            } else if(res.signal === "complete") {
+              successful++;
+                    done(0, res);
+                    allDone();
             }
             
           })

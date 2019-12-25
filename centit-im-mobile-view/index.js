@@ -379,7 +379,7 @@ const TEST_USER2 = {
     }
 class User {
     constructor() {
-        let USER1 = TEST_USER1
+        let USER1 = TEST_USER2
         this.closeHandler
         this.mine = $.extend(
           {"avatar": USER_AVATAR,
@@ -389,8 +389,8 @@ class User {
         //这里需要同步执行
         this.im = layim
         this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-        // this.friend = getMineFriendList(this.mine.id)
-        this.friend =  getCustomFriendList(1)
+        this.friend = getMineFriendList(this.mine.id)
+        // this.friend =  getCustomFriendList(1)
         // this.createGroup()
         this.afterInit()
     }
@@ -568,10 +568,10 @@ class User {
       }
       let allFriendList = []
                 
-                if(USER_LIST.length === 0) {
-                  $.ajax({
-                    type: "GET",
-                    //后面优化可以改为true
+      if(USER_LIST.length === 0) {
+        $.ajax({
+          type: "GET",
+          //后面优化可以改为true
                     async: false,
                     url: `/im/webimcust/listUser`,
                     dataType: "json",
@@ -588,11 +588,14 @@ class User {
                 let data1 = {
                  users: allFriendList
                 }
-                
+                let _this = this
                 $("body").off("mouseup", ".selectMember")
                 $('body').on('mouseup', '.selectMember', function(){
                   let id = $(this).data('id')
                   let name = $(this).data('name')
+                  if(name === _this.mine.username) {
+                    return
+                  }
                   if($(this).hasClass("member_select")) {
                     $(this).find(".member-checkbox img").attr('src', '')
                     $(this).removeClass("member_select")
@@ -1000,6 +1003,74 @@ class User {
 	}
 
 }
+
+queryHistoryMsg(data) {
+  
+  $.ajax({
+    type: "GET",
+    //后面优化可以改为true
+    async: false,
+    url: `/im/webimmsg/historyMessage/${data.receiver}/${data.sender}`,
+    dataType: "json",
+    data: {
+      pageNo: 1,
+      pageSize: data.unreadSum
+    },
+    success: (res) =>{
+      let msgList = res.data.objList.reverse()
+      
+      for(let i = 0; i < msgList.length; i++) {
+        msgList[i].id = msgList[i].sender
+        msgList[i].timestamp = msgList[i].sendTime
+        msgList[i].content = msgList[i].content.msg
+        this.showChatMessage(msgList[i])
+      }
+      this.setMsgState(data)
+    }
+ })
+}
+
+setMsgState(data) {
+  $.ajax({
+    type: "POST",
+    //后面优化可以改为true
+    async: false,
+    url: `/im/webimmsg/setGroupReadState/${data.receiver}/${data.sender}`,
+    dataType: "json",
+    success: (res) =>{
+    }
+ })
+}
+
+queryGroupMsg() {
+  $.ajax({
+    type: "GET",
+    //后面优化可以改为true
+    async: false,
+    url: `/im/webimmsg/statGroupUnread/${this.mine.id}`,
+    dataType: "json",
+    success: (data) =>{
+      for(let i = 0; i < data.data.length; i++) {
+        this.queryHistoryMsg (data.data[i])
+      }
+    }
+ })
+}
+
+queryUnreadMsg() {
+  $.ajax({
+    type: "GET",
+    //后面优化可以改为true
+    async: false,
+    url: `/im/webimmsg/getUnreadLastMsg/${this.mine.id}`,
+    dataType: "json",
+    success: (data) =>{
+      for(let i = 0; i < data.data.length; i++) {
+        this.queryHistoryMsg (data.data[i])
+      }
+    }
+ })
+}
 //创建群组
     createGroup(groupInfo) {
       /**
@@ -1047,7 +1118,7 @@ class User {
          * @param system
          * @param timestamp
          */
-        showChatMessage({id, userType, content, timestamp, senderName, system = false}) {
+        showChatMessage({id, userType = "friend", content, timestamp, senderName, system = false}) {
           
           if(system) {
           //   layer.open({
@@ -1056,6 +1127,7 @@ class User {
           //     content: Mustache.render(content)
           // });
           } else {
+            
             this.im.getMessage({
               type: userType,
               system,
@@ -1079,6 +1151,8 @@ class User {
          */
       onWSOpen() {
           this.sendRegisterCommand()
+          
+          this.queryUnreadMsg()
           console.log('WebSocket connection is opened.')
       }
 
@@ -1389,6 +1463,59 @@ class User {
         console.log(data); //获取当前会话对象
         
         
+        let UNIT_TPL = `<div class="search-list">
+        <div class="input-container">
+        <img class="search-icon" src="./src/images/search.png"/>
+        <input class="search-input" placeholder="搜索" id="search-delete-member"/>
+        </div>
+        <div class="cut-line"></div>
+        <ul class="group-member-list member-list layui-layim-list  layui-show unit-list">
+        {{#users}}
+        <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
+        <div>
+        <div class="avatar-container">
+        <img src="http://tvax1.sinaimg.cn/crop.0.0.300.300.180/006Iv8Wjly8ff7ghbigcij308c08ct8i.jpg">
+        </div>
+        </div>
+        <span class="username">
+        {{userName}}</span>
+       
+        <p></p><span class="layim-msg-status">new</span></li>
+        
+        {{/users}}
+        </ul>
+        
+        </div>`
+
+        let GROUP_TPL = `<div class="search-list">
+        <div class="input-container">
+        <img class="search-icon" src="./src/images/search.png"/>
+        <input class="search-input" placeholder="搜索" id="search-delete-member"/>
+        </div>
+        <div class="cut-line"></div>
+        <ul class="group-member-list member-list layui-layim-list  layui-show">
+        {{#users}}
+        <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
+        <div>
+        <div class="avatar-container">
+        <img src="http://tvax1.sinaimg.cn/crop.0.0.300.300.180/006Iv8Wjly8ff7ghbigcij308c08ct8i.jpg">
+        </div>
+        </div>
+        <span class="username">
+        {{userName}}</span>
+       
+        <p></p><span class="layim-msg-status">new</span></li>
+        <span data-id="{{userCode}}" class="delete-group-member">移除</span>
+        {{/users}}
+        </ul>
+          <div class="btn-container">
+          <div class="static_bottom_btn add-member">添加新成员</div>
+          
+        <div class="static_bottom_btn delete_group_btn">删除该群</div>
+          </div>
+        
+        </div>`
+        let TPL = UNIT_TPL
         const GROUP_ID = data.id
         
         $("body").off('mouseup', ".change-group-btn")
@@ -1568,9 +1695,11 @@ class User {
         
         let url = "unitUsers"
         let key = "userName"
+        
         if(data.realType === "group") {
           url = "member"
           key = "groupAlias"
+          TPL = GROUP_TPL
         }
         
         $.ajax({
@@ -1613,36 +1742,7 @@ class User {
        data1.users = tempFriendList
             layim.panel({
             title: data.name + '群成员' //标题
-            ,tpl:Mustache.render(`
-            <div class="search-list">
-            <div class="input-container">
-            <img class="search-icon" src="./src/images/search.png"/>
-            <input class="search-input" placeholder="搜索" id="search-delete-member"/>
-            </div>
-            <div class="cut-line"></div>
-            <ul class="group-member-list member-list layui-layim-list  layui-show">
-            {{#users}}
-            <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
-            <div>
-            <div class="avatar-container">
-            <img src="http://tvax1.sinaimg.cn/crop.0.0.300.300.180/006Iv8Wjly8ff7ghbigcij308c08ct8i.jpg">
-            </div>
-            </div>
-            <span class="username">
-            {{userName}}</span>
-           
-            <p></p><span class="layim-msg-status">new</span></li>
-            <span data-id="{{userCode}}" class="delete-group-member">移除</span>
-            {{/users}}
-            </ul>
-              <div class="btn-container">
-              <div class="static_bottom_btn add-member">添加新成员</div>
-              
-            <div class="static_bottom_btn delete_group_btn">删除该群</div>
-              </div>
-            
-            </div>
-            ` , data1),
+            ,tpl:Mustache.render(TPL, data1),
             
             // <div class="static_bottom_btn change-group">修改群信息</div>
             
@@ -1858,6 +1958,7 @@ layim.on('newFriend', function(){
         this.createUserPanel()
         this.createWSConnection()
         this.onEventListener()
+        // this.queryUnreadMsg()
         //TODO查询未读消息
       //非核心功能：商店客服聊天
       // let goodsInfo = getGoodsInfo('g1557477872969', 's1557477653398')
