@@ -328,7 +328,7 @@ public class WebImUserController extends BaseController {
         String userDesc = user == null ? memberCode :
                 user.getUserName()+"("+memberCode+")";
         webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
-                .type(ImMessage.MSG_TYPE_COMMAND)
+                .type(ImMessage.MSG_TYPE_SYSTEM)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                 .message("用户:"+ userDesc +"加入群聊！")
                 .build());
@@ -413,7 +413,7 @@ public class WebImUserController extends BaseController {
         String userDesc = user == null ? memberCode :
                 user.getUserName()+"("+memberCode+")";
         webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
-                .type(ImMessage.MSG_TYPE_COMMAND)
+                .type(ImMessage.MSG_TYPE_SYSTEM)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                 .message("用户:"+ userDesc +"已退出了群聊！")
                 .build());
@@ -421,8 +421,8 @@ public class WebImUserController extends BaseController {
         String groupDesc = group == null ? groupId :
                 group.getGroupName()+"("+groupId+")";
         webImSocket.sendMessage(memberCode,ImMessageBuild.create()
-                .type(ImMessage.MSG_TYPE_SYSTEM)
-                .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                .type(ImMessage.MSG_TYPE_COMMAND)
+                .contentType(ImMessage.CONTENT_TYPE_QUIT_GROUP)
                 .message("您已退出了群"+groupDesc+"！")
                 .build());
         return ResponseData.makeSuccessResponse();

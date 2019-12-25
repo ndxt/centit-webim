@@ -53,6 +53,8 @@ public class ImMessage implements  java.io.Serializable {
     public static final String CONTENT_TYPE_ASKFORSERVICE = "askForService";
     public static final String CONTENT_TYPE_ASKROBOT = "askRobot";
     public static final String CONTENT_TYPE_NOTICE = "notice";
+    public static final String CONTENT_TYPE_QUIT_GROUP = "quitGroup";
+    public static final String CONTENT_TYPE_DELETE_FRIEND = "deleteFriend";
     public static final String CONTENT_TYPE_PUSH_FORM = "pushForm";
     public static final String CONTENT_TYPE_FORM = "form";
 
