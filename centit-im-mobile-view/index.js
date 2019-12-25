@@ -106,6 +106,7 @@ let TOTAL_UNIT_NAME = ''
 
   function addFriendList(id, target, unitName) {
     let userList = getUnitUser(id)
+    
     data1 = {
       users: userList,
       renderNull: function() {
@@ -353,6 +354,15 @@ function getMineFriendList(id) {
      
      return friendGroup
 }
+
+
+function showLargeImg (){
+  $('body').on('click', '.layui-layim-photos', function(){
+    $(this).css( { 'width': '160px' })
+  })
+}
+
+showLargeImg()
 
 const TEST_USER1 = {
   "osId": "WebIM",
@@ -760,12 +770,34 @@ class User {
 
     createGroupMemberPanel(groupId, customClassName) {
       let className = 'select_member_btn'
+      
       if(model === "ADD_MODE") {
-        className = 'add-group-member'
+        className = 'add-group-member'  
       }
+
       let list = getUnitUser(groupId)
+      let dataJson = JSON.parse(sessionStorage.getItem('tmpList'))
+
+      function differenceList(unionArr,subsetArr) {
+        let tmp = new Array();
+          for(let i = 0; i < unionArr.length; i++){
+            let flag = true;
+            for(let j = 0;j < subsetArr.length; j++){
+              if(unionArr[i].userCode === subsetArr[j].userCode){
+                flag = false;
+              }
+            }
+            if(flag){
+              tmp.push(unionArr[i]);
+            }
+          }
+        return tmp;
+      }
+      
+      let users = differenceList(list,dataJson);
+
       let data1 = {
-        users: list,
+        users,
         classFn: function() {
           
           if(member_id_list.indexOf(this.userCode) > -1) {
@@ -787,6 +819,7 @@ class User {
           }
         }
       }
+
           layim.panel({
             title: '选择群组成员' //标题
             ,tpl:Mustache.render(`
@@ -798,21 +831,21 @@ class User {
             <div class="crumb-container"></div>
             <div class="cut-line"></div>
             <ul class="member-list layui-layim-list  layui-show">
-            {{#users}}
-            <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
-            <div>
-            <div class="avatar-container">
-            <img src="${USER_AVATAR}">
-            </div>
-            </div>
-            <span class="username">
-            {{userName}}</span>
-            <p></p><span class="layim-msg-status">new</span>
-            <span class="member-checkbox">
-            <img src="{{imgSrc}}"/>
-            </span>
-            </li>
-            {{/users}}
+              {{#users}}
+              <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
+              <div>
+              <div class="avatar-container">
+              <img src="${USER_AVATAR}">
+              </div>
+              </div>
+              <span class="username">
+              {{userName}}</span>
+              <p></p><span class="layim-msg-status">new</span>
+              <span class="member-checkbox">
+              <img src="{{imgSrc}}"/>
+              </span>
+              </li>
+              {{/users}}
             </ul>
             {{#hasMembers}}
             <li class="layim-null">暂无联系人</li>
@@ -1077,29 +1110,35 @@ queryUnreadMsg() {
        * 用户登录后，根据用户部门信息，加群，若群不存在，则创建群
        */
       //TODO先查询是否存在此群，根据部门id获取此群
-      
-      $.ajax({
-        type: "POST",
-        //后面优化可以改为true
-        async: false,
-        url: "/im/webimcust/group",
-        dataType: "json",
-        contentType: "application/json",
-        data: JSON.stringify(groupInfo),
-        success: (data)=>{
-          this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-          this.createUserPanel()
-
-          layim.chat({
-            name: data.data.groupName //名称
-            ,type: 'group' //聊天类型
-            ,avatar: USER_AVATAR //头像
-            ,id: this.mine.id//定义唯一的id方便你处理信息
-          });
-          
-          // this.onEventListener()
-        }
-     })
+      if (groupInfo.members.length > 1) {
+        $.ajax({
+          type: "POST",
+          //后面优化可以改为true
+          async: false,
+          url: "/im/webimcust/group",
+          dataType: "json",
+          contentType: "application/json",
+          data: JSON.stringify(groupInfo),
+          success: (data)=>{
+            this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
+            this.createUserPanel()
+  
+            layim.chat({
+              name: data.data.groupName //名称
+              ,type: 'group' //聊天类型
+              ,avatar: USER_AVATAR //头像
+              ,id: this.mine.id//定义唯一的id方便你处理信息
+            });
+            
+            // this.onEventListener()
+          }
+       })
+      }else {
+        layer.open({
+          title:"提示",
+          content: '请选择群聊成员'
+        })
+      }
     }
 /**
          * 显示系统消息
@@ -1463,7 +1502,6 @@ queryUnreadMsg() {
         let tempFriendList = []
         console.log(data); //获取当前会话对象
         
-        
         let UNIT_TPL = `<div class="search-list">
         <div class="input-container">
         <img class="search-icon" src="./src/images/search.png"/>
@@ -1741,6 +1779,7 @@ queryUnreadMsg() {
           url: `/im/webimcust/${url}/${data.id}`,
           dataType: "json",
           success: function(data){
+            sessionStorage.setItem('tmpList', JSON.stringify(data.data))
             for(let i = 0; i < data.data.length; i++) {
               
               tempFriendList.push($.extend({
@@ -1829,6 +1868,7 @@ layim.on('newFriend', function(){
         layim.on('newGroup', () =>{
           member_id_list = [this.mine.id]
           member_name_list = [this.mine.userName]
+          
           model = 'CREATE_MODE'
           this.createSelectList()
 
@@ -2023,5 +2063,6 @@ layim.on('newFriend', function(){
     }
     
     chatList()
+
   });
   
