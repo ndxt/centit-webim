@@ -35,6 +35,7 @@ public class WebImMsgController extends BaseController {
 
     @Autowired
     protected WebImMessageManager webImMessageManager;
+
     public static JSONArray messgeListToJson(JSONArray messageList){
         if(CollectionUtils.isEmpty(messageList))
             return messageList;

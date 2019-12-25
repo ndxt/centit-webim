@@ -216,7 +216,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
         int startRow = pageDesc.getRowStart();
         int endRow = pageDesc.getRowEnd();
         for(IUserInfo user : users){
-            if(StringUtils.contains(user.getUserName(), name)){
+            if(StringUtils.contains(user.getUserName(), name)
+                || StringUtils.contains(user.getRegCellPhone(), name)
+                || StringUtils.contains(user.getLoginName(), name)){
                 WebImCustomer cust = customerDao.getObjectById(user.getUserCode());
                 if(cust == null) {
                     nMatchCount++;

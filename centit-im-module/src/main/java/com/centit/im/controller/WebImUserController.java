@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.fileserver.common.FileStore;
+import com.centit.fileserver.utils.SystemTempFileUtils;
 import com.centit.fileserver.utils.UploadDownloadUtils;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.ResponseMapData;
@@ -13,11 +14,10 @@ import com.centit.framework.core.controller.WrapUpContentType;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
 import com.centit.framework.model.basedata.IUnitInfo;
-import com.centit.im.po.WebImCustomer;
-import com.centit.im.po.WebImFriendMemo;
-import com.centit.im.po.WebImGroup;
-import com.centit.im.po.WebImGroupMember;
+import com.centit.im.po.*;
+import com.centit.im.service.WebImSocket;
 import com.centit.im.service.WebImUserManager;
+import com.centit.im.utils.ImMessageBuild;
 import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.GeneralAlgorithm;
 import com.centit.support.algorithm.StringBaseOpt;
@@ -58,6 +58,9 @@ public class WebImUserController extends BaseController {
 
     @Autowired
     protected FileStore fileStore;
+
+    @Autowired
+    protected WebImSocket webImSocket;
 
     //配置用户信息
     @ApiOperation(value = "01配置用户信息")
@@ -320,8 +323,15 @@ public class WebImUserController extends BaseController {
     public ResponseData addGroupMember(
             @PathVariable String groupId,
             @PathVariable String memberCode) {
-
         webImUserManager.addGroupMember(groupId,memberCode);
+        WebImCustomer user = webImUserManager.getUser(memberCode);
+        String userDesc = user == null ? memberCode :
+                user.getUserName()+"("+memberCode+")";
+        webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
+                .type(ImMessage.MSG_TYPE_COMMAND)
+                .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                .message("用户:"+ userDesc +"加入群聊！")
+                .build());
         return ResponseData.makeSuccessResponse();
     }
 
@@ -399,6 +409,22 @@ public class WebImUserController extends BaseController {
             @PathVariable String groupId,
             @PathVariable String memberCode) {
         webImUserManager.removeGroupMember(groupId,memberCode);
+        WebImCustomer user = webImUserManager.getUser(memberCode);
+        String userDesc = user == null ? memberCode :
+                user.getUserName()+"("+memberCode+")";
+        webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
+                .type(ImMessage.MSG_TYPE_COMMAND)
+                .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                .message("用户:"+ userDesc +"已退出了群聊！")
+                .build());
+        WebImGroup group = webImUserManager.getGroupInfo(groupId);
+        String groupDesc = group == null ? groupId :
+                group.getGroupName()+"("+groupId+")";
+        webImSocket.sendMessage(memberCode,ImMessageBuild.create()
+                .type(ImMessage.MSG_TYPE_SYSTEM)
+                .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                .message("您已退出了群"+groupDesc+"！")
+                .build());
         return ResponseData.makeSuccessResponse();
     }
 
@@ -461,7 +487,7 @@ public class WebImUserController extends BaseController {
             headFileId = user.getHeadSculpture();
         }
         if(StringUtils.length(headFileId) > 35){
-            Pair<String, Long> md5Size = UploadDownloadUtils.fetchMd5andSize(headFileId);
+            Pair<String, Long> md5Size = SystemTempFileUtils.fetchMd5AndSize(headFileId);
             try(InputStream inputStream = fileStore.loadFileStream(md5Size.getLeft(), md5Size.getRight())) {
                 return ImageIO.read(inputStream);
             } catch (IOException e) {
