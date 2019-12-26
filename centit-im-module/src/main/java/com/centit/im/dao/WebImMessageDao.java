@@ -75,21 +75,21 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
     }
 
     /*
-     * TODO 重构这个sql语句，把这个语句 更改为 sql语句，病添加和 T_Web_IM_CUSTOMER 表管理，返回 用户的姓名 和 头像
+     * TODO 重构这个sql语句，把这个语句 更改为 sql语句，并添加和 T_Web_IM_CUSTOMER 表关联，返回 用户的姓名 和 头像
      */
     public JSONArray listAllChatMessage(String receiver,
                                                  Date lastReadDate, PageDesc pageDesc) {
         Date lrd = lastReadDate==null? DatetimeOpt.currentUtilDate():lastReadDate;
         String sql = "select f.MSG_ID, f.OS_ID, f.MSG_TYPE, f.SENDER, f.RECEIVER, " +
                    "f.SEND_TIME, f.SENDER_NAME, f.MSG_STATE, f.CONTENT_TYPE, f.CONTENT FROM F_WEB_IM_MESSAGE f " +
-                "WHERE 1=1 AND f.SEND_TIME <= ? AND ( f.RECEIVER = ?  OR f.SENDER = ?) " +
+                "WHERE f.SEND_TIME <= ? AND ( f.RECEIVER = ?  OR f.SENDER = ?) " +
                 "ORDER BY f.SEND_TIME DESC";
         return DatabaseOptUtils.listObjectsBySqlAsJson(this,  sql,
-                new Object[]{lrd,receiver,receiver}, pageDesc);
+                new Object[]{lrd, receiver, receiver}, pageDesc);
     }
 
     /*
-     * TODO 重构这个sql语句，把这个语句 更改为 sql语句，病添加和 T_Web_IM_CUSTOMER 表管理，返回 用户的姓名 和 头像
+     * TODO 重构这个sql语句，把这个语句 更改为 sql语句，并添加和 T_Web_IM_CUSTOMER 表关联，返回 用户的姓名 和 头像
      */
     public JSONArray  listGroupChatMessage(String unitCode,
                                                    Date lastReadDate, PageDesc pageDesc) {
@@ -99,7 +99,7 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
                 "WHERE f.SEND_TIME <= ? AND f.RECEIVER = ? AND f.MSG_TYPE = 'G' " +
                 "ORDER BY f.SEND_TIME DESC";
         return  DatabaseOptUtils.listObjectsBySqlAsJson(this,  sql,
-                new Object[]{lrd,unitCode}, pageDesc);
+                new Object[]{lrd, unitCode}, pageDesc);
     }
 
     @Transactional(propagation= Propagation.MANDATORY)
