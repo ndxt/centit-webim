@@ -369,13 +369,13 @@ function getMineFriendList(id) {
 }
 
 
-function showLargeImg (){
-  $('body').on('click', '.layui-layim-photos', function(){
-    $(this).css( { 'width': '160px' })
-  })
-}
+// function showLargeImg (){
+//   $('body').on('click', '.layui-layim-photos', function(){
+//     $(this).css( { 'width': '160px' })
+//   })
+// }
 
-showLargeImg()
+// showLargeImg()
 
 const TEST_USER1 = {
   "osId": "WebIM",
@@ -1159,10 +1159,11 @@ queryUnreadMsg() {
           }
        })
       }else {
-        layer.open({
-          title:"提示",
-          content: '请选择群聊成员'
-        })
+        layui.use('layer', function(){
+          var layer = layui.layer;
+          
+          layer.msg('请选择群聊成员');
+        }); 
       }
     }
 /**
