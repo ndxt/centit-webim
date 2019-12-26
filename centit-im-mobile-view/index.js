@@ -105,7 +105,9 @@ let TOTAL_UNIT_NAME = ''
   }
 
   function getLocalChatLog(id) {
-    return JSON.parse(localStorage.getItem('layim-mobile'))[id]
+    let histroyData = JSON.parse(localStorage.getItem('layim-mobile'))
+    
+    return histroyData
   }
   /**
    * 
@@ -408,9 +410,17 @@ const TEST_USER2 = {
       "userState": "F",
       "userType": "U"
       }
+
+    const TEST_USER5 = {
+        "osId": "WebIM",
+        "userCode": "129",
+        "userName": "曹秋燕",
+        "userState": "F",
+        "userType": "U"
+        }
 class User {
     constructor() {
-        let USER1 = TEST_USER4
+        let USER1 = TEST_USER1
         // let USER1 = TEST_USER1
         this.closeHandler
         this.hasOpenWs = false
@@ -1083,7 +1093,14 @@ queryHistoryMsg(data) {
         msgList[i].id = msgList[i].sender
         msgList[i].timestamp = msgList[i].sendTime
         msgList[i].content = msgList[i].content.msg
-        this.showChatMessage(msgList[i])
+        switch(msgList[i].msgType) {
+          case MSG_TYPE_CHAT :
+            this.showChatMessage(msgList[i])
+            break;
+          case MSG_TYPE_COMMAND :
+              this.onCommandMessage(msgList[i], msgList[i].content)
+              break;  
+        }
       }
       this.setMsgState(data)
     }
@@ -1150,12 +1167,12 @@ queryUnreadMsg() {
           success: (data)=>{
             this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
             this.createUserPanel()
-  
+            
             layim.chat({
               name: data.data.groupName //名称
               ,type: 'group' //聊天类型
               ,avatar: USER_AVATAR //头像
-              ,id: this.mine.id//定义唯一的id方便你处理信息
+              ,id: data.data.groupId//定义唯一的id方便你处理信息
             });
             
             // this.onEventListener()
@@ -1447,8 +1464,19 @@ queryUnreadMsg() {
               layer.close(index); //如果设定了yes回调，需进行手工关闭
             },
             yes: (index, layero) =>{
-              let chatLog = getLocalChatLog(this.mineId)
-              // chatLog.histroy[`group${}`]
+              let groupId
+              content.msg.replace(/\((.+?)\)/g, (word) =>{
+                groupId = word.slice(1, word.length - 1)
+                let chatLog = getLocalChatLog()
+              if(chatLog !== undefined) {
+                delete chatLog[this.mine.id].history[`group${groupId}`]
+              }
+              
+              localStorage.setItem('layim-mobile', JSON.stringify(chatLog))
+              $(`.layim-group${groupId}`).remove()
+              })
+              
+              
               this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
               this.createUserPanel()
               layer.close(index);

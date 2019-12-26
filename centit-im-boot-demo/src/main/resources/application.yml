@@ -29,7 +29,7 @@ spring:
     max-request-size: 320MB
 framework:
   app:
-    home: /D/Projects/RunData/webim_home
+    home: D:/Projects/RunData/webim_home/upload
   ip:
     enable: true
     system-enable: true
@@ -38,10 +38,10 @@ framework:
     auth-enable: false
     usercode: admin
     password: 000000
-  jdbcplatform:
-    url: jdbc:oracle:thin:@192.168.137.95:1521:orcl
-    username: framework
-    password: framework
+#  jdbcplatform:
+#    url: jdbc:oracle:thin:@192.168.137.95:1521:orcl
+#    username: framework
+#    password: framework
 webim:
   robot:
     type: es
@@ -53,7 +53,7 @@ webim:
     cluster-name: elasticsearch
     min-score: 0.5
   file-store:
-    base-dir: /D/Projects/RunData/webim_home/upload
+    base-dir: D:/Projects/RunData/webim_home/upload
     multipart-resolver: standard
   sms:
     send-url: http://218.94.123.217:8998/service/sendMsg
