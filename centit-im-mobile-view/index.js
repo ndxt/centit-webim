@@ -46,12 +46,12 @@ const CONTENT_TYPE_NOTICE = "notice";
 const CONTENT_TYPE_FORM = "form";
 const CONTENT_TYPE_PUSH_FORM = "pushForm";
 const CONTENT_TYPE_OVER = "over";
-
-
+const CONTENT_TYPE_QUIT_GROUP = "quitGroup";
 const UPLOADIMAGE_URL = `/im/service/file/upload`
 const UPLOADFILE_URL = `/im/service/file/upload`
 
 const USER_AVATAR = "./src/images/userdefalt.png"
+
 
 const SELECT_UNIT_CRUMB = ['南大先腾']
 
@@ -103,6 +103,17 @@ let TOTAL_UNIT_NAME = ''
     function _getTimestamp() {
       return new Date().getTime()
   }
+
+  function getLocalChatLog(id) {
+    return JSON.parse(localStorage.getItem('layim-mobile'))[id]
+  }
+  /**
+   * 
+   * @param {*} id 
+   * @param {*} target 
+   * @param {*} unitName 
+   */
+
 
   function addFriendList(id, target, unitName) {
     let userList = getUnitUser(id)
@@ -169,16 +180,6 @@ let TOTAL_UNIT_NAME = ''
       <div class="crumb-container"></div>
       <div class="cut-line"></div>
       <ul class="layui-layim-list layim-tab-content layui-show layim-list-friend">
-      {{#units}}
-      <li data-groupname="{{unitName}}" style="padding-left:0px;border:none;" data-id="{{unitCode}}" data-type="group" data-index="0" class="im-unit">
-      
-      <h5 style="width:94%;" data-id="{{unitCode}}" lay-type="false">
-      <span class="im-unit-name">{{ unitName}}</span>
-      <span class="right-icon">＞</span>
-      </h5>
-      </li>
-      {{/units}}
-      <div class="cut-line"></div>
       {{#users}}
       <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
       <div>
@@ -191,6 +192,18 @@ let TOTAL_UNIT_NAME = ''
       <p></p><span class="layim-msg-status">new</span>
       </li>
       {{/users}}
+      <div class="cut-line"></div>
+      {{#units}}
+      <li data-groupname="{{unitName}}" style="padding-left:0px;border:none;" data-id="{{unitCode}}" data-type="group" data-index="0" class="im-unit">
+      
+      <h5 style="width:94%;" data-id="{{unitCode}}" lay-type="false">
+      <span class="im-unit-name">{{ unitName}}</span>
+      <span class="right-icon">＞</span>
+      </h5>
+      </li>
+      {{/units}}
+      
+      
       </ul>
       
       </div>
@@ -387,10 +400,20 @@ const TEST_USER2 = {
     "userState": "F",
     "userType": "U"
     }
+
+    const TEST_USER4 = {
+      "osId": "WebIM",
+      "userCode": "592",
+      "userName": "胡知非",
+      "userState": "F",
+      "userType": "U"
+      }
 class User {
     constructor() {
-        let USER1 = TEST_USER2
+        let USER1 = TEST_USER4
+        // let USER1 = TEST_USER1
         this.closeHandler
+        this.hasOpenWs = false
         this.mine = $.extend(
           {"avatar": USER_AVATAR,
           "sign": "",
@@ -536,15 +559,6 @@ class User {
                   <div class="crumb-container"></div>
                   <div class="cut-line"></div>
                   <ul class="member-list layui-layim-list  layui-show">
-                  {{#groups}}
-                  <li style="padding-left:25px;" data-name="{{unitName}}" data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup">
-                  <h5 style="display:block">
-                  <span>{{ unitName }}</span>
-                  <span class="right-icon">＞</span>
-                  </h5>
-                  </li>
-                  {{/groups}}
-                  <div class="cut-line"></div>
                   {{#users}}
             <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
             <div>
@@ -560,6 +574,16 @@ class User {
             </span>
             </li>
             {{/users}}
+            <div class="cut-line"></div>
+                  {{#groups}}
+                  <li style="padding-left:25px;" data-name="{{unitName}}" data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup">
+                  <h5 style="display:block">
+                  <span>{{ unitName }}</span>
+                  <span class="right-icon">＞</span>
+                  </h5>
+                  </li>
+                  {{/groups}}
+                  
                   </ul>
                   <div class="static_bottom_btn ${className}">确认</div>
                   </div>
@@ -1083,6 +1107,7 @@ queryGroupMsg() {
     url: `/im/webimmsg/statGroupUnread/${this.mine.id}`,
     dataType: "json",
     success: (data) =>{
+      
       for(let i = 0; i < data.data.length; i++) {
         this.queryHistoryMsg (data.data[i])
       }
@@ -1158,7 +1183,7 @@ queryUnreadMsg() {
          * @param timestamp
          */
         showChatMessage({id, userType = "friend", content, timestamp, senderName, system = false}) {
-          debugger
+          
           if(system) {
           //   layer.open({
           //     title: '系统通知'
@@ -1166,7 +1191,6 @@ queryUnreadMsg() {
           //     content: Mustache.render(content)
           // });
           } else {
-            
             this.im.getMessage({
               type: userType,
               system,
@@ -1176,23 +1200,22 @@ queryUnreadMsg() {
               content,
               timestamp: timestamp || _getTimestamp(),
               avatar: USER_AVATAR
-          })
+            })
           }
          
          
-          // debugger
           
       }
 
 
-    /**
+        /**
          * WebSocket通道打开事件
          */
       onWSOpen() {
-          this.sendRegisterCommand()
-          
-          this.queryUnreadMsg()
-          console.log('WebSocket connection is opened.')
+        this.hasOpenWs = true
+        this.sendRegisterCommand()   
+        this.queryUnreadMsg()
+        this.queryGroupMsg()
       }
 
     /**
@@ -1290,6 +1313,7 @@ queryUnreadMsg() {
          * WebSocket关闭打开事件
          */
         onWSClose() {
+          this.hasOpenWs = false
           if(this.closeHandler) {
             clearTimeout(this.closeHandler)
           }
@@ -1346,7 +1370,7 @@ queryUnreadMsg() {
          * @param res
          */
         onWSMessage(res) {
-          
+            
             let data = res.data
             if (!this.messageHandler) {
                 clearTimeout(this.messageHandler);
@@ -1380,15 +1404,15 @@ queryUnreadMsg() {
                         data: data.content
                     }))
                     break
-                // case MSG_TYPE_COMMAND:
-                //     this.onCommandMessage(data, data.content)
-                //     break;
+                case MSG_TYPE_COMMAND:
+                    this.onCommandMessage(data, data.content)
+                    break;
                 // case MSG_TYPE_QUESTION:
                 //     this.createProblemList(data.content, data);
                 //     break;
 
                 case MSG_TYPE_BROADCAST:
-                    // this.onBroadcastMessage(data);
+                    // this.onBroadcastMessage(datdea);
                     break
                 default:
                     console.warn(`未知的数据类型：${data.type}`)
@@ -1398,17 +1422,39 @@ queryUnreadMsg() {
 
     sendWSMessage(data) {//CF
       if (this.socket.readyState == '3') {
-        
-          window.location.reload();
-          this.showSystemMessage({
-              id: '0',
-              content: Mustache.render('您已掉线，请<a onmouseup="window.location.reload();" style="color: RGB(98, 158, 229)">刷新</a>重新连接')
-          })
+        this.socket.send(JSON.stringify(data))
       } else if (this.socket.readyState == '1') {
           console.log(data);
           this.socket.send(JSON.stringify(data))
       }
   }
+
+    onCommandMessage (data, content) {
+      switch (data.contentType) {
+        case CONTENT_TYPE_QUIT_GROUP:
+          layer.open({
+            title:"警告",
+            content: `<div>${content.msg}</div>`,
+            btn: ['确认'],
+            cancel: (index, layero) =>{
+              //do something
+              this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
+              this.createUserPanel()
+              layer.close(index); //如果设定了yes回调，需进行手工关闭
+            },
+            yes: (index, layero) =>{
+              let chatLog = getLocalChatLog(this.mineId)
+              // chatLog.histroy[`group${}`]
+              this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
+              this.createUserPanel()
+              layer.close(index);
+            }
+          })
+            break
+        default:
+            console.warn(`未知的数据类型：${data.type}`)
+    }
+    }
 
     onEventListener() {
 
@@ -1712,15 +1758,17 @@ queryUnreadMsg() {
             allMemberId.splice(memberIndex, 1)
             tempFriendList.splice(memberIndex, 1)
           }
+          
           $.ajax({
             type: "PUT",
             //后面优化可以改为true
             async: false,
-            url: `/im/webimcust/member/${data.id}`,
+            url: `/im/webimcust/quitGroup/${GROUP_ID}/${userCode}`,
             dataType: "json",
             contentType: "application/json",
-            data: JSON.stringify(allMemberId),
+            // data: JSON.stringify(allMemberId),
             success: function(data){
+              
               if(data.message === "OK") {
                 $(`[data-id=${userCode}].custom-group`).remove()
                 $(`[data-id=${userCode}].delete-group-member`).remove()
