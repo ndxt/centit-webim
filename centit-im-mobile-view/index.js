@@ -90,6 +90,7 @@ window.$ = layui.$
 const mobile = layui.mobile
 const layim = mobile.layim
 const layer = mobile.layer
+const lay = layui.layer;
 
 let TOTAL_UNIT_NAME = ''
  //演示自动回复
@@ -798,8 +799,6 @@ class User {
                   ` , data2),
                });
                createCrumb()
-  
-                
     }
 
     createGroupMemberPanel(groupId, customClassName) {
@@ -1155,36 +1154,28 @@ queryUnreadMsg() {
        * 用户登录后，根据用户部门信息，加群，若群不存在，则创建群
        */
       //TODO先查询是否存在此群，根据部门id获取此群
-      if (groupInfo.members.length > 1) {
-        $.ajax({
-          type: "POST",
-          //后面优化可以改为true
-          async: false,
-          url: "/im/webimcust/group",
-          dataType: "json",
-          contentType: "application/json",
-          data: JSON.stringify(groupInfo),
-          success: (data)=>{
-            this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-            this.createUserPanel()
-            
-            layim.chat({
-              name: data.data.groupName //名称
-              ,type: 'group' //聊天类型
-              ,avatar: USER_AVATAR //头像
-              ,id: data.data.groupId//定义唯一的id方便你处理信息
-            });
-            
-            // this.onEventListener()
-          }
-       })
-      }else {
-        layui.use('layer', function(){
-          var layer = layui.layer;
+      $.ajax({
+        type: "POST",
+        //后面优化可以改为true
+        async: false,
+        url: "/im/webimcust/group",
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify(groupInfo),
+        success: (data) => {
+          this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
+          this.createUserPanel()
           
-          layer.msg('请选择群聊成员');
-        }); 
-      }
+          layim.chat({
+            name: data.data.groupName //名称
+            ,type: 'group' //聊天类型
+            ,avatar: USER_AVATAR //头像
+            ,id: data.data.groupId//定义唯一的id方便你处理信息
+          });
+          
+          // this.onEventListener()
+        }
+      })
     }
 /**
          * 显示系统消息
@@ -1931,10 +1922,10 @@ layim.on('newFriend', function(){
   });
 
       
-    
+        let _this = this
         $("body").off('mouseup', ".select_member_btn")
-        $("body").on('mouseup', ".select_member_btn", () =>{
-          
+        $("body").on('mouseup', ".select_member_btn", () => {
+
           let groupInfo = {
             members: member_id_list,
             groupName: member_name_list.slice(0, 4).join(),
@@ -1942,7 +1933,26 @@ layim.on('newFriend', function(){
             groupNotice: '',
             osId: ''
           }
-          this.createGroup(groupInfo)
+
+          if (member_id_list.length > 1) {
+            lay.confirm('是否修改群名称', {
+              btn: ['是','否'],
+              yes: function (index) {
+                lay.close(index);
+                lay.prompt({title: '请输入群名称', formType: 2}, function(customGroupName, level){
+                  lay.close(level);
+                  groupInfo.groupName = customGroupName
+                  _this.createGroup(groupInfo)
+                });
+              },
+              btn2: function (index) {
+                lay.close(index);
+                _this.createGroup(groupInfo)
+              }
+            })
+          }else {
+            lay.msg('请选择群聊成员');
+          }
         })
         
         layim.on('newGroup', () =>{
