@@ -794,13 +794,11 @@ class User {
 
     createGroupMemberPanel(groupId, customClassName) {
       let className = 'select_member_btn'
-      
-      if(model === "ADD_MODE") {
-        className = 'add-group-member'  
-      }
 
       let list = getUnitUser(groupId)
       let dataJson = JSON.parse(sessionStorage.getItem('tmpList'))
+
+      let users
 
       function differenceList(unionArr,subsetArr) {
         let tmp = new Array();
@@ -818,7 +816,12 @@ class User {
         return tmp;
       }
       
-      let users = differenceList(list,dataJson);
+      users = list
+
+      if(model === "ADD_MODE") {
+        className = 'add-group-member'  
+        users = differenceList(list,dataJson)
+      }
 
       let data1 = {
         users,
