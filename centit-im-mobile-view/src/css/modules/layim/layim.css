@@ -144,7 +144,8 @@ body .layui-layim-chat .layui-layer-content{background: none;}
 .layim-chat-text:after{content: ''; position: absolute; left: -10px; top: 13px; width: 0; height: 0; border-style: dashed; border-color:transparent; overflow:hidden; border-width: 10px; border-top-style: solid; border-top-color: #e2e2e2;}
 .layim-chat-text{max-width: 462px\0;}
 .layim-chat-text a{color: #33DF83;}
-.layim-chat-text img{ max-width: 100%; vertical-align: middle; width: 40px;}
+.layim-chat-text img{ max-width: 100%; vertical-align: middle;}
+.layim-chat-text .layui-layim-photos {width: 40px;}
 .layui-layim-file,
 .layim-chat-text .layui-layim-file{display: block; text-align: center; }
 .layim-chat-text .layui-layim-file{color: #333;}

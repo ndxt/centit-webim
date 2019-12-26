@@ -85,7 +85,8 @@ html #layuicss-skinlayim-mobilecss{display: none; position: absolute; width: 198
 .layim-chat-text{position: relative; min-height: 22px; line-height: 22px; margin-top: 25px; padding: 8px 15px; background-color: #fff; border-radius: 3px; color: #333; word-break: break-all;}
 .layim-chat-text:after{content: ''; position: absolute; left: -10px; top: 13px; width: 0; height: 0; border-style: dashed; border-color:transparent; overflow:hidden; border-width: 10px; border-top-style: solid; border-top-color: #fff;}
 .layim-chat-text a{color: #33DF83;}
-.layim-chat-text img{ max-width: 100%; vertical-align: middle; width: 40px;}
+.layim-chat-text img{ max-width: 100%; vertical-align: middle;}
+.layim-chat-text .layui-layim-photos {width: 40px;}
 .layui-layim-file,
 .layim-chat-text .layui-layim-file{display: block; text-align: center; }
 .layim-chat-text .layui-layim-file{color: #333;}

@@ -145,6 +145,7 @@ body .layui-layim-chat .layui-layer-content{background: none;}
 .layim-chat-text{max-width: 462px\0;}
 .layim-chat-text a{color: #33DF83;}
 .layim-chat-text img{ max-width: 100%; vertical-align: middle;}
+.layim-chat-text .layui-layim-photos {width: 40px;}
 .layui-layim-file,
 .layim-chat-text .layui-layim-file{display: block; text-align: center; }
 .layim-chat-text .layui-layim-file{color: #333;}
