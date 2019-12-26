@@ -318,7 +318,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   //转换内容
   layui.data.content = function(content){
     //支持的html标签
-    
+
     var html = function(end){
       return new RegExp('\\n*\\['+ (end||'') +'(pre|div|p|table|thead|th|tbody|tr|td|ul|li|ol|li|dl|dt|dd|h2|h3|h4|h5)([\\s\\S]*?)\\]\\n*', 'g');
     };
@@ -558,6 +558,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   
   //记录历史会话
   var setHistory = function(data){
+    data.content = layui.data.content(data.content)
     var local = layui.data('layim-mobile')[cache.mine.id] || {};
     var obj = {}, history = local.history || {};
     var is = history[data.type + data.id];
