@@ -313,6 +313,9 @@ function getUnitUser(unitId) {
  return users
 }
 
+
+ 
+
 function getHistoryChat(receiver, sender) {
   let chatInfo = {}
   $.ajax({
@@ -421,7 +424,7 @@ const TEST_USER2 = {
         }
 class User {
     constructor() {
-        let USER1 = TEST_USER1
+        let USER1 = TEST_USER5
         // let USER1 = TEST_USER1
         this.closeHandler
         this.hasOpenWs = false
@@ -1118,6 +1121,39 @@ setMsgState(data) {
  })
 }
 
+getGroupHistory(data) {
+  $.ajax({
+    type: "GET",
+    //后面优化可以改为true
+    async: false,
+    url: `/im/webimmsg/groupHistoryMessage/${data.receiver}/${data.sender}`,
+    dataType: "json",
+    data: {
+      pageNo: 1,
+      pageSize: data.unreadSum
+    },
+    success: (res) =>{
+
+      let msgList = res.data.objList.reverse()
+      
+      for(let i = 0; i < msgList.length; i++) {
+        msgList[i].id = msgList[i].receiver
+        msgList[i].timestamp = msgList[i].sendTime
+        msgList[i].content = msgList[i].content.msg
+        switch(msgList[i].msgType) {
+          case MSG_TYPE_CHAT :
+            this.showChatMessage($.extend({userType: 'group'}, msgList[i]))
+            break;
+          case MSG_TYPE_COMMAND :
+            this.onCommandMessage(msgList[i], msgList[i].content)
+            break;  
+        }
+      }
+      this.setMsgState(data)
+    }
+ })
+}
+
 queryGroupMsg() {
   $.ajax({
     type: "GET",
@@ -1126,9 +1162,14 @@ queryGroupMsg() {
     url: `/im/webimmsg/statGroupUnread/${this.mine.id}`,
     dataType: "json",
     success: (data) =>{
-      
-      for(let i = 0; i < data.data.length; i++) {
-        this.queryHistoryMsg (data.data[i])
+      for(let key in data.data) {
+        
+        let queryInfo = {
+          receiver: this.mine.id,
+          sender: key,
+          unreadSum: data.data[key]
+        }
+        this.getGroupHistory (queryInfo)
       }
     }
  })
