@@ -3,6 +3,8 @@ package com.centit.im.po;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.support.algorithm.DatetimeOpt;
+import com.centit.support.database.orm.GeneratorCondition;
+import com.centit.support.database.orm.GeneratorTime;
 import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;
 import lombok.Data;
@@ -61,7 +63,7 @@ public class WebImGroup implements java.io.Serializable {
      */
     @Column(name = "CREATE_TIME")
     @Temporal(TemporalType.TIMESTAMP)
-    @ValueGenerator(strategy = GeneratorType.FUNCTION, value = "today")
+    @ValueGenerator(strategy = GeneratorType.FUNCTION, occasion = GeneratorTime.NEW_UPDATE, condition = GeneratorCondition.ALWAYS, value = "today()")
     private Date  createTime;
 
     // Constructors
