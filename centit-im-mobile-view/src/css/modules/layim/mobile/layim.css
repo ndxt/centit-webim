@@ -46,6 +46,7 @@ html #layuicss-skinlayim-mobilecss{display: none; position: absolute; width: 198
 .layui-layim-list li span{margin-top: 2px; max-width: 155px; font-size: 17px;}
 .layui-layim-list li img{position: absolute; left: 12px; top: 8px; width: 36px; height: 36px; border-radius: 100%;}
 .layui-layim-list li p{display: block; padding-right: 30px; line-height: 18px; font-size: 13px; color: #999;}
+.layui-layim-list li p img { left: 62px; top: 30px; width: 16px; height: 16px; }
 .layui-layim-list li .layim-msg-status{display: none; position: absolute; right: 10px; bottom: 7px; padding: 0 5px; height: 17px; line-height: 17px; border-radius: 17px; text-align: center; font-size: 10px; background-color: #F74C31; color: #fff;}
 .layim-list-group{}
 
@@ -86,6 +87,7 @@ html #layuicss-skinlayim-mobilecss{display: none; position: absolute; width: 198
 .layim-chat-text:after{content: ''; position: absolute; left: -10px; top: 13px; width: 0; height: 0; border-style: dashed; border-color:transparent; overflow:hidden; border-width: 10px; border-top-style: solid; border-top-color: #fff;}
 .layim-chat-text a{color: #33DF83;}
 .layim-chat-text img{ max-width: 100%; vertical-align: middle;}
+.layim-chat-text .layui-layim-photos {width: 40px;}
 .layui-layim-file,
 .layim-chat-text .layui-layim-file{display: block; text-align: center; }
 .layim-chat-text .layui-layim-file{color: #333;}

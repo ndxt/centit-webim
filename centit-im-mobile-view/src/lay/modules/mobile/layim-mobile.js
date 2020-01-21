@@ -318,7 +318,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   //转换内容
   layui.data.content = function(content){
     //支持的html标签
-    
+
     var html = function(end){
       return new RegExp('\\n*\\['+ (end||'') +'(pre|div|p|table|thead|th|tbody|tr|td|ul|li|ol|li|dl|dt|dd|h2|h3|h4|h5)([\\s\\S]*?)\\]\\n*', 'g');
     };
@@ -363,6 +363,14 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
     ,'<div class="layim-chat-text">{{ layui.data.content(d.content||"&nbsp;") }}</div>'
   ,'</li>'].join('');
   
+  var elemOffLineChatMain = ['<li class="layim-chat-li{{ d.mine ? " layim-chat-mine" : "" }}">'
+  ,'<div class="layim-resend" layim-event="resend">重发</div>'
+    ,'<div class="layim-chat-user"><img src="{{ d.avatar }}" alt="{{ d.uid || d.id }}"><cite>'
+      ,'{{ d.username||"佚名" }}'
+    ,'</cite></div>'
+    ,'<div class="layim-chat-text">{{ layui.data.content(d.content||"&nbsp;") }}</div>'
+  ,'</li>'].join('');
+
   //处理初始化信息
   var cache = {message: {}, chat: []}, init = function(options){
     var init = options.init || {}
@@ -550,6 +558,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   
   //记录历史会话
   var setHistory = function(data){
+    data.content = layui.data.content(data.content)
     var local = layui.data('layim-mobile')[cache.mine.id] || {};
     var obj = {}, history = local.history || {};
     var is = history[data.type + data.id];
@@ -661,6 +670,58 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
     textarea.next().addClass('layui-disabled');
   };
   
+
+  //发送消息
+  var sendOffLineMessage = function(){
+    var data = {
+      username: cache.mine ? cache.mine.username : '访客'
+      ,avatar: cache.mine ? cache.mine.avatar : (layui.cache.dir+'css/pc/layim/skin/logo.jpg')
+      ,id: cache.mine ? cache.mine.id : null
+      ,mine: true
+    };
+    var thatChat = thisChat(), ul = thatChat.elem.find('.layim-chat-main ul');
+    var To = thatChat.data, maxLength = cache.base.maxLength || 3000;
+    var time =  new Date().getTime(), textarea = thatChat.textarea;
+    
+    data.content = textarea.val();
+    
+    if(data.content === '') return;
+
+    if(data.content.length > maxLength){
+      return layer.msg('内容最长不能超过'+ maxLength +'个字符')
+    }
+    
+    if(time - (sendMessage.time||0) > 60*1000){
+      ul.append('<li class="layim-chat-system"><span>'+ layui.data.date() +'</span></li>');
+      sendMessage.time = time;
+    }
+    ul.append(laytpl(elemOffLineChatMain).render(data));
+    
+    var param = {
+      mine: data
+      ,to: To
+    }, message = {
+      username: param.mine.username
+      ,avatar: param.mine.avatar
+      ,id: To.id
+      ,type: To.type
+      ,content: param.mine.content
+      ,timestamp: time
+      ,mine: true
+    };
+    pushChatlog(message);
+    
+    layui.each(call.sendMessage, function(index, item){
+      item && item(param);
+    });
+    
+    To.content = data.content;
+    setHistory(To);
+    chatListMore();
+    textarea.val('');
+    
+    textarea.next().addClass('layui-disabled');
+  };
   //消息声音提醒
   var voice = function() {
     var audio = document.createElement("audio");
@@ -1013,9 +1074,18 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
     
     //发送聊天内容
     ,send: function(){
-      sendMessage();
+      // debugger
+      // if(navigator.onLine) {
+        sendMessage();
+      // } else {
+      //   sendOffLineMessage();
+      // }
+      
     }
-    
+    //重新发送聊天内容
+    ,resend: function() {
+      debugger
+    }
     //表情
     ,face: function(othis, e){
       var content = '', thatChat = thisChat(), input = thatChat.textarea;

@@ -78,7 +78,7 @@
 
     <sql id="LIST_ALL_UNITINFO">
         <![CDATA[
-            select UNIT_CODE as group_Id, PARENT_UNIT, UNIT_TYPE, IS_VALID,
+            select UNIT_CODE , PARENT_UNIT, UNIT_TYPE, IS_VALID,
                 UNIT_NAME, ENGLISH_NAME, UNIT_SHORT_NAME, UNIT_WORD,
                 UNIT_TAG, UNIT_DESC,  UNIT_ORDER,
                 UNIT_GRADE, DEP_NO, UNIT_PATH, UNIT_MANAGER,

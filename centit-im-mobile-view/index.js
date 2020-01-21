@@ -46,12 +46,12 @@ const CONTENT_TYPE_NOTICE = "notice";
 const CONTENT_TYPE_FORM = "form";
 const CONTENT_TYPE_PUSH_FORM = "pushForm";
 const CONTENT_TYPE_OVER = "over";
-
-
+const CONTENT_TYPE_QUIT_GROUP = "quitGroup";
 const UPLOADIMAGE_URL = `/im/service/file/upload`
 const UPLOADFILE_URL = `/im/service/file/upload`
 
 const USER_AVATAR = "./src/images/userdefalt.png"
+
 
 const SELECT_UNIT_CRUMB = ['南大先腾']
 
@@ -90,6 +90,7 @@ window.$ = layui.$
 const mobile = layui.mobile
 const layim = mobile.layim
 const layer = mobile.layer
+const lay = layui.layer;
 
 let TOTAL_UNIT_NAME = ''
  //演示自动回复
@@ -104,8 +105,22 @@ let TOTAL_UNIT_NAME = ''
       return new Date().getTime()
   }
 
+  function getLocalChatLog(id) {
+    let histroyData = JSON.parse(localStorage.getItem('layim-mobile'))
+    
+    return histroyData
+  }
+  /**
+   * 
+   * @param {*} id 
+   * @param {*} target 
+   * @param {*} unitName 
+   */
+
+
   function addFriendList(id, target, unitName) {
     let userList = getUnitUser(id)
+    
     data1 = {
       users: userList,
       renderNull: function() {
@@ -168,16 +183,6 @@ let TOTAL_UNIT_NAME = ''
       <div class="crumb-container"></div>
       <div class="cut-line"></div>
       <ul class="layui-layim-list layim-tab-content layui-show layim-list-friend">
-      {{#units}}
-      <li data-groupname="{{unitName}}" style="padding-left:0px;border:none;" data-id="{{unitCode}}" data-type="group" data-index="0" class="im-unit">
-      
-      <h5 style="width:94%;" data-id="{{unitCode}}" lay-type="false">
-      <span class="im-unit-name">{{ unitName}}</span>
-      <span class="right-icon">＞</span>
-      </h5>
-      </li>
-      {{/units}}
-      <div class="cut-line"></div>
       {{#users}}
       <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
       <div>
@@ -190,6 +195,18 @@ let TOTAL_UNIT_NAME = ''
       <p></p><span class="layim-msg-status">new</span>
       </li>
       {{/users}}
+      <div class="cut-line"></div>
+      {{#units}}
+      <li data-groupname="{{unitName}}" style="padding-left:0px;border:none;" data-id="{{unitCode}}" data-type="group" data-index="0" class="im-unit">
+      
+      <h5 style="width:94%;" data-id="{{unitCode}}" lay-type="false">
+      <span class="im-unit-name">{{ unitName}}</span>
+      <span class="right-icon">＞</span>
+      </h5>
+      </li>
+      {{/units}}
+      
+      
       </ul>
       
       </div>
@@ -296,6 +313,9 @@ function getUnitUser(unitId) {
  return users
 }
 
+
+ 
+
 function getHistoryChat(receiver, sender) {
   let chatInfo = {}
   $.ajax({
@@ -354,6 +374,15 @@ function getMineFriendList(id) {
      return friendGroup
 }
 
+
+// function showLargeImg (){
+//   $('body').on('click', '.layui-layim-photos', function(){
+//     $(this).css( { 'width': '160px' })
+//   })
+// }
+
+// showLargeImg()
+
 const TEST_USER1 = {
   "osId": "WebIM",
   "userCode": "345",
@@ -377,10 +406,28 @@ const TEST_USER2 = {
     "userState": "F",
     "userType": "U"
     }
+
+    const TEST_USER4 = {
+      "osId": "WebIM",
+      "userCode": "592",
+      "userName": "胡知非",
+      "userState": "F",
+      "userType": "U"
+      }
+
+    const TEST_USER5 = {
+        "osId": "WebIM",
+        "userCode": "129",
+        "userName": "曹秋燕",
+        "userState": "F",
+        "userType": "U"
+        }
 class User {
     constructor() {
-        let USER1 = TEST_USER2
+        let USER1 = TEST_USER5
+        // let USER1 = TEST_USER1
         this.closeHandler
+        this.hasOpenWs = false
         this.mine = $.extend(
           {"avatar": USER_AVATAR,
           "sign": "",
@@ -526,15 +573,6 @@ class User {
                   <div class="crumb-container"></div>
                   <div class="cut-line"></div>
                   <ul class="member-list layui-layim-list  layui-show">
-                  {{#groups}}
-                  <li style="padding-left:25px;" data-name="{{unitName}}" data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup">
-                  <h5 style="display:block">
-                  <span>{{ unitName }}</span>
-                  <span class="right-icon">＞</span>
-                  </h5>
-                  </li>
-                  {{/groups}}
-                  <div class="cut-line"></div>
                   {{#users}}
             <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
             <div>
@@ -550,6 +588,16 @@ class User {
             </span>
             </li>
             {{/users}}
+            <div class="cut-line"></div>
+                  {{#groups}}
+                  <li style="padding-left:25px;" data-name="{{unitName}}" data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup">
+                  <h5 style="display:block">
+                  <span>{{ unitName }}</span>
+                  <span class="right-icon">＞</span>
+                  </h5>
+                  </li>
+                  {{/groups}}
+                  
                   </ul>
                   <div class="static_bottom_btn ${className}">确认</div>
                   </div>
@@ -754,18 +802,41 @@ class User {
                   ` , data2),
                });
                createCrumb()
-  
-                
     }
 
     createGroupMemberPanel(groupId, customClassName) {
       let className = 'select_member_btn'
-      if(model === "ADD_MODE") {
-        className = 'add-group-member'
-      }
+
       let list = getUnitUser(groupId)
+      let dataJson = JSON.parse(sessionStorage.getItem('tmpList'))
+
+      let users
+
+      function differenceList(unionArr,subsetArr) {
+        let tmp = new Array();
+          for(let i = 0; i < unionArr.length; i++){
+            let flag = true;
+            for(let j = 0;j < subsetArr.length; j++){
+              if(unionArr[i].userCode === subsetArr[j].userCode){
+                flag = false;
+              }
+            }
+            if(flag){
+              tmp.push(unionArr[i]);
+            }
+          }
+        return tmp;
+      }
+      
+      users = list
+
+      if(model === "ADD_MODE") {
+        className = 'add-group-member'  
+        users = differenceList(list,dataJson)
+      }
+
       let data1 = {
-        users: list,
+        users,
         classFn: function() {
           
           if(member_id_list.indexOf(this.userCode) > -1) {
@@ -787,6 +858,7 @@ class User {
           }
         }
       }
+
           layim.panel({
             title: '选择群组成员' //标题
             ,tpl:Mustache.render(`
@@ -798,21 +870,21 @@ class User {
             <div class="crumb-container"></div>
             <div class="cut-line"></div>
             <ul class="member-list layui-layim-list  layui-show">
-            {{#users}}
-            <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
-            <div>
-            <div class="avatar-container">
-            <img src="${USER_AVATAR}">
-            </div>
-            </div>
-            <span class="username">
-            {{userName}}</span>
-            <p></p><span class="layim-msg-status">new</span>
-            <span class="member-checkbox">
-            <img src="{{imgSrc}}"/>
-            </span>
-            </li>
-            {{/users}}
+              {{#users}}
+              <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
+              <div>
+              <div class="avatar-container">
+              <img src="${USER_AVATAR}">
+              </div>
+              </div>
+              <span class="username">
+              {{userName}}</span>
+              <p></p><span class="layim-msg-status">new</span>
+              <span class="member-checkbox">
+              <img src="{{imgSrc}}"/>
+              </span>
+              </li>
+              {{/users}}
             </ul>
             {{#hasMembers}}
             <li class="layim-null">暂无联系人</li>
@@ -1023,7 +1095,14 @@ queryHistoryMsg(data) {
         msgList[i].id = msgList[i].sender
         msgList[i].timestamp = msgList[i].sendTime
         msgList[i].content = msgList[i].content.msg
-        this.showChatMessage(msgList[i])
+        switch(msgList[i].msgType) {
+          case MSG_TYPE_CHAT :
+            this.showChatMessage(msgList[i])
+            break;
+          case MSG_TYPE_COMMAND :
+              this.onCommandMessage(msgList[i], msgList[i].content)
+              break;  
+        }
       }
       this.setMsgState(data)
     }
@@ -1042,6 +1121,39 @@ setMsgState(data) {
  })
 }
 
+getGroupHistory(data) {
+  $.ajax({
+    type: "GET",
+    //后面优化可以改为true
+    async: false,
+    url: `/im/webimmsg/groupHistoryMessage/${data.receiver}/${data.sender}`,
+    dataType: "json",
+    data: {
+      pageNo: 1,
+      pageSize: data.unreadSum
+    },
+    success: (res) =>{
+
+      let msgList = res.data.objList.reverse()
+      
+      for(let i = 0; i < msgList.length; i++) {
+        msgList[i].id = msgList[i].receiver
+        msgList[i].timestamp = msgList[i].sendTime
+        msgList[i].content = msgList[i].content.msg
+        switch(msgList[i].msgType) {
+          case MSG_TYPE_CHAT :
+            this.showChatMessage($.extend({userType: 'group'}, msgList[i]))
+            break;
+          case MSG_TYPE_COMMAND :
+            this.onCommandMessage(msgList[i], msgList[i].content)
+            break;  
+        }
+      }
+      this.setMsgState(data)
+    }
+ })
+}
+
 queryGroupMsg() {
   $.ajax({
     type: "GET",
@@ -1050,8 +1162,14 @@ queryGroupMsg() {
     url: `/im/webimmsg/statGroupUnread/${this.mine.id}`,
     dataType: "json",
     success: (data) =>{
-      for(let i = 0; i < data.data.length; i++) {
-        this.queryHistoryMsg (data.data[i])
+      for(let key in data.data) {
+        
+        let queryInfo = {
+          receiver: this.mine.id,
+          sender: key,
+          unreadSum: data.data[key]
+        }
+        this.getGroupHistory (queryInfo)
       }
     }
  })
@@ -1077,7 +1195,6 @@ queryUnreadMsg() {
        * 用户登录后，根据用户部门信息，加群，若群不存在，则创建群
        */
       //TODO先查询是否存在此群，根据部门id获取此群
-      
       $.ajax({
         type: "POST",
         //后面优化可以改为true
@@ -1086,20 +1203,20 @@ queryUnreadMsg() {
         dataType: "json",
         contentType: "application/json",
         data: JSON.stringify(groupInfo),
-        success: (data)=>{
+        success: (data) => {
           this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
           this.createUserPanel()
-
+          
           layim.chat({
             name: data.data.groupName //名称
             ,type: 'group' //聊天类型
             ,avatar: USER_AVATAR //头像
-            ,id: this.mine.id//定义唯一的id方便你处理信息
+            ,id: data.data.groupId//定义唯一的id方便你处理信息
           });
           
           // this.onEventListener()
         }
-     })
+      })
     }
 /**
          * 显示系统消息
@@ -1119,7 +1236,7 @@ queryUnreadMsg() {
          * @param timestamp
          */
         showChatMessage({id, userType = "friend", content, timestamp, senderName, system = false}) {
-          debugger
+          
           if(system) {
           //   layer.open({
           //     title: '系统通知'
@@ -1127,7 +1244,6 @@ queryUnreadMsg() {
           //     content: Mustache.render(content)
           // });
           } else {
-            
             this.im.getMessage({
               type: userType,
               system,
@@ -1137,23 +1253,22 @@ queryUnreadMsg() {
               content,
               timestamp: timestamp || _getTimestamp(),
               avatar: USER_AVATAR
-          })
+            })
           }
          
          
-          // debugger
           
       }
 
 
-    /**
+        /**
          * WebSocket通道打开事件
          */
       onWSOpen() {
-          this.sendRegisterCommand()
-          
-          this.queryUnreadMsg()
-          console.log('WebSocket connection is opened.')
+        this.hasOpenWs = true
+        this.sendRegisterCommand()   
+        this.queryUnreadMsg()
+        this.queryGroupMsg()
       }
 
     /**
@@ -1251,6 +1366,7 @@ queryUnreadMsg() {
          * WebSocket关闭打开事件
          */
         onWSClose() {
+          this.hasOpenWs = false
           if(this.closeHandler) {
             clearTimeout(this.closeHandler)
           }
@@ -1307,7 +1423,7 @@ queryUnreadMsg() {
          * @param res
          */
         onWSMessage(res) {
-          
+            
             let data = res.data
             if (!this.messageHandler) {
                 clearTimeout(this.messageHandler);
@@ -1341,15 +1457,15 @@ queryUnreadMsg() {
                         data: data.content
                     }))
                     break
-                // case MSG_TYPE_COMMAND:
-                //     this.onCommandMessage(data, data.content)
-                //     break;
+                case MSG_TYPE_COMMAND:
+                    this.onCommandMessage(data, data.content)
+                    break;
                 // case MSG_TYPE_QUESTION:
                 //     this.createProblemList(data.content, data);
                 //     break;
 
                 case MSG_TYPE_BROADCAST:
-                    // this.onBroadcastMessage(data);
+                    // this.onBroadcastMessage(datdea);
                     break
                 default:
                     console.warn(`未知的数据类型：${data.type}`)
@@ -1359,17 +1475,50 @@ queryUnreadMsg() {
 
     sendWSMessage(data) {//CF
       if (this.socket.readyState == '3') {
-        
-          window.location.reload();
-          this.showSystemMessage({
-              id: '0',
-              content: Mustache.render('您已掉线，请<a onmouseup="window.location.reload();" style="color: RGB(98, 158, 229)">刷新</a>重新连接')
-          })
+        this.socket.send(JSON.stringify(data))
       } else if (this.socket.readyState == '1') {
           console.log(data);
           this.socket.send(JSON.stringify(data))
       }
   }
+
+    onCommandMessage (data, content) {
+      switch (data.contentType) {
+        case CONTENT_TYPE_QUIT_GROUP:
+          layer.open({
+            title:"警告",
+            content: `<div>${content.msg}</div>`,
+            btn: ['确认'],
+            cancel: (index, layero) =>{
+              //do something
+              this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
+              this.createUserPanel()
+              layer.close(index); //如果设定了yes回调，需进行手工关闭
+            },
+            yes: (index, layero) =>{
+              let groupId
+              content.msg.replace(/\((.+?)\)/g, (word) =>{
+                groupId = word.slice(1, word.length - 1)
+                let chatLog = getLocalChatLog()
+              if(chatLog !== undefined) {
+                delete chatLog[this.mine.id].history[`group${groupId}`]
+              }
+              
+              localStorage.setItem('layim-mobile', JSON.stringify(chatLog))
+              $(`.layim-group${groupId}`).remove()
+              })
+              
+              
+              this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
+              this.createUserPanel()
+              layer.close(index);
+            }
+          })
+            break
+        default:
+            console.warn(`未知的数据类型：${data.type}`)
+    }
+    }
 
     onEventListener() {
 
@@ -1462,7 +1611,6 @@ queryUnreadMsg() {
       layim.on('detail', (data) => {
         let tempFriendList = []
         console.log(data); //获取当前会话对象
-        
         
         let UNIT_TPL = `<div class="search-list">
         <div class="input-container">
@@ -1674,15 +1822,17 @@ queryUnreadMsg() {
             allMemberId.splice(memberIndex, 1)
             tempFriendList.splice(memberIndex, 1)
           }
+          
           $.ajax({
             type: "PUT",
             //后面优化可以改为true
             async: false,
-            url: `/im/webimcust/member/${data.id}`,
+            url: `/im/webimcust/quitGroup/${GROUP_ID}/${userCode}`,
             dataType: "json",
             contentType: "application/json",
-            data: JSON.stringify(allMemberId),
+            // data: JSON.stringify(allMemberId),
             success: function(data){
+              
               if(data.message === "OK") {
                 $(`[data-id=${userCode}].custom-group`).remove()
                 $(`[data-id=${userCode}].delete-group-member`).remove()
@@ -1741,6 +1891,7 @@ queryUnreadMsg() {
           url: `/im/webimcust/${url}/${data.id}`,
           dataType: "json",
           success: function(data){
+            sessionStorage.setItem('tmpList', JSON.stringify(data.data))
             for(let i = 0; i < data.data.length; i++) {
               
               tempFriendList.push($.extend({
@@ -1812,10 +1963,10 @@ layim.on('newFriend', function(){
   });
 
       
-    
+        let _this = this
         $("body").off('mouseup', ".select_member_btn")
-        $("body").on('mouseup', ".select_member_btn", () =>{
-          
+        $("body").on('mouseup', ".select_member_btn", () => {
+
           let groupInfo = {
             members: member_id_list,
             groupName: member_name_list.slice(0, 4).join(),
@@ -1823,12 +1974,32 @@ layim.on('newFriend', function(){
             groupNotice: '',
             osId: ''
           }
-          this.createGroup(groupInfo)
+
+          if (member_id_list.length > 1) {
+            lay.confirm('是否修改群名称', {
+              btn: ['是','否'],
+              yes: function (index) {
+                lay.close(index);
+                lay.prompt({title: '请输入群名称', formType: 2}, function(customGroupName, level){
+                  lay.close(level);
+                  groupInfo.groupName = customGroupName
+                  _this.createGroup(groupInfo)
+                });
+              },
+              btn2: function (index) {
+                lay.close(index);
+                _this.createGroup(groupInfo)
+              }
+            })
+          }else {
+            lay.msg('请选择群聊成员');
+          }
         })
         
         layim.on('newGroup', () =>{
           member_id_list = [this.mine.id]
           member_name_list = [this.mine.userName]
+          
           model = 'CREATE_MODE'
           this.createSelectList()
 
@@ -2023,5 +2194,6 @@ layim.on('newFriend', function(){
     }
     
     chatList()
+
   });
   
