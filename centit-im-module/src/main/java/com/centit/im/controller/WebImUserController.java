@@ -334,6 +334,18 @@ public class WebImUserController extends BaseController {
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                 .message("用户:"+ userDesc +"加入群聊！")
                 .build());
+
+        WebImGroup group = webImUserManager.getGroupInfo(groupId);
+        String groupDesc = group == null ? groupId :
+                group.getGroupName()+"("+groupId+")";
+        webImSocket.sendMessage(memberCode,ImMessageBuild.create()
+                .type(ImMessage.MSG_TYPE_COMMAND)
+                .sender("system")
+                .receiver(memberCode)
+                .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                .message("您加入了群"+groupDesc+"！")
+                .build());
+
         return ResponseData.makeSuccessResponse();
     }
 
