@@ -298,7 +298,7 @@ public class WebImUserController extends BaseController {
                     .sender("system")
                     .receiver(memberCode)
                     .contentType(ImMessage.CONTENT_TYPE_NOTICE)
-                    .message("您加入了群" + webImGroup.getGroupName() + "！")
+                    .message("您加入了群" + groupId + "！")
                     .build());
         }
         return webImGroup;
