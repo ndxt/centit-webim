@@ -292,6 +292,15 @@ public class WebImUserController extends BaseController {
                 .createGroupWithMembers(webImGroup,
                         CollectionsOpt.listToArray(StringBaseOpt.objectToStringList(members)));
         webImGroup.setGroupId(groupId);
+        for(String memberCode:StringBaseOpt.objectToStringList(members)) {
+            webImSocket.sendMessage(memberCode, ImMessageBuild.create()
+                    .type(ImMessage.MSG_TYPE_COMMAND)
+                    .sender("system")
+                    .receiver(memberCode)
+                    .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                    .message("您加入了群" + webImGroup.getGroupName() + "！")
+                    .build());
+        }
         return webImGroup;
     }
 
@@ -334,7 +343,6 @@ public class WebImUserController extends BaseController {
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                 .message("用户:"+ userDesc +"加入群聊！")
                 .build());
-
         WebImGroup group = webImUserManager.getGroupInfo(groupId);
         String groupDesc = group == null ? groupId :
                 group.getGroupName()+"("+groupId+")";
@@ -376,8 +384,9 @@ public class WebImUserController extends BaseController {
     @WrapUpResponseBody
     public ResponseData updateGroupMember(
             @RequestBody String memberInfoJson) {
+        WebImGroupMember webImGroupMember=WebImGroupMember.createFromJson(JSON.parseObject(memberInfoJson));
         webImUserManager.updateGroupMemberInfo(
-                WebImGroupMember.createFromJson(JSON.parseObject(memberInfoJson)));
+                webImGroupMember);
         return ResponseData.makeSuccessResponse();
     }
 
