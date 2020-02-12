@@ -744,7 +744,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
     if(cache.base.voice){
       voice();
     }
-
+    
     if((!layimChat && data.content) || !isThisData){
       if(cache.message[data.type + data.id]){
         cache.message[data.type + data.id].push(data)
@@ -1074,7 +1074,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
     
     //发送聊天内容
     ,send: function(){
-      // debugger
+      // 
       // if(navigator.onLine) {
         sendMessage();
       // } else {
@@ -1084,7 +1084,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
     }
     //重新发送聊天内容
     ,resend: function() {
-      debugger
+      
     }
     //表情
     ,face: function(othis, e){

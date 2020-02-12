@@ -1004,7 +1004,6 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports){
     if(cache.base.voice){
       voice();
     }
-    
     if((!layimChat && data.content) || index === -1){
       if(cache.message[data.type + data.id]){
         cache.message[data.type + data.id].push(data)
