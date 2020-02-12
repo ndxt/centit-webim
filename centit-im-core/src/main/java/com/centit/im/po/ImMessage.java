@@ -55,6 +55,7 @@ public class ImMessage implements  java.io.Serializable {
     public static final String CONTENT_TYPE_NOTICE = "notice";
     public static final String CONTENT_TYPE_QUIT_GROUP = "quitGroup";
     public static final String CONTENT_TYPE_DELETE_FRIEND = "deleteFriend";
+    public static final String CONTENT_TYPE_DELETE_GROUP = "deleteGroup";
     public static final String CONTENT_TYPE_PUSH_FORM = "pushForm";
     public static final String CONTENT_TYPE_FORM = "form";
 

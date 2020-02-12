@@ -501,7 +501,7 @@ public class WebImUserController extends BaseController {
                         .type(ImMessage.MSG_TYPE_COMMAND)
                         .sender("system")
                         .receiver(memberCode.getUserCode())
-                        .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                        .contentType(ImMessage.CONTENT_TYPE_DELETE_GROUP)
                         .message("群" + webImGroup.getGroupName() + "已解散！")
                         .addContent("groupId",groupId)
                         .build());
