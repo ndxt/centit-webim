@@ -40,10 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by codefan on 17-5-26.
@@ -492,11 +489,23 @@ public class WebImUserController extends BaseController {
     public ResponseMapData deleteGroup(
             @PathVariable String groupId,
             @PathVariable String userCode) {
+        List<WebImGroupMember> members = webImUserManager.listGroupMembers(groupId);
+        WebImGroup webImGroup= webImUserManager.getGroupInfo(groupId);
         int nRres = webImUserManager
                 .dissolveGroup(groupId, userCode, true);
         ResponseMapData resData = new ResponseMapData();
         resData.addResponseData("flag", nRres);
         if(nRres > 0 ){
+            for(String memberCode:StringBaseOpt.objectToStringList(members)) {
+                webImSocket.sendMessage(memberCode, ImMessageBuild.create()
+                        .type(ImMessage.MSG_TYPE_COMMAND)
+                        .sender("system")
+                        .receiver(memberCode)
+                        .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                        .message("群" + webImGroup.getGroupName() + "已解散！")
+                        .addContent("groupId",groupId)
+                        .build());
+            }
             return resData;
         }else{
             resData.addResponseData("message", "群不存在。");
