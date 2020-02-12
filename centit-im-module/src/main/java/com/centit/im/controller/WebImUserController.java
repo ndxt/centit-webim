@@ -496,11 +496,11 @@ public class WebImUserController extends BaseController {
         ResponseMapData resData = new ResponseMapData();
         resData.addResponseData("flag", nRres);
         if(nRres > 0 ){
-            for(String memberCode:StringBaseOpt.objectToStringList(members)) {
-                webImSocket.sendMessage(memberCode, ImMessageBuild.create()
+            for(WebImGroupMember memberCode:members) {
+                webImSocket.sendMessage(memberCode.getUserCode(), ImMessageBuild.create()
                         .type(ImMessage.MSG_TYPE_COMMAND)
                         .sender("system")
-                        .receiver(memberCode)
+                        .receiver(memberCode.getUserCode())
                         .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                         .message("群" + webImGroup.getGroupName() + "已解散！")
                         .addContent("groupId",groupId)
