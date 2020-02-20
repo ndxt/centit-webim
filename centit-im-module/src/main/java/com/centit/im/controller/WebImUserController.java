@@ -20,6 +20,8 @@ import com.centit.im.utils.ImMessageBuild;
 import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.GeneralAlgorithm;
 import com.centit.support.algorithm.StringBaseOpt;
+import com.centit.support.algorithm.StringRegularOpt;
+import com.centit.support.compiler.Lexer;
 import com.centit.support.database.utils.PageDesc;
 import com.centit.support.image.ImageOpt;
 import io.swagger.annotations.Api;
@@ -320,18 +322,7 @@ public class WebImUserController extends BaseController {
         return ResponseData.makeSuccessResponse();
     }
 
-    /**
-     * @return  申请加入群
-     * @param memberCode 成员代码
-     * @param groupId 组Id
-     *
-     */
-    @ApiOperation(value = "16申请加入群")
-    @RequestMapping(value = "/member/{groupId}/{memberCode}", method = RequestMethod.PUT)
-    @WrapUpResponseBody
-    public ResponseData addGroupMember(
-            @PathVariable String groupId,
-            @PathVariable String memberCode) {
+    private void innerAddGroupMember(String groupId, String memberCode){
         webImUserManager.addGroupMember(groupId,memberCode);
         WebImCustomer user = webImUserManager.getUser(memberCode);
         String userDesc = user == null ? memberCode :
@@ -353,10 +344,41 @@ public class WebImUserController extends BaseController {
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                 .message("您加入了群"+groupDesc+"！")
                 .build());
-
+    }
+    /**
+     * @return 用户加入群
+     * @param memberCode 成员代码
+     * @param groupId 组Id
+     */
+    @ApiOperation(value = "16用户加入群")
+    @RequestMapping(value = "/member/{groupId}/{memberCode}", method = RequestMethod.PUT)
+    @WrapUpResponseBody
+    public ResponseData addGroupMember(
+            @PathVariable String groupId,
+            @PathVariable String memberCode) {
+        innerAddGroupMember(groupId, memberCode);
         return ResponseData.makeSuccessResponse();
     }
 
+    @ApiOperation(value = "25添加多个用户入群")
+    @RequestMapping(value = "/member/{groupId}", method = RequestMethod.PUT)
+    @WrapUpResponseBody
+    public ResponseData addGroupMembers(
+            @PathVariable String groupId,
+            @RequestBody String memberCodes                                                                     ) {
+        Lexer lexer = new Lexer(memberCodes);
+        String word =  lexer.getAWord();
+        while(StringUtils.isNotBlank(word)){
+            if(!StringUtils.equalsAny(word,"[",",","]")){
+                word = StringRegularOpt.trimString(word);
+                if(StringUtils.isNotBlank(word)){
+                    innerAddGroupMember(groupId, word);
+                }
+            }
+            word =  lexer.getAWord();
+        }
+        return ResponseData.makeSuccessResponse();
+    }
     /**
      *  @return  更新所有群成员
      * @param groupId 组Id
@@ -541,7 +563,5 @@ public class WebImUserController extends BaseController {
         }
         return ImageOpt.createIdIcon(userCode, size, point);
     }
-
-
 
 }
