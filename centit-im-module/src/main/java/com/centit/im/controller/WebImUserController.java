@@ -333,6 +333,8 @@ public class WebImUserController extends BaseController {
                 .receiver(groupId)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                 .message("用户:"+ userDesc +"加入群聊！")
+                .addContent("groupId", groupId)
+                .addContent("userId", memberCode)
                 .build());
         WebImGroup group = webImUserManager.getGroupInfo(groupId);
         String groupDesc = group == null ? groupId :
@@ -342,6 +344,8 @@ public class WebImUserController extends BaseController {
                 .sender("system")
                 .receiver(memberCode)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                .addContent("groupId", groupId)
+                .addContent("userId", memberCode)
                 .message("您加入了群"+groupDesc+"！")
                 .build());
     }
@@ -406,7 +410,6 @@ public class WebImUserController extends BaseController {
     @WrapUpResponseBody
     public List<WebImGroupMember> listGroupMembers(
             @PathVariable String groupId) {
-
         return webImUserManager.listGroupMembers(groupId);
     }
 
@@ -420,7 +423,6 @@ public class WebImUserController extends BaseController {
     @WrapUpResponseBody
     public WebImGroup getGroupInfo(
             @PathVariable String groupId) {
-
         return  webImUserManager.getGroupInfo(groupId);
     }
 
