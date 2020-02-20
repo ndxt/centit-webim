@@ -338,7 +338,7 @@ public class WebImUserController extends BaseController {
                 .build());
         WebImGroup group = webImUserManager.getGroupInfo(groupId);
         String groupDesc = group == null ? groupId :
-                group.getGroupName()+"("+groupId+")";
+                group.getGroupName();
         webImSocket.sendMessage(memberCode,ImMessageBuild.create()
                 .type(ImMessage.MSG_TYPE_COMMAND)
                 .sender("system")
