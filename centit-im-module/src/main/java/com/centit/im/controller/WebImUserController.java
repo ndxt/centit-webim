@@ -360,7 +360,7 @@ public class WebImUserController extends BaseController {
         return ResponseData.makeSuccessResponse();
     }
 
-    @ApiOperation(value = "25添加多个用户入群")
+    @ApiOperation(value = "17添加多个用户入群")
     @RequestMapping(value = "/member/{groupId}", method = RequestMethod.PUT)
     @WrapUpResponseBody
     public ResponseData addGroupMembers(
@@ -377,22 +377,6 @@ public class WebImUserController extends BaseController {
             }
             word =  lexer.getAWord();
         }
-        return ResponseData.makeSuccessResponse();
-    }
-    /**
-     *  @return  更新所有群成员
-     * @param groupId 组Id
-     * @param membersJsonStr [["123"],["234"]]
-     */
-    @ApiOperation(value = "17更新所有群成员")
-    @RequestMapping(value = "/member/{groupId}", method = RequestMethod.PUT)
-    @WrapUpResponseBody
-    public ResponseData updateGroupMembers(
-            @PathVariable String groupId,
-            @RequestBody String membersJsonStr) {
-        JSONArray ja = JSON.parseArray(membersJsonStr);
-        webImUserManager.updateGroupMembers(groupId,
-                CollectionsOpt.listToArray(StringBaseOpt.objectToStringList(ja)));
         return ResponseData.makeSuccessResponse();
     }
 
