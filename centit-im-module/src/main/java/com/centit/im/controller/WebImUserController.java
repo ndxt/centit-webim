@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.fileserver.common.FileStore;
 import com.centit.fileserver.utils.SystemTempFileUtils;
-import com.centit.fileserver.utils.UploadDownloadUtils;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.common.WebOptUtils;
@@ -40,7 +39,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by codefan on 17-5-26.
