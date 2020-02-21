@@ -32,7 +32,7 @@
 }
 .static_bottom_btn {
  position: fixed;
- bottom: 0;
+ bottom: -6px;
  z-index: 999;
  background: #3988E5;
  color: white;
@@ -42,14 +42,21 @@
  line-height: 36px;
  width: 100%;
 }
+.search-list {
+    padding-top: 6px;
+    -webkit-overflow-scrolling: touch;
+    /* white-space:nowrap;
+overflow: scroll;
+-webkit-overflow-scrolling: touch; */
+}
 .member-list {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
     position: fixed;
     left: 0;
     right: 0;
     top: 144px;
     bottom: 36px;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 .custom-group {
     width: 58%;
@@ -171,7 +178,7 @@
     bottom: 0px;
 }
 .unit-user-list .custom-group {
-    width: 100%;
+    width: 82%;
 }
 .layim-null {
     height: 20px;
@@ -252,5 +259,8 @@
     font-size: 15px;
     padding: 5px 10px;
     border-radius: 10px;
+}
+.layui-layim-list.layim-list-group li{
+ line-height: 40px;
 }
 </style>

@@ -13,6 +13,8 @@ function _getContextPath() {
   }
 }
 
+
+
 window.ctx = _getContextPath();
 
 //一堆模式
@@ -93,6 +95,13 @@ const layim = mobile.layim
 const layer = mobile.layer
 const lay = layui.layer;
 
+function backToMain() {
+  $(".layui-m-layer").each(function() {
+    if($(this).attr("index") != 0) {
+      layim.emit($(this).find("[layim-event=back]")[0])
+    }
+  })
+}
 function loadingModal(fn) {
   let currentLayer
   layer.open({
@@ -445,8 +454,8 @@ const TEST_USER2 = {
 class User {
     constructor() {
         // let USER1 = TEST_USER5
-        let USER1 = TEST_USER1
-        // let USER1 = TEST_USER4
+        // let USER1 = TEST_USER1
+        let USER1 = TEST_USER2
         this.closeHandler
         this.hasOpenWs = false
         this.isGroupCreate = false
@@ -604,8 +613,9 @@ class User {
                   {{/groups}}
                   
                   </ul>
-                  <div class="static_bottom_btn ${className}">确认</div>
+                  
                   </div>
+                  <div class="static_bottom_btn ${className}">确认</div>
                   ` , data1),
                });
                createCrumb()
@@ -802,8 +812,9 @@ class User {
                   
                   </ul>
                   </ul>
-                  <div class="static_bottom_btn ${className}">确认</div>
+                  
                   </div>
+                  <div class="static_bottom_btn ${className}">确认</div>
                   ` , data2),
                });
                createCrumb()
@@ -894,8 +905,9 @@ class User {
             {{#hasMembers}}
             <li class="layim-null">暂无联系人</li>
             {{/hasMembers}}
-            <div class="static_bottom_btn ${className}">确认</div>
+           
             </div>
+            <div class="static_bottom_btn ${className}">确认</div>
             ` , data1),
          });
          createCrumb()
@@ -1232,6 +1244,7 @@ queryUnreadMsg() {
             ,id: data.data.groupId//定义唯一的id方便你处理信息
           })
           this.isGroupCreate = true
+          backToMain()
           layim.chat({
             name: data.data.groupName //名称
             ,type: 'group' //聊天类型
@@ -1508,7 +1521,11 @@ queryUnreadMsg() {
 
 
         onNoticeMessage(data) {
-          let groupName = data.content.msg.slice(5, data.content.msg.length - 1)
+          let endIndex = data.content.msg.length - 1
+          if(data.content.msg.indexOf('(') > -1) {
+            endIndex = data.content.msg.indexOf('(')
+          }
+          let groupName = data.content.msg.slice(5, endIndex)
           
           layim.addList({
             groupname: groupName
@@ -1571,8 +1588,7 @@ queryUnreadMsg() {
             btn: ['确认'],
             cancel: (index, layero) =>{
               //do something
-              this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-              this.createUserPanel()
+              backToMain()
               layer.close(index); //如果设定了yes回调，需进行手工关闭
             },
             yes: (index, layero) =>{
@@ -1588,9 +1604,11 @@ queryUnreadMsg() {
               $(`.layim-group${groupId}`).remove()
               })
               
-              
-              this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-              this.createUserPanel()
+              layim.removeList({
+                type: 'group' //或者group
+                ,id: groupId //好友或者群组ID
+              })
+              backToMain()
               layer.close(index);
             }
           })
@@ -1615,9 +1633,7 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
     //绑定点击面包屑事件
       $("body").off("mouseup", ".crumb-container")
       $("body").on("mouseup", ".crumb-container", (e) => {
-        
       let currentPanelBackBtn = $(e.currentTarget).parent().parent().parent().find("[layim-event=back]")[0]
-        
       layim.emit(currentPanelBackBtn)
       })
 //绑定点击查询人员事件
@@ -1780,8 +1796,7 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
               contentType: "application/json",
               data: JSON.stringify(groupInfo),
               success: (data)=>{
-                this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-                this.createUserPanel()
+                backToMain()
                 // this.onEventListener()
               }
            })
@@ -1798,8 +1813,9 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
           <span>群名称：</span>
           <input id="change-groupname-input" style="float:right;" class="search-input"/>
           </div>
-          <div class="static_bottom_btn change-group-btn">确认</div>
+         
           </div>
+          <div class="static_bottom_btn change-group-btn">确认</div>
           ` , data1),
        });
       })
@@ -1831,8 +1847,7 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
                     //   title:"提示",
                     //   content: "<div>删除成功</div>"
                     // })
-                    this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-                    this.createUserPanel()
+                    backToMain()
                     // this.onEventListener()
                     // layer.close(index)
                   } else {
@@ -1857,14 +1872,6 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
 
           
           let allMemberId = []
-          allMemberId = tempFriendList.map((item) => {
-            return item.id
-          })
-          let userCode = $(e.currentTarget).data("id")
-
-
-
-
           allMemberId = allMemberId.concat(member_id_list)
 
           allMemberId = Array.from(new Set(allMemberId))
@@ -1881,11 +1888,16 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
               
               if(data.message === "OK") {
                 // $(e.currentTarget).css("display", "none")
-                this.createUserPanel()
+                // this.createUserPanel()
+                layer.open({
+                  title:"提示",
+                  content: `<div>添加成功!</div>`
+                })
+                backToMain()
               } else {
                 layer.open({
                   title:"提示",
-                  content: `<div>添加失败</div>`
+                  content: `<div>添加失败!</div>`
                 })
               }
               member_id_list = []
@@ -1903,7 +1915,6 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
         //监听删除群成员
         $("body").off('mouseup', '.delete-group-member')
         $("body").on('mouseup', '.delete-group-member', (e) =>{
-          console.log('event is', e)
           let allMemberId = []
           allMemberId = tempFriendList.map((item) => {
             return item.id
@@ -1951,8 +1962,7 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
                 //   title:"提示",
                 //   content: "<div>删除成功</div>"
                 // })
-                this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-                this.createUserPanel()
+                backToMain()
                 // this.onEventListener()
                 // layer.close(index)
               } else {
@@ -2233,8 +2243,11 @@ layim.on('newFriend', function(){
           $(`.layim-group${groupId}`).remove()
           
           
-          this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-          this.createUserPanel()
+          layim.removeList({
+            type: 'group' //或者group
+            ,id: groupId //好友或者群组ID
+          });
+          backToMain()
 
       layer.open({
         title:"通知",
@@ -2251,8 +2264,11 @@ layim.on('newFriend', function(){
           $(`.layim-group${groupId}`).remove()
           
           
-          this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-          this.createUserPanel()
+          layim.removeList({
+            type: 'group' //或者group
+            ,id: groupId //好友或者群组ID
+          });
+          backToMain()
           layer.close(index);
         },
         yes: (index, layero) =>{
