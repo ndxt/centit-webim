@@ -1150,12 +1150,14 @@ setMsgState(data) {
  })
 }
 
-getGroupHistory(data) {
+
+
+getGroupHistoryMsg(data) {
   $.ajax({
     type: "GET",
     //后面优化可以改为true
     async: false,
-    url: `/im/webimmsg/groupHistoryMessage/${data.receiver}/${data.sender}`,
+    url: `/im/webimmsg/groupHistoryMessage/${data.unitCode}`,
     dataType: "json",
     data: {
       pageNo: 1,
@@ -1170,37 +1172,32 @@ getGroupHistory(data) {
         msgList[i].timestamp = msgList[i].sendTime
         msgList[i].content = msgList[i].content.msg
         switch(msgList[i].msgType) {
-          case MSG_TYPE_CHAT :
+          case MSG_TYPE_GROUP:
             this.showChatMessage($.extend({userType: 'group'}, msgList[i]))
+            
             break;
           case MSG_TYPE_COMMAND :
             this.onCommandMessage(msgList[i], msgList[i].content)
             break;  
         }
       }
-      // this.setMsgState(data)
+      
     }
  })
 }
 
 
 
-queryGroupMsg() {
+queryGroupUnreadMsg() {
   $.ajax({
     type: "GET",
     //后面优化可以改为true
     async: false,
-    url: `/im/webimmsg/statGroupUnread/${this.mine.id}`,
+    url: `/im/webimmsg/getGroupUnreadLastMsg/${this.mine.id}`,
     dataType: "json",
     success: (data) =>{
-      for(let key in data.data) {
-        
-        let queryInfo = {
-          receiver: this.mine.id,
-          sender: key,
-          unreadSum: data.data[key]
-        }
-        this.getGroupHistory (queryInfo)
+      for(let i = 0; i < data.data.length; i++) {
+        this.getGroupHistoryMsg(data.data[i])
       }
     }
  })
@@ -1308,7 +1305,7 @@ queryUnreadMsg() {
         this.setHeartBeatEvent()
         this.sendRegisterCommand()   
         this.queryUnreadMsg()
-        this.queryGroupMsg()
+        this.queryGroupUnreadMsg()
       }
       /**
        * 定时发送心跳链接
@@ -1628,7 +1625,15 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
     receiver: this.mine.id,
     sender: userCode
   }
+
+if(className.indexOf("group") > -1) {
+  data.sender = className.slice(11, className.length - 1)
+   this.setMsgState(data)
+} else {
   this.setUserMsgState(data)
+}
+ 
+  
 })
     //绑定点击面包屑事件
       $("body").off("mouseup", ".crumb-container")
@@ -1639,64 +1644,66 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
 //绑定点击查询人员事件
       $("body").off("input",  "#query-member")
       $("body").on("input", "#query-member", (e) => {
-        let search_text = $("#query-member").val()
+        let search_text = $(e.currentTarget).val()
         
-        if(search_text === "") {
-          $(".layim-list-friend").show()
-          $(".search-list-container").hide()
-        } else {
-          $(".layim-list-friend").hide()
-          $(".search-list-container").show()
-        }
         
-        $.ajax({
-          type: "GET",
-          //后面优化可以改为true
-          async: false,
-          url: "/im/webimcust/queryUser",
-          dataType: "json",
-          contentType: "application/json",
-          data: {
-            name: search_text,
-            pageNo: 1,
-            pageSize: 50
-          },
-          success: (data)=>{
-            let userList = data.data.objList
-            let data1 = {
-              users: userList,
-              renderNull: function() {
-                return userList.length === 0
-              }
-            }
-            $(".search-list-container").html(
-              Mustache.render(`
-      <div class="search-list">
-      <div class="crumb-container"></div>
-      <div class="cut-line"></div>
-      <ul style="position: static;" class="member-list unit-user-list layui-layim-list  layui-show">
-      {{#users}}
-      <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
-      <div>
-      <div class="avatar-container">
-      <img src="${USER_AVATAR}">
-      </div>
-      </div>
-      <span class="username">
-      {{userName}}</span>
-      <p></p><span class="layim-msg-status">new</span>
-      </li>
-      {{/users}}
-      {{#renderNull}}
-      <li class="layim-null">暂无联系人</li>'
-      {{/renderNull}}
-      </ul>
-      </div>
-      ` , data1),
-            )
-            // this.onEventListener()
+        $(".selectMember").each(function(index,item) {
+          let name = $(item).find(".username").html()
+
+          if(name.indexOf(search_text) > -1) {
+            $(item).show()
+          } else {
+            $(item).hide()
           }
-       })
+        })
+      //   $.ajax({
+      //     type: "GET",
+      //     //后面优化可以改为true
+      //     async: false,
+      //     url: "/im/webimcust/queryUser",
+      //     dataType: "json",
+      //     contentType: "application/json",
+      //     data: {
+      //       name: search_text,
+      //       pageNo: 1,
+      //       pageSize: 50
+      //     },
+      //     success: (data)=>{
+      //       let userList = data.data.objList
+      //       let data1 = {
+      //         users: userList,
+      //         renderNull: function() {
+      //           return userList.length === 0
+      //         }
+      //       }
+      //       $(".search-list-container").html(
+      //         Mustache.render(`
+      // <div class="search-list">
+      // <div class="crumb-container"></div>
+      // <div class="cut-line"></div>
+      // <ul style="position: static;" class="member-list unit-user-list layui-layim-list  layui-show">
+      // {{#users}}
+      // <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
+      // <div>
+      // <div class="avatar-container">
+      // <img src="${USER_AVATAR}">
+      // </div>
+      // </div>
+      // <span class="username">
+      // {{userName}}</span>
+      // <p></p><span class="layim-msg-status">new</span>
+      // </li>
+      // {{/users}}
+      // {{#renderNull}}
+      // <li class="layim-null">暂无联系人</li>'
+      // {{/renderNull}}
+      // </ul>
+      // </div>
+      // ` , data1),
+      //       )
+      //       // this.onEventListener()
+      //     }
+      //  })
       })
       //绑定点击查询im-unit事件
       $("body").off("click", ".im-unit")
@@ -1893,7 +1900,7 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
                   title:"提示",
                   content: `<div>添加成功!</div>`
                 })
-                backToMain()
+                // backToMain()
               } else {
                 layer.open({
                   title:"提示",
@@ -2326,6 +2333,9 @@ layim.on('newFriend', function(){
       // if(true) {
       //   layim.emit($("[layim-event=newGroup]")[0])
       // }
+      // setInterval(() => {
+      //   alert(document.documentElement.clientHeight)
+      // }, 5000)
       $("body").on("click", '[layim-event=chat]', function(e){
       })
       // layim.chat({
