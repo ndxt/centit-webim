@@ -458,6 +458,7 @@ public class WebImUserController extends BaseController {
                 .receiver(memberCode)
                 .contentType(ImMessage.CONTENT_TYPE_QUIT_GROUP)
                 .message("您已退出了群"+groupDesc+"！")
+                .addContent("groupId",groupId)
                 .build());
         return ResponseData.makeSuccessResponse();
     }
