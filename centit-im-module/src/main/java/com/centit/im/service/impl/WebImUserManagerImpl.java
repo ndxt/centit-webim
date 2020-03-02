@@ -219,7 +219,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
             if(StringUtils.contains(user.getUserName(), name)
                 || StringUtils.contains(user.getRegCellPhone(), name)
                 || StringUtils.contains(user.getLoginName(), name)){
-                WebImCustomer cust = customerDao.getObjectById(user.getUserCode());
+                WebImCustomer cust = null;
                 if(cust == null) {
                     nMatchCount++;
                     if (nMatchCount > startRow) {
