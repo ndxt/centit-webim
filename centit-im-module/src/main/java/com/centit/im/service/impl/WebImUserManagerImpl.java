@@ -203,11 +203,11 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<WebImCustomer> queryUsers(String name, PageDesc pageDesc){
-        List<WebImCustomer> result = customerDao.listObjects(
-                CollectionsOpt.createHashMap("userName", name), pageDesc);
-        if(result!=null && result.size()>0){
-            return result;
-        }
+//        List<WebImCustomer> result = customerDao.listObjects(
+//                CollectionsOpt.createHashMap("userName", name), pageDesc);
+//        if(result!=null && result.size()>0){
+//            return result;
+//        }
         List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers();
         if (users == null || users.size() < 1)
             return new ArrayList<>();
