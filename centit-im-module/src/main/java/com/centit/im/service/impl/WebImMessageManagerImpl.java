@@ -55,7 +55,7 @@ public class WebImMessageManagerImpl extends BaseEntityManagerImpl<WebImMessage,
     @Transactional(propagation= Propagation.REQUIRED)
     public JSONArray  listAllChatMessage(String receiver,
                                                   Date lastReadDate, PageDesc pageDesc) {
-        webImMessageDao.updateReadState(receiver);//将消息设置为已读
+//        webImMessageDao.updateReadState(receiver);//将消息设置为已读
         return webImMessageDao.listAllChatMessage(receiver,lastReadDate,pageDesc);
     }
 
