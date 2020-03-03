@@ -109,12 +109,18 @@
 
   //使用特定模块
   Layui.prototype.use = function(apps, callback, exports){
+
     var that = this
     ,dir = config.dir = config.dir ? config.dir : getPath
-    ,head = doc.getElementsByTagName('head')[0];
-
-    apps = typeof apps === 'string' ? [apps] : apps;
+    /**
+     * //这种连等真的看得很难受
+     * config.dir = config.dir ? config.dir : getPath
+     * dir = config.dir
+     */
     
+    ,head = doc.getElementsByTagName('head')[0];
+//为什么deps又要改成apps?
+    apps = typeof apps === 'string' ? [apps] : apps;
     //如果页面已经存在jQuery1.7+库且所定义的模块依赖jQuery，则不加载内部jquery模块
     if(window.jQuery && jQuery.fn.on){
       that.each(apps, function(index, item){

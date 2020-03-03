@@ -732,7 +732,6 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   //接受消息
   var messageNew = {}, getMessage = function(data){
     data = data || {};
-    
     var group = {}, thatChat = thisChat(), thisData = thatChat.data || {}
     ,isThisData = thisData.id == data.id && thisData.type == data.type; //是否当前打开联系人的消息
     
@@ -774,6 +773,9 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
       layui.each(cache.group, function(index, item){
         if(item.id == data.id){
           data.type = 'group';
+          if(data.id.length > 6) {
+            data.realType = "group"
+          }
           data.name = data.groupname = item.groupname;
           group.avatar = item.avatar;
           return true;
