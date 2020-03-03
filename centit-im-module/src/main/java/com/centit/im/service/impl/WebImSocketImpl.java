@@ -694,7 +694,8 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setMsgState("U");
         Session session = getSessionByUserCode(userCode);
         if(session!=null) {
-            webMessage.setMsgState("C");
+            //消息始终置为未读状态
+            //webMessage.setMsgState("C");
             pushMessage(session, message);
         } else { //是否发送离线消息 这个地方需要有一个设置
             WebImCustomer cust = customerDao.getObjectById(userCode);
