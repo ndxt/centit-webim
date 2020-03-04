@@ -16,6 +16,7 @@
 </head>
 <body>
 <script src="./src/layui.js"></script>
+<script src="hammer.js"></script>
 <script src="./index.js"></script>
 
 <script>
@@ -32,7 +33,7 @@
 }
 .static_bottom_btn {
  position: fixed;
- bottom: -6px;
+ bottom: 0px;
  z-index: 999;
  background: #3988E5;
  color: white;
@@ -43,20 +44,20 @@
  width: 100%;
 }
 .search-list {
-    padding-top: 6px;
-    -webkit-overflow-scrolling: touch;
+    /* padding-top: 6px;
+    -webkit-overflow-scrolling: touch; */
     /* white-space:nowrap;
 overflow: scroll;
 -webkit-overflow-scrolling: touch; */
 }
 .member-list {
-    overflow: auto;
+    /* overflow: auto;
     -webkit-overflow-scrolling: touch;
     position: fixed;
     left: 0;
     right: 0;
     top: 144px;
-    bottom: 36px;
+    bottom: 36px; */
 }
 .custom-group {
     width: 58%;
@@ -100,11 +101,11 @@ overflow: scroll;
 }
 .search-list {
     width: 100%;
-    height: 100%;
+    /* position: absolute; */
     background: #fff;
 }
 .input-container {
-    margin-top: 6px;
+   position: fiexd;
     background: #f0f0f0;
     height:32px;
     width: 92%;
@@ -211,7 +212,7 @@ overflow: scroll;
 }
 .crumb-container {
     margin-left: 10px;
-    margin-top:13px;
+    padding-top:13px;
     font-size:15px;
 }
 .layim-tab-content {

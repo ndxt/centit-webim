@@ -63,6 +63,9 @@ let historyChatPageParam = {
   pageSize: 20,
 
 }
+let currentChatWin = {
+  id: ''
+}
 let USER_LIST = []
 let member_id_list = []
 let member_name_list = []
@@ -205,6 +208,10 @@ let TOTAL_UNIT_NAME = ''
       title: `选择群组` //标题
       ,tpl:Mustache.render(`
       <div class="search-list">
+      <div class="input-container">
+                  <img class="search-icon" src="./src/images/search.png"/>
+                  <input class="search-input" placeholder="搜索" id="m-query-member"/>
+                  </div>
       <div class="crumb-container"></div>
       <div class="cut-line"></div>
       <ul class="layui-layim-list layim-tab-content layui-show layim-list-friend">
@@ -422,8 +429,8 @@ const TEST_USER1 = {
 
 const TEST_USER2 = {
   "osId": "WebIM",
-  "userCode": "182",
-  "userName": "陶荣",
+  "userCode": "957",
+  "userName": "陶慧娟",
   "userState": "F",
   "userType": "U"
   }
@@ -438,7 +445,7 @@ const TEST_USER2 = {
 
     const TEST_USER4 = {
       "osId": "WebIM",
-      "userCode": "592",
+      "userCode": "708",
       "userName": "胡知非",
       "userState": "F",
       "userType": "U"
@@ -454,8 +461,8 @@ const TEST_USER2 = {
 class User {
     constructor() {
         // let USER1 = TEST_USER5
-        // let USER1 = TEST_USER1
-        let USER1 = TEST_USER2
+        let USER1 = TEST_USER4
+        // let USER1 = TEST_USER2
         this.closeHandler
         this.hasOpenWs = false
         this.isGroupCreate = false
@@ -473,6 +480,9 @@ class User {
         this.afterInit()
     }
     
+    isCurrentMsg() {
+    }
+
     onpenChat(user) {
       layim.chat({
         name: user.name //名称
@@ -586,7 +596,7 @@ class User {
                   </div>
                   <div class="crumb-container"></div>
                   <div class="cut-line"></div>
-                  <ul class="member-list layui-layim-list  layui-show">
+                  <ul class="member-list layui-layim-list  layui-show" id="m-select-group">
                   {{#users}}
             <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
             <div>
@@ -630,8 +640,9 @@ class User {
         className = customClassName
       }
       let allFriendList = []
-                
+          
       if(USER_LIST.length === 0) {
+        let layero = loadingModal()
         $.ajax({
           type: "GET",
           //后面优化可以改为true
@@ -641,6 +652,7 @@ class User {
                     success: function(data){
                       USER_LIST = data.data
                       allFriendList = USER_LIST
+                      $(layero).css('display', 'none')
                     }
                  })
                 } else {
@@ -680,15 +692,7 @@ class User {
                 $('body').on('input', '#search-group', function(e){
                   
                   let search_text = $("#search-group").val()
-                  $("[data-type=group]").each((index, item) => {
-                    let name = $(item).find("span").html()
-                    
-                    if(name.indexOf(search_text) > -1) {
-                      $(item).css("display", "block")
-                    } else {
-                      $(item).css("display", "none")
-                    }
-                  })
+                  
 
                   $.ajax({
                     type: "GET",
@@ -700,7 +704,7 @@ class User {
                     data: {
                       name: search_text,
                       pageNo: 1,
-                      pageSize: 50
+                      pageSize: 500
                     },
                     success: (data)=>{
                       let list = data.data.objList
@@ -747,6 +751,16 @@ class User {
                       {{/users}}
                         `, data1)
                       )
+
+                      $("[data-type=group]").each((index, item) => {
+                        let name = $(item).find("span").html()
+                        
+                        if(name.indexOf(search_text) > -1) {
+                          $(item).css("display", "block")
+                        } else {
+                          $(item).css("display", "none")
+                        }
+                      })
                       // this.onEventListener()
                     }
                  })
@@ -792,7 +806,7 @@ class User {
                 layim.panel({
                   title: '选择群组' //标题
                   ,tpl:Mustache.render(`
-                  <div class="search-list">
+                  <div class="search-list" id="m-search-list">
                   <div class="input-container">
                   <img class="search-icon" src="./src/images/search.png"/>
                   <input class="search-input" placeholder="搜索" id="search-group"/>
@@ -800,6 +814,8 @@ class User {
                   <div class="crumb-container"></div>
                   <div class="cut-line"></div>
                   <ul class="member-list layui-layim-list  layui-show">
+                  <ul id="add-memeber-search-list">
+                  </ul>
                   {{#groups}}
                   <li style="padding-left:25px;" data-name="{{groupname}}" data-id="{{id}}" data-type="group" data-index="0" class="layim-friend{{id}} selectGroup">
                   <h5 style="display:block">
@@ -808,15 +824,12 @@ class User {
                   </h5>
                   </li>
                   {{/groups}}
-                  <ul id="add-memeber-search-list">
-                  
                   </ul>
-                  </ul>
-                  
                   </div>
-                  <div class="static_bottom_btn ${className}">确认</div>
                   ` , data2),
                });
+            
+               $("#m-search-list").parent().parent().append(`<div id="m-ok" class="static_bottom_btn ${className}">确认</div>`)
                createCrumb()
     }
 
@@ -1392,9 +1405,11 @@ queryUnreadMsg() {
               , id = this.mine.id
               , wsHost
 
-         
+              // http://192.168.135.40:8087/webim/im;
               wsHost = 'ws://192.168.137.12:8080'
               wsHost = `${wsHost}/im/im/${id}`
+              // wsHost = 'ws://192.168.135.40:8087'
+              // wsHost = `${wsHost}/webim/im/${id}`
           
 
           let socket = this.socket = new WebSocket(wsHost)
@@ -1486,12 +1501,25 @@ queryUnreadMsg() {
                 , content: data.content.msg
               });
             }
-            
             switch (data.type) {
                 case MSG_TYPE_GROUP:
+                  debugger
+                  if(data.receiver == currentChatWin.id) {
+                    this.setMsgState({
+                      sender: currentChatWin.id,
+                      receiver: this.mine.id,
+                    })
+                  }
                     this.showChatMessage($.extend({id: data.receiver, userType: "group"}, data, {content: data.content.msg}))
                     break
                 case MSG_TYPE_CHAT :
+                  debugger
+                  if(data.sender == currentChatWin.id) {
+                    this.setUserMsgState({
+                      sender: currentChatWin.id,
+                      receiver: this.mine.id,
+                    })
+                  }
                     this.showChatMessage($.extend({id: data.sender, userType: "friend"}, data, {content: data.content.msg}))
                     break
                 case MSG_TYPE_SYSTEM:
@@ -1579,6 +1607,7 @@ queryUnreadMsg() {
         case CONTENT_TYPE_DELETE_GROUP:
             this.onDeleteGroupMessage(data)        
         case CONTENT_TYPE_QUIT_GROUP:
+          
           layer.open({
             title:"警告",
             content: `<div>${content.msg}</div>`,
@@ -1589,17 +1618,15 @@ queryUnreadMsg() {
               layer.close(index); //如果设定了yes回调，需进行手工关闭
             },
             yes: (index, layero) =>{
-              let groupId
-              content.msg.replace(/\((.+?)\)/g, (word) =>{
-                groupId = word.slice(1, word.length - 1)
+              let groupId = content.groupId
                 let chatLog = getLocalChatLog()
-              if(chatLog !== undefined) {
+              if(chatLog !== undefined && chatLog.hasOwnProperty(this.mine.id)) {
                 delete chatLog[this.mine.id].history[`group${groupId}`]
+                localStorage.setItem('layim-mobile', JSON.stringify(chatLog))
               }
               
-              localStorage.setItem('layim-mobile', JSON.stringify(chatLog))
+              
               $(`.layim-group${groupId}`).remove()
-              })
               
               layim.removeList({
                 type: 'group' //或者group
@@ -1615,12 +1642,14 @@ queryUnreadMsg() {
     }
     }
 
+
     onEventListener() {
 //绑定点击聊天事件
 $("body").off("click", '[layim-event=chat]')
 $("body").on("click", '[layim-event=chat]', (e)=>{
   let className = e.currentTarget.className
   let userCode = className.slice(12, className.length - 1)
+  currentChatWin.id = userCode
   let data = {
     receiver: this.mine.id,
     sender: userCode
@@ -1628,7 +1657,7 @@ $("body").on("click", '[layim-event=chat]', (e)=>{
 
 if(className.indexOf("group") > -1) {
   data.sender = className.slice(11, className.length - 1)
-   this.setMsgState(data)
+  this.setMsgState(data)
 } else {
   this.setUserMsgState(data)
 }
@@ -1656,54 +1685,103 @@ if(className.indexOf("group") > -1) {
             $(item).hide()
           }
         })
-      //   $.ajax({
-      //     type: "GET",
-      //     //后面优化可以改为true
-      //     async: false,
-      //     url: "/im/webimcust/queryUser",
-      //     dataType: "json",
-      //     contentType: "application/json",
-      //     data: {
-      //       name: search_text,
-      //       pageNo: 1,
-      //       pageSize: 50
-      //     },
-      //     success: (data)=>{
-      //       let userList = data.data.objList
-      //       let data1 = {
-      //         users: userList,
-      //         renderNull: function() {
-      //           return userList.length === 0
-      //         }
-      //       }
-      //       $(".search-list-container").html(
-      //         Mustache.render(`
-      // <div class="search-list">
-      // <div class="crumb-container"></div>
-      // <div class="cut-line"></div>
-      // <ul style="position: static;" class="member-list unit-user-list layui-layim-list  layui-show">
-      // {{#users}}
-      // <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
-      // <div>
-      // <div class="avatar-container">
-      // <img src="${USER_AVATAR}">
-      // </div>
-      // </div>
-      // <span class="username">
-      // {{userName}}</span>
-      // <p></p><span class="layim-msg-status">new</span>
-      // </li>
-      // {{/users}}
-      // {{#renderNull}}
-      // <li class="layim-null">暂无联系人</li>'
-      // {{/renderNull}}
-      // </ul>
-      // </div>
-      // ` , data1),
-      //       )
-      //       // this.onEventListener()
-      //     }
-      //  })
+        $("#m-select-group .selectGroup").each(function(index,item) {
+          let name = $(item).data("name")
+
+          if(name.indexOf(search_text) > -1) {
+            $(item).show()
+          } else {
+            $(item).hide()
+          }
+        })
+      })
+
+      $("body").off("input",  "#m-query-member")
+      $("body").on("input", "#m-query-member", (e) => {
+        let search_text = $(e.currentTarget).val()
+        
+        
+        $(".custom-group").each(function(index,item) {
+          let name = $(item).find(".username").html()
+
+          if(name.indexOf(search_text) > -1) {
+            $(item).show()
+          } else {
+            $(item).hide()
+          }
+        })
+        
+        $(".im-unit").each(function(index,item) {
+          let name = $(item).data("name")
+
+          if(name.indexOf(search_text) > -1) {
+            $(item).show()
+          } else {
+            $(item).hide()
+          }
+        })
+      })
+
+      $("body").off("input",  "#main-query-member")
+      $("body").on("input", "#main-query-member", (e) => {
+        let search_text = $(e.currentTarget).val()
+        
+        
+        if(search_text === "") {
+          $(".layim-list-friend2").show()
+          $(".search-list-container").hide()
+        } else {
+          $(".layim-list-friend2").hide()
+          $(".search-list-container").show()
+        }
+        $.ajax({
+          type: "GET",
+          //后面优化可以改为true
+          async: false,
+          url: "/im/webimcust/queryUser",
+          dataType: "json",
+          contentType: "application/json",
+          data: {
+            name: search_text,
+            pageNo: 1,
+            pageSize: 500
+          },
+          success: (data)=>{
+            let userList = data.data.objList
+            let data1 = {
+              users: userList,
+              renderNull: function() {
+                return userList.length === 0
+              }
+            }
+            $(".search-list-container").html(
+              Mustache.render(`
+      <div class="search-list">
+      <div class="crumb-container"></div>
+      <div class="cut-line"></div>
+      <ul style="position: static;" class="member-list unit-user-list layui-layim-list  layui-show">
+      {{#users}}
+      <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
+      <div>
+      <div class="avatar-container">
+      <img src="${USER_AVATAR}">
+      </div>
+      </div>
+      <span class="username">
+      {{userName}}</span>
+      <p></p><span class="layim-msg-status">new</span>
+      </li>
+      {{/users}}
+      {{#renderNull}}
+      <li class="layim-null">暂无联系人</li>'
+      {{/renderNull}}
+      </ul>
+      </div>
+      ` , data1),
+            )
+            // this.onEventListener()
+          }
+       })
       })
       //绑定点击查询im-unit事件
       $("body").off("click", ".im-unit")
@@ -1891,16 +1969,31 @@ if(className.indexOf("group") > -1) {
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(allMemberId),
-            success: (data) =>{
+            success: (res) =>{
               
-              if(data.message === "OK") {
+              if(res.message === "OK") {
                 // $(e.currentTarget).css("display", "none")
                 // this.createUserPanel()
                 layer.open({
                   title:"提示",
-                  content: `<div>添加成功!</div>`
+                  content: `<div>添加成功!</div>`,
+                  btn: ['确定'],
+                  yes: (index, layero) =>{
+                    
+                    layim.chat({
+                      name: data.groupname //名称
+                      ,type: data.realType //聊天类型
+                      ,realType: data.realType
+                      ,avatar: USER_AVATAR //头像
+                      ,id: data.id//定义唯一的id方便你处理信息
+                      })
+                      
+                      layim.emit($("[layim-event=detail]")[0])
+                    layer.close(index);
+                  }
                 })
-                // backToMain()
+                backToMain()
+                
               } else {
                 layer.open({
                   title:"提示",
@@ -2110,7 +2203,16 @@ layim.on('newFriend', function(){
           
           model = 'CREATE_MODE'
           this.createSelectList()
-
+        //   let element = document.getElementById('m-search-list')
+        //   let mc = new Hammer(element)
+        //   let showBtnHandler
+        //   mc.on("pan swipe", function(ev) {
+        //     clearTimeout(showBtnHandler)
+        //    $(".static_bottom_btn").hide()
+        //    showBtnHandler = setTimeout(() => {
+        //     $(".static_bottom_btn").show()
+        //    }, 3000)
+        // });
           return
 
         });
