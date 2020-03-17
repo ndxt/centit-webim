@@ -322,17 +322,18 @@ public class WebImUserController extends BaseController {
         return ResponseData.makeSuccessResponse();
     }
 
-    private void innerAddGroupMember(String groupId, String memberCode){
+    private void innerAddGroupMember(String groupId, String memberCode,String userCode){
         webImUserManager.addGroupMember(groupId,memberCode);
         WebImCustomer user = webImUserManager.getUser(memberCode);
         String userDesc = user == null ? memberCode :
-                user.getUserName()+"("+memberCode+")";
+                user.getUserName();
+        userDesc=userCode==null?"用户:"+ userDesc +"加入群聊！":userDesc+"被"+userCode+"拉入群聊！";
         webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
                 .type(ImMessage.MSG_TYPE_SYSTEM)
                 .sender("system")
                 .receiver(groupId)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
-                .message("用户:"+ userDesc +"加入群聊！")
+                .message(userDesc)
                 .addContent("groupId", groupId)
                 .addContent("userId", memberCode)
                 .build());
@@ -360,15 +361,15 @@ public class WebImUserController extends BaseController {
     public ResponseData addGroupMember(
             @PathVariable String groupId,
             @PathVariable String memberCode) {
-        innerAddGroupMember(groupId, memberCode);
+        innerAddGroupMember(groupId, memberCode,null);
         return ResponseData.makeSuccessResponse();
     }
 
     @ApiOperation(value = "17添加多个用户入群")
-    @RequestMapping(value = "/member/{groupId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/member/{groupId}/{userCode}", method = RequestMethod.PUT)
     @WrapUpResponseBody
     public ResponseData addGroupMembers(
-            @PathVariable String groupId,
+            @PathVariable String groupId,@PathVariable String userCode,
             @RequestBody String memberCodes                                                                     ) {
         Lexer lexer = new Lexer(memberCodes);
         String word =  lexer.getAWord();
@@ -376,7 +377,7 @@ public class WebImUserController extends BaseController {
             if(!StringUtils.equalsAny(word,"[",",","]")){
                 word = StringRegularOpt.trimString(word);
                 if(StringUtils.isNotBlank(word)){
-                    innerAddGroupMember(groupId, word);
+                    innerAddGroupMember(groupId, word,userCode);
                 }
             }
             word =  lexer.getAWord();
@@ -433,21 +434,22 @@ public class WebImUserController extends BaseController {
      *
      */
     @ApiOperation(value = "21退出群")
-    @RequestMapping(value = "/quitGroup/{groupId}/{memberCode}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/quitGroup/{groupId}/{memberCode}/{userCode}", method = RequestMethod.PUT)
     @WrapUpResponseBody
     public ResponseData removeGroupMember(
             @PathVariable String groupId,
-            @PathVariable String memberCode) {
+            @PathVariable String memberCode,@PathVariable String userCode) {
         webImUserManager.removeGroupMember(groupId,memberCode);
         WebImCustomer user = webImUserManager.getUser(memberCode);
         String userDesc = user == null ? memberCode :
-                user.getUserName()+"("+memberCode+")";
+                user.getUserName();
+        userDesc=userDesc+"被"+userCode+"踢出群聊";
         webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
                 .type(ImMessage.MSG_TYPE_SYSTEM)
                 .sender("system")
                 .receiver(groupId)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
-                .message("用户:"+ userDesc +"已退出了群聊！")
+                .message(userDesc)
                 .build());
         WebImGroup group = webImUserManager.getGroupInfo(groupId);
         String groupDesc = group == null ? groupId :
