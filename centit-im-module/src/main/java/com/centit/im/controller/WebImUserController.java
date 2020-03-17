@@ -356,7 +356,7 @@ public class WebImUserController extends BaseController {
      * @param groupId 组Id
      */
 //    @ApiOperation(value = "16用户加入群")
-//    @RequestMapping(value = "/member/{groupId}/{memberCode}", method = RequestMethod.PUT)
+//    @RequestMapping(value = "/memberadd/{groupId}/{memberCode}", method = RequestMethod.PUT)
 //    @WrapUpResponseBody
 //    public ResponseData addGroupMember(
 //            @PathVariable String groupId,
