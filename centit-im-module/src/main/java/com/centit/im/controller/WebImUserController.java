@@ -355,15 +355,15 @@ public class WebImUserController extends BaseController {
      * @param memberCode 成员代码
      * @param groupId 组Id
      */
-    @ApiOperation(value = "16用户加入群")
-    @RequestMapping(value = "/member/{groupId}/{memberCode}", method = RequestMethod.PUT)
-    @WrapUpResponseBody
-    public ResponseData addGroupMember(
-            @PathVariable String groupId,
-            @PathVariable String memberCode) {
-        innerAddGroupMember(groupId, memberCode,null);
-        return ResponseData.makeSuccessResponse();
-    }
+//    @ApiOperation(value = "16用户加入群")
+//    @RequestMapping(value = "/member/{groupId}/{memberCode}", method = RequestMethod.PUT)
+//    @WrapUpResponseBody
+//    public ResponseData addGroupMember(
+//            @PathVariable String groupId,
+//            @PathVariable String memberCode) {
+//        innerAddGroupMember(groupId, memberCode,null);
+//        return ResponseData.makeSuccessResponse();
+//    }
 
     @ApiOperation(value = "17添加多个用户入群")
     @RequestMapping(value = "/member/{groupId}/{userCode}", method = RequestMethod.PUT)
