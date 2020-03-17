@@ -727,7 +727,8 @@ public class WebImSocketImpl implements WebImSocket {
     private void sendMemberMsg(String userCode, String title, ImMessage message){
         Session session = getSessionByUserCode(userCode);
         if (session != null) {
-            webImGroupMemberDao.setGroupReadState(userCode, message.getReceiver());
+            //取消设置已读状态
+            //webImGroupMemberDao.setGroupReadState(userCode, message.getReceiver());
             if (!StringUtils.equals(message.getSender(), userCode)) {
                 pushMessage(userCode, message);
             }
