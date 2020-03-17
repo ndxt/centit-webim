@@ -749,6 +749,7 @@ public class WebImSocketImpl implements WebImSocket {
     public void sendGroupMessage(String unitCode, ImMessage message) {
         WebImMessage webMessage = formatGroupMsg(message);
         messageDao.saveNewObject(webMessage);
+        message.setMsgId(webMessage.getMsgId());
         WebImCustomer cust = customerDao.getObjectById(message.getSender());
         String userName;
         if(cust !=null){
