@@ -325,9 +325,11 @@ public class WebImUserController extends BaseController {
     private void innerAddGroupMember(String groupId, String memberCode,String userCode){
         webImUserManager.addGroupMember(groupId,memberCode);
         WebImCustomer user = webImUserManager.getUser(memberCode);
-        String userDesc = user == null ? memberCode :
+        String memberDesc = user == null ? memberCode :
                 user.getUserName();
-        userDesc=userCode==null?"用户:"+ userDesc +"加入群聊！":userDesc+"被"+userCode+"拉入群聊！";
+        String userDesc = webImUserManager.getUser(userCode)==null?userCode:
+                webImUserManager.getUser(userCode).getUserName();
+        userDesc=memberDesc+"被"+userDesc+"拉入群聊！";
         webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
                 .type(ImMessage.MSG_TYPE_SYSTEM)
                 .sender("system")
@@ -352,7 +354,6 @@ public class WebImUserController extends BaseController {
     }
     /**
      * @return 用户加入群
-     * @param memberCode 成员代码
      * @param groupId 组Id
      */
 //    @ApiOperation(value = "16用户加入群")
