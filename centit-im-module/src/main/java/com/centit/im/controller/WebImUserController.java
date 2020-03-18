@@ -442,9 +442,11 @@ public class WebImUserController extends BaseController {
             @PathVariable String memberCode,@PathVariable String userCode) {
         webImUserManager.removeGroupMember(groupId,memberCode);
         WebImCustomer user = webImUserManager.getUser(memberCode);
-        String userDesc = user == null ? memberCode :
+        String memberDesc = user == null ? memberCode :
                 user.getUserName();
-        userDesc=userDesc+"被"+userCode+"踢出群聊";
+        String userDesc = webImUserManager.getUser(userCode)==null?userCode:
+                webImUserManager.getUser(userCode).getUserName();
+        userDesc=memberDesc+"被"+userDesc+"踢出群聊";
         webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
                 .type(ImMessage.MSG_TYPE_SYSTEM)
                 .sender("system")
