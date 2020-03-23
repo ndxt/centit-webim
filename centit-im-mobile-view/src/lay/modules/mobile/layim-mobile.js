@@ -17,6 +17,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   
   var USER_AVATAR = "../../../images/userdefalt.png"
   var SHOW = 'layui-show', THIS = 'layim-this', MAX_ITEM = 20;
+  var mineInfo
 
   //回调
   var call = {};
@@ -318,7 +319,6 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   //转换内容
   layui.data.content = function(content){
     //支持的html标签
-
     var html = function(end){
       return new RegExp('\\n*\\['+ (end||'') +'(pre|div|p|table|thead|th|tbody|tr|td|ul|li|ol|li|dl|dt|dd|h2|h3|h4|h5)([\\s\\S]*?)\\]\\n*', 'g');
     };
@@ -336,8 +336,21 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
     .replace(/file\([\s\S]+?\)\[[\s\S]*?\]/g, function(str){ //转义文件
       var href = (str.match(/file\(([\s\S]+?)\)\[/)||[])[1];
       var text = (str.match(/\)\[([\s\S]*?)\]/)||[])[1];
+      var fileName = href.split('=')[1]
+      var fileTypeArr = fileName.split('.')
+      var fileType = fileTypeArr[fileTypeArr.length - 1]
+      var imgSrc = ''
+      if(fileType === 'pdf') {
+        imgSrc = 'pdf.png'
+      } else if( fileType === 'excel') {
+        imgSrc = 'excel.png'
+      } else if ( fileType.indexOf('doc') > -1) {
+        imgSrc = 'word.png'
+      } else {
+        imgSrc = 'other.png'
+      }
       if(!href) return str;
-      return '<a class="layui-layim-file" href="'+ href +'" download target="_blank"><i class="layui-icon">&#xe61e;</i><cite>'+ (text||href) +'</cite></a>';
+      return '<a class="layui-layim-file" href="'+ href +'" download target="_blank"><img src="' + 'src/images/' + imgSrc + '" class="layui-icon"/><cite>'+ (fileName||href) +'</cite></a>';
     })
     .replace(/audio\[([^\s]+?)\]/g, function(audio){  //转义音频
       return '<div class="layui-unselect layui-layim-audio" layim-event="playAudio" data-src="' + audio.replace(/(^audio\[)|(\]$)/g, '') + '"><i class="layui-icon">&#xe652;</i><p>音频消息</p></div>';
@@ -372,6 +385,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   ,'</li>'].join('');
 
   //处理初始化信息
+  var msgIdCache = JSON.parse(localStorage.getItem('msgIdCache')) || []
   var cache = {message: {}, chat: []}, init = function(options){
     var init = options.init || {}
      mine = init.mine || {}
@@ -382,7 +396,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
       ,mine: mine
       ,history: local.history || []
     }, create = function(data){
-      var mine = data.mine || {};
+      var mine = mineInfo = data.mine || {};
       var local = layui.data('layim-mobile')[mine.id] || {}, obj = {
         base: options //基础配置信息
         ,local: local //本地数据
@@ -652,6 +666,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
       ,avatar: param.mine.avatar
       ,id: To.id
       ,type: To.type
+      ,isSend: true
       ,content: param.mine.content
       ,timestamp: time
       ,mine: true
@@ -731,27 +746,29 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   
   //接受消息
   var messageNew = {}, getMessage = function(data){
+    
     data = data || {};
     var group = {}, thatChat = thisChat(), thisData = thatChat.data || {}
     ,isThisData = thisData.id == data.id && thisData.type == data.type; //是否当前打开联系人的消息
     
     data.timestamp = data.timestamp || new Date().getTime();
-    data.system || pushChatlog(data);
-    console.log(data)
+    pushChatlog(data);
     messageNew = JSON.parse(JSON.stringify(data));
     
     if(cache.base.voice){
       voice();
     }
-    
     if((!layimChat && data.content) || !isThisData){
       if(cache.message[data.type + data.id]){
-        cache.message[data.type + data.id].push(data)
+          
+          cache.message[data.type + data.id].push(data)
       } else {
-        cache.message[data.type + data.id] = [data];
+        // msgIdCache = [data.msgId]
+        
+          cache.message[data.type + data.id] = [data];
       }
     }
-
+    
     //记录聊天面板队列
     var group = {};
     if(data.type === 'friend'){
@@ -814,15 +831,25 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
   var pushChatlog = function(message){
     var local = layui.data('layim-mobile')[cache.mine.id] || {};
     var chatlog = local.chatlog || {};
+    
     if(chatlog[message.type + message.id]){
+      if(msgIdCache.indexOf(message.msgId) === -1 || message.isSend) {
+        msgIdCache.push(message.msgId)
+          localStorage.setItem('msgIdCache', JSON.stringify(msgIdCache))
       chatlog[message.type + message.id].push(message);
       if(chatlog[message.type + message.id].length > MAX_ITEM){
         chatlog[message.type + message.id].shift();
       }
+     }
     } else {
+      if(msgIdCache.indexOf(message.msgId) === -1 || message.isSend) {
+        msgIdCache.push(message.msgId)
       chatlog[message.type + message.id] = [message];
+      localStorage.setItem('msgIdCache', JSON.stringify(msgIdCache))
+      }
     }
     local.chatlog = chatlog;
+    
     layui.data('layim-mobile', {
       key: cache.mine.id
       ,value: local
@@ -1136,6 +1163,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
         ,method: conf.type
         ,elem: othis.find('input')[0]
         ,accept: type
+        ,userInfo: mineInfo
         ,done: function(res){
           if(res.code == 0){
             res.data = res.data || {};

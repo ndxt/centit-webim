@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="./src/css/layui.mobile.css">
 <link rel="stylesheet" href="./css/jquery.loadingModal.min.css">
 <script src="./jquery.min.js"></script>
+<script src="./jquery.mobile-events.min.js"></script>
+
 <script src="./uploader.min.js"></script>
 <script src="./mustache.min.js"></script>
 <script src="./js/jquery.loadingModal.min.js"></script>
@@ -17,6 +19,7 @@
 <body>
 <script src="./src/layui.js"></script>
 <script src="hammer.js"></script>
+<script src="lodash.js"></script>
 <script src="./index.js"></script>
 
 <script>
@@ -34,6 +37,7 @@
 .static_bottom_btn {
  position: fixed;
  bottom: 0px;
+ left: 0px;
  z-index: 999;
  background: #3988E5;
  color: white;
@@ -266,5 +270,60 @@ overflow: scroll;
 }
 .search-list .layim-list-friend li {
     line-height: 40px;
+}
+.choose-group {
+}
+.layim-list-history li p img {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+}
+.layim-list-history .layui-icon{
+    font-size: 20px !important;
+    line-height: 17px !important;
+}
+.layim-list-history .layui-icon{
+    font-size: 20px !important;
+    line-height: 17px !important;
+}
+.layim-list-history .layui-layim-file cite {
+    display: inline-block;
+}
+.layim-title p{
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    width: 70% !important;
+}
+.layui-layim-file img {
+    float: right;
+}
+.layui-layim-file cite {
+    min-width: 194px;
+}
+.layim-list-history .layui-layim-file::after {
+    content:"[文件]";
+    color: gray;
+}
+.layim-list-history img {
+    display: none !important;
+}
+.layim-list-history cite {
+    display: none !important;
+}
+
+.rotate_bg{
+    -webkit-animation:myRotate 3s linear infinite;
+    animation:myRotate 3s linear infinite;
+}
+@-webkit-keyframes myRotate{
+    0%{ -webkit-transform: rotate(0deg);}
+    50%{ -webkit-transform: rotate(180deg);}
+    100%{ -webkit-transform: rotate(360deg);}
+}
+@keyframes myRotate{
+    0%{ -webkit-transform: rotate(0deg);}
+    50%{ -webkit-transform: rotate(180deg);}
+    100%{ -webkit-transform: rotate(360deg);}
 }
 </style>

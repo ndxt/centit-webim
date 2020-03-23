@@ -194,6 +194,14 @@ layui.define('layer' , function(exports){
         }
       };
       
+                $(".layim-chat-main ul").append(`
+                <li id="loading-li" class="layim-chat-li layim-chat-mine">
+                <div class="layim-chat-user">
+                <img src="./src/images/userdefalt.png" alt="129">
+                <cite>${userInfo.userName}</cite></div><div class="layim-chat-text">
+                <img class="layui-layim-photos rotate_bg" src="./src/images/loading.png">
+                </div>
+                </li>`)
       if(!isPass) {
         for(let key in items) {
           const upload = new FormView.default(items[key], {}, (res) =>{
@@ -210,7 +218,6 @@ layui.define('layer' , function(exports){
                   formData.append(key, value);
                 });
                 
-                
                 //提交文件
                 $.ajax({
                   url: options.url
@@ -221,11 +228,13 @@ layui.define('layer' , function(exports){
                   ,dataType: 'json'
                   ,headers: options.headers || {}
                   ,success: function(res){
+                    $("#loading-li").remove()
                     successful++;
                     done(index, res);
                     allDone();
                   }
                   ,error: function(){
+                    $("#loading-li").remove()
                     aborted++;
                     that.msg('请求上传接口出现异常');
                     error(index);
@@ -234,6 +243,7 @@ layui.define('layer' , function(exports){
                 });
               });
             } else if(res.signal === "complete") {
+              $("#loading-li").remove()
               successful++;
                     done(0, res);
                     allDone();
@@ -594,7 +604,9 @@ layui.define('layer' , function(exports){
   };
   
   //核心入口  
+  var userInfo
   upload.render = function(options){
+    userInfo = options.userInfo
     var inst = new Class(options);
     return thisUpload.call(inst);
   };

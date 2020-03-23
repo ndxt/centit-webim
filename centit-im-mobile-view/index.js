@@ -57,6 +57,7 @@ const USER_AVATAR = "./src/images/userdefalt.png"
 
 
 const SELECT_UNIT_CRUMB = ['南大先腾']
+let tempFriendList = []
 
 let historyChatPageParam = {
   pageNo: 1,
@@ -73,7 +74,17 @@ let model = 'CREATE_MODE'
 let chatList = function () {
   
 }
-
+var randomNum = (function(){
+  var today = new Date();
+  var seed = today.getTime();
+  function rnd(){
+  seed = ( seed * 9301 + 49297 ) % 233280;
+  return seed / ( 233280.0 );
+  };
+  return function rand(number){
+  return Math.ceil(rnd(seed) * number);
+  };
+  })()
 // async upload(file) {
 //   const upload = new Uploader(file, this.params, this.uploadCompleteCb);
 //   const uploads = this.$refs.Upload.fileList;
@@ -247,6 +258,23 @@ let TOTAL_UNIT_NAME = ''
    createCrumb()
   }
 
+  // function searchSubUnit(id) {
+  //   let subunits = []
+  //   let layero = loadingModal()
+    
+  //   $.ajax({
+  //     type: "GET",
+  //     //后面优化可以改为true
+  //     async: false,
+  //     url: `/JYPhone/api/centituix/service/txl/getChildDeptsAndUsers/${id}`,
+  //     dataType: "json",
+  //     success: (data) =>{
+  //       subunits = data.data.deptList.filter( item => item.hideStatus === 'F')
+  //       $(layero).css('display', 'none')
+  //     }
+  //  })
+  //  return subunits
+  // }
   function searchSubUnit(id) {
     let subunits = []
     let layero = loadingModal()
@@ -262,22 +290,6 @@ let TOTAL_UNIT_NAME = ''
       }
    })
    return subunits
-  }
-
-  function getGoodsInfo(goodsId, storeId) {
-    let goodsInfo
-    $.ajax({
-      type: "GET",
-      //后面优化可以改为true
-      async: false,
-      url: `http://www.czcycx.com/api/servicemart/goodsInfo/goodsInfo_detailByGoodsId?pageSize=10&goodsId=${goodsId}&belongStoreId=${storeId}`,
-      dataType: "json",
-      success: function(data){
-        
-        goodsInfo = data.data
-      }
-   })
-   return goodsInfo
   }
 
 
@@ -334,6 +346,23 @@ function getUserGroups(id) {
      return group
 }
 
+// function getUnitUser(unitId) {
+//   let users = []
+  
+//   $.ajax({
+//     type: "GET",
+//     //TODO后面优化可以改为true
+//     async: false,
+//     url: `/JYPhone/api/centituix/service/txl/getChildDeptsAndUsers/${unitId}`,
+//     dataType: "json",
+//     success: function(data) {
+      
+//       users = data.data.userList.filter(item => item.hideStatus === 'F')
+//     }
+//  })
+//  return users
+// }
+
 function getUnitUser(unitId) {
   let users = []
   $.ajax({
@@ -348,8 +377,6 @@ function getUnitUser(unitId) {
  })
  return users
 }
-
-
  
 
 function getHistoryChat(receiver, sender) {
@@ -385,34 +412,61 @@ function getCustomFriendList(unitId) {
 }
 
 function getMineFriendList(id) {
-    // 目前写死friend，后面会根据id获取的部门名找到部门id等其他信息
-    let friendGroup = []
+  // 目前写死friend，后面会根据id获取的部门名找到部门id等其他信息
+  let friendGroup = []
 
-    $.ajax({
-      type: "GET",
-      //后面优化可以改为true
-      async: false,
-      url: "/im/webimcust/allUnit",
-      dataType: "json",
-      success: function(data){
-        for(let i = 0; i < data.data.length; i++) {
-          friendGroup[i] = {
-            "groupname": data.data[i].unitName
-            ,"id": data.data[i].unitCode
-            ,"avatar": USER_AVATAR
-            ,"list": []
-          }
+  $.ajax({
+    type: "GET",
+    //后面优化可以改为true
+    async: false,
+    url: "/im/webimcust/allUnit",
+    dataType: "json",
+    success: function(data){
+      for(let i = 0; i < data.data.length; i++) {
+        friendGroup[i] = {
+          "groupname": data.data[i].unitName
+          ,"id": data.data[i].unitCode
+          ,"avatar": USER_AVATAR
+          ,"list": []
         }
       }
-   })
+    }
+ })
+ 
+   
+   return friendGroup
+}
+
+// function getMineFriendList(id) {
+//     // 目前写死friend，后面会根据id获取的部门名找到部门id等其他信息
+//     let friendGroup = []
+
+//     $.ajax({
+//       type: "GET",
+//       //后面优化可以改为true
+//       async: false,
+//       url: "/JYPhone/api/centituix/service/txl/getChildDeptsAndUsers/" + id,
+//       dataType: "json",
+//       success: function(data){
+//         data.data.deptList = data.data.deptList.filter( item => item.hideStatus === 'F')
+//         for(let i = 0; i < data.data.deptList.length; i++) {
+//           friendGroup[i] = {
+//             "groupname": data.data.deptList[i].unitName
+//             ,"id": data.data.deptList[i].unitCode
+//             ,"avatar": USER_AVATAR
+//             ,"list": []
+//           }
+//         }
+//       }
+//    })
    
      
-     return friendGroup
-}
+//      return friendGroup
+// }
 
 
 // function showLargeImg (){
-//   $('body').on('click', '.layui-layim-photos', function(){
+//   $('body').on('mouseup', '.layui-layim-photos', function(){
 //     $(this).css( { 'width': '160px' })
 //   })
 // }
@@ -421,7 +475,7 @@ function getMineFriendList(id) {
 
 const TEST_USER1 = {
   "osId": "WebIM",
-  "userCode": "345",
+  "userCode": "965",
   "userName": "陆鸿博",
   "userState": "F",
   "userType": "U"
@@ -429,8 +483,8 @@ const TEST_USER1 = {
 
 const TEST_USER2 = {
   "osId": "WebIM",
-  "userCode": "957",
-  "userName": "陶慧娟",
+  "userCode": "ligz",
+  "userName": "ligz",
   "userState": "F",
   "userType": "U"
   }
@@ -445,24 +499,42 @@ const TEST_USER2 = {
 
     const TEST_USER4 = {
       "osId": "WebIM",
-      "userCode": "708",
-      "userName": "胡知非",
+      "userCode": "lihlsf",
+      "userName": "lihlsf",
       "userState": "F",
       "userType": "U"
       }
 
     const TEST_USER5 = {
         "osId": "WebIM",
-        "userCode": "129",
-        "userName": "曹秋燕",
+        "userCode": "8589",
+        "userName": "陈翔",
         "userState": "F",
         "userType": "U"
         }
+        const TEST_USER6 = {
+          "osId": "WebIM",
+          "userCode": "592",
+          "userName": "胡知非",
+          "userState": "F",
+          "userType": "U"
+          }
+    
+        const TEST_USER7 = {
+            "osId": "WebIM",
+            "userCode": "129",
+            "userName": "曹秋燕",
+            "userState": "F",
+            "userType": "U"
+            }
 class User {
     constructor() {
         // let USER1 = TEST_USER5
-        let USER1 = TEST_USER4
+        // let USER1 = TEST_USER4
         // let USER1 = TEST_USER2
+        // let USER1 = TEST_USER1
+        // let USER1 = TEST_USER6
+        let USER1 = TEST_USER7
         this.closeHandler
         this.hasOpenWs = false
         this.isGroupCreate = false
@@ -474,7 +546,7 @@ class User {
         //这里需要同步执行
         this.im = layim
         this.group = getMineUnit(this.mine.id).concat(getUserGroups(this.mine.id))
-        this.friend = getMineFriendList(this.mine.id)
+        this.friend = getMineFriendList(1)
         // this.friend =  getCustomFriendList(1)
         // this.createGroup()
         this.afterInit()
@@ -493,14 +565,23 @@ class User {
     }
 
     createSelectList2(subUnits, customClassName, groupId) {
+      let randomId = randomNum(100)
       let className = 'select_member_btn'
-      
+      let list = getUnitUser(groupId)
+      let allFriendList = subUnits
       if(customClassName) {
         className = customClassName
       }
-      let allFriendList = subUnits
+      
+      if(customClassName === 'add-group-member') {
+        let hasCodes = tempFriendList.map((item) => {
+          return item.id
+        })
+        
+        list = list.filter(item => hasCodes.indexOf(item.userCode) < 0)
+      }
                 
-      let list = getUnitUser(groupId)
+      
                 let data1 = {
                  groups: allFriendList,
                  users: list,
@@ -551,7 +632,7 @@ class User {
                 
   
                 $("body").off("input", "#search-member")
-                $('body').on('input', '#search-member', function(e){
+                $('body').on('input', '#search-member', _.debounce(function(e){
                   
                   let search_text = $("#search-member").val()
                   $("[data-type=groupmember]").each((index, item) => {
@@ -563,14 +644,15 @@ class User {
                       $(item).css("display", "none")
                     }
                   })
-                })
+                }, 1000))
   
                 let data2 = {
                   groups: this.friend
                 }
                 
                 $("body").off("mouseup", ".selectGroup")
-                $("body").on("mouseup", ".selectGroup", (e) => {
+                $("body").on("mouseup", ".selectGroup", _.debounce((e) => {
+                  
                   let unitId = $(e.currentTarget).data('id')
                   let unitName = $(e.currentTarget).data('name')
                   let subunits = searchSubUnit(unitId)
@@ -585,18 +667,18 @@ class User {
                   } else {
                     this.createGroupMemberPanel(unitId)
                   }
-                })
+                }, 500))
                 layim.panel({
                   title: '选择群组' //标题
                   ,tpl:Mustache.render(`
-                  <div class="search-list">
+                  <div class="search-list" id="m-query-member-list${randomId}">
                   <div class="input-container">
                   <img class="search-icon" src="./src/images/search.png"/>
                   <input class="search-input" placeholder="搜索" id="query-member"/>
                   </div>
                   <div class="crumb-container"></div>
                   <div class="cut-line"></div>
-                  <ul class="member-list layui-layim-list  layui-show" id="m-select-group">
+                  <ul class="member-list layui-layim-list  layui-show">
                   {{#users}}
             <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember {{classFn}}">
             <div>
@@ -613,6 +695,7 @@ class User {
             </li>
             {{/users}}
             <div class="cut-line"></div>
+            <ul id="origin-group-list">
                   {{#groups}}
                   <li style="padding-left:25px;" data-name="{{unitName}}" data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup">
                   <h5 style="display:block">
@@ -621,13 +704,14 @@ class User {
                   </h5>
                   </li>
                   {{/groups}}
-                  
+                  </ul>
                   </ul>
                   
                   </div>
-                  <div class="static_bottom_btn ${className}">确认</div>
                   ` , data1),
                });
+               
+               $(`#m-query-member-list${randomId}`).parent().parent().append(`<div class="static_bottom_btn ${className}">确认</div>`)
                createCrumb()
   
                 
@@ -638,6 +722,7 @@ class User {
       
       if(customClassName) {
         className = customClassName
+        member_id_list = []
       }
       let allFriendList = []
           
@@ -655,9 +740,9 @@ class User {
                       $(layero).css('display', 'none')
                     }
                  })
-                } else {
-                  allFriendList = USER_LIST
-                }
+       } else {
+       allFriendList = USER_LIST
+        }
                 
                 
                 let data1 = {
@@ -689,26 +774,44 @@ class User {
                 })
   
                 $("body").off("input", "#search-group")
-                $('body').on('input', '#search-group', function(e){
+                $('body').on('input', '#search-group', _.debounce(function(e){
                   
                   let search_text = $("#search-group").val()
-                  
+                  if(search_text === '') {
+                    $('#add-memeber-search-list').hide()
+                  } else {
+                    $('#add-memeber-search-list').show()
+                  }
 
                   $.ajax({
                     type: "GET",
                     //后面优化可以改为true
                     async: false,
+                    // url: "/JYPhone/api/centituix/service/txl/fuzzySearch",
                     url: "/im/webimcust/queryUser",
                     dataType: "json",
                     contentType: "application/json",
+                    // data: {
+                    //   orgSwitch: 'T',
+                    //   stationSwitch: 'T',
+                    //   rankSwitch: 'T',
+                    //   phoneSwitch: 'T',
+                    //   usernameSwitch: 'T',
+                    //   reqStr: search_text,
+                    // },
                     data: {
                       name: search_text,
                       pageNo: 1,
-                      pageSize: 500
+                      pageSize: 50
                     },
                     success: (data)=>{
+                      // let list = data.data.userList.filter( item => item.hideStatus === 'F')
                       let list = data.data.objList
+                      let hasCodes = tempFriendList.map((item) => {
+                        return item.id
+                      })
                       
+                      list = list.filter(item => hasCodes.indexOf(item.userCode) < 0)
                       let data1 = {
                         users: list,
                         classFn: function() {
@@ -761,14 +864,13 @@ class User {
                           $(item).css("display", "none")
                         }
                       })
-                      // this.onEventListener()
                     }
                  })
-                })
+                }, 1000))
                 
   
                 $("body").off("input", "#search-member")
-                $('body').on('input', '#search-member', function(e){
+                $('body').on('input', '#search-member', _.debounce(function(e){
                   
                   let search_text = $("#search-member").val()
                   $("[data-type=groupmember]").each((index, item) => {
@@ -780,14 +882,14 @@ class User {
                       $(item).css("display", "none")
                     }
                   })
-                })
+                }, 1000))
   
                 let data2 = {
                   groups: this.friend
                 }
                 
                 $("body").off("mouseup", ".selectGroup")
-                $("body").on("mouseup", ".selectGroup", (e) => {
+                $("body").on("mouseup", ".selectGroup", _.throttle((e) => {
                   let unitId = $(e.currentTarget).data('id')
                   let unitName = $(e.currentTarget).data('name')
                   SELECT_UNIT_CRUMB.push(unitName)
@@ -801,12 +903,14 @@ class User {
                   } else {
                     this.createGroupMemberPanel(unitId)
                   }
-                })
+                }, 2000, {
+                  trailing: false
+                }))
                 
                 layim.panel({
                   title: '选择群组' //标题
                   ,tpl:Mustache.render(`
-                  <div class="search-list" id="m-search-list">
+                  <div class="search-list choose-group" id="m-search-list">
                   <div class="input-container">
                   <img class="search-icon" src="./src/images/search.png"/>
                   <input class="search-input" placeholder="搜索" id="search-group"/>
@@ -891,7 +995,7 @@ class User {
           layim.panel({
             title: '选择群组成员' //标题
             ,tpl:Mustache.render(`
-            <div class="search-list">
+            <div class="search-list choose-group" id="m-search-list-sub">
             <div class="input-container">
             <img class="search-icon" src="./src/images/search.png"/>
             <input class="search-input" placeholder="搜索" id="search-member"/>
@@ -920,9 +1024,10 @@ class User {
             {{/hasMembers}}
            
             </div>
-            <div class="static_bottom_btn ${className}">确认</div>
+            
             ` , data1),
          });
+         $("#m-search-list-sub").parent().parent().append(`<div class="static_bottom_btn ${className}">确认</div>`)
          createCrumb()
       
     }
@@ -1122,6 +1227,23 @@ queryHistoryMsg(data) {
       let msgList = res.data.objList.reverse()
       
       for(let i = 0; i < msgList.length; i++) {
+        
+        if(msgList[i].sender === 'system') {
+if(msgList[i].contentType === CONTENT_TYPE_DELETE_GROUP || msgList[i].contentType === CONTENT_TYPE_QUIT_GROUP) {
+  let groupId = msgList[i].content.groupId
+  $(`.layim-group${groupId}`).css("display", "none")
+  let chatLog = getLocalChatLog()
+      if(chatLog !== undefined) {
+        delete chatLog[this.mine.id].history[`group${groupId}`]
+      }
+      localStorage.setItem('layim-mobile', JSON.stringify(chatLog))
+      $(`.layim-group${groupId}`).remove()
+}
+          
+          
+          // this.onCommandMessage(msgList[i], msgList[i].content)
+          return
+        }
         msgList[i].id = msgList[i].sender
         msgList[i].timestamp = msgList[i].sendTime
         msgList[i].content = msgList[i].content.msg
@@ -1134,7 +1256,7 @@ queryHistoryMsg(data) {
               break;  
         }
       }
-      // this.setUserMsgState(data)
+      
     }
  })
 }
@@ -1184,6 +1306,11 @@ getGroupHistoryMsg(data) {
         msgList[i].id = msgList[i].receiver
         msgList[i].timestamp = msgList[i].sendTime
         msgList[i].content = msgList[i].content.msg
+        
+        if(msgList[i].msgType === MSG_TYPE_GROUP && msgList[i].sender === "system") {
+          this.showSystemMessage(msgList[i])
+          continue
+        }
         switch(msgList[i].msgType) {
           case MSG_TYPE_GROUP:
             this.showChatMessage($.extend({userType: 'group'}, msgList[i]))
@@ -1220,13 +1347,17 @@ queryUnreadMsg() {
   $.ajax({
     type: "GET",
     //后面优化可以改为true
-    async: false,
+    async: true,
     url: `/im/webimmsg/getUnreadLastMsg/${this.mine.id}`,
     dataType: "json",
     success: (data) =>{
       for(let i = 0; i < data.data.length; i++) {
         this.queryHistoryMsg (data.data[i])
       }
+      this.setUserMsgState({
+        sender: 'system',
+        receiver: this.mine.id,
+      })
     }
  })
 }
@@ -1263,7 +1394,6 @@ queryUnreadMsg() {
             ,id: data.data.groupId//定义唯一的id方便你处理信息
           });
           
-          // this.onEventListener()
         }
       })
     }
@@ -1272,9 +1402,13 @@ queryUnreadMsg() {
          * @param params
          */
         showSystemMessage(params) {
-          params.system = true
+          if(params.content.indexOf('被迫下线') > -1) {
+            return
+          }
+          params.system = false
           params.userType = 'system'
           this.showChatMessage(params)
+          
       }
     /**
          * 显示收到的聊天信息
@@ -1284,14 +1418,21 @@ queryUnreadMsg() {
          * @param system
          * @param timestamp
          */
-        showChatMessage({id, userType = "friend", content, timestamp, senderName, system = false}) {
+        showChatMessage({id, receiver, userType = "friend", content, timestamp, senderName, system = false, msgId}) {
           
-          if(system) {
-          //   layer.open({
-          //     title: '系统通知'
-          //     ,
-          //     content: Mustache.render(content)
-          // });
+          if(userType === "system") {
+            
+            this.im.getMessage({
+              type: 'group',
+              system,
+              username: '系统消息',
+              //FIXME
+              id: receiver,
+              msgId,
+              content,
+              timestamp: timestamp || _getTimestamp(),
+              avatar: USER_AVATAR
+            })
           } else {
             this.im.getMessage({
               type: userType,
@@ -1299,6 +1440,7 @@ queryUnreadMsg() {
               username: senderName,
               //FIXME
               id: id,
+              msgId,
               content,
               timestamp: timestamp || _getTimestamp(),
               avatar: USER_AVATAR
@@ -1408,9 +1550,12 @@ queryUnreadMsg() {
               // http://192.168.135.40:8087/webim/im;
               wsHost = 'ws://192.168.137.12:8080'
               wsHost = `${wsHost}/im/im/${id}`
+              //建邺项目ws地址配置
               // wsHost = 'ws://192.168.135.40:8087'
               // wsHost = `${wsHost}/webim/im/${id}`
-          
+              //建邺生产环境地址
+              // wsHost = 'wss://ydzw.njjy.gov.cn/mobileIM/im'
+              // wsHost = `${wsHost}/${id}`
 
           let socket = this.socket = new WebSocket(wsHost)
 
@@ -1425,18 +1570,19 @@ queryUnreadMsg() {
          * WebSocket关闭打开事件
          */
         onWSClose() {
-          this.hasOpenWs = false
-          if(this.closeHandler) {
-            clearTimeout(this.closeHandler)
-          }
-          this.closeHandler = setTimeout(() => {
-            window.location.reload();
-              layer.open({
-                  title: '系统通知'
-                  ,
-                  content: Mustache.render('您已掉线，请<a onmouseup="window.location.reload();" style="color: RGB(98, 158, 229);cursor: pointer">刷新</a>重新连接')
-              });
-          }, 3000)
+          // debugger
+          // this.hasOpenWs = false
+          // if(this.closeHandler) {
+          //   clearTimeout(this.closeHandler)
+          // }
+          // this.closeHandler = setTimeout(() => {
+          //   window.location.reload();
+          //     layer.open({
+          //         title: '系统通知'
+          //         ,
+          //         content: Mustache.render('您已掉线，请<a onmouseup="window.location.reload();" style="color: RGB(98, 158, 229);cursor: pointer">刷新</a>重新连接')
+          //     });
+          // }, 3000)
           
       }
 
@@ -1482,7 +1628,6 @@ queryUnreadMsg() {
          * @param res
          */
         onWSMessage(res) {
-            
             let data = res.data
             if (!this.messageHandler) {
                 clearTimeout(this.messageHandler);
@@ -1503,7 +1648,7 @@ queryUnreadMsg() {
             }
             switch (data.type) {
                 case MSG_TYPE_GROUP:
-                  debugger
+                  
                   if(data.receiver == currentChatWin.id) {
                     this.setMsgState({
                       sender: currentChatWin.id,
@@ -1513,7 +1658,7 @@ queryUnreadMsg() {
                     this.showChatMessage($.extend({id: data.receiver, userType: "group"}, data, {content: data.content.msg}))
                     break
                 case MSG_TYPE_CHAT :
-                  debugger
+                  
                   if(data.sender == currentChatWin.id) {
                     this.setUserMsgState({
                       sender: currentChatWin.id,
@@ -1602,8 +1747,8 @@ queryUnreadMsg() {
     onCommandMessage (data, content) {
       switch (data.contentType) {
         case CONTENT_TYPE_NOTICE:
-              this.onNoticeMessage(data, data.content)
-              break  
+            this.onNoticeMessage(data, data.content)
+            break  
         case CONTENT_TYPE_DELETE_GROUP:
             this.onDeleteGroupMessage(data)        
         case CONTENT_TYPE_QUIT_GROUP:
@@ -1641,12 +1786,22 @@ queryUnreadMsg() {
             console.warn(`未知的数据类型：${data.type}`)
     }
     }
+    
 
 
     onEventListener() {
+
+
+
+$("body").off("click", '.layim-list-history .layui-layim-file')
+$("body").on("click", '.layim-list-history .layui-layim-file', (e)=>{
+  return false
+})
 //绑定点击聊天事件
-$("body").off("click", '[layim-event=chat]')
-$("body").on("click", '[layim-event=chat]', (e)=>{
+
+
+$("body").off("tap", '[layim-event=chat]')
+$("body").on("tap", '[layim-event=chat]', (e)=>{
   let className = e.currentTarget.className
   let userCode = className.slice(12, className.length - 1)
   currentChatWin.id = userCode
@@ -1666,13 +1821,15 @@ if(className.indexOf("group") > -1) {
 })
     //绑定点击面包屑事件
       $("body").off("mouseup", ".crumb-container")
-      $("body").on("mouseup", ".crumb-container", (e) => {
+      $("body").on("mouseup", ".crumb-container", _.throttle((e) => {
       let currentPanelBackBtn = $(e.currentTarget).parent().parent().parent().find("[layim-event=back]")[0]
       layim.emit(currentPanelBackBtn)
-      })
+      }, 2000, {
+        trailing: false
+      }))
 //绑定点击查询人员事件
       $("body").off("input",  "#query-member")
-      $("body").on("input", "#query-member", (e) => {
+      $("body").on("input", "#query-member", _.debounce((e) => {
         let search_text = $(e.currentTarget).val()
         
         
@@ -1685,7 +1842,7 @@ if(className.indexOf("group") > -1) {
             $(item).hide()
           }
         })
-        $("#m-select-group .selectGroup").each(function(index,item) {
+        $("#origin-group-list .selectGroup").each(function(index,item) {
           let name = $(item).data("name")
 
           if(name.indexOf(search_text) > -1) {
@@ -1694,10 +1851,10 @@ if(className.indexOf("group") > -1) {
             $(item).hide()
           }
         })
-      })
+      }, 1000))
 
       $("body").off("input",  "#m-query-member")
-      $("body").on("input", "#m-query-member", (e) => {
+      $("body").on("input", "#m-query-member", _.debounce((e) => {
         let search_text = $(e.currentTarget).val()
         
         
@@ -1720,10 +1877,10 @@ if(className.indexOf("group") > -1) {
             $(item).hide()
           }
         })
-      })
+      }, 1000))
 
       $("body").off("input",  "#main-query-member")
-      $("body").on("input", "#main-query-member", (e) => {
+      $("body").on("input", "#main-query-member", _.debounce((e) => {
         let search_text = $(e.currentTarget).val()
         
         
@@ -1738,15 +1895,25 @@ if(className.indexOf("group") > -1) {
           type: "GET",
           //后面优化可以改为true
           async: false,
+          // url: "/JYPhone/api/centituix/service/txl/fuzzySearch",
           url: "/im/webimcust/queryUser",
           dataType: "json",
           contentType: "application/json",
+          // data: {
+          //   orgSwitch: 'T',
+          //   stationSwitch: 'T',
+          //   rankSwitch: 'T',
+          //   phoneSwitch: 'T',
+          //   usernameSwitch: 'T',
+          //   reqStr: search_text,
+          // },
           data: {
             name: search_text,
             pageNo: 1,
-            pageSize: 500
+            pageSize: 50
           },
           success: (data)=>{
+            // let userList = data.data.userList.filter( item => item.hideStatus === 'F')
             let userList = data.data.objList
             let data1 = {
               users: userList,
@@ -1782,10 +1949,10 @@ if(className.indexOf("group") > -1) {
             // this.onEventListener()
           }
        })
-      })
+      }, 1000))
       //绑定点击查询im-unit事件
-      $("body").off("click", ".im-unit")
-      $("body").on("click", ".im-unit", (e) => {
+      $("body").off("mouseup", ".im-unit")
+      $("body").on("mouseup", ".im-unit", _.throttle((e) => {
         let id = $(e.currentTarget).data('id')
         let groupName = $(e.currentTarget).data('groupname')
         let subunits = searchSubUnit(id)
@@ -1795,13 +1962,15 @@ if(className.indexOf("group") > -1) {
         } else {
           addSubunitList(subunits, id)
         }
-      })
+      }, 2000, {
+        trailing: false
+      }))
       //查看聊天信息
       let data1 = {
         users:  []
       }
-      layim.on('detail', (data) => {
-        let tempFriendList = []
+      layim.on('detail', _.throttle((data) => {
+        tempFriendList = []
         console.log(data); //获取当前会话对象
         
         let UNIT_TPL = `<div class="search-list">
@@ -1815,7 +1984,7 @@ if(className.indexOf("group") > -1) {
         <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
         <div>
         <div class="avatar-container">
-        <img src="http://tvax1.sinaimg.cn/crop.0.0.300.300.180/006Iv8Wjly8ff7ghbigcij308c08ct8i.jpg">
+        <img src="${USER_AVATAR}">
         </div>
         </div>
         <span class="username">
@@ -1839,7 +2008,7 @@ if(className.indexOf("group") > -1) {
         <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group layim-friend{{userCode}}">
         <div>
         <div class="avatar-container">
-        <img src="http://tvax1.sinaimg.cn/crop.0.0.300.300.180/006Iv8Wjly8ff7ghbigcij308c08ct8i.jpg">
+        <img src="${USER_AVATAR}">
         </div>
         </div>
         <span class="username">
@@ -1860,7 +2029,7 @@ if(className.indexOf("group") > -1) {
         const GROUP_ID = data.id
         
         $("body").off('mouseup', ".change-group-btn")
-        $("body").on('mouseup', ".change-group-btn", () =>{
+        $("body").on('mouseup', ".change-group-btn", _.throttle(() =>{
           
           let groupname = $("#change-groupname-input").val()
           if(groupname === "") {
@@ -1882,14 +2051,15 @@ if(className.indexOf("group") > -1) {
               data: JSON.stringify(groupInfo),
               success: (data)=>{
                 backToMain()
-                // this.onEventListener()
               }
            })
           
-        })
+        }, 2000, {
+          trailing: false
+        }))
         //修改群消息
       $("body").off('mouseup', ".change-group")
-      $("body").on('mouseup', ".change-group", () =>{
+      $("body").on('mouseup', ".change-group", _.throttle(() =>{
         layim.panel({
           title: `修改群${data.groupname}的信息` //标题
           ,tpl:Mustache.render(`
@@ -1903,10 +2073,12 @@ if(className.indexOf("group") > -1) {
           <div class="static_bottom_btn change-group-btn">确认</div>
           ` , data1),
        });
-      })
+      }, 2000, {
+        trailing: false
+      }))
       //监听删除群操作
         $("body").off('mouseup', '.delete_group_btn')
-        $("body").on('mouseup', '.delete_group_btn', (e) =>{
+        $("body").on('mouseup', '.delete_group_btn', _.throttle((e) =>{
           let userCode = $(e.currentTarget).data("id")
           layer.open({
             title:"警告",
@@ -1933,8 +2105,6 @@ if(className.indexOf("group") > -1) {
                     //   content: "<div>删除成功</div>"
                     // })
                     backToMain()
-                    // this.onEventListener()
-                    // layer.close(index)
                   } else {
                     layer.open({
                       title:"提示",
@@ -1950,22 +2120,31 @@ if(className.indexOf("group") > -1) {
             }
           })
           
-        })
+        }, 2000, {
+          trailing: false
+        }))
         //监听添加群成员
         $("body").off('mouseup', '.add-group-member')
-        $("body").on('mouseup', '.add-group-member', (e) => {
+        $("body").on('mouseup', '.add-group-member', _.throttle((e) => {
 
           
           let allMemberId = []
           allMemberId = allMemberId.concat(member_id_list)
 
           allMemberId = Array.from(new Set(allMemberId))
-          let layero = loadingModal()
+          if(allMemberId.length === 0) {
+            
+            lay.msg('请选择群聊成员');
+            member_id_list = []
+              member_name_list = []
+            // return
+          } else {
+            let layero = loadingModal()
           $.ajax({
             type: "PUT",
             //后面优化可以改为true
             async: false,
-            url: `/im/webimcust/member/${data.id}`,
+            url: `/im/webimcust/member/${data.id}/${this.mine.id}`,
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(allMemberId),
@@ -1979,9 +2158,8 @@ if(className.indexOf("group") > -1) {
                   content: `<div>添加成功!</div>`,
                   btn: ['确定'],
                   yes: (index, layero) =>{
-                    
                     layim.chat({
-                      name: data.groupname //名称
+                      name: data.groupname || data.name //名称
                       ,type: data.realType //聊天类型
                       ,realType: data.realType
                       ,avatar: USER_AVATAR //头像
@@ -1993,7 +2171,6 @@ if(className.indexOf("group") > -1) {
                   }
                 })
                 backToMain()
-                
               } else {
                 layer.open({
                   title:"提示",
@@ -2005,16 +2182,23 @@ if(className.indexOf("group") > -1) {
               $(layero).css('display', 'none')
             }
          })
-        })
+          }
+          
+          
+        }, 2000, {
+          trailing: false
+        }))
         //监听添加群成员
         $("body").off('mouseup', '.add-member')
-        $("body").on('mouseup', '.add-member', (e) => {
+        $("body").on('mouseup', '.add-member', _.throttle((e) => {
           model = 'ADD_MODE'
           this.createSelectList('add-group-member')
-        })
+        }, 2000 , {
+          traling: false
+        }))
         //监听删除群成员
         $("body").off('mouseup', '.delete-group-member')
-        $("body").on('mouseup', '.delete-group-member', (e) =>{
+        $("body").on('mouseup', '.delete-group-member', _.throttle((e) =>{
           let allMemberId = []
           allMemberId = tempFriendList.map((item) => {
             return item.id
@@ -2030,7 +2214,7 @@ if(className.indexOf("group") > -1) {
             type: "PUT",
             //后面优化可以改为true
             async: false,
-            url: `/im/webimcust/quitGroup/${GROUP_ID}/${userCode}`,
+            url: `/im/webimcust/quitGroup/${GROUP_ID}/${userCode}/${this.mine.id}`,
             dataType: "json",
             contentType: "application/json",
             // data: JSON.stringify(allMemberId),
@@ -2057,14 +2241,7 @@ if(className.indexOf("group") > -1) {
             dataType: "json",
             success: (data) =>{
               if(data.data.flag == 1) {
-                
-                // layer.open({
-                //   title:"提示",
-                //   content: "<div>删除成功</div>"
-                // })
                 backToMain()
-                // this.onEventListener()
-                // layer.close(index)
               } else {
                 layer.open({
                   title:"提示",
@@ -2075,7 +2252,9 @@ if(className.indexOf("group") > -1) {
             }
          })
          }
-        })
+        }, 2000, {
+          trailing: false
+        }))
         
         let url = "unitUsers"
         let key = "userName"
@@ -2092,6 +2271,7 @@ if(className.indexOf("group") > -1) {
           url: `/im/webimcust/${url}/${data.id}`,
           dataType: "json",
           success: function(data){
+            
             sessionStorage.setItem('tmpList', JSON.stringify(data.data))
             for(let i = 0; i < data.data.length; i++) {
               
@@ -2106,7 +2286,7 @@ if(className.indexOf("group") > -1) {
           }
        })
        $("body").off("input", "#search-delete-member")
-              $('body').on('input', '#search-delete-member', function(e){
+              $('body').on('input', '#search-delete-member', _.debounce(function(e){
                 
                 let search_text = $("#search-delete-member").val()
                 $("[data-type=groupmember]").each((index, item) => {
@@ -2122,7 +2302,7 @@ if(className.indexOf("group") > -1) {
                   }
                 })
                 
-              })
+              }, 1000))
        data1.users = tempFriendList
             layim.panel({
             title: data.name + '群成员' //标题
@@ -2131,7 +2311,9 @@ if(className.indexOf("group") > -1) {
             // <div class="static_bottom_btn change-group">修改群信息</div>
             
          });
-        });
+        }, 2000, {
+          trailing : false
+        }))
 //监听自定义工具栏code点击
         // layim.on('tool(code)', (insert, send, obj) => { //事件中的tool为固定字符，而code则为过滤器，对应的是工具别名（alias）
         //   let receiver = obj.data.id
@@ -2139,38 +2321,15 @@ if(className.indexOf("group") > -1) {
         //   let chat = getHistoryChat(receiver, sender)
 
         // }); 
-        //监听点击“新的朋友”
-    layim.on('newFriend', function(){
-    layim.panel({
-      title: '新的朋友' //标题
-      ,tpl: '<div style="padding: 10px;">自定义模版，{{d.data.test}}</div>' //模版
-      ,data: { //数据
-        test: '么么哒'
-      }
-      });
-    });
-
-//修改群信息
-layim.on('newFriend', function(){
-
-  
-  layim.panel({
-    title: '新的朋友' //标题
-    ,tpl: '<div style="padding: 10px;">自定义模版，{{d.data.test}}</div>' //模版
-    ,data: { //数据
-      test: '么么哒'
-    }
-    });
-  });
 
       
         let _this = this
         $("body").off('mouseup', ".select_member_btn")
-        $("body").on('mouseup', ".select_member_btn", () => {
+        $("body").on('mouseup', ".select_member_btn", _.throttle(() => {
 
           let groupInfo = {
             members: member_id_list,
-            groupName: member_name_list.slice(0, 4).join(),
+            groupName: member_name_list.slice(0, 3).join(),
             creator: this.mine.id,
             groupNotice: '',
             osId: ''
@@ -2195,9 +2354,11 @@ layim.on('newFriend', function(){
           }else {
             lay.msg('请选择群聊成员');
           }
-        })
+        }, 2000, {
+          trailing: false
+        }))
         
-        layim.on('newGroup', () =>{
+        layim.on('newGroup', _.debounce(() =>{
           member_id_list = [this.mine.id]
           member_name_list = [this.mine.userName]
           
@@ -2215,12 +2376,12 @@ layim.on('newFriend', function(){
         // });
           return
 
-        });
+        }, 200));
 
 
 
       //监听点击更多列表
-      layim.on('moreList', function(obj){
+      layim.on('moreList', _.throttle(function(obj){
         switch(obj.alias){
           case 'find':
             layer.msg('自定义发现动作');
@@ -2239,16 +2400,20 @@ layim.on('newFriend', function(){
             });
           break;
         }
-      });
+      }, 2000, {
+        trailing: false
+      }));
 
       //监听返回
-    layim.on('back', function(e){
+    layim.on('back', _.throttle(function(e){
       if(SELECT_UNIT_CRUMB.length > 1) {
         SELECT_UNIT_CRUMB.pop()
       }
       createCrumb()
       //如果你只是弹出一个会话界面（不显示主面板），那么可通过监听返回，跳转到上一页面，如：history.back();
-    });
+    }, 2000, {
+      trailing: false
+    }));
 
 
 
@@ -2276,8 +2441,8 @@ layim.on('newFriend', function(){
         $("#moreChatList").remove()
       }
 
-      $('body').off("click", '#moreChatList')
-      $('body').on("click", '#moreChatList', () => {
+      $('body').off("mouseup", '#moreChatList')
+      $('body').on("mouseup", '#moreChatList', _.throttle(() => {
        let chatLogInfo  = getHistoryChat(receiver, mineId)
        let currentPageInfo = chatLogInfo.pageDesc
        let chatLog = chatLogInfo.objList.reverse()
@@ -2309,7 +2474,9 @@ layim.on('newFriend', function(){
       } else {
         $("#moreChatList").remove()
       }
-      })
+      }, 2000, {
+        trailing: false
+      }))
 
       for(let i = 0; i < chatLog.length; i++) {
         let className = ""
@@ -2357,7 +2524,6 @@ layim.on('newFriend', function(){
             ,id: groupId //好友或者群组ID
           });
           backToMain()
-
       layer.open({
         title:"通知",
         content: `<div>${data.content.msg}</div>`,
@@ -2387,30 +2553,7 @@ layim.on('newFriend', function(){
       })
     }
 
-    sendPageCard(goodsDetail) {
-      var cardInfo = {
-        href: window.location.href,
-        goodsName: goodsDetail.goodsName,
-        des: goodsDetail.goodsBriefDescription ? goodsDetail.goodsBriefDescription : '',
-        picSrc: goodsDetail.img,
-        price: goodsDetail.price,
-        discountPrice: goodsDetail.discountPrice,
-        isDiscount: goodsDetail.isDiscount
-      };
-      var mine = this.mine;
-      var data = {
-        type: MSG_TYPE_COMMAND,
-        contentType: CONTENT_TYPE_CARD,
-        content: cardInfo,
-        sender: mine.id,
-        senderName: mine.username,
-        receiver: goodsDetail.storeInfo.userId,
-        receiverName: goodsDetail.storeInfo.name,
-        sendTime: _getTimestamp()
-      };
-      this.sendWSMessage(data);
-      return data;
-    };
+    
 
     afterInit() {
       function fn() {
@@ -2426,26 +2569,8 @@ layim.on('newFriend', function(){
 
     chatList = function () {
       let user = new User()
-      
-      // var midTab = $("#LAY_layimNewList").parent()[0]
-     
-      // if(true) {
-      //   layim.emit(midTab)
-      // }
-      // if(true) {
-      //   layim.emit($("[layim-event=newGroup]")[0])
-      // }
-      // setInterval(() => {
-      //   alert(document.documentElement.clientHeight)
-      // }, 5000)
-      $("body").on("click", '[layim-event=chat]', function(e){
+      $("body").on("mouseup", '[layim-event=chat]', function(e){
       })
-      // layim.chat({
-      //   name: 111 //名称
-      //   ,type: 'friend' //聊天类型
-      //   ,avatar: USER_AVATAR + 1 //头像
-      //   ,id: 1//定义唯一的id方便你处理信息
-      // });
     }
     
     chatList()
