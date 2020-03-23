@@ -533,8 +533,8 @@ class User {
         // let USER1 = TEST_USER4
         // let USER1 = TEST_USER2
         // let USER1 = TEST_USER1
-        // let USER1 = TEST_USER6
-        let USER1 = TEST_USER7
+        let USER1 = TEST_USER6
+        // let USER1 = TEST_USER7
         this.closeHandler
         this.hasOpenWs = false
         this.isGroupCreate = false
