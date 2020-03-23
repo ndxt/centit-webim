@@ -725,18 +725,19 @@ public class WebImSocketImpl implements WebImSocket {
     }
 
     private void sendMemberMsg(String userCode, String title, ImMessage message){
+        // 发送人自己 设置为已读
+        if(StringUtils.equals(message.getSender(), userCode)){
+            webImGroupMemberDao.setGroupReadState(userCode, message.getReceiver());
+            return;
+        }
+
         Session session = getSessionByUserCode(userCode);
         if (session != null) {
             //取消设置已读状态
             //webImGroupMemberDao.setGroupReadState(userCode, message.getReceiver());
-            if (!StringUtils.equals(message.getSender(), userCode)) {
-                pushMessage(userCode, message);
-            }
+            pushMessage(userCode, message);
         } else { //是否发送离线消息 这个地方需要有一个设置
-            //这个判断有点多余
-            if (!StringUtils.equals(message.getSender(), userCode)) {
-                pushOfflineMessage(userCode, title, message);
-            }
+            pushOfflineMessage(userCode, title, message);
         }
     }
 
