@@ -292,7 +292,7 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
       ,'<div class="layim-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">'
         ,'<span class="layui-icon layim-tool-face" title="选择表情" layim-event="face">&#xe60c;</span>'
         ,'{{# if(d.base && d.base.uploadImage){ }}'
-        ,'<span class="layui-icon layim-tool-image" title="上传图片" layim-event="image">&#xe60d;<input type="file" name="file" accept="image/*"></span>'
+        ,'<span class="layui-icon layim-tool-image" title="上传图片" layim-event="image">&#xe60d;<input type="file" name="file" multiple accept="image/*"></span>'
         ,'{{# }; }}'
         ,'{{# if(d.base && d.base.uploadFile){ }}'
         ,'<span class="layui-icon layim-tool-image" title="发送文件" layim-event="image" data-type="file">&#xe61d;<input type="file" name="file"></span>'
@@ -1163,8 +1163,10 @@ layui.define(['laytpl', 'upload', 'layer-mobile', 'zepto'], function(exports){
         ,method: conf.type
         ,elem: othis.find('input')[0]
         ,accept: type
+        // ,multiple: true
         ,userInfo: mineInfo
         ,done: function(res){
+          $("#loading-li").remove()
           if(res.code == 0){
             res.data = res.data || {};
             if(type === 'images'){

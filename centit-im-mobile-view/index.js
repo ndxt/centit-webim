@@ -85,18 +85,6 @@ var randomNum = (function(){
   return Math.ceil(rnd(seed) * number);
   };
   })()
-// async upload(file) {
-//   const upload = new Uploader(file, this.params, this.uploadCompleteCb);
-//   const uploads = this.$refs.Upload.fileList;
-
-//   uploads.unshift(upload);
-//   this.uploads = uploads;
-//   await upload.start();
-
-//   this.$nextTick(() => {
-//     this.$root.$emit("reload");
-//   });
-// }
 //想办法改变其加载方式
 layui.config({
     version: true
@@ -1539,7 +1527,7 @@ queryUnreadMsg() {
       })
     }
 
-     /**
+        /**
          * 创建WS链接
          */
         createWSConnection() {

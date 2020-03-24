@@ -194,19 +194,21 @@ layui.define('layer' , function(exports){
         }
       };
       
-                $(".layim-chat-main ul").append(`
-                <li id="loading-li" class="layim-chat-li layim-chat-mine">
-                <div class="layim-chat-user">
-                <img src="./src/images/userdefalt.png" alt="129">
-                <cite>${userInfo.userName}</cite></div><div class="layim-chat-text">
-                <img class="layui-layim-photos rotate_bg" src="./src/images/loading.png">
-                </div>
-                </li>`)
+      $(".layim-chat-main ul").append(`
+      <li id="loading-li" class="layim-chat-li layim-chat-mine">
+      <div class="layim-chat-user">
+      <img src="./src/images/userdefalt.png" alt="129">
+      <cite>${userInfo.userName}</cite></div><div class="layim-chat-text">
+      <img class="layui-layim-photos rotate_bg" src="./src/images/loading.png">
+      </div>
+      </li>`)  
       if(!isPass) {
-        for(let key in items) {
-          const upload = new FormView.default(items[key], {}, (res) =>{
+        let index = 0
+        for(let fileName in items) {
+          
+          var file = items[fileName]
+          const upload = new FormView.default(file, {}, (res) =>{
             if(res.signal === "secondpass") {
-              layui.each(items, function(index, file){
                 var formData = new FormData();
                 
                 formData.append(options.field, file);
@@ -228,21 +230,23 @@ layui.define('layer' , function(exports){
                   ,dataType: 'json'
                   ,headers: options.headers || {}
                   ,success: function(res){
+                    
                     $("#loading-li").remove()
                     successful++;
                     done(index, res);
                     allDone();
                   }
                   ,error: function(){
+                    
                     $("#loading-li").remove()
                     aborted++;
                     that.msg('请求上传接口出现异常');
                     error(index);
                     allDone();
                   }
-                });
               });
             } else if(res.signal === "complete") {
+              
               $("#loading-li").remove()
               successful++;
                     done(0, res);
@@ -250,8 +254,8 @@ layui.define('layer' , function(exports){
             }
             
           })
-          upload.start()
-          return
+          // upload.start()
+          index++
         }
       }
       

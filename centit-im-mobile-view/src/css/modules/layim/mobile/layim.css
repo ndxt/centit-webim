@@ -39,7 +39,7 @@ html #layuicss-skinlayim-mobilecss{display: none; position: absolute; width: 198
 .layim-tab-content li ul{display: none;}
 .layim-list-friend, .layim-list-group{background-color: #fff;}
 .layui-layim-list li{position:relative; height: 42px; border-bottom: 1px solid #f2f2f2; padding: 5px 15px 5px 60px; font-size:0; cursor:pointer;}
-.layui-layim-list li:active{background-color: #F2F2F2; background-color: rgba(0,0,0,0.05);}
+/* .layui-layim-list li:active{background-color: #F2F2F2; background-color: rgba(0,0,0,0.05);} */
 .layui-layim-list li.layim-null{height: 20px; line-height: 20px; padding: 10px 0; font-size: 17px; color: #999; text-align: center; cursor: default; font-size: 14px;}
 .layim-list-history li.layim-null{padding: 30px 0; border-bottom: none; background-color: #eee;}
 .layui-layim-list li *{display:inline-block; *display:inline; *zoom:1; vertical-align:top; font-size: 17px;}
