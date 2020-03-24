@@ -327,18 +327,6 @@ public class WebImUserController extends BaseController {
         WebImCustomer user = webImUserManager.getUser(memberCode);
         String memberDesc = user == null ? memberCode :
                 user.getUserName();
-        String userDesc = webImUserManager.getUser(userCode)==null?userCode:
-                webImUserManager.getUser(userCode).getUserName();
-        userDesc=memberDesc+"被"+userDesc+"拉入群聊！";
-        webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
-                .type(ImMessage.MSG_TYPE_SYSTEM)
-                .sender("system")
-                .receiver(groupId)
-                .contentType(ImMessage.CONTENT_TYPE_NOTICE)
-                .message(userDesc)
-                .addContent("groupId", groupId)
-                .addContent("userId", memberCode)
-                .build());
         WebImGroup group = webImUserManager.getGroupInfo(groupId);
         String groupDesc = group == null ? groupId :
                 group.getGroupName();
@@ -351,6 +339,19 @@ public class WebImUserController extends BaseController {
                 .addContent("userId", memberCode)
                 .message("您加入了群"+groupDesc+"！")
                 .build());
+        String userDesc = webImUserManager.getUser(userCode)==null?userCode:
+                webImUserManager.getUser(userCode).getUserName();
+        userDesc=memberDesc+"被"+userDesc+"拉入群聊！";
+        webImSocket.sendGroupMessage(groupId, ImMessageBuild.create()
+                .type(ImMessage.MSG_TYPE_SYSTEM)
+                .sender("system")
+                .receiver(groupId)
+                .contentType(ImMessage.CONTENT_TYPE_NOTICE)
+                .message(userDesc)
+                .addContent("groupId", groupId)
+                .addContent("userId", memberCode)
+                .build());
+
     }
     /**
      * @return 用户加入群
