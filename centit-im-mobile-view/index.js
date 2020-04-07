@@ -202,14 +202,98 @@ let TOTAL_UNIT_NAME = ''
       units: subunits,
       users: userList
     }
-    
+    let randomN = randomNum(100)
+
+    $("body").off("input",  `#m-query-member${randomN}`)
+      $("body").on("input", `#m-query-member${randomN}`, _.debounce((e) => {
+        let search_text = $(e.currentTarget).val()
+        
+        if(search_text === '') {
+          $(".custom-group").show()
+          $(".im-unit").show()
+          $(".s-im-unit").hide()
+          $(".s-custom-group").hide()
+          return
+        } else {
+          $(".s-im-unit").show()
+          $(".s-custom-group").show()
+          $(".custom-group").hide()
+          $(".im-unit").hide()
+        }
+
+        $.ajax({
+          type: "GET",
+          //后面优化可以改为true
+          async: false,
+          url: "/JYPhone/api/centituix/service/txl/fuzzySearch",
+          // url: "/im/webimcust/queryUser",
+          dataType: "json",
+          contentType: "application/json",
+          data: {
+            orgSwitch: 'T',
+            stationSwitch: 'T',
+            rankSwitch: 'T',
+            phoneSwitch: 'T',
+            usernameSwitch: 'T',
+            reqStr: search_text,
+          },
+          // data: {
+          //   name: search_text,
+          //   pageNo: 1,
+          //   pageSize: 50
+          // },
+          success: (data)=>{
+            let userList = data.data.userList.filter( item => item.hideStatus === 'F')
+            // let userList = data.data.objList
+            let unitList = data.data.deptList.filter( item => item.hideStatus === 'F')
+            
+            let data1 = {
+              users: userList,
+              units: unitList,
+              renderNull: function() {
+                return userList.length === 0
+              }
+            }
+            $(`#s-user-list${randomN}`).html(
+              Mustache.render(`
+      {{#users}}
+      <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group s-custom-group layim-friend{{userCode}}">
+      <div>
+      <div class="avatar-container">
+      <img src="${USER_AVATAR}">
+      </div>
+      </div>
+      <span class="username">
+      {{userName}}</span>
+      <p></p><span class="layim-msg-status">new</span>
+      </li>
+      {{/users}}
+      ` , data1),
+            )
+            $(`#s-unit-list${randomN}`).html(
+              Mustache.render(
+                 `{{#units}}
+                 <li data-groupname="{{unitName}}" style="padding-left:0px;border:none;" data-id="{{unitCode}}" data-type="group" data-index="0" class="im-unit s-im-unit">
+                 <h5 style="width:94%;" data-id="{{unitCode}}" lay-type="false">
+                 <span class="im-unit-name">{{ unitName}}</span>
+                 <span class="right-icon">＞</span>
+                 </h5>
+                 </li>
+                 {{/units}}
+                `, data1
+              )
+            )
+            // this.onEventListener()
+          }
+       })
+      }, 1000))
     layim.panel({
       title: `选择群组` //标题
       ,tpl:Mustache.render(`
       <div class="search-list">
       <div class="input-container">
                   <img class="search-icon" src="./src/images/search.png"/>
-                  <input class="search-input" placeholder="搜索" id="m-query-member"/>
+                  <input class="search-input" placeholder="搜索" id="m-query-member${randomN}"/>
                   </div>
       <div class="crumb-container"></div>
       <div class="cut-line"></div>
@@ -226,10 +310,11 @@ let TOTAL_UNIT_NAME = ''
       <p></p><span class="layim-msg-status">new</span>
       </li>
       {{/users}}
+      <ul id="s-user-list${randomN}"></ul>
       <div class="cut-line"></div>
+      <ul id="s-unit-list${randomN}"></ul>
       {{#units}}
       <li data-groupname="{{unitName}}" style="padding-left:0px;border:none;" data-id="{{unitCode}}" data-type="group" data-index="0" class="im-unit">
-      
       <h5 style="width:94%;" data-id="{{unitCode}}" lay-type="false">
       <span class="im-unit-name">{{ unitName}}</span>
       <span class="right-icon">＞</span>
@@ -246,39 +331,39 @@ let TOTAL_UNIT_NAME = ''
    createCrumb()
   }
 
-  // function searchSubUnit(id) {
-  //   let subunits = []
-  //   let layero = loadingModal()
-    
-  //   $.ajax({
-  //     type: "GET",
-  //     //后面优化可以改为true
-  //     async: false,
-  //     url: `/JYPhone/api/centituix/service/txl/getChildDeptsAndUsers/${id}`,
-  //     dataType: "json",
-  //     success: (data) =>{
-  //       subunits = data.data.deptList.filter( item => item.hideStatus === 'F')
-  //       $(layero).css('display', 'none')
-  //     }
-  //  })
-  //  return subunits
-  // }
   function searchSubUnit(id) {
     let subunits = []
     let layero = loadingModal()
+    
     $.ajax({
       type: "GET",
       //后面优化可以改为true
       async: false,
-      url: `/im/webimcust/subUnit/${id}`,
+      url: `/JYPhone/api/centituix/service/txl/getChildDeptsAndUsers/${id}`,
       dataType: "json",
       success: (data) =>{
-        subunits = data.data
+        subunits = data.data.deptList.filter( item => item.hideStatus === 'F')
         $(layero).css('display', 'none')
       }
    })
    return subunits
   }
+  // function searchSubUnit(id) {
+  //   let subunits = []
+  //   let layero = loadingModal()
+  //   $.ajax({
+  //     type: "GET",
+  //     //后面优化可以改为true
+  //     async: false,
+  //     url: `/im/webimcust/subUnit/${id}`,
+  //     dataType: "json",
+  //     success: (data) =>{
+  //       subunits = data.data
+  //       $(layero).css('display', 'none')
+  //     }
+  //  })
+  //  return subunits
+  // }
 
 
   
@@ -334,37 +419,37 @@ function getUserGroups(id) {
      return group
 }
 
-// function getUnitUser(unitId) {
-//   let users = []
-  
-//   $.ajax({
-//     type: "GET",
-//     //TODO后面优化可以改为true
-//     async: false,
-//     url: `/JYPhone/api/centituix/service/txl/getChildDeptsAndUsers/${unitId}`,
-//     dataType: "json",
-//     success: function(data) {
-      
-//       users = data.data.userList.filter(item => item.hideStatus === 'F')
-//     }
-//  })
-//  return users
-// }
-
 function getUnitUser(unitId) {
   let users = []
+  
   $.ajax({
     type: "GET",
     //TODO后面优化可以改为true
     async: false,
-    url: `/im/webimcust/unitUsers/${unitId}`,
+    url: `/JYPhone/api/centituix/service/txl/getChildDeptsAndUsers/${unitId}`,
     dataType: "json",
     success: function(data) {
-      users = data.data
+      
+      users = data.data.userList.filter(item => item.hideStatus === 'F')
     }
  })
  return users
 }
+
+// function getUnitUser(unitId) {
+//   let users = []
+//   $.ajax({
+//     type: "GET",
+//     //TODO后面优化可以改为true
+//     async: false,
+//     url: `/im/webimcust/unitUsers/${unitId}`,
+//     dataType: "json",
+//     success: function(data) {
+//       users = data.data
+//     }
+//  })
+//  return users
+// }
  
 
 function getHistoryChat(receiver, sender) {
@@ -399,58 +484,58 @@ function getCustomFriendList(unitId) {
   })
 }
 
-function getMineFriendList(id) {
-  // 目前写死friend，后面会根据id获取的部门名找到部门id等其他信息
-  let friendGroup = []
-
-  $.ajax({
-    type: "GET",
-    //后面优化可以改为true
-    async: false,
-    url: "/im/webimcust/allUnit",
-    dataType: "json",
-    success: function(data){
-      for(let i = 0; i < data.data.length; i++) {
-        friendGroup[i] = {
-          "groupname": data.data[i].unitName
-          ,"id": data.data[i].unitCode
-          ,"avatar": USER_AVATAR
-          ,"list": []
-        }
-      }
-    }
- })
- 
-   
-   return friendGroup
-}
-
 // function getMineFriendList(id) {
-//     // 目前写死friend，后面会根据id获取的部门名找到部门id等其他信息
-//     let friendGroup = []
+//   // 目前写死friend，后面会根据id获取的部门名找到部门id等其他信息
+//   let friendGroup = []
 
-//     $.ajax({
-//       type: "GET",
-//       //后面优化可以改为true
-//       async: false,
-//       url: "/JYPhone/api/centituix/service/txl/getChildDeptsAndUsers/" + id,
-//       dataType: "json",
-//       success: function(data){
-//         data.data.deptList = data.data.deptList.filter( item => item.hideStatus === 'F')
-//         for(let i = 0; i < data.data.deptList.length; i++) {
-//           friendGroup[i] = {
-//             "groupname": data.data.deptList[i].unitName
-//             ,"id": data.data.deptList[i].unitCode
-//             ,"avatar": USER_AVATAR
-//             ,"list": []
-//           }
+//   $.ajax({
+//     type: "GET",
+//     //后面优化可以改为true
+//     async: false,
+//     url: "/im/webimcust/allUnit",
+//     dataType: "json",
+//     success: function(data){
+//       for(let i = 0; i < data.data.length; i++) {
+//         friendGroup[i] = {
+//           "groupname": data.data[i].unitName
+//           ,"id": data.data[i].unitCode
+//           ,"avatar": USER_AVATAR
+//           ,"list": []
 //         }
 //       }
-//    })
+//     }
+//  })
+ 
+   
+//    return friendGroup
+// }
+
+function getMineFriendList(id) {
+    // 目前写死friend，后面会根据id获取的部门名找到部门id等其他信息
+    let friendGroup = []
+
+    $.ajax({
+      type: "GET",
+      //后面优化可以改为true
+      async: false,
+      url: "/JYPhone/api/centituix/service/txl/getChildDeptsAndUsers/" + id,
+      dataType: "json",
+      success: function(data){
+        data.data.deptList = data.data.deptList.filter( item => item.hideStatus === 'F')
+        for(let i = 0; i < data.data.deptList.length; i++) {
+          friendGroup[i] = {
+            "groupname": data.data.deptList[i].unitName
+            ,"id": data.data.deptList[i].unitCode
+            ,"avatar": USER_AVATAR
+            ,"list": []
+          }
+        }
+      }
+   })
    
      
-//      return friendGroup
-// }
+     return friendGroup
+}
 
 
 // function showLargeImg (){
@@ -554,6 +639,7 @@ class User {
 
     createSelectList2(subUnits, customClassName, groupId) {
       let randomId = randomNum(100)
+      let randomN = randomNum(100)
       let className = 'select_member_btn'
       let list = getUnitUser(groupId)
       let allFriendList = subUnits
@@ -637,10 +723,100 @@ class User {
                 let data2 = {
                   groups: this.friend
                 }
-                
+                //---------------------
+                $("body").off("input",  `#query-member${randomN}`)
+                $("body").on("input", `#query-member${randomN}`, _.debounce((e) => {
+                  let search_text = $(e.currentTarget).val()
+                  
+                  
+                  if(search_text === '') {
+                    $(".selectMember").show()
+                    $(".selectGroup").show()
+                    $(".s-selectGroup").hide()
+                    $(".s-selectMember").hide()
+                    return
+                  } else {
+                    $(".s-selectGroup").show()
+                    $(".s-selectMember").show()
+                    $(".selectMember").hide()
+                    $(".selectGroup").hide()
+                  }
+          
+                  $.ajax({
+                    type: "GET",
+                    //后面优化可以改为true
+                    async: false,
+                    url: "/JYPhone/api/centituix/service/txl/fuzzySearch",
+                    // url: "/im/webimcust/queryUser",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: {
+                      orgSwitch: 'T',
+                      stationSwitch: 'T',
+                      rankSwitch: 'T',
+                      phoneSwitch: 'T',
+                      usernameSwitch: 'T',
+                      reqStr: search_text,
+                    },
+                    // data: {
+                    //   name: search_text,
+                    //   pageNo: 1,
+                    //   pageSize: 50
+                    // },
+                    success: (data)=>{
+                      let userList = data.data.userList.filter( item => item.hideStatus === 'F')
+                      // let userList = data.data.objList
+                      let unitList = data.data.deptList.filter( item => item.hideStatus === 'F')
+                      
+                      let data1 = {
+                        users: userList,
+                        units: unitList,
+                        renderNull: function() {
+                          return userList.length === 0
+                        }
+                      }
+                      $(`#s-m-user-list${randomN}`).html(
+                        Mustache.render(`
+                {{#users}}
+                <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember s-selectMember {{classFn}}">
+                      <div>
+                      <div class="avatar-container">
+                      <img src="${USER_AVATAR}">
+                      </div>
+                      </div>
+                      <span class="username">
+                      {{userName}}</span>
+                      <p></p><span class="layim-msg-status">new</span>
+                      <span class="member-checkbox">
+                      <img src="{{imgSrc}}"/>
+                      </span>
+                      </li>
+                {{/users}}
+                ` , data1),
+                      )
+                      $(`#s-m-unit-list${randomN}`).html(
+                        Mustache.render(
+                           `{{#units}}
+                           <li style="padding-left:25px;" data-name="{{unitName}}" data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup s-selectGroup">
+                            <h5 style="display:block">
+                            <span>{{ unitName }}</span>
+                            <span class="right-icon">＞</span>
+                            </h5>
+                            </li>
+                           {{/units}}
+                          `, data1
+                        )
+                      )
+                      // this.onEventListener()
+                    }
+                 })
+                }, 1000))
+                //---------------------------------------
                 $("body").off("mouseup", ".selectGroup")
                 $("body").on("mouseup", ".selectGroup", _.debounce((e) => {
                   
+                  
+
                   let unitId = $(e.currentTarget).data('id')
                   let unitName = $(e.currentTarget).data('name')
                   let subunits = searchSubUnit(unitId)
@@ -662,7 +838,7 @@ class User {
                   <div class="search-list" id="m-query-member-list${randomId}">
                   <div class="input-container">
                   <img class="search-icon" src="./src/images/search.png"/>
-                  <input class="search-input" placeholder="搜索" id="query-member"/>
+                  <input class="search-input" placeholder="搜索" id="query-member${randomN}"/>
                   </div>
                   <div class="crumb-container"></div>
                   <div class="cut-line"></div>
@@ -682,7 +858,9 @@ class User {
             </span>
             </li>
             {{/users}}
-            <div class="cut-line"></div>
+            <ul id="s-m-user-list${randomN}"></ul>
+      <div class="cut-line"></div>
+      <ul id="s-m-unit-list${randomN}"></ul>
             <ul id="origin-group-list">
                   {{#groups}}
                   <li style="padding-left:25px;" data-name="{{unitName}}" data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup">
@@ -861,15 +1039,104 @@ class User {
                 $('body').on('input', '#search-member', _.debounce(function(e){
                   
                   let search_text = $("#search-member").val()
-                  $("[data-type=groupmember]").each((index, item) => {
-                    let name = $(item).find("span").html()
-                    
-                    if(name.indexOf(search_text) > -1) {
-                      $(item).css("display", "block")
-                    } else {
-                      $(item).css("display", "none")
+                  if(search_text == '') {
+                    $("[data-type=groupmember]").show()
+                    $("#m-search-member-list").hide()
+                    $("#m-search-group-list").hide()
+                  } else {
+                    $("[data-type=groupmember]").hide()
+                    $("#m-search-member-list").show()
+                    $("#m-search-group-list").show()
+                  }
+
+                  $.ajax({
+                    type: "GET",
+                    //后面优化可以改为true
+                    async: false,
+                    url: "/JYPhone/api/centituix/service/txl/fuzzySearch",
+                    // url: "/im/webimcust/queryUser",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: {
+                        orgSwitch: 'T',
+                        stationSwitch: 'T',
+                        rankSwitch: 'T',
+                        phoneSwitch: 'T',
+                        usernameSwitch: 'T',
+                        reqStr: search_text,
+                    },
+                    // data: {
+                    //   name: search_text,
+                    //   pageNo: 1,
+                    //   pageSize: 50
+                    // },
+                    success: (data)=>{
+                        let userList = data.data.userList.filter( item => item.hideStatus === 'F')
+                        // let userList = data.data.objList
+                        let unitList = data.data.deptList.filter( item => item.hideStatus === 'F')
+    
+                        let data1 = {
+                            users: userList,
+                            units: unitList,
+                            classFn: function() {
+                          
+                              if(member_id_list.indexOf(this.userCode) > -1) {
+                                return 'member_select'
+                              } else {
+                                return ''
+                              }
+                            },
+                            imgSrc: function() {
+                          
+                              if(member_id_list.indexOf(this.userCode) > -1) {
+                                return './src/images/selected.png'
+                              } else {
+                                return ''
+                              }
+                            },
+                            renderNull: function() {
+                                return userList.length === 0
+                            }
+                        }
+                        $(`#m-search-member-list`).html(
+                            Mustache.render(`
+                    {{#users}}
+                    <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember s-selectMember {{classFn}}">
+                          <div>
+                          <div class="avatar-container">
+                          <img src="${USER_AVATAR}">
+                          </div>
+                          </div>
+                          <span class="username">
+                          {{userName}}</span>
+                          <p></p><span class="layim-msg-status">new</span>
+                          <span class="member-checkbox">
+                          <img src="{{imgSrc}}"/>
+                          </span>
+                          </li>
+                    {{/users}}
+                    ` , data1),
+                        )
+                        $(`#m-search-group-list`).html(
+                            Mustache.render(
+                                `{{#units}}
+                               <li style="padding-left:25px;" data-name="{{unitName}}" data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup s-selectGroup">
+                                <h5 style="display:block">
+                                <span>{{ unitName }}</span>
+                                <span class="right-icon">＞</span>
+                                </h5>
+                                </li>
+                               {{/units}}
+                              `, data1
+                            )
+                        )
+                        // this.onEventListener()
                     }
-                  })
+                })
+              //     <div id="m-search-member-list"></div>
+              // <div class="cut-line"></div>
+              // <div id="m-search-group-list"></div>
+
                 }, 1000))
   
                 let data2 = {
@@ -924,7 +1191,18 @@ class User {
                $("#m-search-list").parent().parent().append(`<div id="m-ok" class="static_bottom_btn ${className}">确认</div>`)
                createCrumb()
     }
+backToDo() {
 
+  $(".selectMember").show()
+          $(".selectGroup").show()
+          $(".s-selectGroup").hide()
+          $(".s-selectMember").hide()
+
+          $(".custom-group").show()
+          $(".im-unit").show()
+          $(".s-im-unit").hide()
+          $(".s-custom-group").hide()
+}
     createGroupMemberPanel(groupId, customClassName) {
       let className = 'select_member_btn'
 
@@ -1006,6 +1284,9 @@ class User {
               </span>
               </li>
               {{/users}}
+              <div id="m-search-member-list"></div>
+              <div class="cut-line"></div>
+              <div id="m-search-group-list"></div>
             </ul>
             {{#hasMembers}}
             <li class="layim-null">暂无联系人</li>
@@ -1821,50 +2102,171 @@ if(className.indexOf("group") > -1) {
         let search_text = $(e.currentTarget).val()
         
         
-        $(".selectMember").each(function(index,item) {
-          let name = $(item).find(".username").html()
+        if(search_text === '') {
+          $(".selectMember").show()
+          $(".selectGroup").show()
+          $(".s-selectGroup").hide()
+          $(".s-selectMember").hide()
+          return
+        } else {
+          $(".s-selectGroup").show()
+          $(".s-selectMember").show()
+          $(".selectMember").hide()
+          $(".selectGroup").hide()
+        }
 
-          if(name.indexOf(search_text) > -1) {
-            $(item).show()
-          } else {
-            $(item).hide()
+        $.ajax({
+          type: "GET",
+          //后面优化可以改为true
+          async: false,
+          url: "/JYPhone/api/centituix/service/txl/fuzzySearch",
+          // url: "/im/webimcust/queryUser",
+          dataType: "json",
+          contentType: "application/json",
+          data: {
+            orgSwitch: 'T',
+            stationSwitch: 'T',
+            rankSwitch: 'T',
+            phoneSwitch: 'T',
+            usernameSwitch: 'T',
+            reqStr: search_text,
+          },
+          // data: {
+          //   name: search_text,
+          //   pageNo: 1,
+          //   pageSize: 50
+          // },
+          success: (data)=>{
+            let userList = data.data.userList.filter( item => item.hideStatus === 'F')
+            // let userList = data.data.objList
+            let unitList = data.data.deptList.filter( item => item.hideStatus === 'F')
+            
+            let data1 = {
+              users: userList,
+              units: unitList,
+              renderNull: function() {
+                return userList.length === 0
+              }
+            }
+            $("#s-m-user-list").html(
+              Mustache.render(`
+      {{#users}}
+      <li data-name="{{userName}}" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="layim-friend{{userCode}} selectMember s-selectMember {{classFn}}">
+            <div>
+            <div class="avatar-container">
+            <img src="${USER_AVATAR}">
+            </div>
+            </div>
+            <span class="username">
+            {{userName}}</span>
+            <p></p><span class="layim-msg-status">new</span>
+            <span class="member-checkbox">
+            <img src="{{imgSrc}}"/>
+            </span>
+            </li>
+      {{/users}}
+      ` , data1),
+            )
+            $("#s-m-unit-list").html(
+              Mustache.render(
+                 `{{#units}}
+                 <li style="padding-left:25px;" data-name="{{unitName}}" data-id="{{unitCode}}" data-type="group" data-index="0" class="layim-friend{{unitCode}} selectGroup s-selectGroup">
+                  <h5 style="display:block">
+                  <span>{{ unitName }}</span>
+                  <span class="right-icon">＞</span>
+                  </h5>
+                  </li>
+                 {{/units}}
+                `, data1
+              )
+            )
+            // this.onEventListener()
           }
-        })
-        $("#origin-group-list .selectGroup").each(function(index,item) {
-          let name = $(item).data("name")
-
-          if(name.indexOf(search_text) > -1) {
-            $(item).show()
-          } else {
-            $(item).hide()
-          }
-        })
+       })
       }, 1000))
 
       $("body").off("input",  "#m-query-member")
       $("body").on("input", "#m-query-member", _.debounce((e) => {
         let search_text = $(e.currentTarget).val()
         
-        
-        $(".custom-group").each(function(index,item) {
-          let name = $(item).find(".username").html()
+        if(search_text === '') {
+          $(".custom-group").show()
+          $(".im-unit").show()
+          $(".s-im-unit").hide()
+          $(".s-custom-group").hide()
+          return
+        } else {
+          $(".s-im-unit").show()
+          $(".s-custom-group").show()
+          $(".custom-group").hide()
+          $(".im-unit").hide()
+        }
 
-          if(name.indexOf(search_text) > -1) {
-            $(item).show()
-          } else {
-            $(item).hide()
+        $.ajax({
+          type: "GET",
+          //后面优化可以改为true
+          async: false,
+          url: "/JYPhone/api/centituix/service/txl/fuzzySearch",
+          // url: "/im/webimcust/queryUser",
+          dataType: "json",
+          contentType: "application/json",
+          data: {
+            orgSwitch: 'T',
+            stationSwitch: 'T',
+            rankSwitch: 'T',
+            phoneSwitch: 'T',
+            usernameSwitch: 'T',
+            reqStr: search_text,
+          },
+          // data: {
+          //   name: search_text,
+          //   pageNo: 1,
+          //   pageSize: 50
+          // },
+          success: (data)=>{
+            let userList = data.data.userList.filter( item => item.hideStatus === 'F')
+            // let userList = data.data.objList
+            let unitList = data.data.deptList.filter( item => item.hideStatus === 'F')
+            
+            let data1 = {
+              users: userList,
+              units: unitList,
+              renderNull: function() {
+                return userList.length === 0
+              }
+            }
+            $("#s-user-list").html(
+              Mustache.render(`
+      {{#users}}
+      <li layim-event="chat" data-id="{{userCode}}" data-type="groupmember" data-index="0" class="custom-group s-custom-group layim-friend{{userCode}}">
+      <div>
+      <div class="avatar-container">
+      <img src="${USER_AVATAR}">
+      </div>
+      </div>
+      <span class="username">
+      {{userName}}</span>
+      <p></p><span class="layim-msg-status">new</span>
+      </li>
+      {{/users}}
+      ` , data1),
+            )
+            $("#s-unit-list").html(
+              Mustache.render(
+                 `{{#units}}
+                 <li data-groupname="{{unitName}}" style="padding-left:0px;border:none;" data-id="{{unitCode}}" data-type="group" data-index="0" class="im-unit s-im-unit">
+                 <h5 style="width:94%;" data-id="{{unitCode}}" lay-type="false">
+                 <span class="im-unit-name">{{ unitName}}</span>
+                 <span class="right-icon">＞</span>
+                 </h5>
+                 </li>
+                 {{/units}}
+                `, data1
+              )
+            )
+            // this.onEventListener()
           }
-        })
-        
-        $(".im-unit").each(function(index,item) {
-          let name = $(item).data("name")
-
-          if(name.indexOf(search_text) > -1) {
-            $(item).show()
-          } else {
-            $(item).hide()
-          }
-        })
+       })
       }, 1000))
 
       $("body").off("input",  "#main-query-member")
@@ -2393,13 +2795,15 @@ if(className.indexOf("group") > -1) {
       }));
 
       //监听返回
-    layim.on('back', _.throttle(function(e){
+    layim.on('back', _.throttle((e)=>{
+
+      this.backToDo()
       if(SELECT_UNIT_CRUMB.length > 1) {
         SELECT_UNIT_CRUMB.pop()
       }
       createCrumb()
       //如果你只是弹出一个会话界面（不显示主面板），那么可通过监听返回，跳转到上一页面，如：history.back();
-    }, 2000, {
+    }, 1000, {
       trailing: false
     }));
 
