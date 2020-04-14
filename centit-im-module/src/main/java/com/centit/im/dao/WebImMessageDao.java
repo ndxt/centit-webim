@@ -36,26 +36,16 @@ public class WebImMessageDao extends BaseDaoImpl<WebImMessage,java.lang.String>
 
     @Override
     public Map<String, String> getFilterField() {
-        if( filterField == null){
-            filterField = new HashMap<String, String>();
+        Map<String, String> filterField = new HashMap<String, String>();
+        filterField.put("msgId" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("msgType" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("sender" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("receiver" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("sendTime" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("msgState" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("content" , CodeBook.EQUAL_HQL_ID);
 
-            filterField.put("msgId" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("msgType" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("sender" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("receiver" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("sendTime" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("msgState" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("content" , CodeBook.EQUAL_HQL_ID);
-
-        }
         return filterField;
     }
 

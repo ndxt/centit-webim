@@ -27,24 +27,14 @@ public class CustomerPraiseDao extends BaseDaoImpl<WebImCustomerPraise,java.lang
 
     @Override
     public Map<String, String> getFilterField() {
-        if( filterField == null){
-            filterField = new HashMap<String, String>();
-
-            filterField.put("praiseId" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("customerCode" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("serviceSummary" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("serviceScore" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("createTime" , CodeBook.EQUAL_HQL_ID);
-
-        }
+        Map<String, String> filterField = new HashMap<String, String>();
+        filterField.put("praiseId" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("customerCode" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("serviceSummary" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("serviceScore" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("createTime" , CodeBook.EQUAL_HQL_ID);
         return filterField;
     }
 }

@@ -26,13 +26,11 @@ public class WebImGroupDao extends BaseDaoImpl<WebImGroup,String>
 
     @Override
     public Map<String, String> getFilterField() {
-        if( filterField == null){
-            filterField = new HashMap<>();
-            filterField.put("groupId" , CodeBook.EQUAL_HQL_ID);
-            filterField.put("groupName" , CodeBook.LIKE_HQL_ID);
-            filterField.put("groupNotice" , CodeBook.LIKE_HQL_ID);
-            filterField.put("(like)name", "(GROUP_NAME like :name or GROUP_NOTICE like :name)");
-        }
+        Map<String, String> filterField = new HashMap<>();
+        filterField.put("groupId" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("groupName" , CodeBook.LIKE_HQL_ID);
+        filterField.put("groupNotice" , CodeBook.LIKE_HQL_ID);
+        filterField.put("(like)name", "(GROUP_NAME like :name or GROUP_NOTICE like :name)");
         return filterField;
     }
 

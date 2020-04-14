@@ -29,23 +29,13 @@ public class FriendMemoDao extends BaseDaoImpl<WebImFriendMemo,WebImFriendMemoId
 
     @Override
     public Map<String, String> getFilterField() {
-        if( filterField == null){
-            filterField = new HashMap<String, String>();
-
-            filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("friendCode" , CodeBook.EQUAL_HQL_ID);
-
-
-            filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("lastUpdateTime" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("friendAlias" , CodeBook.EQUAL_HQL_ID);
-
-            filterField.put("friendMemo" , CodeBook.EQUAL_HQL_ID);
-
-        }
+        Map<String, String> filterField = new HashMap<String, String>();
+        filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("friendCode" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("osId" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("lastUpdateTime" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("friendAlias" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("friendMemo" , CodeBook.EQUAL_HQL_ID);
         return filterField;
     }
 
