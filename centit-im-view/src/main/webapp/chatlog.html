@@ -99,7 +99,7 @@ layui.use(['layim', 'laypage'], function(){
     lastReadDate.setDate(lastReadDate.getDate() + 1);
     var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
     var receiver = cache.mine.id;
-    var url = ctx + "/webimmsg/historyMessage/" + receiver + '/' + params.id;
+    var url = ctx + "/im/webimmsg/historyMessage/" + receiver + '/' + params.id;
     $.ajax({
         url: url,
         dataType: 'json',

@@ -84,7 +84,7 @@
       let ctx = _getContextPath()
 
       $timeout(function() {
-        fetch(`${ctx}/im/webimcust/listUser`)
+        fetch(`${ctx}/im/webimcust/services`)
           .then(res => res.json())
           .then(res => res.data.map(d => Object.assign(d, {
             id: d.userCode,

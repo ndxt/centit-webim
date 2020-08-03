@@ -60,7 +60,7 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
             value: function queryUsers() {
                 var ctx = this.contextPath,
                     id = this.mine.id;
-                return fetch(ctx + "/webimcust/cust/" + id + "?lastServiceDate=1949-10-1").then(function (res) {
+                return fetch(ctx + "/im/webimcust/cust/" + id + "?lastServiceDate=1949-10-1").then(function (res) {
                     return res.json();
                 }).then(function (res) {
                     return res.data;
@@ -71,7 +71,7 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
             value: function queryService() {
                 var ctx = this.contextPath;
 
-                return fetch(ctx + "/webimcust/services").then(function (res) {
+                return fetch(ctx + "/im/webimcust/services").then(function (res) {
                     return res.json();
                 }).then(function (res) {
                     return res.data;
@@ -106,7 +106,7 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                 var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
                 var pageNo = 1;
                 $.ajax({
-                    url: ctx + "/webimmsg/historyMessage/" + receiver + "/" + sender,
+                    url: ctx + "/im/webimmsg/historyMessage/" + receiver + "/" + sender,
                     async: false,
                     dataType: 'json',
                     data: { pageNo: pageNo, lastReadDate: dateStr, pageSize: 100000 },
@@ -606,7 +606,7 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
                 var dateStr = lastReadDate.getFullYear() + '-' + (lastReadDate.getMonth() + 1) + '-' + lastReadDate.getDate();
 
                 $.ajax({
-                    url: ctx + "/webimmsg/statUnread/" + userCode,
+                    url: ctx + "/im/webimmsg/statUnread/" + userCode,
                     dataType: 'json',
                     async: false,
                     // data: {pageNo: pageNo,lastReadDate: dateStr},
@@ -628,7 +628,7 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
 
                 var _loop = function _loop(i, length) {
                     $.ajax({
-                        url: ctx + "/webimmsg/historyMessage/" + userCode + "/" + arr[i], //这里也调用了history接口
+                        url: ctx + "/im/webimmsg/historyMessage/" + userCode + "/" + arr[i], //这里也调用了history接口
                         dataType: 'json',
                         async: false,
                         data: { pageNo: 1, lastReadDate: dateStr },
@@ -665,7 +665,7 @@ define(["src/js/ie/IM.class", "mustache"], function (IM, Mustache) {
         }, {
             key: "mobileHistory",
             value: function mobileHistory(id) {
-                var url = ctx + "/webimmsg/historyMessage/" + this.mine.userCode + '/' + id;
+                var url = ctx + "/im/webimmsg/historyMessage/" + this.mine.userCode + '/' + id;
                 var receiver = this.mine.id;
                 var lastReadDate = new Date();
                 lastReadDate.setDate(lastReadDate.getDate() + 1);
