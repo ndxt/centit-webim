@@ -36,6 +36,6 @@ spec:
         image: 172.29.0.13:8082/im:<BUILD_TAG>
         imagePullPolicy: Always
         ports:
-        - containerPort: 10085
+        - containerPort: 8080
       imagePullSecrets:
       - name: registry-secret
