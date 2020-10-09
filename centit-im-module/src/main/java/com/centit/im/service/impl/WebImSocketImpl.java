@@ -647,12 +647,12 @@ public class WebImSocketImpl implements WebImSocket {
         if(session==null)
             return false;
         synchronized (session) {
-            try {
+            /*try {
                 session.getBasicRemote().sendText(message.toString());
             } catch (IOException e) {
                 logger.error("pushMessage :" + message.toString());
-            }
-            //session.getAsyncRemote().sendText(message.toString());
+            }*/
+            session.getAsyncRemote().sendText(message.toString());
         }
         return true;
     }
