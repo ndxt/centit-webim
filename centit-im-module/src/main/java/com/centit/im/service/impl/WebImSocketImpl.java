@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service("webImSocket")
 public class WebImSocketImpl implements WebImSocket {
 
-    public static final Log log = LogFactory.getLog(WebImSocketImpl.class);
+    public static final Log logger = LogFactory.getLog(WebImSocketImpl.class);
     private static AtomicInteger onlineCount = new AtomicInteger(0);
     //ConcurrentHashMap是线程安全的，而HashMap是线程不安全的。
     private static ConcurrentHashMap<String, Session> userCodeToSession
@@ -224,7 +224,7 @@ public class WebImSocketImpl implements WebImSocket {
             try {
                 oldSession.close();
             } catch (IOException e) {
-                log.info("用户多点登录导致session关闭异常 :" + e.getMessage());
+                logger.info("用户多点登录导致session关闭异常 :" + e.getMessage());
             }
         }
 
@@ -643,16 +643,21 @@ public class WebImSocketImpl implements WebImSocket {
         recvMessage(session,msg);
     }
 
-    private boolean pushMessage(Session session , ImMessage message) {
+    private static boolean pushMessage(Session session , ImMessage message) {
         if(session==null)
             return false;
         synchronized (session) {
-            session.getAsyncRemote().sendText(message.toString());
+            try {
+                session.getBasicRemote().sendText(message.toString());
+            } catch (IOException e) {
+                logger.error("pushMessage :" + message.toString());
+            }
+            //session.getAsyncRemote().sendText(message.toString());
         }
         return true;
     }
 
-    private boolean pushMessage(String userCode, ImMessage message) {
+    private static boolean pushMessage(String userCode, ImMessage message) {
         Session session = getSessionByUserCode(userCode);
         return pushMessage(session, message);
     }
