@@ -30,7 +30,9 @@ public class WebImSocketListener {
      */
     @Autowired
     public void setWebImSocket(WebImSocket webImSocket) {
-        WebImSocketListener.webImSocket = webImSocket;
+        if(webImSocket!=null) {
+            WebImSocketListener.webImSocket = webImSocket;
+        }
     }
     // 这个应该可以不用
     /*private WebImSocket getWebImSocket(){
