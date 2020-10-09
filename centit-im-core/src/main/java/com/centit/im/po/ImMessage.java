@@ -27,6 +27,7 @@ public class ImMessage implements  java.io.Serializable {
     public static final String MSG_TYPE_COMMAND = "M";
     public static final String MSG_TYPE_BROADCAST = "B";
     public static final String MSG_TYPE_TOALL = "A";
+    public static final String MSG_TYPE_UNKNOWN = "U";
 
     /**
      * chat 一对一聊天

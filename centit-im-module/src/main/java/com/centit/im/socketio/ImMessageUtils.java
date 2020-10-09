@@ -15,8 +15,12 @@ public class ImMessageUtils {
 
     public static ImMessage fromJSonString(String jsonString){
         ImMessage msg = JSON.parseObject(jsonString, ImMessage.class);
-        if(msg.getSendTime()==null)
+        if(msg.getSendTime()==null) {
             msg.setSendTime(DatetimeOpt.currentUtilDate());
+        }
+        if(msg.getType()==null) {
+            msg.setType(ImMessage.MSG_TYPE_UNKNOWN);
+        }
         return msg;
     }
 
