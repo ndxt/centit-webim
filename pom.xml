@@ -96,24 +96,24 @@
         <repository>
             <id>centit-releases</id>
             <name>centit-release</name>
-            <url>http://nexus.centit.com:8081/nexus/content/repositories/centit-releases/</url>
+            <url>http://www.centit.com/nexus/content/repositories/centit-releases/</url>
         </repository>
         <snapshotRepository>
             <id>centit-snapshots</id>
             <name>centit-snapshots</name>
-            <url>http://nexus.centit.com:8081/nexus/content/repositories/centit-snapshots/</url>
+            <url>http://www.centit.com/nexus/content/repositories/centit-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-    <reporting>
+   <!-- <reporting>
         <plugins>
-            <!--<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
                     <force>false</force>
                 </configuration>
-            </plugin>-->
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -121,7 +121,7 @@
                 <version>3.0.0</version>
             </plugin>
         </plugins>
-    </reporting>
+    </reporting>-->
 
     <build>
         <pluginManagement>
