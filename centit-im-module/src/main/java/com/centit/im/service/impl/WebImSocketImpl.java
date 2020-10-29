@@ -652,7 +652,11 @@ public class WebImSocketImpl implements WebImSocket {
             } catch (IOException e) {
                 logger.error("pushMessage :" + message.toString());
             }*/
-            session.getAsyncRemote().sendText(message.toString());
+            try {
+                session.getAsyncRemote().sendText(message.toString());
+            }catch(Exception e){
+                return false;
+            }
         }
         return true;
     }
@@ -698,11 +702,11 @@ public class WebImSocketImpl implements WebImSocket {
         webMessage.setMsgType("C");
         webMessage.setMsgState("U");
         Session session = getSessionByUserCode(userCode);
-        if(session!=null) {
+        boolean hasSuccessSend =
             //消息始终置为未读状态
             //webMessage.setMsgState("C");
-            pushMessage(session, message);
-        } else { //是否发送离线消息 这个地方需要有一个设置
+            pushMessage (session, message);
+        if(! hasSuccessSend) { //是否发送离线消息 这个地方需要有一个设置
             WebImCustomer cust = customerDao.getObjectById(userCode);
             String userName;
             if(cust !=null){
