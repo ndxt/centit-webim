@@ -139,6 +139,13 @@ public class WebImSocketImpl implements WebImSocket {
         }
     }
 
+    @Override
+    public void signOutUser(String userCode) {
+        Session session = getSessionByUserCode(userCode);
+        if(session!=null)
+            signOutUser(userCode,session);
+    }
+
     /**
      * 登出服务
      * @param session ws 链接上下文
@@ -502,6 +509,9 @@ public class WebImSocketImpl implements WebImSocket {
                 break;
             case ImMessage.CONTENT_TYPE_REGISTER ://  "register";
                 registerUser(session, message);
+                break;
+            case ImMessage.CONTENT_TYPE_SIGN_OUT ://  "signOut";
+                signOutUser(session);
                 break;
             /*case ImMessage.CONTENT_TYPE_RECONNECT ://  "reconnect";
                 reconnectUser(session, message);

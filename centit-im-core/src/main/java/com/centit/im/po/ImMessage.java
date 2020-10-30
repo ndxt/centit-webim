@@ -44,8 +44,11 @@ public class ImMessage implements  java.io.Serializable {
     public static final String CONTENT_TYPE_IMAGE = "image";
     public static final String CONTENT_TYPE_VOICE = "voice";
     public static final String CONTENT_TYPE_VIDEO = "video";
-
+    /**
+     *  command 命令
+     */
     public static final String CONTENT_TYPE_REGISTER = "register";
+    public static final String CONTENT_TYPE_SIGN_OUT = "signOut";
     public static final String CONTENT_TYPE_READ = "read";
     public static final String CONTENT_TYPE_READGROUP = "readGroup";
     public static final String CONTENT_TYPE_SERVICE = "service";
