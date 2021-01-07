@@ -4,7 +4,6 @@ import com.centit.fileserver.common.FileStore;
 import com.centit.fileserver.utils.OsFileStore;
 import com.centit.framework.components.impl.NotificationCenterImpl;
 import com.centit.framework.components.impl.TextOperationLogWriterImpl;
-import com.centit.framework.ip.service.IntegrationEnvironment;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.OperationLogWriter;
 import com.centit.im.robot.es.po.QuestAndAnswer;
@@ -44,9 +43,6 @@ public class ServiceBeanConfig {
     private WebImProperties webImProperties;
 
     @Autowired
-    IntegrationEnvironment integrationEnvironment;
-
-    @Autowired
     WebImSocket webImSocket;
 
     @Bean
@@ -70,9 +66,6 @@ public class ServiceBeanConfig {
         }else{
             IntelligentRobotFactoryRpcImpl intelligentRobotFactory
                     = new IntelligentRobotFactoryRpcImpl();
-            intelligentRobotFactory.setIntegrationEnvironment(
-                    integrationEnvironment
-            );
             return intelligentRobotFactory;
         }
     }

@@ -1,10 +1,11 @@
 package com.centit.im.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.centit.fileserver.common.FileBaseInfo;
 import com.centit.fileserver.common.FileStore;
 import com.centit.fileserver.utils.SystemTempFileUtils;
+import com.centit.fileserver.utils.UploadDownloadUtils;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.common.WebOptUtils;
@@ -550,8 +551,9 @@ public class WebImUserController extends BaseController {
             headFileId = user.getHeadSculpture();
         }
         if(StringUtils.length(headFileId) > 35){
-            Pair<String, Long> md5Size = SystemTempFileUtils.fetchMd5AndSize(headFileId);
-            try(InputStream inputStream = fileStore.loadFileStream(md5Size.getLeft(), md5Size.getRight())) {
+            FileBaseInfo fileInfo = UploadDownloadUtils.createFileBaseInfo(headFileId);
+            try(InputStream inputStream = fileStore.loadFileStream(
+                    fileStore.matchFileStoreUrl(fileInfo, fileInfo.getFileSize()))) {
                 return ImageIO.read(inputStream);
             } catch (IOException e) {
                 logger.error(e.getMessage());
