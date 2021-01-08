@@ -101,9 +101,6 @@ public class ServiceBeanConfig implements EnvironmentAware {
         }else{
             IntelligentRobotFactoryRpcImpl intelligentRobotFactory
                     = new IntelligentRobotFactoryRpcImpl();
-            intelligentRobotFactory.setIntegrationEnvironment(
-                    integrationEnvironment
-            );
             return intelligentRobotFactory;
         }
     }
