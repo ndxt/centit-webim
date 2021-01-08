@@ -153,8 +153,9 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     public void signOutUser(Session session) {
         WebImCustomer user = getUserBySession(session);
-        if(user!=null)
-            signOutUser(user.getUserCode(),session);
+        if(user!=null) {
+            signOutUser(user.getUserCode(), session);
+        }
     }
 
     private void pushCustomerServiceInfo(Session session, String custUserCode, WebImCustomer service){

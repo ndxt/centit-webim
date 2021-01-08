@@ -56,19 +56,6 @@ public class WebImSocketListener {
     }
 
     /*
-     * 连接关闭调用的方法
-     */
-    @OnClose
-    public void onClose(Session session) {
-        try {
-            WebImSocketListener.webImSocket.signOutUser(session);
-            //logger.debug("User Logout session :" + session.getId());
-        }catch (Exception e){
-            logger.error("onClose",e);
-        }
-    }
-
-    /*
      * 收到客户端消息后调用的方法
      */
     @OnMessage
@@ -80,13 +67,30 @@ public class WebImSocketListener {
         }
     }
 
+    /*
+     * 连接关闭调用的方法
+     */
+    @OnClose
+    public void onClose(Session session) {
+        try {
+            WebImSocketListener.webImSocket.signOutUser(session);
+            //logger.debug("User Logout session :" + session.getId());
+            if(session.isOpen()){
+                session.close();
+            }
+        }catch (Exception e){
+            logger.error("onClose 异常:",e);
+        }
+    }
+
     /**
      * 发生错误时调用
      * @param error Throwable
      */
     @OnError
-    public void onError(Throwable error) {
-        logger.error("onError" + error.getMessage(),error);
+    public void onError(Session session, Throwable error) {
+        logger.error("onError 异常：" + error.getMessage(),error);
+        onClose(session);
         //error.printStackTrace();
     }
 }
