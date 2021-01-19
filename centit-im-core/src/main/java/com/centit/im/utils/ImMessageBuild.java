@@ -13,12 +13,18 @@ public class ImMessageBuild {
     private ImMessage msg;
 
     public ImMessageBuild() {
-        msg = new ImMessage();
-        msg.setSendTime(DatetimeOpt.currentUtilDate());
+    }
+
+    public static ImMessageBuild create(ImMessage msg){
+        ImMessageBuild build = new ImMessageBuild();
+        build.msg = msg;
+        return build;
     }
 
     public static ImMessageBuild create(){
-        return new ImMessageBuild();
+        ImMessage msg = new ImMessage();
+        msg.setSendTime(DatetimeOpt.currentUtilDate());
+        return create(msg);
     }
 
     public ImMessageBuild type(String msgType){
@@ -33,7 +39,7 @@ public class ImMessageBuild {
     }
 
     public ImMessageBuild toAll(){
-        msg.setType(ImMessage.MSG_TYPE_TOALL);
+        msg.setType(ImMessage.MSG_TYPE_TO_ALL);
         msg.setReceiver("all");
         return this;
     }

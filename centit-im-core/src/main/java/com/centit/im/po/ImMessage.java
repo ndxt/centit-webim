@@ -26,9 +26,9 @@ public class ImMessage implements  java.io.Serializable {
     public static final String MSG_TYPE_SYSTEM = "S";
     public static final String MSG_TYPE_COMMAND = "M";
     public static final String MSG_TYPE_BROADCAST = "B";
-    public static final String MSG_TYPE_TOALL = "A";
+    public static final String MSG_TYPE_TO_ALL = "A";
     public static final String MSG_TYPE_UNKNOWN = "U";
-
+    public static final String MSG_TYPE_BEAT = "T";
     /**
      * chat 一对一聊天
      * group    群聊
@@ -44,6 +44,7 @@ public class ImMessage implements  java.io.Serializable {
     public static final String CONTENT_TYPE_IMAGE = "image";
     public static final String CONTENT_TYPE_VOICE = "voice";
     public static final String CONTENT_TYPE_VIDEO = "video";
+
     /**
      *  command 命令
      */
@@ -150,6 +151,9 @@ public class ImMessage implements  java.io.Serializable {
         return result;
     }
 
+    public boolean hasContent() {
+        return (content!=null && content.size()>0);
+    }
 
     public Map<String,Object> getContent() {
         if(content==null)
