@@ -6,6 +6,7 @@ import com.centit.im.po.RobotAnswer;
 import com.centit.im.po.WebImCustomer;
 import com.centit.im.utils.ImMessageBuild;
 import com.centit.support.algorithm.DatetimeOpt;
+import com.centit.support.compiler.Lexer;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -14,14 +15,21 @@ import org.apache.commons.lang3.StringUtils;
 public class ImMessageUtils {
 
     public static ImMessage fromJSonString(String jsonString){
-        ImMessage msg = JSON.parseObject(jsonString, ImMessage.class);
-        if(msg.getSendTime()==null) {
-            msg.setSendTime(DatetimeOpt.currentUtilDate());
+        if("{".equals(Lexer.getFirstWord(jsonString))) {
+            ImMessage msg = JSON.parseObject(jsonString, ImMessage.class);
+            if (msg.getSendTime() == null) {
+                msg.setSendTime(DatetimeOpt.currentUtilDate());
+            }
+            if (msg.getType() == null) {
+                msg.setType(ImMessage.MSG_TYPE_UNKNOWN);
+            }
+            return msg;
+        } else {
+            return ImMessageBuild.create()
+                    .type(ImMessage.MSG_TYPE_UNKNOWN)
+                    .message(jsonString)
+                    .build();
         }
-        if(msg.getType()==null) {
-            msg.setType(ImMessage.MSG_TYPE_UNKNOWN);
-        }
-        return msg;
     }
 
     public static boolean checkMessage(ImMessage msg) {
