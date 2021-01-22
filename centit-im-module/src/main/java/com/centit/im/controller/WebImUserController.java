@@ -326,8 +326,15 @@ public class WebImUserController extends BaseController {
             @RequestBody String groupJson) {
 
         WebImGroup webImGroup = WebImGroup.createFromJsonString(groupJson);
-
         webImUserManager.updateGroupInfo(webImGroup);
+
+        webImSocket.sendGroupMessage(webImGroup.getGroupId(), ImMessageBuild.create()
+                .type(ImMessage.MSG_TYPE_COMMAND)
+                .sender("system")
+                .receiver(webImGroup.getGroupId())
+                .contentType(ImMessage.CONTENT_TYPE_UPDATE_INFO)
+                .content((JSONObject)JSON.toJSON(webImGroup))
+                .build());
         return ResponseData.makeSuccessResponse();
     }
 
