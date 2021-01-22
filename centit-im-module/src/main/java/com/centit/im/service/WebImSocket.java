@@ -23,7 +23,12 @@ public interface WebImSocket {
 
     /**
      * 登出服务
-     * @param session
+     * @param userCode 用户代码
+     */
+    void signOutUser(String userCode);
+    /**
+     * 登出服务
+     * @param session 用户当前session
      */
     void signOutUser(Session session);
 

@@ -1,7 +1,6 @@
 package com.centit.im.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.fileserver.common.FileStore;
 import com.centit.fileserver.utils.SystemTempFileUtils;
@@ -79,7 +78,6 @@ public class WebImUserController extends BaseController {
      * @return ResponseData
      */
     @ApiOperation(value = "02注册用户")
-
     @RequestMapping(value = "/register",
            method = RequestMethod.POST)
     @WrapUpResponseBody
@@ -89,6 +87,17 @@ public class WebImUserController extends BaseController {
         return ResponseData.makeSuccessResponse();
     }
 
+    @ApiOperation(value = "30用户离线")
+    @ApiImplicitParam(
+            name = "userCode", value = "用户代码",
+            required = true, paramType = "path", dataType = "String")
+    @RequestMapping(value = "/signOut/{userCode}",
+            method = RequestMethod.POST)
+    @WrapUpResponseBody
+    public ResponseData signOut(@PathVariable String userCode) {
+        webImSocket.signOutUser(userCode);
+        return ResponseData.makeSuccessResponse();
+    }
     /**
      * 返回系统所有联系人
      * @return 所有联系人

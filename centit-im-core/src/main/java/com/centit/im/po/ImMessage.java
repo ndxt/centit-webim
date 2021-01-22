@@ -26,7 +26,7 @@ public class ImMessage implements  java.io.Serializable {
     public static final String MSG_TYPE_SYSTEM = "S";
     public static final String MSG_TYPE_COMMAND = "M";
     public static final String MSG_TYPE_BROADCAST = "B";
-    public static final String MSG_TYPE_TOALL = "A";
+    public static final String MSG_TYPE_TO_ALL = "A";
     public static final String MSG_TYPE_UNKNOWN = "U";
 
     /**
@@ -46,6 +46,7 @@ public class ImMessage implements  java.io.Serializable {
     public static final String CONTENT_TYPE_VIDEO = "video";
 
     public static final String CONTENT_TYPE_REGISTER = "register";
+    public static final String CONTENT_TYPE_SIGN_OUT = "signOut";
     public static final String CONTENT_TYPE_READ = "read";
     public static final String CONTENT_TYPE_READGROUP = "readGroup";
     public static final String CONTENT_TYPE_SERVICE = "service";

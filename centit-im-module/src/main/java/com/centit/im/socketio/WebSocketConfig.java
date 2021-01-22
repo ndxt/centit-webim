@@ -19,6 +19,4 @@ public class WebSocketConfig { /*implements ApplicationContextAware {
         return new ServerEndpointExporter();
     }
 
-
-
 }

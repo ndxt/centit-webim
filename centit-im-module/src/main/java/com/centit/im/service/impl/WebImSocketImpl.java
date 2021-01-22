@@ -139,6 +139,13 @@ public class WebImSocketImpl implements WebImSocket {
         }
     }
 
+    @Override
+    public void signOutUser(String userCode) {
+        Session session = getSessionByUserCode(userCode);
+        if(session!=null)
+            signOutUser(userCode,session);
+    }
+
     /**
      * 登出服务
      * @param session ws 链接上下文
@@ -146,8 +153,9 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     public void signOutUser(Session session) {
         WebImCustomer user = getUserBySession(session);
-        if(user!=null)
-            signOutUser(user.getUserCode(),session);
+        if(user!=null) {
+            signOutUser(user.getUserCode(), session);
+        }
     }
 
     private void pushCustomerServiceInfo(Session session, String custUserCode, WebImCustomer service){
@@ -503,6 +511,9 @@ public class WebImSocketImpl implements WebImSocket {
             case ImMessage.CONTENT_TYPE_REGISTER ://  "register";
                 registerUser(session, message);
                 break;
+            case ImMessage.CONTENT_TYPE_SIGN_OUT ://  "signOut";
+                signOutUser(session);
+                break;
             /*case ImMessage.CONTENT_TYPE_RECONNECT ://  "reconnect";
                 reconnectUser(session, message);
                 break;   */
@@ -599,7 +610,6 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void recvMessage(Session session,  ImMessage message) {
-
         switch (message.getType()){
             case ImMessage.MSG_TYPE_CHAT:
             {
@@ -618,13 +628,14 @@ public class WebImSocketImpl implements WebImSocket {
             case ImMessage.MSG_TYPE_BROADCAST:
                 this.broadcastMessage(message);
                 break;
-            case ImMessage.MSG_TYPE_TOALL:
+            case ImMessage.MSG_TYPE_TO_ALL:
                 this.toallMessage(message);
                 break;
             case ImMessage.MSG_TYPE_COMMAND:
                 this.onCommand(session,message);
                 break;
-            default:
+            default:// UNKNOW BEAT
+                this.sendMessage(message.getSender(), message);
                 break;
         }
     }

@@ -33,7 +33,7 @@ public class ImMessageBuild {
     }
 
     public ImMessageBuild toAll(){
-        msg.setType(ImMessage.MSG_TYPE_TOALL);
+        msg.setType(ImMessage.MSG_TYPE_TO_ALL);
         msg.setReceiver("all");
         return this;
     }
