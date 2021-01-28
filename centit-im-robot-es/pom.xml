@@ -24,7 +24,6 @@
         <dependency>
             <groupId>com.centit.support</groupId>
             <artifactId>centit-es-client</artifactId>
-            <version>${centit.search.version}</version>
         </dependency>
 
         <dependency>

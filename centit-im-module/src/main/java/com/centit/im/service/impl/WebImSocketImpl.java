@@ -610,7 +610,6 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void recvMessage(Session session,  ImMessage message) {
-
         switch (message.getType()){
             case ImMessage.MSG_TYPE_CHAT:
             {
@@ -629,13 +628,14 @@ public class WebImSocketImpl implements WebImSocket {
             case ImMessage.MSG_TYPE_BROADCAST:
                 this.broadcastMessage(message);
                 break;
-            case ImMessage.MSG_TYPE_TOALL:
+            case ImMessage.MSG_TYPE_TO_ALL:
                 this.toallMessage(message);
                 break;
             case ImMessage.MSG_TYPE_COMMAND:
                 this.onCommand(session,message);
                 break;
-            default:
+            default:// UNKNOW BEAT
+                this.sendMessage(message.getSender(), message);
                 break;
         }
     }

@@ -18,7 +18,6 @@
     <url>https://github.com/ndxt/centit-webim</url>
 
     <properties>
-        <centit.search.version>1.2-SNAPSHOT</centit.search.version>
         <centit.fileserver.version>3.2-SNAPSHOT</centit.fileserver.version>
     </properties>
 
