@@ -1,0 +1,11 @@
+{
+  "name": "centit-im-vue",
+  "version": "1.0.2",
+  "description": "基于vue的im",
+  "main": "centit-vue-im.umd.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "Apache-2.0"
+}
