@@ -1,10 +1,10 @@
 module.exports = {
-    publicPath: "/",
+    publicPath: "./",
     outputDir: "dist",
     assetsDir: "assets",
     configureWebpack: {
         externals: {
-            vue: "vue",
+            Vue: "vue",
         }
     },
     filenameHashing: true,
@@ -28,14 +28,30 @@ module.exports = {
         port: 8099,
         https: false,
         proxy: {
+            '/ws/chat/im': {
+                target: 'ws://192.168.134.4:10085/im',
+                changeOrigin: true,
+                ws: true,
+                pathRewrite: {
+                    '/ws/chat/im': '/im'
+                }
+            },
+
             '/api/chat/im': {
-                target: 'http://localhost/webapp',
+                target: 'http://192.168.134.4:10085/im',
                 changeOrigin: true,
                 pathRewrite: {
                     '/api/chat/im': '/im'
                 }
             },
 
-        }
-    },
+            '/api': {
+                changeOrigin: true,
+                target: 'http://ceshi.centit.com/platform',
+                cookiePathRewrite: {
+                    '/platform': '/',
+                },
+            }
+        },
+    }
 }

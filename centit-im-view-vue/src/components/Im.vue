@@ -1,24 +1,46 @@
 <template>
   <div class="container">
-    <ChatBox :receiver="receiver" @sendMsg="sendMsg">
+    <ChatBox
+      :receiver="receiver"
+      @sendMsg="sendMsg"
+      @sendFile="sendFile"
+      @closeBox="closeBox"
+      @chatLogOpen="chatLogOpen"
+    >
       <ChatLine
-        type="his"
         v-for="(item, index) in webSocketMsg[receiver.receiverCode]"
         :item="item"
         :key="index"
       />
     </ChatBox>
     <NewMessageTip v-if="tipShow" @tipClick="tipClick" />
-    <SideBar @clickCustUser="clickCustUser" v-if="type === 'kefu'" />
+    <SideBar
+      :boxStyle="boxStyle"
+      @clickCustUser="clickCustUser"
+      v-if="type === 'kefu'"
+    />
+    <ChatLog
+      :userName="receiverName"
+      @closeHistory="closeHistory"
+      v-if="chatLogShow == true"
+    >
+      <ChatLine
+        v-for="(item, index) in historyMessageList"
+        :item="item"
+        :key="index"
+      />
+    </ChatLog>
   </div>
 </template>
 
 <script>
+import { getHistoryMessage } from '@/api';
 import Vue from 'vue';
 import ChatBox from '../components/ChatBox';
 import ChatLine from '../components/ChatLine';
 import SideBar from '../components/SideBar';
 import NewMessageTip from '../components/NewMessageTip';
+import ChatLog from '../components/ChatLog';
 import moment from 'moment';
 Vue.prototype.$moment = moment;
 moment.locale('zh-cn');
@@ -45,7 +67,9 @@ export default {
       },
       webSocketMsg: {},
       tipShow: false,
-      tipReceiver: {}
+      tipReceiver: {},
+      chatLogShow: false,
+      historyMessageList: []
     };
   },
   props: {
@@ -53,7 +77,20 @@ export default {
     userCode: String,
     userName: String,
     receiverCode: String,
-    receiverName: String
+    receiverName: String,
+    boxStyle: {
+      type: Object,
+      default: function() {
+        return {
+          zIndex: '10000',
+          width: '260px',
+          height: '520px',
+          top: '0px',
+          right: '0px',
+          backgroundImage: 'none'
+        };
+      }
+    }
   },
   provide() {
     return {
@@ -67,7 +104,8 @@ export default {
     ChatBox,
     ChatLine,
     SideBar,
-    NewMessageTip
+    NewMessageTip,
+    ChatLog
   },
   computed: {
     type() {
@@ -207,7 +245,14 @@ export default {
     },
     // 操作事件
     sendMsg(msg) {
-      this.wsSend('text', msg);
+      if (msg) {
+        this.wsSend('text', msg);
+      }
+    },
+    sendFile(file, type) {
+      if (file) {
+        this.wsSend('text', `${type}[http://ceshi.centit.com/file/api/file/fileserver/download/preview/${file.fileId}]`);
+      }
     },
     tipClick() {
       this.tipShow = false;
@@ -218,6 +263,21 @@ export default {
         receiverCode: data.userCode,
         receiverName: data.userName
       });
+    },
+    closeBox() {
+      this.receiver.receiverCode = '';
+    },
+    chatLogOpen() {
+      this.chatLogShow = true;
+      this.historyMessageList = [];
+      getHistoryMessage(this.user.userCode, this.receiver.receiverCode).then(
+        data => {
+          this.historyMessageList = data.objList;
+        }
+      );
+    },
+    closeHistory() {
+      this.chatLogShow = false;
     }
     // 操作事件结束
   },
@@ -227,14 +287,18 @@ export default {
     this.receiver.receiverCode = this.receiverCode;
     this.receiver.receiverName = this.receiverName;
     if (this.user.userCode) {
-      this.initWebSocket('ws://localhost/webapp/im/' + this.user.userCode);
+      this.initWebSocket(
+        'ws://' + window.location.host + '/ws/chat/im/' + this.user.userCode
+      );
     }
   },
   watch: {
     userCode(val) {
       if (val) {
         this.user.userCode = val;
-        this.initWebSocket('ws://localhost/webapp/im/' + val);
+        this.initWebSocket(
+          'ws://' + window.location.host + '/ws/chat/im/' + val
+        );
       }
     },
     userName(val) {
@@ -264,5 +328,8 @@ export default {
 .container {
   width: 0;
   height: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
 }
 </style>
