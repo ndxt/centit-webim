@@ -1,7 +1,9 @@
 package com.centit.im.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
+import com.centit.framework.filter.RequestThreadLocal;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.PlatformEnvironment;
 import com.centit.framework.model.basedata.IUserInfo;
@@ -26,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.*;
@@ -704,6 +707,8 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void sendMessage(String userCode, ImMessage message) {
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
         WebImMessage webMessage = new WebImMessage();
         message.getContent().put("contentType",message.getContentType());
         webMessage.copy(message);
@@ -723,7 +728,7 @@ public class WebImSocketImpl implements WebImSocket {
             if(cust !=null){
                 userName = cust.getUserName();
             } else {
-                userName = CodeRepositoryUtil.getUserName(userCode);
+                userName = CodeRepositoryUtil.getUserName(topUnit, userCode);
             }
             pushOfflineMessage(message.getReceiver(),
                     userName+ " 给您发送了一条消息",
@@ -769,6 +774,8 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void sendGroupMessage(String unitCode, ImMessage message) {
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
         WebImMessage webMessage = formatGroupMsg(message);
         messageDao.saveNewObject(webMessage);
         message.setMsgId(webMessage.getMsgId());
@@ -777,14 +784,14 @@ public class WebImSocketImpl implements WebImSocket {
         if(cust !=null){
             userName = cust.getUserName();
         } else {
-            userName = CodeRepositoryUtil.getUserName(message.getSender());
+            userName = CodeRepositoryUtil.getUserName(topUnit, message.getSender());
         }
 
         WebImGroup group = webImGroupDao.getObjectById(unitCode);
         if(group==null || "U".equals(group.getGroupType())) {
             List<? extends IUserUnit> users =
                     platformEnvironment.listUnitUsers(unitCode);
-            String groupName = group == null? CodeRepositoryUtil.getUnitName(unitCode)
+            String groupName = group == null? CodeRepositoryUtil.getUnitName(topUnit, unitCode)
                     : group.getGroupName();
             String title = userName + " 在部门群 "+ groupName+ " 中发送了一条消息";
             for (IUserUnit user : users) {
@@ -808,8 +815,10 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void toallMessage(ImMessage message) {
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
         List<? extends IUserInfo> users =
-                platformEnvironment.listAllUsers();
+                platformEnvironment.listAllUsers(topUnit);
         for(IUserInfo user : users){
             pushMessage(user.getUserCode(), message);
         }
