@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: im
-        image: 172.29.0.13:8082/im:<BUILD_TAG>
+        image: hub.centit.com/ctm/im:<BUILD_TAG>
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

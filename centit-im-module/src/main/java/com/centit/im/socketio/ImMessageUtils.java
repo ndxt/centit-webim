@@ -34,42 +34,44 @@ public class ImMessageUtils {
 
     public static boolean checkMessage(ImMessage msg) {
         if (StringUtils.isBlank(msg.getType())
-            ||StringUtils.isBlank(msg.getContentType()))
-
+            ||StringUtils.isBlank(msg.getContentType())) {
             return false;
+        }
 
-        if(msg.getSendTime()==null)
+        if(msg.getSendTime()==null) {
             msg.setSendTime(DatetimeOpt.currentUtilDate());
+        }
         return true;
     }
 
     public static ImMessage buildOnlineMessage(String userCode, String userName, String headSculpture){
-        ImMessageBuild msgBuilder = new ImMessageBuild().type(ImMessage.MSG_TYPE_BROADCAST)
+        ImMessageBuild msgBuilder = ImMessageBuild.create().type(ImMessage.MSG_TYPE_BROADCAST)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                 .sender(userCode)
                 .senderName(userName)
                 .addContent("state","online");
-        if(StringUtils.isNotBlank(headSculpture))
+        if(StringUtils.isNotBlank(headSculpture)) {
             msgBuilder.addContent("headSculpture",headSculpture);
+        }
         return msgBuilder.build();
     }
 
     public static ImMessage buildOfflineMessage(String userCode){
-        return new ImMessageBuild().type(ImMessage.MSG_TYPE_BROADCAST)
+        return ImMessageBuild.create().type(ImMessage.MSG_TYPE_BROADCAST)
                 .contentType(ImMessage.CONTENT_TYPE_NOTICE)
                 .sender(userCode)
                 .addContent("state","offline").build();
     }
 
     public static ImMessage buildOfflineCommand(){
-        return new ImMessageBuild().type(ImMessage.MSG_TYPE_SYSTEM)
+        return ImMessageBuild.create().type(ImMessage.MSG_TYPE_SYSTEM)
                 .contentType(ImMessage.CONTENT_TYPE_OFFLINE)
                 .sender("system")
                 .message("同名用户在其他地方登录，您被迫下线！").build();
     }
 
     public static ImMessage buildSystemMessage(String sender, String message){
-        return new ImMessageBuild().type(ImMessage.MSG_TYPE_SYSTEM)
+        return ImMessageBuild.create().type(ImMessage.MSG_TYPE_SYSTEM)
                 .contentType(ImMessage.CONTENT_TYPE_TEXT)
                 .sender(sender)
                 .senderName("系统提示")
@@ -78,7 +80,7 @@ public class ImMessageUtils {
 
     //切换客服是系统信息
     public static ImMessage buildSystemMessageChangService(String sender, String message,WebImCustomer cust,WebImCustomer service,String type){
-        return new ImMessageBuild().type(ImMessage.MSG_TYPE_SYSTEM)
+        return ImMessageBuild.create().type(ImMessage.MSG_TYPE_SYSTEM)
                 .contentType(ImMessage.CONTENT_TYPE_TEXT)
                 .sender(sender)
                 .senderName("系统提示")
@@ -91,7 +93,7 @@ public class ImMessageUtils {
     }
 
     public static ImMessage buildSystemMessagePraise(String message,String senderId){
-        return new ImMessageBuild().type(ImMessage.MSG_TYPE_SYSTEM)
+        return ImMessageBuild.create().type(ImMessage.MSG_TYPE_SYSTEM)
                 .contentType(ImMessage.CONTENT_TYPE_TEXT)
                 .sender("system")
                 .senderName("系统提示")
@@ -101,7 +103,7 @@ public class ImMessageUtils {
 
     //切换客服后向新客服发送提示信息
     public static ImMessage buildChatMessage(String message,WebImCustomer cust,WebImCustomer service,WebImCustomer beforeChangeService){
-        return new ImMessageBuild().type(ImMessage.MSG_TYPE_CHAT)
+        return ImMessageBuild.create().type(ImMessage.MSG_TYPE_CHAT)
                 .contentType(ImMessage.CONTENT_TYPE_TEXT)
                 .sender(cust.getUserCode())
                 .senderName(cust.getUserName())
@@ -116,7 +118,7 @@ public class ImMessageUtils {
     }
 
     public static ImMessage buildAcceptCustMessage(String service, WebImCustomer customer){
-        return new ImMessageBuild().type(ImMessage.MSG_TYPE_SYSTEM)
+        return ImMessageBuild.create().type(ImMessage.MSG_TYPE_SYSTEM)
                 .contentType(ImMessage.CONTENT_TYPE_TEXT)
                 .sender(customer.getUserCode())
                 .senderName("系统提示")
@@ -127,7 +129,7 @@ public class ImMessageUtils {
     }
 
     public static ImMessage buildRobotAnswer(String receiver,RobotAnswer answer){
-        return new ImMessageBuild().type(ImMessage.MSG_TYPE_QUESTION)
+        return ImMessageBuild.create().type(ImMessage.MSG_TYPE_QUESTION)
                 .contentType(ImMessage.CONTENT_TYPE_TEXT)
                 .sender("robot")
                 .senderName("智能客服")

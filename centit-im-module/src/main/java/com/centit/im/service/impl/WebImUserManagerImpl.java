@@ -1,6 +1,8 @@
 package com.centit.im.service.impl;
 
+import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
+import com.centit.framework.filter.RequestThreadLocal;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.IUserUnit;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -52,9 +55,11 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public WebImCustomer getUser(String userCode) {
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
         WebImCustomer cust = customerDao.getObjectById(userCode);
         if (cust == null) {
-            IUserInfo ui = CodeRepositoryUtil.getUserInfoByCode(userCode);
+            IUserInfo ui = CodeRepositoryUtil.getUserInfoByCode(topUnit, userCode);
             if (ui != null) {
                 cust = new WebImCustomer(userCode, ui.getUserName());
                 cust.setUserType("U");
@@ -76,11 +81,14 @@ public class WebImUserManagerImpl implements WebImUserManager {
      */
     @Override
     public int registerUser(WebImCustomer user) {
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
         WebImCustomer customer = customerDao.getObjectById(user.getUserCode());
         if(customer == null){
             user.setCreator("U0000000");
             if(StringUtils.isBlank(user.getUserName())) {
-                IUserInfo userInfo = CodeRepositoryUtil.getUserInfoByCode(user.getUserCode());
+                IUserInfo userInfo = CodeRepositoryUtil
+                        .getUserInfoByCode(topUnit, user.getUserCode());
                 if (userInfo != null) {
                     user.setUserName(userInfo.getUserName());
                 }
@@ -98,7 +106,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<WebImCustomer> listAllUser() {
-        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers();
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers(topUnit);
         if (users == null || users.size() < 1)
             return new ArrayList<>();
         List<WebImCustomer> custs = customerDao.listObjects();
@@ -166,7 +176,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
     }
 
     private WebImCustomer fetchCustomerInfo(String userCode){
-        IUserInfo ui= CodeRepositoryUtil.getUserInfoByCode(userCode);
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        IUserInfo ui= CodeRepositoryUtil.getUserInfoByCode(topUnit, userCode);
         if(ui==null){ //数据库数据不一致会导致这个情况
             return null;
         }
@@ -208,7 +220,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
 //        if(result!=null && result.size()>0){
 //            return result;
 //        }
-        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers();
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers(topUnit);
         if (users == null || users.size() < 1)
             return new ArrayList<>();
         List<WebImCustomer> allcusts = new ArrayList<>(pageDesc.getPageSize());
@@ -245,7 +259,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public Map<String, String> listAllUserState() {
-        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers();
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers(topUnit);
         return webImSocket.checkUsersState(users);
     }
 
@@ -255,7 +271,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<? extends IUnitInfo> listAllUnit() {
-        return CodeRepositoryUtil.listAllUnits();
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        return CodeRepositoryUtil.listAllUnits(topUnit);
     }
 
     /**
@@ -266,7 +284,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<? extends IUnitInfo> listSubUnit(String parentUnitCode){
-        List<? extends IUnitInfo> allUnits = CodeRepositoryUtil.listAllUnits();
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        List<? extends IUnitInfo> allUnits = CodeRepositoryUtil.listAllUnits(topUnit);
         List<IUnitInfo> units = new ArrayList<>();
         for (IUnitInfo uc : allUnits) {
             //获取顶层机构
@@ -284,12 +304,14 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<IUnitInfo> listUserUnits(String  userCode) {
-        List<? extends IUserUnit> units = CodeRepositoryUtil.listUserUnits(userCode);
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        List<? extends IUserUnit> units = CodeRepositoryUtil.listUserUnits(topUnit, userCode);
         if(units==null || units.size()<1)
             return null;
         List<IUnitInfo> userUnits = new ArrayList<>(units.size());
         for( IUserUnit unit : units ) {
-            IUnitInfo unitInfo = CodeRepositoryUtil.getUnitInfoByCode(unit.getUnitCode());
+            IUnitInfo unitInfo = CodeRepositoryUtil.getUnitInfoByCode(topUnit, unit.getUnitCode());
             if(unitInfo!=null) {
                 userUnits.add(unitInfo);
             }
@@ -327,14 +349,15 @@ public class WebImUserManagerImpl implements WebImUserManager {
         member.setJoinTime(DatetimeOpt.currentUtilDate());
         member.setOsId(ImMessage.DEFAULT_OSID);
 
-
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
         WebImCustomer customer = customerDao.getObjectById(memberCode);
          if(customer == null) {
              customer = new WebImCustomer();
              customer.setCreator("U0000000");
              customer.setUserCode(memberCode);
              customer.setUserName(memberCode);
-             IUserInfo userInfo = CodeRepositoryUtil.getUserInfoByCode(memberCode);
+             IUserInfo userInfo = CodeRepositoryUtil.getUserInfoByCode(topUnit, memberCode);
              if (userInfo != null){
                  customer.setUserName(userInfo.getUserName());
              }
