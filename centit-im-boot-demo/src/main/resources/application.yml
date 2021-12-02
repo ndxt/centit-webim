@@ -34,7 +34,7 @@ framework:
     enable: true
     system-enable: true
     topoptid: WebIm
-    home: http://192.168.134.2:11000/framework/system
+    home: http://192.168.137.63:30489/framework/system
     auth-enable: false
     usercode: admin
     password: 000000

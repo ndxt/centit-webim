@@ -12,7 +12,7 @@ import java.util.Map;
 public class ImMessageBuild {
     private ImMessage msg;
 
-    public ImMessageBuild() {
+    private ImMessageBuild() {
     }
 
     public static ImMessageBuild create(ImMessage msg){

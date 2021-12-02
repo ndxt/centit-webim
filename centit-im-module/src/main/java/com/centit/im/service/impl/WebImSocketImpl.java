@@ -1,6 +1,7 @@
 package com.centit.im.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.centit.framework.common.GlobalConstValue;
 import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.filter.RequestThreadLocal;
@@ -162,7 +163,7 @@ public class WebImSocketImpl implements WebImSocket {
     }
 
     private void pushCustomerServiceInfo(Session session, String custUserCode, WebImCustomer service){
-        pushMessage(session ,new ImMessageBuild().type(ImMessage.MSG_TYPE_COMMAND)
+        pushMessage(session ,ImMessageBuild.create().type(ImMessage.MSG_TYPE_COMMAND)
                 .contentType(ImMessage.CONTENT_TYPE_SERVICE)
                 .sender("system")
                 .receiver(custUserCode)
@@ -707,8 +708,7 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void sendMessage(String userCode, ImMessage message) {
-        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
-        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        String topUnit = getTopUnit();
         WebImMessage webMessage = new WebImMessage();
         message.getContent().put("contentType",message.getContentType());
         webMessage.copy(message);
@@ -774,8 +774,7 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void sendGroupMessage(String unitCode, ImMessage message) {
-        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
-        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        String topUnit = getTopUnit();
         WebImMessage webMessage = formatGroupMsg(message);
         messageDao.saveNewObject(webMessage);
         message.setMsgId(webMessage.getMsgId());
@@ -807,6 +806,15 @@ public class WebImSocketImpl implements WebImSocket {
         }
     }
 
+    private String getTopUnit() {
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = GlobalConstValue.NO_TENANT_TOP_UNIT;
+        if (request != null && request.getSession() != null) {
+            topUnit = WebOptUtils.getCurrentTopUnit(request);
+        }
+        return topUnit;
+    }
+
     /**
      * 广播信息（所有人）
      *
@@ -815,8 +823,7 @@ public class WebImSocketImpl implements WebImSocket {
     @Override
     @Transactional
     public void toallMessage(ImMessage message) {
-        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
-        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        String topUnit = getTopUnit();
         List<? extends IUserInfo> users =
                 platformEnvironment.listAllUsers(topUnit);
         for(IUserInfo user : users){

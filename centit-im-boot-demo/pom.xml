@@ -19,8 +19,8 @@
     实现机器人的接口还有另一个方法就是 引用 im-client包，在其中实现机器人接口服务供 im服务调用</description>
 
     <properties>
-        <centit.framework.version>5.0-SNAPSHOT</centit.framework.version>
-        <centit.ip.version>5.0-SNAPSHOT</centit.ip.version>
+        <centit.framework.version>5.1-SNAPSHOT</centit.framework.version>
+        <centit.ip.version>5.1-SNAPSHOT</centit.ip.version>
         <centit.commons.version>2.3-SNAPSHOT</centit.commons.version>
     </properties>
 
