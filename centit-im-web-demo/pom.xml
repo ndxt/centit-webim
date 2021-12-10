@@ -21,6 +21,7 @@
         <centit.framework.version>5.1-SNAPSHOT</centit.framework.version>
         <centit.ip.version>5.1-SNAPSHOT</centit.ip.version>
         <centit.commons.version>2.3-SNAPSHOT</centit.commons.version>
+        <finalName>${project.artifactId}-${project.version}</finalName>
     </properties>
 
     <dependencies>
@@ -139,6 +140,7 @@
     </dependencies>
 
     <build>
+        <finalName>${finalName}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.flywaydb</groupId>
