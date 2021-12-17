@@ -1,6 +1,6 @@
 {
   "name": "centit-im-vue3",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "基于vue3.0的im",
   "main": "centit-vue-im.umd.min.js",
   "scripts": {

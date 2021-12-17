@@ -62,22 +62,36 @@
               </span>
             </div>
             <div class="layim-chat-textarea">
-              <textarea v-model="msg"></textarea>
+              <textarea
+                v-model="msg"
+                @keyup="keyUpChange"
+                @keydown="keyDownChange"
+              ></textarea>
             </div>
             <div class="layim-chat-bottom">
               <div class="layim-chat-send">
-                <span class="layim-send-btn" @click="sendMsg">发送</span
-                ><span
-                  class="layim-send-set"
-                  layim-event="setSend"
-                  lay-type="show"
+                <span class="layim-send-btn" @click="sendMsg">发送</span>
+                <span class="layim-send-set" @click="changeSendType = true"
                   ><em class="layui-edge"></em
                 ></span>
-                <ul class="layui-anim layim-menu-box">
-                  <li class="layim-this" layim-event="setSend" lay-type="Enter">
+                <ul
+                  class="layui-anim layim-menu-box"
+                  :style="{ display: changeSendType ? 'block' : 'none' }"
+                >
+                  <li
+                    @click="changeType(1)"
+                    :class="{
+                      'layim-this': clickEnter == 1,
+                    }"
+                  >
                     <i class="layui-icon"></i>按Enter键发送消息
                   </li>
-                  <li layim-event="setSend" lay-type="Ctrl+Enter">
+                  <li
+                    @click="changeType(2)"
+                    :class="{
+                      'layim-this': clickEnter == 2,
+                    }"
+                  >
                     <i class="layui-icon"></i>按Ctrl+Enter键发送消息
                   </li>
                 </ul>
@@ -107,11 +121,38 @@ export default defineComponent({
       full: false,
       positionX: "",
       positionY: "",
+      changeSendType: false,
+      clickEnter: 1,
+      clickCtrl: false,
     };
   },
   inject: ["pvdData"],
   components: {},
+  mounted() {
+    let temp = window.localStorage.getItem("clickEnterForIm");
+    if (temp) {
+      this.clickEnter = +temp;
+    }
+  },
   methods: {
+    keyDownChange(e) {
+      if (e.keyCode === 17) {
+        this.clickCtrl = true;
+      }
+    },
+    keyUpChange(e) {
+      if (e.keyCode === 13 && this.clickEnter === 1 && !this.clickCtrl) {
+        this.sendMsg();
+      }
+      if (e.keyCode === 13 && this.clickEnter === 2 && this.clickCtrl) {
+        this.sendMsg();
+      }
+    },
+    changeType(type) {
+      this.clickEnter = type;
+      window.localStorage.setItem("clickEnterForIm", this.clickEnter);
+      this.changeSendType = false
+    },
     toBottom() {
       this.$nextTick(() => {
         this.$refs["chatMain"].scrollTop = this.$refs["chatMain"].scrollHeight;

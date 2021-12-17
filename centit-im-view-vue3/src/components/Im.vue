@@ -132,7 +132,11 @@ export default defineComponent({
     wsMsg(msg) {
       //每次接收到服务端消息后 重置websocket心跳
       this.resetHeartbeat();
-      this.pushNewMsg(msg);
+      let msgTemp =
+        typeof msg.data == "string" ? JSON.parse(msg.data) : msg.data;
+      if (msgTemp.sender !== msgTemp.receiver) {
+        this.pushNewMsg(msg);
+      }
     },
     wsError(err) {
       console.log(err, "ws error");
@@ -241,7 +245,7 @@ export default defineComponent({
           receiverName: msgTemp.senderName,
         };
       }
-      this.$refs['chatBox'].toBottom()
+      this.$refs["chatBox"].toBottom();
     },
     changeReceiver({ receiverCode, receiverName }) {
       this.receiver.receiverCode = receiverCode;
@@ -279,7 +283,7 @@ export default defineComponent({
       this.historyMessageList = [];
       getHistoryMessage(this.user.userCode, this.receiver.receiverCode).then(
         (data) => {
-          this.historyMessageList = data.objList;
+          this.historyMessageList = data.objList.reverse();
         }
       );
     },
