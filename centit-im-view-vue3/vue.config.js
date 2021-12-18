@@ -28,6 +28,10 @@ module.exports = {
         port: 8099,
         https: false,
         proxy: {
+            '/locode/api': {
+                target: 'http://ceshi.centit.com',
+                changeOrigin: true,
+            },
             '/api/ws/chat/im': {
                 target: 'ws://192.168.134.4:10085/im',
                 changeOrigin: true,

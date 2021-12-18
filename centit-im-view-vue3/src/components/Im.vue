@@ -261,7 +261,7 @@ export default defineComponent({
       if (file) {
         this.wsSend(
           "text",
-          `${type}[http://ceshi.centit.com/file/api/file/fileserver/download/preview/${file.fileId}]`
+          `${type}[http://ceshi.centit.com/locode/api/fileserver/fileserver/download/pfile/${file.fileId}]`
         );
       }
     },

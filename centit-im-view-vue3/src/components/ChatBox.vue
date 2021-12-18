@@ -191,15 +191,8 @@ export default defineComponent({
       this.$emit("chatLogOpen");
     },
     getFile(e, type) {
-      fileUpload(e.target.files[0], {
-        client: "html5",
-        osId: "FILE_SVR",
-        optId: "LOCAL_FILE",
-        // optMethod: 'test',
-        // optTag: 'test',
-        fileOwner: "u0000000",
-      }).then((res) => {
-        this.$emit("sendFile", res, type);
+      fileUpload(e.target.files[0]).then((res) => {
+        this.$emit("sendFile", res.data.data, type);
       });
     },
   },
