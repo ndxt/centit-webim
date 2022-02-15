@@ -20,7 +20,7 @@
     <properties>
         <centit.framework.version>5.2-SNAPSHOT</centit.framework.version>
         <centit.ip.version>5.2-SNAPSHOT</centit.ip.version>
-        <centit.commons.version>2.3-SNAPSHOT</centit.commons.version>
+        <centit.commons.version>5.2-SNAPSHOT</centit.commons.version>
         <finalName>${project.artifactId}-${project.version}</finalName>
     </properties>
 
