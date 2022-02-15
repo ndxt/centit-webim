@@ -7,19 +7,19 @@
     <parent>
         <artifactId>centit-webim</artifactId>
         <groupId>com.centit.product</groupId>
-        <version>5.1-SNAPSHOT</version>
+        <version>5.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>centit-im-web-demo</artifactId>
     <name>com.centit.product:centit-im-web-demo</name>
-    <version>5.1-SNAPSHOT</version>
+    <version>5.2-SNAPSHOT</version>
     <packaging>war</packaging>
     <description>即时通讯的demo程序,通过引用im-server的web包，实现机器人的接口，并将这个接口注入到im的服务中。
     实现机器人的接口还有另一个方法就是 引用 im-client包，在其中实现机器人接口服务供 im服务调用</description>
 
     <properties>
-        <centit.framework.version>5.1-SNAPSHOT</centit.framework.version>
-        <centit.ip.version>5.1-SNAPSHOT</centit.ip.version>
+        <centit.framework.version>5.2-SNAPSHOT</centit.framework.version>
+        <centit.ip.version>5.2-SNAPSHOT</centit.ip.version>
         <centit.commons.version>2.3-SNAPSHOT</centit.commons.version>
         <finalName>${project.artifactId}-${project.version}</finalName>
     </properties>
