@@ -7,20 +7,20 @@
     <parent>
         <artifactId>centit-webim</artifactId>
         <groupId>com.centit.product</groupId>
-        <version>5.1-SNAPSHOT</version>
+        <version>5.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>centit-im-web-demo</artifactId>
     <name>com.centit.product:centit-im-web-demo</name>
-    <version>5.1-SNAPSHOT</version>
+    <version>5.2-SNAPSHOT</version>
     <packaging>war</packaging>
     <description>即时通讯的demo程序,通过引用im-server的web包，实现机器人的接口，并将这个接口注入到im的服务中。
     实现机器人的接口还有另一个方法就是 引用 im-client包，在其中实现机器人接口服务供 im服务调用</description>
 
     <properties>
-        <centit.framework.version>5.1-SNAPSHOT</centit.framework.version>
-        <centit.ip.version>5.1-SNAPSHOT</centit.ip.version>
-        <centit.commons.version>2.3-SNAPSHOT</centit.commons.version>
+        <centit.framework.version>5.2-SNAPSHOT</centit.framework.version>
+        <centit.ip.version>5.2-SNAPSHOT</centit.ip.version>
+        <centit.commons.version>5.2-SNAPSHOT</centit.commons.version>
         <finalName>${project.artifactId}-${project.version}</finalName>
     </properties>
 
@@ -139,6 +139,47 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profiles.active>test</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>demo</id>
+            <properties>
+                <profiles.active>demo</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>prev</id>
+            <properties>
+                <profiles.active>prev</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+			<id>dev</id>
+			<properties>
+				<profiles.active></profiles.active>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+	    </profile>
+        <profile>
+            <id>pressure-test</id>
+            <properties>
+                <profiles.active>pressure-test</profiles.active>
+            </properties>
+        </profile>
+    </profiles>
     <build>
         <finalName>${finalName}</finalName>
         <plugins>
@@ -161,5 +202,21 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>test/*</exclude>
+                    <exclude>prod/*</exclude>
+                    <exclude>system.properties</exclude>
+                    <exclude>demo/*</exclude>
+                    <exclude>pressure-test/*</exclude>
+                    <exclude>prev/*</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources/${profiles.active}</directory>
+            </resource>
+        </resources>
     </build>
 </project>
