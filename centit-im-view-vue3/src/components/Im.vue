@@ -15,21 +15,9 @@
       />
     </ChatBox>
     <NewMessageTip v-if="tipShow" @tipClick="tipClick" />
-    <SideBar
-      :boxStyle="boxStyle"
-      @clickCustUser="clickCustUser"
-      v-if="type === 'kefu'"
-    />
-    <ChatLog
-      :userName="receiverName"
-      @closeHistory="closeHistory"
-      v-if="chatLogShow == true"
-    >
-      <ChatLine
-        v-for="(item, index) in historyMessageList"
-        :item="item"
-        :key="index"
-      />
+    <SideBar :boxStyle="boxStyle" @clickCustUser="clickCustUser" v-if="type === 'kefu'" />
+    <ChatLog :userName="receiverName" @closeHistory="closeHistory" v-if="chatLogShow == true">
+      <ChatLine v-for="(item, index) in historyMessageList" :item="item" :key="index" />
     </ChatLog>
   </div>
 </template>
@@ -114,10 +102,12 @@ export default defineComponent({
     // socket相关事件
     initWebSocket(wsurl) {
       this.$ws = new WebSocket(wsurl);
-      this.$ws.onopen = this.wsOpen;
-      this.$ws.onclose = this.wsClose;
-      this.$ws.onmessage = this.wsMsg;
-      this.$ws.onerror = this.wsError;
+      if (this.$ws) {
+        this.$ws.onopen = this.wsOpen;
+        this.$ws.onclose = this.wsClose;
+        this.$ws.onmessage = this.wsMsg;
+        this.$ws.onerror = this.wsError;
+      }
     },
     //打开websocket
     wsOpen() {
@@ -190,9 +180,9 @@ export default defineComponent({
       this.timeoutNum = setTimeout(() => {
         this.initWebSocket(
           "ws://" +
-            window.location.host +
-            "/api/ws/chat/im/" +
-            this.user.userCode
+          window.location.host +
+          "/api/ws/chat/im/" +
+          this.user.userCode
         );
         this.lockReturn = false;
       }, 3000);
@@ -221,8 +211,8 @@ export default defineComponent({
         msgTemp.sender && this.user.userCode !== msgTemp.sender
           ? msgTemp.sender
           : this.receiver.receiverCode
-          ? this.receiver.receiverCode
-          : "";
+            ? this.receiver.receiverCode
+            : "";
       if (targetCode && !this.webSocketMsg[targetCode]) {
         this.webSocketMsg[targetCode] = [];
       }
