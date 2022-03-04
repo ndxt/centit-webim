@@ -1,5 +1,9 @@
 package com.centit.im.web.config;
 
+import com.alibaba.nacos.api.annotation.NacosProperties;
+import com.alibaba.nacos.spring.context.annotation.config.EnableNacosConfig;
+import com.alibaba.nacos.spring.context.annotation.config.NacosPropertySource;
+import com.alibaba.nacos.spring.context.annotation.config.NacosPropertySources;
 import com.centit.fileserver.common.FileStore;
 import com.centit.fileserver.utils.OsFileStore;
 import com.centit.framework.common.SysParametersUtils;
@@ -34,10 +38,13 @@ import javax.annotation.Resource;
 @PropertySource("classpath:system.properties")
 @ComponentScan(basePackages = "com.centit",
         excludeFilters = @ComponentScan.Filter(value = org.springframework.stereotype.Controller.class))
-@Import({IPOrStaticAppSystemBeanConfig.class,
+@Import({//IPOrStaticAppSystemBeanConfig.class,
         JdbcConfig.class,
         SpringSecurityDaoConfig.class,
         SpringSecurityCasConfig.class})
+@EnableNacosConfig(globalProperties = @NacosProperties(serverAddr = "${nacos.server-addr}"))
+@NacosPropertySources({@NacosPropertySource(dataId = "${nacos.system-dataid}",groupId = "CENTIT", autoRefreshed = true)}
+)
 public class ServiceBeanConfig implements EnvironmentAware {
 
     private Environment env;
