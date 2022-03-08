@@ -69,18 +69,17 @@ public class ServiceBeanConfig implements EnvironmentAware {
     @Bean
     public ESServerConfig esServerConfig(){
         ESServerConfig config = new ESServerConfig();
-        config.setServerHostIp(this.env.getProperty("webim.elasticSearch.serverHostIp"));
-        config.setServerHostPort(this.env.getProperty("webim.elasticSearch.serverHostPort"));
-        config.setClusterName(this.env.getProperty("webim.elasticSearch.clusterName"));
-        config.setOsId(this.env.getProperty("webim.elasticSearch.osId"));
-        config.setMinScore(NumberBaseOpt.parseFloat(this.env.getProperty("webim.elasticSearch.minScore"), 0.5F));
+        config.setServerHostIp(this.env.getProperty("elasticsearch.server.ip"));
+        config.setServerHostPort(this.env.getProperty("elasticsearch.server.port"));
+        config.setClusterName(this.env.getProperty("elasticsearch.server.cluster"));
+        config.setOsId(this.env.getProperty("elasticsearch.osId"));
+        config.setMinScore(NumberBaseOpt.parseFloat(this.env.getProperty("elasticsearch.filter.minScore"), 0.5F));
         return config;
     }
 
     @Bean(name = "esObjectIndexer")
     public ESIndexer esObjectIndexer(@Autowired ESServerConfig esServerConfig){
-        return IndexerSearcherFactory.obtainIndexer(
-                esServerConfig, QuestAndAnswer.class);
+        return IndexerSearcherFactory.obtainIndexer(esServerConfig, QuestAndAnswer.class);
     }
 
     @Bean(name = "esObjectSearcher")
