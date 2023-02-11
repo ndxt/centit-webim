@@ -17,10 +17,7 @@ import com.centit.im.service.IntelligentRobotFactory;
 import com.centit.im.service.WebImSocket;
 import com.centit.im.socketio.ImMessageUtils;
 import com.centit.im.utils.ImMessageBuild;
-import com.centit.support.algorithm.DatetimeOpt;
-import com.centit.support.algorithm.NumberBaseOpt;
-import com.centit.support.algorithm.StringBaseOpt;
-import com.centit.support.algorithm.UuidOpt;
+import com.centit.support.algorithm.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -799,7 +796,8 @@ public class WebImSocketImpl implements WebImSocket {
         }else /*if(group!=null)*/ {
             String title = userName + " 在群 "+ group.getGroupName()+ " 中发送了一条消息";
             List<WebImGroupMember> members
-                    = webImGroupMemberDao.listObjectsByProperty("groupId",unitCode);
+                    = webImGroupMemberDao.listObjectsByProperties(
+                    CollectionsOpt.createHashMap("groupId",unitCode));
             for(WebImGroupMember member : members ){
                 sendMemberMsg(member.getUserCode(), title, message);
             }

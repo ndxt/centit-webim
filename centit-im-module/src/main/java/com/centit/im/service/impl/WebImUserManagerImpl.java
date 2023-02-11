@@ -399,7 +399,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<WebImGroup> queryGroups(Map<String, Object> params, PageDesc pageDesc){
-        return webImGroupDao.listObjects(params, pageDesc);
+        return webImGroupDao.listObjectsByProperties(params, pageDesc);
     }
     /**
      * 创建群
@@ -459,7 +459,8 @@ public class WebImUserManagerImpl implements WebImUserManager {
      */
     @Override
     public List<WebImGroupMember> listGroupMembers(String groupId){
-        return webImGroupMemberDao.listObjectsByProperty("groupId",groupId);
+        return webImGroupMemberDao.listObjectsByProperties(
+                CollectionsOpt.createHashMap("groupId",groupId));
     }
 
     /**
@@ -491,7 +492,8 @@ public class WebImUserManagerImpl implements WebImUserManager {
         }
 
         List<String> memberList = CollectionsOpt.arrayToList(members);
-        List<WebImGroupMember> dbMembers = webImGroupMemberDao.listObjectsByProperty("groupId",groupId);
+        List<WebImGroupMember> dbMembers = webImGroupMemberDao.listObjectsByProperties(
+                CollectionsOpt.createHashMap("groupId",groupId));
         if(dbMembers!=null && dbMembers.size()>0){
             for( WebImGroupMember member : dbMembers){
                 if(! memberList.contains(member.getUserCode())){
