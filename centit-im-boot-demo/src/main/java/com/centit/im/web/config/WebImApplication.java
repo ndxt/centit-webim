@@ -1,6 +1,6 @@
 package com.centit.im.web.config;
 
-import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.alibaba.fastjson2.support.spring.FastJsonHttpMessageConverter;
 import com.centit.framework.core.controller.WrapUpResponseBodyReturnValueHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;

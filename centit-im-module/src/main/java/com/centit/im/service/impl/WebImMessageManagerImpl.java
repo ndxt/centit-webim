@@ -1,6 +1,6 @@
 package com.centit.im.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson2.JSONArray;
 import com.centit.framework.jdbc.service.BaseEntityManagerImpl;
 import com.centit.im.dao.WebImGroupDao;
 import com.centit.im.dao.WebImGroupMemberDao;

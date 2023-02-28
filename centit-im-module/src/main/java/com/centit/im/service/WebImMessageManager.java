@@ -1,6 +1,6 @@
 package com.centit.im.service;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson2.JSONArray;
 import com.centit.framework.jdbc.service.BaseEntityManager;
 import com.centit.im.po.WebImMessage;
 import com.centit.support.database.utils.PageDesc;

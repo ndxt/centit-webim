@@ -1,7 +1,7 @@
 package com.centit.im.robot.test;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.centit.framework.core.dao.ExtendedQueryPool;
 import com.centit.im.po.RobotAnswer;
 import com.centit.im.po.RobotAnswerItem;
