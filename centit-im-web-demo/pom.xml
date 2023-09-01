@@ -7,20 +7,20 @@
     <parent>
         <artifactId>centit-webim</artifactId>
         <groupId>com.centit.product</groupId>
-        <version>5.3-SNAPSHOT</version>
+        <version>5.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>centit-im-web-demo</artifactId>
     <name>com.centit.product:centit-im-web-demo</name>
-    <version>5.3-SNAPSHOT</version>
+    <version>5.4-SNAPSHOT</version>
     <packaging>war</packaging>
     <description>即时通讯的demo程序,通过引用im-server的web包，实现机器人的接口，并将这个接口注入到im的服务中。
     实现机器人的接口还有另一个方法就是 引用 im-client包，在其中实现机器人接口服务供 im服务调用</description>
 
     <properties>
-        <centit.framework.version>5.3-SNAPSHOT</centit.framework.version>
-        <centit.ip.version>5.3-SNAPSHOT</centit.ip.version>
-        <centit.commons.version>5.3-SNAPSHOT</centit.commons.version>
+        <centit.framework.version>5.4-SNAPSHOT</centit.framework.version>
+        <centit.ip.version>5.4-SNAPSHOT</centit.ip.version>
+        <centit.commons.version>5.4-SNAPSHOT</centit.commons.version>
         <finalName>${project.artifactId}-${project.version}</finalName>
     </properties>
 
@@ -66,7 +66,8 @@
 
         <dependency>
             <groupId>com.centit.framework</groupId>
-            <artifactId>centit-ip-app-config</artifactId>
+            <artifactId>centit-ip-dubbo-client-config</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -88,12 +89,6 @@
             <version>2.9.2</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
-        </dependency>-->
-
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -113,12 +108,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--<dependency>
-            <groupId>biz.paluch.logging</groupId>
-            <artifactId>logstash-gelf</artifactId>
-            <version>1.11.1</version>
-        </dependency>-->
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -134,10 +123,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
-
 
         <dependency>
             <groupId>com.centit.framework</groupId>

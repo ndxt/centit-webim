@@ -5,12 +5,12 @@
     <parent>
         <artifactId>framework-snapshot-dependencies</artifactId>
         <groupId>com.centit.framework</groupId>
-        <version>5.3-SNAPSHOT</version>
+        <version>5.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.centit.product</groupId>
     <artifactId>centit-webim</artifactId>
-    <version>5.3-SNAPSHOT</version>
+    <version>5.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>com.centit.product:centit-webim</name>
     <description>基于web的即使通讯平台，客户端采用的是 layIm组件
@@ -66,7 +66,6 @@
     <modules>
         <module>centit-im-module</module>
         <module>centit-im-client</module>
-        <!--<module>centit-im-web</module>-->
         <module>centit-im-view</module>
         <module>centit-im-robot-es</module>
         <module>centit-im-core</module>

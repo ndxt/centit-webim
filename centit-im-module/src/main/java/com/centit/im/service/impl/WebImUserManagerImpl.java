@@ -3,9 +3,9 @@ package com.centit.im.service.impl;
 import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.filter.RequestThreadLocal;
-import com.centit.framework.model.basedata.IUnitInfo;
-import com.centit.framework.model.basedata.IUserInfo;
-import com.centit.framework.model.basedata.IUserUnit;
+import com.centit.framework.model.basedata.UnitInfo;
+import com.centit.framework.model.basedata.UserInfo;
+import com.centit.framework.model.basedata.UserUnit;
 import com.centit.im.dao.FriendMemoDao;
 import com.centit.im.dao.WebImCustomerDao;
 import com.centit.im.dao.WebImGroupDao;
@@ -59,7 +59,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
         String topUnit = WebOptUtils.getCurrentTopUnit(request);
         WebImCustomer cust = customerDao.getObjectById(userCode);
         if (cust == null) {
-            IUserInfo ui = CodeRepositoryUtil.getUserInfoByCode(topUnit, userCode);
+            UserInfo ui = CodeRepositoryUtil.getUserInfoByCode(topUnit, userCode);
             if (ui != null) {
                 cust = new WebImCustomer(userCode, ui.getUserName());
                 cust.setUserType("U");
@@ -87,7 +87,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
         if(customer == null){
             user.setCreator("U0000000");
             if(StringUtils.isBlank(user.getUserName())) {
-                IUserInfo userInfo = CodeRepositoryUtil
+                UserInfo userInfo = CodeRepositoryUtil
                         .getUserInfoByCode(topUnit, user.getUserCode());
                 if (userInfo != null) {
                     user.setUserName(userInfo.getUserName());
@@ -108,7 +108,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     public List<WebImCustomer> listAllUser() {
         HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
         String topUnit = WebOptUtils.getCurrentTopUnit(request);
-        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers(topUnit);
+        List<UserInfo> users = CodeRepositoryUtil.listAllUsers(topUnit);
         if (users == null || users.size() < 1)
             return new ArrayList<>();
         List<WebImCustomer> custs = customerDao.listObjects();
@@ -117,7 +117,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
             customerMap.put(cust.getUserCode(), cust);
         }
         List<WebImCustomer> allcusts = new ArrayList<>(users.size());
-        for (IUserInfo user : users) {
+        for (UserInfo user : users) {
             WebImCustomer cust = customerMap.get(user.getUserCode());
             if (cust == null) {
                 cust = new WebImCustomer(user.getUserCode(), user.getUserName());
@@ -178,7 +178,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     private WebImCustomer fetchCustomerInfo(String userCode){
         HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
         String topUnit = WebOptUtils.getCurrentTopUnit(request);
-        IUserInfo ui= CodeRepositoryUtil.getUserInfoByCode(topUnit, userCode);
+        UserInfo ui= CodeRepositoryUtil.getUserInfoByCode(topUnit, userCode);
         if(ui==null){ //数据库数据不一致会导致这个情况
             return null;
         }
@@ -194,9 +194,9 @@ public class WebImUserManagerImpl implements WebImUserManager {
     @Override
     @Transactional
     public List<WebImCustomer> listUnitUsers(String unitCode ) {
-        List<? extends IUserUnit> users = CodeRepositoryUtil.listUnitUsers(unitCode);
+        List<UserUnit> users = CodeRepositoryUtil.listUnitUsers(unitCode);
         List<WebImCustomer> allcusts = new ArrayList<>(users.size());
-        for(IUserUnit user : users){
+        for(UserUnit user : users){
             WebImCustomer cust = customerDao.getObjectById(user.getUserCode());
             if(cust==null){
                 cust = fetchCustomerInfo(user.getUserCode());
@@ -222,14 +222,14 @@ public class WebImUserManagerImpl implements WebImUserManager {
 //        }
         HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
         String topUnit = WebOptUtils.getCurrentTopUnit(request);
-        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers(topUnit);
+        List<UserInfo> users = CodeRepositoryUtil.listAllUsers(topUnit);
         if (users == null || users.size() < 1)
             return new ArrayList<>();
         List<WebImCustomer> allcusts = new ArrayList<>(pageDesc.getPageSize());
         int nMatchCount = 0;
         int startRow = pageDesc.getRowStart();
         int endRow = pageDesc.getRowEnd();
-        for(IUserInfo user : users){
+        for(UserInfo user : users){
             if(StringUtils.contains(user.getUserName(), name)
                 || StringUtils.contains(user.getRegCellPhone(), name)
                 || StringUtils.contains(user.getLoginName(), name)){
@@ -261,7 +261,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
     public Map<String, String> listAllUserState() {
         HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
         String topUnit = WebOptUtils.getCurrentTopUnit(request);
-        List<? extends IUserInfo> users = CodeRepositoryUtil.listAllUsers(topUnit);
+        List<UserInfo> users = CodeRepositoryUtil.listAllUsers(topUnit);
         return webImSocket.checkUsersState(users);
     }
 
@@ -270,7 +270,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
      */
     @Override
     @Transactional
-    public List<? extends IUnitInfo> listAllUnit() {
+    public List<UnitInfo> listAllUnit() {
         HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
         String topUnit = WebOptUtils.getCurrentTopUnit(request);
         return CodeRepositoryUtil.listAllUnits(topUnit);
@@ -283,12 +283,12 @@ public class WebImUserManagerImpl implements WebImUserManager {
      */
     @Override
     @Transactional
-    public List<? extends IUnitInfo> listSubUnit(String parentUnitCode){
+    public List<UnitInfo> listSubUnit(String parentUnitCode){
         HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
         String topUnit = WebOptUtils.getCurrentTopUnit(request);
-        List<? extends IUnitInfo> allUnits = CodeRepositoryUtil.listAllUnits(topUnit);
-        List<IUnitInfo> units = new ArrayList<>();
-        for (IUnitInfo uc : allUnits) {
+        List<UnitInfo> allUnits = CodeRepositoryUtil.listAllUnits(topUnit);
+        List<UnitInfo> units = new ArrayList<>();
+        for (UnitInfo uc : allUnits) {
             //获取顶层机构
             if (StringUtils.isBlank(parentUnitCode) || "0".equals(parentUnitCode)){
                 if(StringUtils.isBlank(uc.getParentUnit()) || "0".equals(uc.getParentUnit())) {
@@ -303,15 +303,15 @@ public class WebImUserManagerImpl implements WebImUserManager {
 
     @Override
     @Transactional
-    public List<IUnitInfo> listUserUnits(String  userCode) {
+    public List<UnitInfo> listUserUnits(String  userCode) {
         HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
         String topUnit = WebOptUtils.getCurrentTopUnit(request);
-        List<? extends IUserUnit> units = CodeRepositoryUtil.listUserUnits(topUnit, userCode);
+        List<UserUnit> units = CodeRepositoryUtil.listUserUnits(topUnit, userCode);
         if(units==null || units.size()<1)
             return null;
-        List<IUnitInfo> userUnits = new ArrayList<>(units.size());
-        for( IUserUnit unit : units ) {
-            IUnitInfo unitInfo = CodeRepositoryUtil.getUnitInfoByCode(topUnit, unit.getUnitCode());
+        List<UnitInfo> userUnits = new ArrayList<>(units.size());
+        for(UserUnit unit : units ) {
+            UnitInfo unitInfo = CodeRepositoryUtil.getUnitInfoByCode(topUnit, unit.getUnitCode());
             if(unitInfo!=null) {
                 userUnits.add(unitInfo);
             }
@@ -357,7 +357,7 @@ public class WebImUserManagerImpl implements WebImUserManager {
              customer.setCreator("U0000000");
              customer.setUserCode(memberCode);
              customer.setUserName(memberCode);
-             IUserInfo userInfo = CodeRepositoryUtil.getUserInfoByCode(topUnit, memberCode);
+             UserInfo userInfo = CodeRepositoryUtil.getUserInfoByCode(topUnit, memberCode);
              if (userInfo != null){
                  customer.setUserName(userInfo.getUserName());
              }

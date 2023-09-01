@@ -1,6 +1,6 @@
 package com.centit.im.service;
 
-import com.centit.framework.model.basedata.IUnitInfo;
+import com.centit.framework.model.basedata.UnitInfo;
 import com.centit.im.po.WebImCustomer;
 import com.centit.im.po.WebImFriendMemo;
 import com.centit.im.po.WebImGroup;
@@ -79,7 +79,7 @@ public interface WebImUserManager {
     /**
      * 返回系统所有机构
      */
-    List<? extends IUnitInfo> listAllUnit();
+    List<UnitInfo> listAllUnit();
 
 
     /**
@@ -87,13 +87,13 @@ public interface WebImUserManager {
      * @param parentUnitCode 上级机构代码， '0' 返回顶层机构
      * @return
      */
-    List<? extends IUnitInfo> listSubUnit(String parentUnitCode);
+    List<UnitInfo> listSubUnit(String parentUnitCode);
     /**
      * 返回用户的组（机构）
      * @param userCode
      * @return
      */
-    List<IUnitInfo> listUserUnits(String  userCode);
+    List<UnitInfo> listUserUnits(String  userCode);
 
     /**
      * 配置用户信息

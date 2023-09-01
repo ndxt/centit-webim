@@ -53,13 +53,13 @@ public class QuestAndAnswer implements ESDocument, Serializable {
     /**
      * 关键字
      */
-    @ESField(type = "text", index = true, query = true, revert = false, highlight = true, analyzer = "ik_smart")
+    @ESField(type = "text", index = true, query = true, highlight = true, analyzer = "ik_smart")
     private String keyWords;
 
     /**
      * 问题标题联url
      */
-    @ESField(type = "text", revert = true)
+    @ESField(type = "text")
     private String questionUrl;
 
     /**

@@ -1,7 +1,7 @@
 package com.centit.im.service;
 
-import com.centit.framework.model.basedata.IUserInfo;
-import com.centit.framework.model.basedata.IUserUnit;
+import com.centit.framework.model.basedata.UserInfo;
+import com.centit.framework.model.basedata.UserUnit;
 import com.centit.im.po.ImMessage;
 
 import javax.websocket.Session;
@@ -80,12 +80,12 @@ public interface WebImSocket {
     /**
      * 检验用户的状态
      */
-    Map<String, String> checkUsersState(List<? extends IUserInfo> users);
+    Map<String, String> checkUsersState(List<UserInfo> users);
 
     /**
      * 检验用户的状态
      */
-    Map<String, String> checkUnitUserState(List<? extends IUserUnit> users);
+    Map<String, String> checkUnitUserState(List<UserUnit> users);
 
     /**
      * 获取所有在线用户

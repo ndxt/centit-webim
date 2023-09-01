@@ -12,7 +12,7 @@ import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpContentType;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
-import com.centit.framework.model.basedata.IUnitInfo;
+import com.centit.framework.model.basedata.UnitInfo;
 import com.centit.im.po.*;
 import com.centit.im.service.WebImSocket;
 import com.centit.im.service.WebImUserManager;
@@ -121,12 +121,12 @@ public class WebImUserController extends BaseController {
     @RequestMapping(value = "/allUnit",
             method = RequestMethod.GET)
     @WrapUpResponseBody
-    public List<? extends IUnitInfo> listAllUnits() {
-        List<? extends IUnitInfo> allUnits = webImUserManager.listAllUnit();
+    public List<UnitInfo> listAllUnits() {
+        List<UnitInfo> allUnits = webImUserManager.listAllUnit();
         if(allUnits==null || allUnits.isEmpty()){
             return allUnits;
         }
-        CollectionsOpt.sortAsTree(allUnits, IUnitInfo::getUnitCode, IUnitInfo::getParentUnit);
+        CollectionsOpt.sortAsTree(allUnits, UnitInfo::getUnitCode, UnitInfo::getParentUnit);
                 //( p,  c) -> StringUtils.equals(p.getUnitCode(),c.getParentUnit()) );
         return allUnits;
     }
@@ -143,14 +143,14 @@ public class WebImUserController extends BaseController {
     @RequestMapping(value = "/subUnit/{parentUnitCode}",
             method = RequestMethod.GET)
     @WrapUpResponseBody
-    public List<? extends IUnitInfo> listSubUnits(@PathVariable String parentUnitCode) {
-        List<? extends IUnitInfo> allUnits = webImUserManager.listSubUnit(parentUnitCode);
+    public List<UnitInfo> listSubUnits(@PathVariable String parentUnitCode) {
+        List<UnitInfo> allUnits = webImUserManager.listSubUnit(parentUnitCode);
         if(allUnits==null || allUnits.isEmpty()){
             return allUnits;
         }
-        //IUnitInfo::getUnitOrder 这个可能为null所以如果排序这个排序方法要重写
+        //UnitInfo::getUnitOrder 这个可能为null所以如果排序这个排序方法要重写
         Collections.sort(allUnits,
-                GeneralAlgorithm.comparing(IUnitInfo::getUnitOrder, false));
+                GeneralAlgorithm.comparing(UnitInfo::getUnitOrder, false));
         return allUnits;
     }
     /**
@@ -220,7 +220,7 @@ public class WebImUserController extends BaseController {
     @ApiOperation(value = "10查询用户的机构（内置的和组织机构一致的群）")
     @RequestMapping(value = "/userUnits/{userCode}", method = RequestMethod.GET)
     @WrapUpResponseBody
-    public List<IUnitInfo>  listUserUnit(@PathVariable String userCode) {
+    public List<UnitInfo>  listUserUnit(@PathVariable String userCode) {
         return webImUserManager.listUserUnits(userCode);
 
     }

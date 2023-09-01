@@ -4,7 +4,7 @@ package com.centit.im.service.impl;
 import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.filter.RequestThreadLocal;
-import com.centit.framework.model.basedata.IOsInfo;
+import com.centit.framework.model.basedata.OsInfo;
 import com.centit.im.service.IntelligentRobot;
 import com.centit.im.service.IntelligentRobotFactory;
 
@@ -28,7 +28,7 @@ public class IntelligentRobotFactoryRpcImpl implements IntelligentRobotFactory {
         IntelligentRobot robot = intelligentRobotMap.get(osId);
         if(robot == null){
             IntelligentRobotRpcImpl robotImpl = new IntelligentRobotRpcImpl();
-            IOsInfo osInfo = CodeRepositoryUtil.getOsInfo(topUnit, osId);
+            OsInfo osInfo = CodeRepositoryUtil.getOsInfo(topUnit, osId);
             robotImpl.initAppSession(osInfo.getOsUrl()+"/service/askrobot");
             intelligentRobotMap.put(osId,robotImpl);
             robot = robotImpl;

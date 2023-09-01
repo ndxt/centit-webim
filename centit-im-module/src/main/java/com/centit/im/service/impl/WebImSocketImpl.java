@@ -7,8 +7,8 @@ import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.filter.RequestThreadLocal;
 import com.centit.framework.model.adapter.NotificationCenter;
 import com.centit.framework.model.adapter.PlatformEnvironment;
-import com.centit.framework.model.basedata.IUserInfo;
-import com.centit.framework.model.basedata.IUserUnit;
+import com.centit.framework.model.basedata.UserInfo;
+import com.centit.framework.model.basedata.UserUnit;
 import com.centit.framework.model.basedata.NoticeMessage;
 import com.centit.im.dao.*;
 import com.centit.im.po.*;
@@ -785,12 +785,12 @@ public class WebImSocketImpl implements WebImSocket {
 
         WebImGroup group = webImGroupDao.getObjectById(unitCode);
         if(group==null || "U".equals(group.getGroupType())) {
-            List<? extends IUserUnit> users =
+            List<UserUnit> users =
                     platformEnvironment.listUnitUsers(unitCode);
             String groupName = group == null? CodeRepositoryUtil.getUnitName(topUnit, unitCode)
                     : group.getGroupName();
             String title = userName + " 在部门群 "+ groupName+ " 中发送了一条消息";
-            for (IUserUnit user : users) {
+            for (UserUnit user : users) {
                 sendMemberMsg(user.getUserCode(), title, message);
             }
         }else /*if(group!=null)*/ {
@@ -822,9 +822,9 @@ public class WebImSocketImpl implements WebImSocket {
     @Transactional
     public void toallMessage(ImMessage message) {
         String topUnit = getTopUnit();
-        List<? extends IUserInfo> users =
+        List<UserInfo> users =
                 platformEnvironment.listAllUsers(topUnit);
-        for(IUserInfo user : users){
+        for(UserInfo user : users){
             pushMessage(user.getUserCode(), message);
         }
         WebImMessage webMessage = formatGroupMsg(message);
@@ -851,11 +851,11 @@ public class WebImSocketImpl implements WebImSocket {
      * @return  用户状态
      */
     @Override
-    public Map<String, String> checkUsersState(List<? extends IUserInfo> users) {
+    public Map<String, String> checkUsersState(List<UserInfo> users) {
         Map<String, String> userState = new HashMap<>();
         if(users==null)
             return userState;
-        for(IUserInfo user : users){
+        for(UserInfo user : users){
             userState.put(user.getUserCode(),
                     getSessionByUserCode(user.getUserCode())==null?
                             ImMessage.USER_STATE_OFFLINE:ImMessage.USER_STATE_ONLINE);
@@ -880,11 +880,11 @@ public class WebImSocketImpl implements WebImSocket {
      * @return  用户状态
      */
     @Override
-    public Map<String, String> checkUnitUserState(List<? extends IUserUnit> users) {
+    public Map<String, String> checkUnitUserState(List<UserUnit> users) {
         Map<String, String> userState = new HashMap<>();
         if(users==null)
             return userState;
-        for(IUserUnit user : users){
+        for(UserUnit user : users){
             userState.put(user.getUserCode(),
                     getSessionByUserCode(user.getUserCode())==null?
                             ImMessage.USER_STATE_OFFLINE:ImMessage.USER_STATE_ONLINE);
