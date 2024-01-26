@@ -4,3 +4,9 @@
 **/node_modules
 *.iml
 D:
+.mvn
+mvn*
+.settings
+**/~$*
+out.*
+.flattened-pom.xml
