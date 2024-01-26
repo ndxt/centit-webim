@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>com.centit.product</groupId>
-        <version>5.4-SNAPSHOT</version>
+        <version>${revision}</version>
         <artifactId>centit-webim</artifactId>
     </parent>
 
@@ -25,6 +25,7 @@
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>framework-core</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <!-- server runtime library -->

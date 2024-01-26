@@ -7,20 +7,17 @@
     <parent>
         <artifactId>centit-webim</artifactId>
         <groupId>com.centit.product</groupId>
-        <version>5.4-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>centit-im-web-demo</artifactId>
     <name>com.centit.product:centit-im-web-demo</name>
-    <version>5.4-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>war</packaging>
     <description>即时通讯的demo程序,通过引用im-server的web包，实现机器人的接口，并将这个接口注入到im的服务中。
     实现机器人的接口还有另一个方法就是 引用 im-client包，在其中实现机器人接口服务供 im服务调用</description>
 
     <properties>
-        <centit.framework.version>5.4-SNAPSHOT</centit.framework.version>
-        <centit.ip.version>5.4-SNAPSHOT</centit.ip.version>
-        <centit.commons.version>5.4-SNAPSHOT</centit.commons.version>
         <finalName>${project.artifactId}-${project.version}</finalName>
     </properties>
 
@@ -47,27 +44,31 @@
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-persistence-jdbc-config</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.support</groupId>
             <artifactId>centit-database-datasource</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>framework-core-web</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>framework-config</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
-            <artifactId>centit-ip-dubbo-client-config</artifactId>
-            <version>${project.version}</version>
+            <artifactId>framework-system-dubbo-client-config</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
@@ -125,18 +126,6 @@
             <artifactId>h2</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.centit.framework</groupId>
-            <artifactId>centit-ip-dubbo-client-config</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-  <!--      <dependency>
-            <groupId>com.centit.framework</groupId>
-            <artifactId>centit-ip-app-base-config</artifactId>
-            <version>${project.version}</version>
-        </dependency>
--->
     </dependencies>
 
     <profiles>
