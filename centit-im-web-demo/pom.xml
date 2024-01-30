@@ -81,7 +81,6 @@
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>
             <scope>runtime</scope>
-            <version>11.2.0.4</version>
         </dependency>
 
         <dependency>
@@ -171,26 +170,6 @@
     </profiles>
     <build>
         <finalName>${finalName}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <configuration>
-                    <user>webim</user>
-                    <password>webim</password>
-                    <!--<driver>org.h2.Driver</driver>-->
-                    <!--<url>jdbc:h2:D:/h2/webim</url>-->
-                    <!--<locations>-->
-                        <!--<location>filesystem:src/main/resources/migration/h2</location>-->
-                    <!--</locations>-->
-                    <driver>com.mysql.cj.jdbc.Driver</driver>
-                    <url>jdbc:mysql://192.168.128.32:3306/webim</url>
-                    <locations>
-                    <location>filesystem:src/main/resources/migration/mysql</location>
-                    </locations>
-                </configuration>
-            </plugin>
-        </plugins>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
